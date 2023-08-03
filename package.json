@@ -1,0 +1,28 @@
+{
+  "name": "scout9-nodejs",
+  "version": "1.0.0",
+  "description": "Scout9 Node.js API library",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc --build --verbose",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "temp:init": "npm init --scope @scout9 --workspace ./packages/client -y && echo \"<-- Script inits another package\""
+  },
+  "author": "Patrick Opie <opiepat@gmail.com>",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "license": "Apache-2.0",
+  "dependencies": {
+    "typescript": "^5.1.6"
+  },
+  "devDependencies": {
+    "@types/node": "^20.4.6",
+    "ts-node": "^10.9.1",
+    "@typescript-eslint/eslint-plugin": "^5.44.0",
+    "@typescript-eslint/parser": "^5.44.0",
+    "eslint": "^8.28.0",
+    "prettier": "^2.8.0"
+  }
+}

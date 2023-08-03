@@ -1,0 +1,14 @@
+{
+  "name": "@scout9/admin",
+  "version": "1.0.0",
+  "description": "",
+  "main": "build/index.js",
+  "devDependencies": {},
+  "scripts": {
+    "build": "tsc --build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
