@@ -1,1 +1,2 @@
-export declare function isEven(n: number): boolean;
+export * from "./api";
+export * from "./configuration";
