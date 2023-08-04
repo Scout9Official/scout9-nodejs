@@ -8,8 +8,11 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "temp:init": "npm init --scope @scout9 --workspace ./packages/client -y && echo \"<-- Script inits another package\""
   },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Scout9/sendgrid-nodejs.git"
+  },
   "author": "Patrick Opie <opiepat@gmail.com>",
-  "private": true,
   "workspaces": [
     "packages/*"
   ],

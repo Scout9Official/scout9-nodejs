@@ -1,5 +1,4 @@
 "use strict";
-// ./packages/utils/index.ts
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isEven = void 0;
 function isEven(n) {
