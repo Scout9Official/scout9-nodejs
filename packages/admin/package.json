@@ -8,6 +8,10 @@
     "build": "tsc --build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Scout9Official/scout9-nodejs.git"
+  },
   "engines": {
     "node": "6.* || 8.* || >=10.*"
   },

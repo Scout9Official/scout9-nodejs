@@ -2,7 +2,8 @@
   "name": "@scout9/client",
   "version": "1.0.0",
   "description": "",
-  "main": "build/index.js",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
   "devDependencies": {},
   "homepage": "https://scout9.com",
   "repository": {

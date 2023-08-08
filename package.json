@@ -2,7 +2,6 @@
   "name": "scout9-nodejs",
   "version": "1.0.2",
   "description": "Scout9 Node.js API library",
-  "main": "index.js",
   "scripts": {
     "build": "tsc --build --verbose",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -13,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/Scout9/sendgrid-nodejs.git"
+    "url": "git://github.com/Scout9Official/scout9-nodejs.git"
   },
   "author": "Patrick Opie <opiepat@gmail.com>",
   "workspaces": [
