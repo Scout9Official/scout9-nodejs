@@ -1,12 +1,15 @@
 {
   "name": "scout9-nodejs",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Scout9 Node.js API library",
   "main": "index.js",
   "scripts": {
     "build": "tsc --build --verbose",
     "test": "echo \"Error: no test specified\" && exit 1",
     "temp:init": "npm init --scope @scout9 --workspace ./packages/client -y && echo \"<-- Script inits another package\""
+  },
+  "engines": {
+    "node": "6.* || 8.* || >=10.*"
   },
   "repository": {
     "type": "git",

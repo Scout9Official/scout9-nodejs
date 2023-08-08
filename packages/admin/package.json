@@ -1,11 +1,14 @@
 {
   "name": "@scout9/admin",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "",
   "main": "build/index.js",
   "scripts": {
     "build": "tsc --build",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "engines": {
+    "node": "6.* || 8.* || >=10.*"
   },
   "author": "Patrick Opie <opiepat@gmail.com>",
   "contributors": [
