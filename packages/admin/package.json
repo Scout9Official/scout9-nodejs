@@ -2,7 +2,8 @@
   "name": "@scout9/admin",
   "version": "1.0.2",
   "description": "",
-  "main": "build/index.js",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
   "scripts": {
     "build": "tsc --build",
     "test": "echo \"Error: no test specified\" && exit 1"
