@@ -31,6 +31,36 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
     return {
         /**
          *
+         * @summary Create a new conversation
+         * @param {ConversationCreateRequest} conversationCreateRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createConversation: async (conversationCreateRequest, options = {}) => {
+            // verify required parameter 'conversationCreateRequest' is not null or undefined
+            (0, common_1.assertParamExists)('createConversation', 'conversationCreateRequest', conversationCreateRequest);
+            const localVarPath = `/v1/conversation`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options };
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
+            localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(conversationCreateRequest, localVarRequestOptions, configuration);
+            return {
+                url: (0, common_1.toPathString)(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
          * @summary Creates a new customer
          * @param {CreateCustomerRequest} createCustomerRequest
          * @param {*} [options] Override http request option.
@@ -91,16 +121,105 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         },
         /**
          *
-         * @summary Deletes a customer
-         * @param {string} id Customer ID to delete customer
+         * @summary Create and send message
+         * @param {MessageCreateRequest} messageCreateRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteCustomer: async (id, options = {}) => {
+        createMessage: async (messageCreateRequest, options = {}) => {
+            // verify required parameter 'messageCreateRequest' is not null or undefined
+            (0, common_1.assertParamExists)('createMessage', 'messageCreateRequest', messageCreateRequest);
+            const localVarPath = `/v1/messages`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options };
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
+            localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(messageCreateRequest, localVarRequestOptions, configuration);
+            return {
+                url: (0, common_1.toPathString)(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
+         * @summary Creates a new scheduled conversation
+         * @param {ScheduleCreateRequest} scheduleCreateRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createSchedule: async (scheduleCreateRequest, options = {}) => {
+            // verify required parameter 'scheduleCreateRequest' is not null or undefined
+            (0, common_1.assertParamExists)('createSchedule', 'scheduleCreateRequest', scheduleCreateRequest);
+            const localVarPath = `/v1/schedule`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options };
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
+            localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(scheduleCreateRequest, localVarRequestOptions, configuration);
+            return {
+                url: (0, common_1.toPathString)(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
+         * @summary Creates a new schedule group
+         * @param {ScheduleGroupCreateRequest} scheduleGroupCreateRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createScheduleGroup: async (scheduleGroupCreateRequest, options = {}) => {
+            // verify required parameter 'scheduleGroupCreateRequest' is not null or undefined
+            (0, common_1.assertParamExists)('createScheduleGroup', 'scheduleGroupCreateRequest', scheduleGroupCreateRequest);
+            const localVarPath = `/v1/scheduleGroup`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options };
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
+            localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(scheduleGroupCreateRequest, localVarRequestOptions, configuration);
+            return {
+                url: (0, common_1.toPathString)(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
+         * @summary Deletes a schedule
+         * @param {string} id Schedule ID to delete schedule
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteConversation: async (id, options = {}) => {
             // verify required parameter 'id' is not null or undefined
-            (0, common_1.assertParamExists)('deleteCustomer', 'id', id);
-            const localVarPath = `/v1/customer`
-                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            (0, common_1.assertParamExists)('deleteConversation', 'id', id);
+            const localVarPath = `/v1/conversation`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -110,6 +229,40 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
             const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options };
             const localVarHeaderParameter = {};
             const localVarQueryParameter = {};
+            if (id !== undefined) {
+                localVarQueryParameter['id'] = id;
+            }
+            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
+            return {
+                url: (0, common_1.toPathString)(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
+         * @summary Deletes a customer
+         * @param {string} id Customer ID to delete customer
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteCustomer: async (id, options = {}) => {
+            // verify required parameter 'id' is not null or undefined
+            (0, common_1.assertParamExists)('deleteCustomer', 'id', id);
+            const localVarPath = `/v1/customer`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options };
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            if (id !== undefined) {
+                localVarQueryParameter['id'] = id;
+            }
             (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
@@ -128,8 +281,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         deleteCustomers: async (id, options = {}) => {
             // verify required parameter 'id' is not null or undefined
             (0, common_1.assertParamExists)('deleteCustomers', 'id', id);
-            const localVarPath = `/v1/customers`
-                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            const localVarPath = `/v1/customers`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -139,6 +291,132 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
             const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options };
             const localVarHeaderParameter = {};
             const localVarQueryParameter = {};
+            if (id !== undefined) {
+                localVarQueryParameter['id'] = id;
+            }
+            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
+            return {
+                url: (0, common_1.toPathString)(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
+         * @summary Deletes a schedule
+         * @param {string} id Schedule ID to delete schedule
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteSchedule: async (id, options = {}) => {
+            // verify required parameter 'id' is not null or undefined
+            (0, common_1.assertParamExists)('deleteSchedule', 'id', id);
+            const localVarPath = `/v1/schedule`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options };
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            if (id !== undefined) {
+                localVarQueryParameter['id'] = id;
+            }
+            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
+            return {
+                url: (0, common_1.toPathString)(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
+         * @summary Deletes a schedule group
+         * @param {string} id Schedule group ID to delete schedule group
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteScheduleGroup: async (id, options = {}) => {
+            // verify required parameter 'id' is not null or undefined
+            (0, common_1.assertParamExists)('deleteScheduleGroup', 'id', id);
+            const localVarPath = `/v1/scheduleGroup`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options };
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            if (id !== undefined) {
+                localVarQueryParameter['id'] = id;
+            }
+            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
+            return {
+                url: (0, common_1.toPathString)(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
+         * @summary Generate a message from conversation
+         * @param {GenerateRequest} generateRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        generate: async (generateRequest, options = {}) => {
+            // verify required parameter 'generateRequest' is not null or undefined
+            (0, common_1.assertParamExists)('generate', 'generateRequest', generateRequest);
+            const localVarPath = `/v1/generate`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options };
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
+            localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(generateRequest, localVarRequestOptions, configuration);
+            return {
+                url: (0, common_1.toPathString)(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
+         * @summary Gets a conversation
+         * @param {string} id Conversation ID to get conversation
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getConversation: async (id, options = {}) => {
+            // verify required parameter 'id' is not null or undefined
+            (0, common_1.assertParamExists)('getConversation', 'id', id);
+            const localVarPath = `/v1/conversation`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options };
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            if (id !== undefined) {
+                localVarQueryParameter['id'] = id;
+            }
             (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
@@ -157,8 +435,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         getCustomer: async (id, options = {}) => {
             // verify required parameter 'id' is not null or undefined
             (0, common_1.assertParamExists)('getCustomer', 'id', id);
-            const localVarPath = `/v1/customer`
-                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            const localVarPath = `/v1/customer`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -168,6 +445,9 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
             const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options };
             const localVarHeaderParameter = {};
             const localVarQueryParameter = {};
+            if (id !== undefined) {
+                localVarQueryParameter['id'] = id;
+            }
             (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
@@ -184,8 +464,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
          * @throws {RequiredError}
          */
         getCustomers: async (id, options = {}) => {
-            const localVarPath = `/v1/customers`
-                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            const localVarPath = `/v1/customers`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -195,9 +474,135 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
             const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options };
             const localVarHeaderParameter = {};
             const localVarQueryParameter = {};
+            if (id !== undefined) {
+                localVarQueryParameter['id'] = id;
+            }
             (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
+            return {
+                url: (0, common_1.toPathString)(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
+         * @summary Get all messages from a conversation
+         * @param {string} id Conversation ID to get messages
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getMessage: async (id, options = {}) => {
+            // verify required parameter 'id' is not null or undefined
+            (0, common_1.assertParamExists)('getMessage', 'id', id);
+            const localVarPath = `/v1/messages`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options };
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            if (id !== undefined) {
+                localVarQueryParameter['id'] = id;
+            }
+            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
+            return {
+                url: (0, common_1.toPathString)(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
+         * @summary Gets a schedule
+         * @param {string} id Schedule ID to get schedule
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getSchedule: async (id, options = {}) => {
+            // verify required parameter 'id' is not null or undefined
+            (0, common_1.assertParamExists)('getSchedule', 'id', id);
+            const localVarPath = `/v1/schedule`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options };
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            if (id !== undefined) {
+                localVarQueryParameter['id'] = id;
+            }
+            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
+            return {
+                url: (0, common_1.toPathString)(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
+         * @summary Gets a schedule group
+         * @param {string} id Schedule group ID to get schedule group
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getScheduleGroup: async (id, options = {}) => {
+            // verify required parameter 'id' is not null or undefined
+            (0, common_1.assertParamExists)('getScheduleGroup', 'id', id);
+            const localVarPath = `/v1/scheduleGroup`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options };
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            if (id !== undefined) {
+                localVarQueryParameter['id'] = id;
+            }
+            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
+            return {
+                url: (0, common_1.toPathString)(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
+         * @summary Update a conversation
+         * @param {ConversationUpdateRequest} conversationUpdateRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateConversation: async (conversationUpdateRequest, options = {}) => {
+            // verify required parameter 'conversationUpdateRequest' is not null or undefined
+            (0, common_1.assertParamExists)('updateConversation', 'conversationUpdateRequest', conversationUpdateRequest);
+            const localVarPath = `/v1/conversation`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options };
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
+            localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(conversationUpdateRequest, localVarRequestOptions, configuration);
             return {
                 url: (0, common_1.toPathString)(localVarUrlObj),
                 options: localVarRequestOptions,
@@ -263,6 +668,66 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
                 options: localVarRequestOptions,
             };
         },
+        /**
+         *
+         * @summary Updates a schedule
+         * @param {ScheduleUpdateRequest} scheduleUpdateRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateSchedule: async (scheduleUpdateRequest, options = {}) => {
+            // verify required parameter 'scheduleUpdateRequest' is not null or undefined
+            (0, common_1.assertParamExists)('updateSchedule', 'scheduleUpdateRequest', scheduleUpdateRequest);
+            const localVarPath = `/v1/schedule`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options };
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
+            localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(scheduleUpdateRequest, localVarRequestOptions, configuration);
+            return {
+                url: (0, common_1.toPathString)(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
+         * @summary Updates a schedule group
+         * @param {ScheduleGroupUpdateRequest} scheduleGroupUpdateRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateScheduleGroup: async (scheduleGroupUpdateRequest, options = {}) => {
+            // verify required parameter 'scheduleGroupUpdateRequest' is not null or undefined
+            (0, common_1.assertParamExists)('updateScheduleGroup', 'scheduleGroupUpdateRequest', scheduleGroupUpdateRequest);
+            const localVarPath = `/v1/scheduleGroup`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options };
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
+            localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(scheduleGroupUpdateRequest, localVarRequestOptions, configuration);
+            return {
+                url: (0, common_1.toPathString)(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     };
 };
 exports.Scout9ApiAxiosParamCreator = Scout9ApiAxiosParamCreator;
@@ -273,6 +738,17 @@ exports.Scout9ApiAxiosParamCreator = Scout9ApiAxiosParamCreator;
 const Scout9ApiFp = function (configuration) {
     const localVarAxiosParamCreator = (0, exports.Scout9ApiAxiosParamCreator)(configuration);
     return {
+        /**
+         *
+         * @summary Create a new conversation
+         * @param {ConversationCreateRequest} conversationCreateRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createConversation(conversationCreateRequest, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createConversation(conversationCreateRequest, options);
+            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+        },
         /**
          *
          * @summary Creates a new customer
@@ -293,6 +769,50 @@ const Scout9ApiFp = function (configuration) {
          */
         async createCustomers(createCustomersRequest, options) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.createCustomers(createCustomersRequest, options);
+            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+        },
+        /**
+         *
+         * @summary Create and send message
+         * @param {MessageCreateRequest} messageCreateRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createMessage(messageCreateRequest, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createMessage(messageCreateRequest, options);
+            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+        },
+        /**
+         *
+         * @summary Creates a new scheduled conversation
+         * @param {ScheduleCreateRequest} scheduleCreateRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createSchedule(scheduleCreateRequest, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createSchedule(scheduleCreateRequest, options);
+            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+        },
+        /**
+         *
+         * @summary Creates a new schedule group
+         * @param {ScheduleGroupCreateRequest} scheduleGroupCreateRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createScheduleGroup(scheduleGroupCreateRequest, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createScheduleGroup(scheduleGroupCreateRequest, options);
+            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+        },
+        /**
+         *
+         * @summary Deletes a schedule
+         * @param {string} id Schedule ID to delete schedule
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteConversation(id, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteConversation(id, options);
             return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
         },
         /**
@@ -319,6 +839,50 @@ const Scout9ApiFp = function (configuration) {
         },
         /**
          *
+         * @summary Deletes a schedule
+         * @param {string} id Schedule ID to delete schedule
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteSchedule(id, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteSchedule(id, options);
+            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+        },
+        /**
+         *
+         * @summary Deletes a schedule group
+         * @param {string} id Schedule group ID to delete schedule group
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteScheduleGroup(id, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteScheduleGroup(id, options);
+            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+        },
+        /**
+         *
+         * @summary Generate a message from conversation
+         * @param {GenerateRequest} generateRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async generate(generateRequest, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.generate(generateRequest, options);
+            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+        },
+        /**
+         *
+         * @summary Gets a conversation
+         * @param {string} id Conversation ID to get conversation
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getConversation(id, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getConversation(id, options);
+            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+        },
+        /**
+         *
          * @summary Gets a customer
          * @param {string} id Customer ID to get customer
          * @param {*} [options] Override http request option.
@@ -337,6 +901,50 @@ const Scout9ApiFp = function (configuration) {
          */
         async getCustomers(id, options) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getCustomers(id, options);
+            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+        },
+        /**
+         *
+         * @summary Get all messages from a conversation
+         * @param {string} id Conversation ID to get messages
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getMessage(id, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getMessage(id, options);
+            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+        },
+        /**
+         *
+         * @summary Gets a schedule
+         * @param {string} id Schedule ID to get schedule
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getSchedule(id, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getSchedule(id, options);
+            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+        },
+        /**
+         *
+         * @summary Gets a schedule group
+         * @param {string} id Schedule group ID to get schedule group
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getScheduleGroup(id, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getScheduleGroup(id, options);
+            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+        },
+        /**
+         *
+         * @summary Update a conversation
+         * @param {ConversationUpdateRequest} conversationUpdateRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateConversation(conversationUpdateRequest, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateConversation(conversationUpdateRequest, options);
             return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
         },
         /**
@@ -361,6 +969,28 @@ const Scout9ApiFp = function (configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.updateCustomers(updateCustomerRequest, options);
             return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
         },
+        /**
+         *
+         * @summary Updates a schedule
+         * @param {ScheduleUpdateRequest} scheduleUpdateRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateSchedule(scheduleUpdateRequest, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateSchedule(scheduleUpdateRequest, options);
+            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+        },
+        /**
+         *
+         * @summary Updates a schedule group
+         * @param {ScheduleGroupUpdateRequest} scheduleGroupUpdateRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateScheduleGroup(scheduleGroupUpdateRequest, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateScheduleGroup(scheduleGroupUpdateRequest, options);
+            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+        },
     };
 };
 exports.Scout9ApiFp = Scout9ApiFp;
@@ -371,6 +1001,16 @@ exports.Scout9ApiFp = Scout9ApiFp;
 const Scout9ApiFactory = function (configuration, basePath, axios) {
     const localVarFp = (0, exports.Scout9ApiFp)(configuration);
     return {
+        /**
+         *
+         * @summary Create a new conversation
+         * @param {ConversationCreateRequest} conversationCreateRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createConversation(conversationCreateRequest, options) {
+            return localVarFp.createConversation(conversationCreateRequest, options).then((request) => request(axios, basePath));
+        },
         /**
          *
          * @summary Creates a new customer
@@ -390,6 +1030,46 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
          */
         createCustomers(createCustomersRequest, options) {
             return localVarFp.createCustomers(createCustomersRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
+         * @summary Create and send message
+         * @param {MessageCreateRequest} messageCreateRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createMessage(messageCreateRequest, options) {
+            return localVarFp.createMessage(messageCreateRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
+         * @summary Creates a new scheduled conversation
+         * @param {ScheduleCreateRequest} scheduleCreateRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createSchedule(scheduleCreateRequest, options) {
+            return localVarFp.createSchedule(scheduleCreateRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
+         * @summary Creates a new schedule group
+         * @param {ScheduleGroupCreateRequest} scheduleGroupCreateRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createScheduleGroup(scheduleGroupCreateRequest, options) {
+            return localVarFp.createScheduleGroup(scheduleGroupCreateRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
+         * @summary Deletes a schedule
+         * @param {string} id Schedule ID to delete schedule
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteConversation(id, options) {
+            return localVarFp.deleteConversation(id, options).then((request) => request(axios, basePath));
         },
         /**
          *
@@ -413,6 +1093,46 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
         },
         /**
          *
+         * @summary Deletes a schedule
+         * @param {string} id Schedule ID to delete schedule
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteSchedule(id, options) {
+            return localVarFp.deleteSchedule(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
+         * @summary Deletes a schedule group
+         * @param {string} id Schedule group ID to delete schedule group
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteScheduleGroup(id, options) {
+            return localVarFp.deleteScheduleGroup(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
+         * @summary Generate a message from conversation
+         * @param {GenerateRequest} generateRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        generate(generateRequest, options) {
+            return localVarFp.generate(generateRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
+         * @summary Gets a conversation
+         * @param {string} id Conversation ID to get conversation
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getConversation(id, options) {
+            return localVarFp.getConversation(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
          * @summary Gets a customer
          * @param {string} id Customer ID to get customer
          * @param {*} [options] Override http request option.
@@ -430,6 +1150,46 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
          */
         getCustomers(id, options) {
             return localVarFp.getCustomers(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
+         * @summary Get all messages from a conversation
+         * @param {string} id Conversation ID to get messages
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getMessage(id, options) {
+            return localVarFp.getMessage(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
+         * @summary Gets a schedule
+         * @param {string} id Schedule ID to get schedule
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getSchedule(id, options) {
+            return localVarFp.getSchedule(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
+         * @summary Gets a schedule group
+         * @param {string} id Schedule group ID to get schedule group
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getScheduleGroup(id, options) {
+            return localVarFp.getScheduleGroup(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
+         * @summary Update a conversation
+         * @param {ConversationUpdateRequest} conversationUpdateRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateConversation(conversationUpdateRequest, options) {
+            return localVarFp.updateConversation(conversationUpdateRequest, options).then((request) => request(axios, basePath));
         },
         /**
          *
@@ -451,6 +1211,26 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
         updateCustomers(updateCustomerRequest, options) {
             return localVarFp.updateCustomers(updateCustomerRequest, options).then((request) => request(axios, basePath));
         },
+        /**
+         *
+         * @summary Updates a schedule
+         * @param {ScheduleUpdateRequest} scheduleUpdateRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateSchedule(scheduleUpdateRequest, options) {
+            return localVarFp.updateSchedule(scheduleUpdateRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
+         * @summary Updates a schedule group
+         * @param {ScheduleGroupUpdateRequest} scheduleGroupUpdateRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateScheduleGroup(scheduleGroupUpdateRequest, options) {
+            return localVarFp.updateScheduleGroup(scheduleGroupUpdateRequest, options).then((request) => request(axios, basePath));
+        },
     };
 };
 exports.Scout9ApiFactory = Scout9ApiFactory;
@@ -461,6 +1241,17 @@ exports.Scout9ApiFactory = Scout9ApiFactory;
  * @extends {BaseAPI}
  */
 class Scout9Api extends base_1.BaseAPI {
+    /**
+     *
+     * @summary Create a new conversation
+     * @param {ConversationCreateRequest} conversationCreateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    createConversation(conversationCreateRequest, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).createConversation(conversationCreateRequest, options).then((request) => request(this.axios, this.basePath));
+    }
     /**
      *
      * @summary Creates a new customer
@@ -482,6 +1273,50 @@ class Scout9Api extends base_1.BaseAPI {
      */
     createCustomers(createCustomersRequest, options) {
         return (0, exports.Scout9ApiFp)(this.configuration).createCustomers(createCustomersRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     *
+     * @summary Create and send message
+     * @param {MessageCreateRequest} messageCreateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    createMessage(messageCreateRequest, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).createMessage(messageCreateRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     *
+     * @summary Creates a new scheduled conversation
+     * @param {ScheduleCreateRequest} scheduleCreateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    createSchedule(scheduleCreateRequest, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).createSchedule(scheduleCreateRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     *
+     * @summary Creates a new schedule group
+     * @param {ScheduleGroupCreateRequest} scheduleGroupCreateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    createScheduleGroup(scheduleGroupCreateRequest, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).createScheduleGroup(scheduleGroupCreateRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     *
+     * @summary Deletes a schedule
+     * @param {string} id Schedule ID to delete schedule
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    deleteConversation(id, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).deleteConversation(id, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      *
@@ -507,6 +1342,50 @@ class Scout9Api extends base_1.BaseAPI {
     }
     /**
      *
+     * @summary Deletes a schedule
+     * @param {string} id Schedule ID to delete schedule
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    deleteSchedule(id, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).deleteSchedule(id, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     *
+     * @summary Deletes a schedule group
+     * @param {string} id Schedule group ID to delete schedule group
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    deleteScheduleGroup(id, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).deleteScheduleGroup(id, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     *
+     * @summary Generate a message from conversation
+     * @param {GenerateRequest} generateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    generate(generateRequest, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).generate(generateRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     *
+     * @summary Gets a conversation
+     * @param {string} id Conversation ID to get conversation
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    getConversation(id, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).getConversation(id, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     *
      * @summary Gets a customer
      * @param {string} id Customer ID to get customer
      * @param {*} [options] Override http request option.
@@ -529,6 +1408,50 @@ class Scout9Api extends base_1.BaseAPI {
     }
     /**
      *
+     * @summary Get all messages from a conversation
+     * @param {string} id Conversation ID to get messages
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    getMessage(id, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).getMessage(id, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     *
+     * @summary Gets a schedule
+     * @param {string} id Schedule ID to get schedule
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    getSchedule(id, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).getSchedule(id, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     *
+     * @summary Gets a schedule group
+     * @param {string} id Schedule group ID to get schedule group
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    getScheduleGroup(id, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).getScheduleGroup(id, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     *
+     * @summary Update a conversation
+     * @param {ConversationUpdateRequest} conversationUpdateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    updateConversation(conversationUpdateRequest, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).updateConversation(conversationUpdateRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     *
      * @summary Updates a customer
      * @param {UpdateCustomerRequest} updateCustomerRequest
      * @param {*} [options] Override http request option.
@@ -548,6 +1471,28 @@ class Scout9Api extends base_1.BaseAPI {
      */
     updateCustomers(updateCustomerRequest, options) {
         return (0, exports.Scout9ApiFp)(this.configuration).updateCustomers(updateCustomerRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     *
+     * @summary Updates a schedule
+     * @param {ScheduleUpdateRequest} scheduleUpdateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    updateSchedule(scheduleUpdateRequest, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).updateSchedule(scheduleUpdateRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     *
+     * @summary Updates a schedule group
+     * @param {ScheduleGroupUpdateRequest} scheduleGroupUpdateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    updateScheduleGroup(scheduleGroupUpdateRequest, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).updateScheduleGroup(scheduleGroupUpdateRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 exports.Scout9Api = Scout9Api;

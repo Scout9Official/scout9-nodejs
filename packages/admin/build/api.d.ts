@@ -35,6 +35,267 @@ export interface BlockInfo {
 /**
  *
  * @export
+ * @interface Conversation
+ */
+export interface Conversation {
+    /**
+     * Customer this conversation is with
+     * @type {string}
+     * @memberof Conversation
+     */
+    '$customer'?: string;
+    /**
+     * Business this conversation is with
+     * @type {string}
+     * @memberof Conversation
+     */
+    '$business'?: string;
+    /**
+     * Agent assigned to this conversation
+     * @type {string}
+     * @memberof Conversation
+     */
+    '$agent'?: string;
+    /**
+     * Thread this conversation is in - this determines what context to pull when loading the conversation
+     * @type {string}
+     * @memberof Conversation
+     */
+    '$thread'?: string;
+    /**
+     * Initial contexts to load when starting the conversation
+     * @type {Array<string>}
+     * @memberof Conversation
+     */
+    'initialContexts'?: Array<string>;
+    /**
+     * Environment this conversation is in (phone, web, or email) - this determines which device to send messages to
+     * @type {string}
+     * @memberof Conversation
+     */
+    'environment'?: string;
+}
+/**
+ *
+ * @export
+ * @interface ConversationCreateRequest
+ */
+export interface ConversationCreateRequest {
+    /**
+     * Customer this conversation is with
+     * @type {string}
+     * @memberof ConversationCreateRequest
+     */
+    '$customer'?: string;
+    /**
+     *
+     * @type {any}
+     * @memberof ConversationCreateRequest
+     */
+    '$business'?: any | null;
+    /**
+     * Agent assigned to this conversation
+     * @type {string}
+     * @memberof ConversationCreateRequest
+     */
+    '$agent'?: string;
+    /**
+     * Thread this conversation is in - this determines what context to pull when loading the conversation
+     * @type {string}
+     * @memberof ConversationCreateRequest
+     */
+    '$thread'?: string;
+    /**
+     * Initial contexts to load when starting the conversation
+     * @type {Array<string>}
+     * @memberof ConversationCreateRequest
+     */
+    'initialContexts'?: Array<string>;
+    /**
+     * Environment this conversation is in (phone, web, or email) - this determines which device to send messages to
+     * @type {string}
+     * @memberof ConversationCreateRequest
+     */
+    'environment'?: string;
+}
+/**
+ *
+ * @export
+ * @interface ConversationCreateRequestAllOf
+ */
+export interface ConversationCreateRequestAllOf {
+    /**
+     *
+     * @type {any}
+     * @memberof ConversationCreateRequestAllOf
+     */
+    '$business'?: any | null;
+}
+/**
+ *
+ * @export
+ * @interface ConversationCreateResponse
+ */
+export interface ConversationCreateResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof ConversationCreateResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof ConversationCreateResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
+ * @interface ConversationGetResponse
+ */
+export interface ConversationGetResponse {
+    /**
+     * Customer this conversation is with
+     * @type {string}
+     * @memberof ConversationGetResponse
+     */
+    '$customer'?: string;
+    /**
+     * Business this conversation is with
+     * @type {string}
+     * @memberof ConversationGetResponse
+     */
+    '$business'?: string;
+    /**
+     * Agent assigned to this conversation
+     * @type {string}
+     * @memberof ConversationGetResponse
+     */
+    '$agent'?: string;
+    /**
+     * Thread this conversation is in - this determines what context to pull when loading the conversation
+     * @type {string}
+     * @memberof ConversationGetResponse
+     */
+    '$thread'?: string;
+    /**
+     * Initial contexts to load when starting the conversation
+     * @type {Array<string>}
+     * @memberof ConversationGetResponse
+     */
+    'initialContexts'?: Array<string>;
+    /**
+     * Environment this conversation is in (phone, web, or email) - this determines which device to send messages to
+     * @type {string}
+     * @memberof ConversationGetResponse
+     */
+    'environment'?: string;
+}
+/**
+ *
+ * @export
+ * @interface ConversationRemoveResponse
+ */
+export interface ConversationRemoveResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof ConversationRemoveResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof ConversationRemoveResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
+ * @interface ConversationUpdateRequest
+ */
+export interface ConversationUpdateRequest {
+    /**
+     * Customer this conversation is with
+     * @type {string}
+     * @memberof ConversationUpdateRequest
+     */
+    '$customer'?: string;
+    /**
+     * Business this conversation is with
+     * @type {string}
+     * @memberof ConversationUpdateRequest
+     */
+    '$business'?: string;
+    /**
+     * Agent assigned to this conversation
+     * @type {string}
+     * @memberof ConversationUpdateRequest
+     */
+    '$agent'?: string;
+    /**
+     * Thread this conversation is in - this determines what context to pull when loading the conversation
+     * @type {string}
+     * @memberof ConversationUpdateRequest
+     */
+    '$thread'?: string;
+    /**
+     * Initial contexts to load when starting the conversation
+     * @type {Array<string>}
+     * @memberof ConversationUpdateRequest
+     */
+    'initialContexts'?: Array<string>;
+    /**
+     * Environment this conversation is in (phone, web, or email) - this determines which device to send messages to
+     * @type {string}
+     * @memberof ConversationUpdateRequest
+     */
+    'environment'?: string;
+    /**
+     * The ID of the conversation to update
+     * @type {string}
+     * @memberof ConversationUpdateRequest
+     */
+    'id'?: string;
+}
+/**
+ *
+ * @export
+ * @interface ConversationUpdateRequestAllOf
+ */
+export interface ConversationUpdateRequestAllOf {
+    /**
+     * The ID of the conversation to update
+     * @type {string}
+     * @memberof ConversationUpdateRequestAllOf
+     */
+    'id'?: string;
+}
+/**
+ *
+ * @export
+ * @interface ConversationUpdateResponse
+ */
+export interface ConversationUpdateResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof ConversationUpdateResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof ConversationUpdateResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
  * @interface CreateCustomerRequest
  */
 export interface CreateCustomerRequest {
@@ -518,6 +779,50 @@ export interface ErrorResponse {
 /**
  *
  * @export
+ * @interface GenerateRequest
+ */
+export interface GenerateRequest {
+    /**
+     * Conversation ID to generate message from
+     * @type {string}
+     * @memberof GenerateRequest
+     */
+    'convo'?: string;
+}
+/**
+ *
+ * @export
+ * @interface GenerateResponse
+ */
+export interface GenerateResponse {
+    /**
+     * The role of the message (customer, agent, or business)
+     * @type {string}
+     * @memberof GenerateResponse
+     */
+    'role'?: string;
+    /**
+     * The content of the message
+     * @type {string}
+     * @memberof GenerateResponse
+     */
+    'content'?: string;
+    /**
+     * The name of the sender
+     * @type {string}
+     * @memberof GenerateResponse
+     */
+    'name'?: string;
+    /**
+     * The time the message was sent
+     * @type {string}
+     * @memberof GenerateResponse
+     */
+    'time'?: string;
+}
+/**
+ *
+ * @export
  * @interface GetCustomerResponse
  */
 export interface GetCustomerResponse {
@@ -645,6 +950,106 @@ export interface GetCustomerResponse {
 /**
  *
  * @export
+ * @interface Message
+ */
+export interface Message {
+    /**
+     * The role of the message (customer, agent, or business)
+     * @type {string}
+     * @memberof Message
+     */
+    'role'?: string;
+    /**
+     * The content of the message
+     * @type {string}
+     * @memberof Message
+     */
+    'content'?: string;
+    /**
+     * The name of the sender
+     * @type {string}
+     * @memberof Message
+     */
+    'name'?: string;
+    /**
+     * The time the message was sent
+     * @type {string}
+     * @memberof Message
+     */
+    'time'?: string;
+}
+/**
+ *
+ * @export
+ * @interface MessageCreateRequest
+ */
+export interface MessageCreateRequest {
+    /**
+     * Conveersation ID this belonds to
+     * @type {string}
+     * @memberof MessageCreateRequest
+     */
+    'convo'?: string;
+    /**
+     *
+     * @type {MessageGetResponseInner}
+     * @memberof MessageCreateRequest
+     */
+    'message'?: MessageGetResponseInner;
+}
+/**
+ *
+ * @export
+ * @interface MessageCreateResponse
+ */
+export interface MessageCreateResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof MessageCreateResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof MessageCreateResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
+ * @interface MessageGetResponseInner
+ */
+export interface MessageGetResponseInner {
+    /**
+     * The role of the message (customer, agent, or business)
+     * @type {string}
+     * @memberof MessageGetResponseInner
+     */
+    'role'?: string;
+    /**
+     * The content of the message
+     * @type {string}
+     * @memberof MessageGetResponseInner
+     */
+    'content'?: string;
+    /**
+     * The name of the sender
+     * @type {string}
+     * @memberof MessageGetResponseInner
+     */
+    'name'?: string;
+    /**
+     * The time the message was sent
+     * @type {string}
+     * @memberof MessageGetResponseInner
+     */
+    'time'?: string;
+}
+/**
+ *
+ * @export
  * @interface ModelError
  */
 export interface ModelError {
@@ -691,6 +1096,865 @@ export interface OperationResponse {
      * @memberof OperationResponse
      */
     'error'?: Error;
+}
+/**
+ *
+ * @export
+ * @interface ScheduleCreateRequest
+ */
+export interface ScheduleCreateRequest {
+    /**
+     * Customer this conversation is with
+     * @type {string}
+     * @memberof ScheduleCreateRequest
+     */
+    '$customer'?: string;
+    /**
+     *
+     * @type {any}
+     * @memberof ScheduleCreateRequest
+     */
+    '$business'?: any | null;
+    /**
+     * Agent assigned to this conversation
+     * @type {string}
+     * @memberof ScheduleCreateRequest
+     */
+    '$agent'?: string;
+    /**
+     * Thread this conversation is in - this determines what context to pull when loading the conversation
+     * @type {string}
+     * @memberof ScheduleCreateRequest
+     */
+    '$thread'?: string;
+    /**
+     * Initial contexts to load when starting the conversation
+     * @type {Array<string>}
+     * @memberof ScheduleCreateRequest
+     */
+    'initialContexts'?: Array<string>;
+    /**
+     * Environment this conversation is in (phone, web, or email) - this determines which device to send messages to
+     * @type {string}
+     * @memberof ScheduleCreateRequest
+     */
+    'environment'?: string;
+    /**
+     * ISO 8601 datetime string
+     * @type {string}
+     * @memberof ScheduleCreateRequest
+     */
+    'scheduled'?: string;
+    /**
+     * The initial message to send to the customer
+     * @type {string}
+     * @memberof ScheduleCreateRequest
+     */
+    'initialMessage'?: string;
+    /**
+     * The initial message to send to the customer in HTML
+     * @type {string}
+     * @memberof ScheduleCreateRequest
+     */
+    'initialMessageHtml'?: string | null;
+    /**
+     * Whether the initial message has been sent
+     * @type {boolean}
+     * @memberof ScheduleCreateRequest
+     */
+    'sent'?: boolean;
+    /**
+     * Group this conversation is in
+     * @type {string}
+     * @memberof ScheduleCreateRequest
+     */
+    '$group'?: string;
+}
+/**
+ *
+ * @export
+ * @interface ScheduleCreateResponse
+ */
+export interface ScheduleCreateResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof ScheduleCreateResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof ScheduleCreateResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
+ * @interface ScheduleGetResponse
+ */
+export interface ScheduleGetResponse {
+    /**
+     * Customer this conversation is with
+     * @type {string}
+     * @memberof ScheduleGetResponse
+     */
+    '$customer'?: string;
+    /**
+     * Business this conversation is with
+     * @type {string}
+     * @memberof ScheduleGetResponse
+     */
+    '$business'?: string;
+    /**
+     * Agent assigned to this conversation
+     * @type {string}
+     * @memberof ScheduleGetResponse
+     */
+    '$agent'?: string;
+    /**
+     * Thread this conversation is in - this determines what context to pull when loading the conversation
+     * @type {string}
+     * @memberof ScheduleGetResponse
+     */
+    '$thread'?: string;
+    /**
+     * Initial contexts to load when starting the conversation
+     * @type {Array<string>}
+     * @memberof ScheduleGetResponse
+     */
+    'initialContexts'?: Array<string>;
+    /**
+     * Environment this conversation is in (phone, web, or email) - this determines which device to send messages to
+     * @type {string}
+     * @memberof ScheduleGetResponse
+     */
+    'environment'?: string;
+    /**
+     * ISO 8601 datetime string
+     * @type {string}
+     * @memberof ScheduleGetResponse
+     */
+    'scheduled'?: string;
+    /**
+     * The initial message to send to the customer
+     * @type {string}
+     * @memberof ScheduleGetResponse
+     */
+    'initialMessage'?: string;
+    /**
+     * The initial message to send to the customer in HTML
+     * @type {string}
+     * @memberof ScheduleGetResponse
+     */
+    'initialMessageHtml'?: string | null;
+    /**
+     * Whether the initial message has been sent
+     * @type {boolean}
+     * @memberof ScheduleGetResponse
+     */
+    'sent'?: boolean;
+    /**
+     * Group this conversation is in
+     * @type {string}
+     * @memberof ScheduleGetResponse
+     */
+    '$group'?: string;
+}
+/**
+ *
+ * @export
+ * @interface ScheduleGroupCreateRequest
+ */
+export interface ScheduleGroupCreateRequest {
+    /**
+     * Customer this conversation is with
+     * @type {string}
+     * @memberof ScheduleGroupCreateRequest
+     */
+    '$customer'?: string;
+    /**
+     *
+     * @type {any}
+     * @memberof ScheduleGroupCreateRequest
+     */
+    '$business'?: any | null;
+    /**
+     * Agent assigned to this conversation
+     * @type {string}
+     * @memberof ScheduleGroupCreateRequest
+     */
+    '$agent'?: string;
+    /**
+     * Thread this conversation is in - this determines what context to pull when loading the conversation
+     * @type {string}
+     * @memberof ScheduleGroupCreateRequest
+     */
+    '$thread'?: string;
+    /**
+     * Initial contexts to load when starting the conversation
+     * @type {Array<string>}
+     * @memberof ScheduleGroupCreateRequest
+     */
+    'initialContexts'?: Array<string>;
+    /**
+     * Environment this conversation is in (phone, web, or email) - this determines which device to send messages to
+     * @type {string}
+     * @memberof ScheduleGroupCreateRequest
+     */
+    'environment'?: string;
+    /**
+     * ISO 8601 datetime string
+     * @type {string}
+     * @memberof ScheduleGroupCreateRequest
+     */
+    'scheduled'?: string;
+    /**
+     * The initial message to send to the customer
+     * @type {string}
+     * @memberof ScheduleGroupCreateRequest
+     */
+    'initialMessage'?: string;
+    /**
+     * The initial message to send to the customer in HTML
+     * @type {string}
+     * @memberof ScheduleGroupCreateRequest
+     */
+    'initialMessageHtml'?: string | null;
+    /**
+     * Whether the initial message has been sent
+     * @type {boolean}
+     * @memberof ScheduleGroupCreateRequest
+     */
+    'sent'?: boolean;
+    /**
+     * Group this conversation is in
+     * @type {string}
+     * @memberof ScheduleGroupCreateRequest
+     */
+    '$group'?: string;
+    /**
+     * The delay in miliseconds between each conversation
+     * @type {number}
+     * @memberof ScheduleGroupCreateRequest
+     */
+    'delay'?: number;
+    /**
+     * Customers in this group
+     * @type {Array<ScheduledConversationGroupAllOfCustomers>}
+     * @memberof ScheduleGroupCreateRequest
+     */
+    'customers'?: Array<ScheduledConversationGroupAllOfCustomers>;
+}
+/**
+ *
+ * @export
+ * @interface ScheduleGroupCreateResponse
+ */
+export interface ScheduleGroupCreateResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof ScheduleGroupCreateResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof ScheduleGroupCreateResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
+ * @interface ScheduleGroupGetResponse
+ */
+export interface ScheduleGroupGetResponse {
+    /**
+     * Customer this conversation is with
+     * @type {string}
+     * @memberof ScheduleGroupGetResponse
+     */
+    '$customer'?: string;
+    /**
+     * Business this conversation is with
+     * @type {string}
+     * @memberof ScheduleGroupGetResponse
+     */
+    '$business'?: string;
+    /**
+     * Agent assigned to this conversation
+     * @type {string}
+     * @memberof ScheduleGroupGetResponse
+     */
+    '$agent'?: string;
+    /**
+     * Thread this conversation is in - this determines what context to pull when loading the conversation
+     * @type {string}
+     * @memberof ScheduleGroupGetResponse
+     */
+    '$thread'?: string;
+    /**
+     * Initial contexts to load when starting the conversation
+     * @type {Array<string>}
+     * @memberof ScheduleGroupGetResponse
+     */
+    'initialContexts'?: Array<string>;
+    /**
+     * Environment this conversation is in (phone, web, or email) - this determines which device to send messages to
+     * @type {string}
+     * @memberof ScheduleGroupGetResponse
+     */
+    'environment'?: string;
+    /**
+     * ISO 8601 datetime string
+     * @type {string}
+     * @memberof ScheduleGroupGetResponse
+     */
+    'scheduled'?: string;
+    /**
+     * The initial message to send to the customer
+     * @type {string}
+     * @memberof ScheduleGroupGetResponse
+     */
+    'initialMessage'?: string;
+    /**
+     * The initial message to send to the customer in HTML
+     * @type {string}
+     * @memberof ScheduleGroupGetResponse
+     */
+    'initialMessageHtml'?: string | null;
+    /**
+     * Whether the initial message has been sent
+     * @type {boolean}
+     * @memberof ScheduleGroupGetResponse
+     */
+    'sent'?: boolean;
+    /**
+     * Group this conversation is in
+     * @type {string}
+     * @memberof ScheduleGroupGetResponse
+     */
+    '$group'?: string;
+    /**
+     * The delay in miliseconds between each conversation
+     * @type {number}
+     * @memberof ScheduleGroupGetResponse
+     */
+    'delay'?: number;
+    /**
+     * Customers in this group
+     * @type {Array<ScheduledConversationGroupAllOfCustomers>}
+     * @memberof ScheduleGroupGetResponse
+     */
+    'customers'?: Array<ScheduledConversationGroupAllOfCustomers>;
+}
+/**
+ *
+ * @export
+ * @interface ScheduleGroupRemoveResponse
+ */
+export interface ScheduleGroupRemoveResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof ScheduleGroupRemoveResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof ScheduleGroupRemoveResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
+ * @interface ScheduleGroupUpdateRequest
+ */
+export interface ScheduleGroupUpdateRequest {
+    /**
+     * Customer this conversation is with
+     * @type {string}
+     * @memberof ScheduleGroupUpdateRequest
+     */
+    '$customer'?: string;
+    /**
+     * Business this conversation is with
+     * @type {string}
+     * @memberof ScheduleGroupUpdateRequest
+     */
+    '$business'?: string;
+    /**
+     * Agent assigned to this conversation
+     * @type {string}
+     * @memberof ScheduleGroupUpdateRequest
+     */
+    '$agent'?: string;
+    /**
+     * Thread this conversation is in - this determines what context to pull when loading the conversation
+     * @type {string}
+     * @memberof ScheduleGroupUpdateRequest
+     */
+    '$thread'?: string;
+    /**
+     * Initial contexts to load when starting the conversation
+     * @type {Array<string>}
+     * @memberof ScheduleGroupUpdateRequest
+     */
+    'initialContexts'?: Array<string>;
+    /**
+     * Environment this conversation is in (phone, web, or email) - this determines which device to send messages to
+     * @type {string}
+     * @memberof ScheduleGroupUpdateRequest
+     */
+    'environment'?: string;
+    /**
+     * ISO 8601 datetime string
+     * @type {string}
+     * @memberof ScheduleGroupUpdateRequest
+     */
+    'scheduled'?: string;
+    /**
+     * The initial message to send to the customer
+     * @type {string}
+     * @memberof ScheduleGroupUpdateRequest
+     */
+    'initialMessage'?: string;
+    /**
+     * The initial message to send to the customer in HTML
+     * @type {string}
+     * @memberof ScheduleGroupUpdateRequest
+     */
+    'initialMessageHtml'?: string | null;
+    /**
+     * Whether the initial message has been sent
+     * @type {boolean}
+     * @memberof ScheduleGroupUpdateRequest
+     */
+    'sent'?: boolean;
+    /**
+     * Group this conversation is in
+     * @type {string}
+     * @memberof ScheduleGroupUpdateRequest
+     */
+    '$group'?: string;
+    /**
+     * The delay in miliseconds between each conversation
+     * @type {number}
+     * @memberof ScheduleGroupUpdateRequest
+     */
+    'delay'?: number;
+    /**
+     * Customers in this group
+     * @type {Array<ScheduledConversationGroupAllOfCustomers>}
+     * @memberof ScheduleGroupUpdateRequest
+     */
+    'customers'?: Array<ScheduledConversationGroupAllOfCustomers>;
+    /**
+     * The ID of the scheduled conversation group to update
+     * @type {string}
+     * @memberof ScheduleGroupUpdateRequest
+     */
+    'id'?: string;
+}
+/**
+ *
+ * @export
+ * @interface ScheduleGroupUpdateRequestAllOf
+ */
+export interface ScheduleGroupUpdateRequestAllOf {
+    /**
+     * The ID of the scheduled conversation group to update
+     * @type {string}
+     * @memberof ScheduleGroupUpdateRequestAllOf
+     */
+    'id'?: string;
+}
+/**
+ *
+ * @export
+ * @interface ScheduleGroupUpdateResponse
+ */
+export interface ScheduleGroupUpdateResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof ScheduleGroupUpdateResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof ScheduleGroupUpdateResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
+ * @interface ScheduleRemoveResponse
+ */
+export interface ScheduleRemoveResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof ScheduleRemoveResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof ScheduleRemoveResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
+ * @interface ScheduleUpdateRequest
+ */
+export interface ScheduleUpdateRequest {
+    /**
+     * Customer this conversation is with
+     * @type {string}
+     * @memberof ScheduleUpdateRequest
+     */
+    '$customer'?: string;
+    /**
+     * Business this conversation is with
+     * @type {string}
+     * @memberof ScheduleUpdateRequest
+     */
+    '$business'?: string;
+    /**
+     * Agent assigned to this conversation
+     * @type {string}
+     * @memberof ScheduleUpdateRequest
+     */
+    '$agent'?: string;
+    /**
+     * Thread this conversation is in - this determines what context to pull when loading the conversation
+     * @type {string}
+     * @memberof ScheduleUpdateRequest
+     */
+    '$thread'?: string;
+    /**
+     * Initial contexts to load when starting the conversation
+     * @type {Array<string>}
+     * @memberof ScheduleUpdateRequest
+     */
+    'initialContexts'?: Array<string>;
+    /**
+     * Environment this conversation is in (phone, web, or email) - this determines which device to send messages to
+     * @type {string}
+     * @memberof ScheduleUpdateRequest
+     */
+    'environment'?: string;
+    /**
+     * ISO 8601 datetime string
+     * @type {string}
+     * @memberof ScheduleUpdateRequest
+     */
+    'scheduled'?: string;
+    /**
+     * The initial message to send to the customer
+     * @type {string}
+     * @memberof ScheduleUpdateRequest
+     */
+    'initialMessage'?: string;
+    /**
+     * The initial message to send to the customer in HTML
+     * @type {string}
+     * @memberof ScheduleUpdateRequest
+     */
+    'initialMessageHtml'?: string | null;
+    /**
+     * Whether the initial message has been sent
+     * @type {boolean}
+     * @memberof ScheduleUpdateRequest
+     */
+    'sent'?: boolean;
+    /**
+     * Group this conversation is in
+     * @type {string}
+     * @memberof ScheduleUpdateRequest
+     */
+    '$group'?: string;
+    /**
+     * The ID of the scheduled conversation to update
+     * @type {string}
+     * @memberof ScheduleUpdateRequest
+     */
+    'id'?: string;
+}
+/**
+ *
+ * @export
+ * @interface ScheduleUpdateRequestAllOf
+ */
+export interface ScheduleUpdateRequestAllOf {
+    /**
+     * The ID of the scheduled conversation to update
+     * @type {string}
+     * @memberof ScheduleUpdateRequestAllOf
+     */
+    'id'?: string;
+}
+/**
+ *
+ * @export
+ * @interface ScheduleUpdateResponse
+ */
+export interface ScheduleUpdateResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof ScheduleUpdateResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof ScheduleUpdateResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
+ * @interface ScheduledConversation
+ */
+export interface ScheduledConversation {
+    /**
+     * Customer this conversation is with
+     * @type {string}
+     * @memberof ScheduledConversation
+     */
+    '$customer'?: string;
+    /**
+     * Business this conversation is with
+     * @type {string}
+     * @memberof ScheduledConversation
+     */
+    '$business'?: string;
+    /**
+     * Agent assigned to this conversation
+     * @type {string}
+     * @memberof ScheduledConversation
+     */
+    '$agent'?: string;
+    /**
+     * Thread this conversation is in - this determines what context to pull when loading the conversation
+     * @type {string}
+     * @memberof ScheduledConversation
+     */
+    '$thread'?: string;
+    /**
+     * Initial contexts to load when starting the conversation
+     * @type {Array<string>}
+     * @memberof ScheduledConversation
+     */
+    'initialContexts'?: Array<string>;
+    /**
+     * Environment this conversation is in (phone, web, or email) - this determines which device to send messages to
+     * @type {string}
+     * @memberof ScheduledConversation
+     */
+    'environment'?: string;
+    /**
+     * ISO 8601 datetime string
+     * @type {string}
+     * @memberof ScheduledConversation
+     */
+    'scheduled'?: string;
+    /**
+     * The initial message to send to the customer
+     * @type {string}
+     * @memberof ScheduledConversation
+     */
+    'initialMessage'?: string;
+    /**
+     * The initial message to send to the customer in HTML
+     * @type {string}
+     * @memberof ScheduledConversation
+     */
+    'initialMessageHtml'?: string | null;
+    /**
+     * Whether the initial message has been sent
+     * @type {boolean}
+     * @memberof ScheduledConversation
+     */
+    'sent'?: boolean;
+    /**
+     * Group this conversation is in
+     * @type {string}
+     * @memberof ScheduledConversation
+     */
+    '$group'?: string;
+}
+/**
+ *
+ * @export
+ * @interface ScheduledConversationAllOf
+ */
+export interface ScheduledConversationAllOf {
+    /**
+     * ISO 8601 datetime string
+     * @type {string}
+     * @memberof ScheduledConversationAllOf
+     */
+    'scheduled'?: string;
+    /**
+     * The initial message to send to the customer
+     * @type {string}
+     * @memberof ScheduledConversationAllOf
+     */
+    'initialMessage'?: string;
+    /**
+     * The initial message to send to the customer in HTML
+     * @type {string}
+     * @memberof ScheduledConversationAllOf
+     */
+    'initialMessageHtml'?: string | null;
+    /**
+     * Whether the initial message has been sent
+     * @type {boolean}
+     * @memberof ScheduledConversationAllOf
+     */
+    'sent'?: boolean;
+    /**
+     * Group this conversation is in
+     * @type {string}
+     * @memberof ScheduledConversationAllOf
+     */
+    '$group'?: string;
+}
+/**
+ *
+ * @export
+ * @interface ScheduledConversationGroup
+ */
+export interface ScheduledConversationGroup {
+    /**
+     * Customer this conversation is with
+     * @type {string}
+     * @memberof ScheduledConversationGroup
+     */
+    '$customer'?: string;
+    /**
+     * Business this conversation is with
+     * @type {string}
+     * @memberof ScheduledConversationGroup
+     */
+    '$business'?: string;
+    /**
+     * Agent assigned to this conversation
+     * @type {string}
+     * @memberof ScheduledConversationGroup
+     */
+    '$agent'?: string;
+    /**
+     * Thread this conversation is in - this determines what context to pull when loading the conversation
+     * @type {string}
+     * @memberof ScheduledConversationGroup
+     */
+    '$thread'?: string;
+    /**
+     * Initial contexts to load when starting the conversation
+     * @type {Array<string>}
+     * @memberof ScheduledConversationGroup
+     */
+    'initialContexts'?: Array<string>;
+    /**
+     * Environment this conversation is in (phone, web, or email) - this determines which device to send messages to
+     * @type {string}
+     * @memberof ScheduledConversationGroup
+     */
+    'environment'?: string;
+    /**
+     * ISO 8601 datetime string
+     * @type {string}
+     * @memberof ScheduledConversationGroup
+     */
+    'scheduled'?: string;
+    /**
+     * The initial message to send to the customer
+     * @type {string}
+     * @memberof ScheduledConversationGroup
+     */
+    'initialMessage'?: string;
+    /**
+     * The initial message to send to the customer in HTML
+     * @type {string}
+     * @memberof ScheduledConversationGroup
+     */
+    'initialMessageHtml'?: string | null;
+    /**
+     * Whether the initial message has been sent
+     * @type {boolean}
+     * @memberof ScheduledConversationGroup
+     */
+    'sent'?: boolean;
+    /**
+     * Group this conversation is in
+     * @type {string}
+     * @memberof ScheduledConversationGroup
+     */
+    '$group'?: string;
+    /**
+     * The delay in miliseconds between each conversation
+     * @type {number}
+     * @memberof ScheduledConversationGroup
+     */
+    'delay'?: number;
+    /**
+     * Customers in this group
+     * @type {Array<ScheduledConversationGroupAllOfCustomers>}
+     * @memberof ScheduledConversationGroup
+     */
+    'customers'?: Array<ScheduledConversationGroupAllOfCustomers>;
+}
+/**
+ *
+ * @export
+ * @interface ScheduledConversationGroupAllOf
+ */
+export interface ScheduledConversationGroupAllOf {
+    /**
+     * The delay in miliseconds between each conversation
+     * @type {number}
+     * @memberof ScheduledConversationGroupAllOf
+     */
+    'delay'?: number;
+    /**
+     * Customers in this group
+     * @type {Array<ScheduledConversationGroupAllOfCustomers>}
+     * @memberof ScheduledConversationGroupAllOf
+     */
+    'customers'?: Array<ScheduledConversationGroupAllOfCustomers>;
+}
+/**
+ *
+ * @export
+ * @interface ScheduledConversationGroupAllOfCustomers
+ */
+export interface ScheduledConversationGroupAllOfCustomers {
+    /**
+     * Environment this conversation is in (phone, web, or email) - this determines which device to send messages to
+     * @type {string}
+     * @memberof ScheduledConversationGroupAllOfCustomers
+     */
+    'environment'?: string;
+    /**
+     * Customer ID
+     * @type {string}
+     * @memberof ScheduledConversationGroupAllOfCustomers
+     */
+    'id'?: string;
 }
 /**
  *
@@ -877,6 +2141,14 @@ export interface UpdateCustomersResponse {
 export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration) => {
     /**
      *
+     * @summary Create a new conversation
+     * @param {ConversationCreateRequest} conversationCreateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createConversation: (conversationCreateRequest: ConversationCreateRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
      * @summary Creates a new customer
      * @param {CreateCustomerRequest} createCustomerRequest
      * @param {*} [options] Override http request option.
@@ -891,6 +2163,38 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
      * @throws {RequiredError}
      */
     createCustomers: (createCustomersRequest: CreateCustomersRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Create and send message
+     * @param {MessageCreateRequest} messageCreateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createMessage: (messageCreateRequest: MessageCreateRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Creates a new scheduled conversation
+     * @param {ScheduleCreateRequest} scheduleCreateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createSchedule: (scheduleCreateRequest: ScheduleCreateRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Creates a new schedule group
+     * @param {ScheduleGroupCreateRequest} scheduleGroupCreateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createScheduleGroup: (scheduleGroupCreateRequest: ScheduleGroupCreateRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Deletes a schedule
+     * @param {string} id Schedule ID to delete schedule
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteConversation: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
      * @summary Deletes a customer
@@ -909,6 +2213,38 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
     deleteCustomers: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
+     * @summary Deletes a schedule
+     * @param {string} id Schedule ID to delete schedule
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteSchedule: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Deletes a schedule group
+     * @param {string} id Schedule group ID to delete schedule group
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteScheduleGroup: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Generate a message from conversation
+     * @param {GenerateRequest} generateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    generate: (generateRequest: GenerateRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Gets a conversation
+     * @param {string} id Conversation ID to get conversation
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getConversation: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
      * @summary Gets a customer
      * @param {string} id Customer ID to get customer
      * @param {*} [options] Override http request option.
@@ -925,6 +2261,38 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
     getCustomers: (id?: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
+     * @summary Get all messages from a conversation
+     * @param {string} id Conversation ID to get messages
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getMessage: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Gets a schedule
+     * @param {string} id Schedule ID to get schedule
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getSchedule: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Gets a schedule group
+     * @param {string} id Schedule group ID to get schedule group
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getScheduleGroup: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Update a conversation
+     * @param {ConversationUpdateRequest} conversationUpdateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateConversation: (conversationUpdateRequest: ConversationUpdateRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
      * @summary Updates a customer
      * @param {UpdateCustomerRequest} updateCustomerRequest
      * @param {*} [options] Override http request option.
@@ -939,12 +2307,36 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
      * @throws {RequiredError}
      */
     updateCustomers: (updateCustomerRequest: UpdateCustomerRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Updates a schedule
+     * @param {ScheduleUpdateRequest} scheduleUpdateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateSchedule: (scheduleUpdateRequest: ScheduleUpdateRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Updates a schedule group
+     * @param {ScheduleGroupUpdateRequest} scheduleGroupUpdateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateScheduleGroup: (scheduleGroupUpdateRequest: ScheduleGroupUpdateRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
 };
 /**
  * Scout9Api - functional programming interface
  * @export
  */
 export declare const Scout9ApiFp: (configuration?: Configuration) => {
+    /**
+     *
+     * @summary Create a new conversation
+     * @param {ConversationCreateRequest} conversationCreateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createConversation(conversationCreateRequest: ConversationCreateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ConversationCreateResponse>>;
     /**
      *
      * @summary Creates a new customer
@@ -963,6 +2355,38 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
     createCustomers(createCustomersRequest: CreateCustomersRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateCustomersResponse>>;
     /**
      *
+     * @summary Create and send message
+     * @param {MessageCreateRequest} messageCreateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createMessage(messageCreateRequest: MessageCreateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<MessageCreateResponse>>;
+    /**
+     *
+     * @summary Creates a new scheduled conversation
+     * @param {ScheduleCreateRequest} scheduleCreateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createSchedule(scheduleCreateRequest: ScheduleCreateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleCreateResponse>>;
+    /**
+     *
+     * @summary Creates a new schedule group
+     * @param {ScheduleGroupCreateRequest} scheduleGroupCreateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createScheduleGroup(scheduleGroupCreateRequest: ScheduleGroupCreateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleGroupCreateResponse>>;
+    /**
+     *
+     * @summary Deletes a schedule
+     * @param {string} id Schedule ID to delete schedule
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteConversation(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ConversationRemoveResponse>>;
+    /**
+     *
      * @summary Deletes a customer
      * @param {string} id Customer ID to delete customer
      * @param {*} [options] Override http request option.
@@ -977,6 +2401,38 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
      * @throws {RequiredError}
      */
     deleteCustomers(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteCustomersResponse>>;
+    /**
+     *
+     * @summary Deletes a schedule
+     * @param {string} id Schedule ID to delete schedule
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteSchedule(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleRemoveResponse>>;
+    /**
+     *
+     * @summary Deletes a schedule group
+     * @param {string} id Schedule group ID to delete schedule group
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteScheduleGroup(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleGroupRemoveResponse>>;
+    /**
+     *
+     * @summary Generate a message from conversation
+     * @param {GenerateRequest} generateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    generate(generateRequest: GenerateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GenerateResponse>>;
+    /**
+     *
+     * @summary Gets a conversation
+     * @param {string} id Conversation ID to get conversation
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getConversation(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ConversationGetResponse>>;
     /**
      *
      * @summary Gets a customer
@@ -995,6 +2451,38 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
     getCustomers(id?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Customer>>>;
     /**
      *
+     * @summary Get all messages from a conversation
+     * @param {string} id Conversation ID to get messages
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getMessage(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<MessageGetResponseInner>>>;
+    /**
+     *
+     * @summary Gets a schedule
+     * @param {string} id Schedule ID to get schedule
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getSchedule(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleCreateResponse>>;
+    /**
+     *
+     * @summary Gets a schedule group
+     * @param {string} id Schedule group ID to get schedule group
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getScheduleGroup(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleGroupGetResponse>>;
+    /**
+     *
+     * @summary Update a conversation
+     * @param {ConversationUpdateRequest} conversationUpdateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateConversation(conversationUpdateRequest: ConversationUpdateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ConversationUpdateResponse>>;
+    /**
+     *
      * @summary Updates a customer
      * @param {UpdateCustomerRequest} updateCustomerRequest
      * @param {*} [options] Override http request option.
@@ -1009,12 +2497,36 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
      * @throws {RequiredError}
      */
     updateCustomers(updateCustomerRequest: UpdateCustomerRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateCustomersResponse>>;
+    /**
+     *
+     * @summary Updates a schedule
+     * @param {ScheduleUpdateRequest} scheduleUpdateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateSchedule(scheduleUpdateRequest: ScheduleUpdateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleUpdateResponse>>;
+    /**
+     *
+     * @summary Updates a schedule group
+     * @param {ScheduleGroupUpdateRequest} scheduleGroupUpdateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateScheduleGroup(scheduleGroupUpdateRequest: ScheduleGroupUpdateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleGroupUpdateResponse>>;
 };
 /**
  * Scout9Api - factory interface
  * @export
  */
 export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) => {
+    /**
+     *
+     * @summary Create a new conversation
+     * @param {ConversationCreateRequest} conversationCreateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createConversation(conversationCreateRequest: ConversationCreateRequest, options?: any): AxiosPromise<ConversationCreateResponse>;
     /**
      *
      * @summary Creates a new customer
@@ -1033,6 +2545,38 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
     createCustomers(createCustomersRequest: CreateCustomersRequest, options?: any): AxiosPromise<CreateCustomersResponse>;
     /**
      *
+     * @summary Create and send message
+     * @param {MessageCreateRequest} messageCreateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createMessage(messageCreateRequest: MessageCreateRequest, options?: any): AxiosPromise<MessageCreateResponse>;
+    /**
+     *
+     * @summary Creates a new scheduled conversation
+     * @param {ScheduleCreateRequest} scheduleCreateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createSchedule(scheduleCreateRequest: ScheduleCreateRequest, options?: any): AxiosPromise<ScheduleCreateResponse>;
+    /**
+     *
+     * @summary Creates a new schedule group
+     * @param {ScheduleGroupCreateRequest} scheduleGroupCreateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createScheduleGroup(scheduleGroupCreateRequest: ScheduleGroupCreateRequest, options?: any): AxiosPromise<ScheduleGroupCreateResponse>;
+    /**
+     *
+     * @summary Deletes a schedule
+     * @param {string} id Schedule ID to delete schedule
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteConversation(id: string, options?: any): AxiosPromise<ConversationRemoveResponse>;
+    /**
+     *
      * @summary Deletes a customer
      * @param {string} id Customer ID to delete customer
      * @param {*} [options] Override http request option.
@@ -1047,6 +2591,38 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
      * @throws {RequiredError}
      */
     deleteCustomers(id: string, options?: any): AxiosPromise<DeleteCustomersResponse>;
+    /**
+     *
+     * @summary Deletes a schedule
+     * @param {string} id Schedule ID to delete schedule
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteSchedule(id: string, options?: any): AxiosPromise<ScheduleRemoveResponse>;
+    /**
+     *
+     * @summary Deletes a schedule group
+     * @param {string} id Schedule group ID to delete schedule group
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteScheduleGroup(id: string, options?: any): AxiosPromise<ScheduleGroupRemoveResponse>;
+    /**
+     *
+     * @summary Generate a message from conversation
+     * @param {GenerateRequest} generateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    generate(generateRequest: GenerateRequest, options?: any): AxiosPromise<GenerateResponse>;
+    /**
+     *
+     * @summary Gets a conversation
+     * @param {string} id Conversation ID to get conversation
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getConversation(id: string, options?: any): AxiosPromise<ConversationGetResponse>;
     /**
      *
      * @summary Gets a customer
@@ -1065,6 +2641,38 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
     getCustomers(id?: string, options?: any): AxiosPromise<Array<Customer>>;
     /**
      *
+     * @summary Get all messages from a conversation
+     * @param {string} id Conversation ID to get messages
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getMessage(id: string, options?: any): AxiosPromise<Array<MessageGetResponseInner>>;
+    /**
+     *
+     * @summary Gets a schedule
+     * @param {string} id Schedule ID to get schedule
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getSchedule(id: string, options?: any): AxiosPromise<ScheduleCreateResponse>;
+    /**
+     *
+     * @summary Gets a schedule group
+     * @param {string} id Schedule group ID to get schedule group
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getScheduleGroup(id: string, options?: any): AxiosPromise<ScheduleGroupGetResponse>;
+    /**
+     *
+     * @summary Update a conversation
+     * @param {ConversationUpdateRequest} conversationUpdateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateConversation(conversationUpdateRequest: ConversationUpdateRequest, options?: any): AxiosPromise<ConversationUpdateResponse>;
+    /**
+     *
      * @summary Updates a customer
      * @param {UpdateCustomerRequest} updateCustomerRequest
      * @param {*} [options] Override http request option.
@@ -1079,6 +2687,22 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
      * @throws {RequiredError}
      */
     updateCustomers(updateCustomerRequest: UpdateCustomerRequest, options?: any): AxiosPromise<UpdateCustomersResponse>;
+    /**
+     *
+     * @summary Updates a schedule
+     * @param {ScheduleUpdateRequest} scheduleUpdateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateSchedule(scheduleUpdateRequest: ScheduleUpdateRequest, options?: any): AxiosPromise<ScheduleUpdateResponse>;
+    /**
+     *
+     * @summary Updates a schedule group
+     * @param {ScheduleGroupUpdateRequest} scheduleGroupUpdateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateScheduleGroup(scheduleGroupUpdateRequest: ScheduleGroupUpdateRequest, options?: any): AxiosPromise<ScheduleGroupUpdateResponse>;
 };
 /**
  * Scout9Api - object-oriented interface
@@ -1087,6 +2711,15 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
  * @extends {BaseAPI}
  */
 export declare class Scout9Api extends BaseAPI {
+    /**
+     *
+     * @summary Create a new conversation
+     * @param {ConversationCreateRequest} conversationCreateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    createConversation(conversationCreateRequest: ConversationCreateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ConversationCreateResponse, any>>;
     /**
      *
      * @summary Creates a new customer
@@ -1107,6 +2740,42 @@ export declare class Scout9Api extends BaseAPI {
     createCustomers(createCustomersRequest: CreateCustomersRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateCustomersResponse, any>>;
     /**
      *
+     * @summary Create and send message
+     * @param {MessageCreateRequest} messageCreateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    createMessage(messageCreateRequest: MessageCreateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<MessageCreateResponse, any>>;
+    /**
+     *
+     * @summary Creates a new scheduled conversation
+     * @param {ScheduleCreateRequest} scheduleCreateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    createSchedule(scheduleCreateRequest: ScheduleCreateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleCreateResponse, any>>;
+    /**
+     *
+     * @summary Creates a new schedule group
+     * @param {ScheduleGroupCreateRequest} scheduleGroupCreateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    createScheduleGroup(scheduleGroupCreateRequest: ScheduleGroupCreateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleGroupCreateResponse, any>>;
+    /**
+     *
+     * @summary Deletes a schedule
+     * @param {string} id Schedule ID to delete schedule
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    deleteConversation(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ConversationRemoveResponse, any>>;
+    /**
+     *
      * @summary Deletes a customer
      * @param {string} id Customer ID to delete customer
      * @param {*} [options] Override http request option.
@@ -1123,6 +2792,42 @@ export declare class Scout9Api extends BaseAPI {
      * @memberof Scout9Api
      */
     deleteCustomers(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteCustomersResponse, any>>;
+    /**
+     *
+     * @summary Deletes a schedule
+     * @param {string} id Schedule ID to delete schedule
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    deleteSchedule(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleRemoveResponse, any>>;
+    /**
+     *
+     * @summary Deletes a schedule group
+     * @param {string} id Schedule group ID to delete schedule group
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    deleteScheduleGroup(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleGroupRemoveResponse, any>>;
+    /**
+     *
+     * @summary Generate a message from conversation
+     * @param {GenerateRequest} generateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    generate(generateRequest: GenerateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<GenerateResponse, any>>;
+    /**
+     *
+     * @summary Gets a conversation
+     * @param {string} id Conversation ID to get conversation
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    getConversation(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ConversationGetResponse, any>>;
     /**
      *
      * @summary Gets a customer
@@ -1143,6 +2848,42 @@ export declare class Scout9Api extends BaseAPI {
     getCustomers(id?: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<Customer[], any>>;
     /**
      *
+     * @summary Get all messages from a conversation
+     * @param {string} id Conversation ID to get messages
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    getMessage(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<MessageGetResponseInner[], any>>;
+    /**
+     *
+     * @summary Gets a schedule
+     * @param {string} id Schedule ID to get schedule
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    getSchedule(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleCreateResponse, any>>;
+    /**
+     *
+     * @summary Gets a schedule group
+     * @param {string} id Schedule group ID to get schedule group
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    getScheduleGroup(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleGroupGetResponse, any>>;
+    /**
+     *
+     * @summary Update a conversation
+     * @param {ConversationUpdateRequest} conversationUpdateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    updateConversation(conversationUpdateRequest: ConversationUpdateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ConversationUpdateResponse, any>>;
+    /**
+     *
      * @summary Updates a customer
      * @param {UpdateCustomerRequest} updateCustomerRequest
      * @param {*} [options] Override http request option.
@@ -1159,4 +2900,22 @@ export declare class Scout9Api extends BaseAPI {
      * @memberof Scout9Api
      */
     updateCustomers(updateCustomerRequest: UpdateCustomerRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateCustomersResponse, any>>;
+    /**
+     *
+     * @summary Updates a schedule
+     * @param {ScheduleUpdateRequest} scheduleUpdateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    updateSchedule(scheduleUpdateRequest: ScheduleUpdateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleUpdateResponse, any>>;
+    /**
+     *
+     * @summary Updates a schedule group
+     * @param {ScheduleGroupUpdateRequest} scheduleGroupUpdateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    updateScheduleGroup(scheduleGroupUpdateRequest: ScheduleGroupUpdateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleGroupUpdateResponse, any>>;
 }
