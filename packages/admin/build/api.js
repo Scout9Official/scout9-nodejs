@@ -39,7 +39,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         createAgent: async (createAgentRequest, options = {}) => {
             // verify required parameter 'createAgentRequest' is not null or undefined
             (0, common_1.assertParamExists)('createAgent', 'createAgentRequest', createAgentRequest);
-            const localVarPath = `/v1/agent`;
+            const localVarPath = `/v1-agent`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -69,7 +69,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         createAgents: async (createAgentsRequest, options = {}) => {
             // verify required parameter 'createAgentsRequest' is not null or undefined
             (0, common_1.assertParamExists)('createAgents', 'createAgentsRequest', createAgentsRequest);
-            const localVarPath = `/v1/agents`;
+            const localVarPath = `/v1-agents`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -99,7 +99,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         createContext: async (createContextRequest, options = {}) => {
             // verify required parameter 'createContextRequest' is not null or undefined
             (0, common_1.assertParamExists)('createContext', 'createContextRequest', createContextRequest);
-            const localVarPath = `/v1/context`;
+            const localVarPath = `/v1-context`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -129,7 +129,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         createContexts: async (createContextsRequest, options = {}) => {
             // verify required parameter 'createContextsRequest' is not null or undefined
             (0, common_1.assertParamExists)('createContexts', 'createContextsRequest', createContextsRequest);
-            const localVarPath = `/v1/contexts`;
+            const localVarPath = `/v1-contexts`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -159,7 +159,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         createConversation: async (conversationCreateRequest, options = {}) => {
             // verify required parameter 'conversationCreateRequest' is not null or undefined
             (0, common_1.assertParamExists)('createConversation', 'conversationCreateRequest', conversationCreateRequest);
-            const localVarPath = `/v1/conversation`;
+            const localVarPath = `/v1-conversation`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -189,7 +189,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         createCustomer: async (createCustomerRequest, options = {}) => {
             // verify required parameter 'createCustomerRequest' is not null or undefined
             (0, common_1.assertParamExists)('createCustomer', 'createCustomerRequest', createCustomerRequest);
-            const localVarPath = `/v1/customer`;
+            const localVarPath = `/v1-customer`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -219,7 +219,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         createCustomers: async (createCustomersRequest, options = {}) => {
             // verify required parameter 'createCustomersRequest' is not null or undefined
             (0, common_1.assertParamExists)('createCustomers', 'createCustomersRequest', createCustomersRequest);
-            const localVarPath = `/v1/customers`;
+            const localVarPath = `/v1-customers`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -249,7 +249,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         createMessage: async (messageCreateRequest, options = {}) => {
             // verify required parameter 'messageCreateRequest' is not null or undefined
             (0, common_1.assertParamExists)('createMessage', 'messageCreateRequest', messageCreateRequest);
-            const localVarPath = `/v1/messages`;
+            const localVarPath = `/v1-messages`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -279,7 +279,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         createSchedule: async (scheduleCreateRequest, options = {}) => {
             // verify required parameter 'scheduleCreateRequest' is not null or undefined
             (0, common_1.assertParamExists)('createSchedule', 'scheduleCreateRequest', scheduleCreateRequest);
-            const localVarPath = `/v1/schedule`;
+            const localVarPath = `/v1-schedule`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -309,7 +309,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         createScheduleGroup: async (scheduleGroupCreateRequest, options = {}) => {
             // verify required parameter 'scheduleGroupCreateRequest' is not null or undefined
             (0, common_1.assertParamExists)('createScheduleGroup', 'scheduleGroupCreateRequest', scheduleGroupCreateRequest);
-            const localVarPath = `/v1/scheduleGroup`;
+            const localVarPath = `/v1-scheduleGroup`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -339,7 +339,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         createWorkflow: async (createWorkflowRequest, options = {}) => {
             // verify required parameter 'createWorkflowRequest' is not null or undefined
             (0, common_1.assertParamExists)('createWorkflow', 'createWorkflowRequest', createWorkflowRequest);
-            const localVarPath = `/v1/workflow`;
+            const localVarPath = `/v1-workflow`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -369,7 +369,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         createWorkflows: async (createWorkflowsRequest, options = {}) => {
             // verify required parameter 'createWorkflowsRequest' is not null or undefined
             (0, common_1.assertParamExists)('createWorkflows', 'createWorkflowsRequest', createWorkflowsRequest);
-            const localVarPath = `/v1/workflows`;
+            const localVarPath = `/v1-workflows`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -399,7 +399,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         deleteAgent: async (id, options = {}) => {
             // verify required parameter 'id' is not null or undefined
             (0, common_1.assertParamExists)('deleteAgent', 'id', id);
-            const localVarPath = `/v1/agent`;
+            const localVarPath = `/v1-agent`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -430,7 +430,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         deleteAgents: async (id, options = {}) => {
             // verify required parameter 'id' is not null or undefined
             (0, common_1.assertParamExists)('deleteAgents', 'id', id);
-            const localVarPath = `/v1/agents`;
+            const localVarPath = `/v1-agents`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -461,7 +461,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         deleteContext: async (id, options = {}) => {
             // verify required parameter 'id' is not null or undefined
             (0, common_1.assertParamExists)('deleteContext', 'id', id);
-            const localVarPath = `/v1/context`;
+            const localVarPath = `/v1-context`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -492,7 +492,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         deleteContexts: async (id, options = {}) => {
             // verify required parameter 'id' is not null or undefined
             (0, common_1.assertParamExists)('deleteContexts', 'id', id);
-            const localVarPath = `/v1/contexts`;
+            const localVarPath = `/v1-contexts`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -523,7 +523,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         deleteConversation: async (id, options = {}) => {
             // verify required parameter 'id' is not null or undefined
             (0, common_1.assertParamExists)('deleteConversation', 'id', id);
-            const localVarPath = `/v1/conversation`;
+            const localVarPath = `/v1-conversation`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -554,7 +554,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         deleteCustomer: async (id, options = {}) => {
             // verify required parameter 'id' is not null or undefined
             (0, common_1.assertParamExists)('deleteCustomer', 'id', id);
-            const localVarPath = `/v1/customer`;
+            const localVarPath = `/v1-customer`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -585,7 +585,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         deleteCustomers: async (id, options = {}) => {
             // verify required parameter 'id' is not null or undefined
             (0, common_1.assertParamExists)('deleteCustomers', 'id', id);
-            const localVarPath = `/v1/customers`;
+            const localVarPath = `/v1-customers`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -616,7 +616,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         deleteSchedule: async (id, options = {}) => {
             // verify required parameter 'id' is not null or undefined
             (0, common_1.assertParamExists)('deleteSchedule', 'id', id);
-            const localVarPath = `/v1/schedule`;
+            const localVarPath = `/v1-schedule`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -647,7 +647,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         deleteScheduleGroup: async (id, options = {}) => {
             // verify required parameter 'id' is not null or undefined
             (0, common_1.assertParamExists)('deleteScheduleGroup', 'id', id);
-            const localVarPath = `/v1/scheduleGroup`;
+            const localVarPath = `/v1-scheduleGroup`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -678,7 +678,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         deleteWorkflow: async (id, options = {}) => {
             // verify required parameter 'id' is not null or undefined
             (0, common_1.assertParamExists)('deleteWorkflow', 'id', id);
-            const localVarPath = `/v1/workflow`;
+            const localVarPath = `/v1-workflow`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -709,7 +709,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         deleteWorkflows: async (id, options = {}) => {
             // verify required parameter 'id' is not null or undefined
             (0, common_1.assertParamExists)('deleteWorkflows', 'id', id);
-            const localVarPath = `/v1/workflows`;
+            const localVarPath = `/v1-workflows`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -740,7 +740,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         generate: async (generateRequest, options = {}) => {
             // verify required parameter 'generateRequest' is not null or undefined
             (0, common_1.assertParamExists)('generate', 'generateRequest', generateRequest);
-            const localVarPath = `/v1/generate`;
+            const localVarPath = `/v1-generate`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -770,7 +770,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         getAgent: async (id, options = {}) => {
             // verify required parameter 'id' is not null or undefined
             (0, common_1.assertParamExists)('getAgent', 'id', id);
-            const localVarPath = `/v1/agent`;
+            const localVarPath = `/v1-agent`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -799,7 +799,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
          * @throws {RequiredError}
          */
         getAgents: async (id, options = {}) => {
-            const localVarPath = `/v1/agents`;
+            const localVarPath = `/v1-agents`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -830,7 +830,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         getContext: async (id, options = {}) => {
             // verify required parameter 'id' is not null or undefined
             (0, common_1.assertParamExists)('getContext', 'id', id);
-            const localVarPath = `/v1/context`;
+            const localVarPath = `/v1-context`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -859,7 +859,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
          * @throws {RequiredError}
          */
         getContexts: async (id, options = {}) => {
-            const localVarPath = `/v1/contexts`;
+            const localVarPath = `/v1-contexts`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -890,7 +890,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         getConversation: async (id, options = {}) => {
             // verify required parameter 'id' is not null or undefined
             (0, common_1.assertParamExists)('getConversation', 'id', id);
-            const localVarPath = `/v1/conversation`;
+            const localVarPath = `/v1-conversation`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -921,7 +921,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         getCustomer: async (id, options = {}) => {
             // verify required parameter 'id' is not null or undefined
             (0, common_1.assertParamExists)('getCustomer', 'id', id);
-            const localVarPath = `/v1/customer`;
+            const localVarPath = `/v1-customer`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -950,7 +950,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
          * @throws {RequiredError}
          */
         getCustomers: async (id, options = {}) => {
-            const localVarPath = `/v1/customers`;
+            const localVarPath = `/v1-customers`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -981,7 +981,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         getMessage: async (id, options = {}) => {
             // verify required parameter 'id' is not null or undefined
             (0, common_1.assertParamExists)('getMessage', 'id', id);
-            const localVarPath = `/v1/messages`;
+            const localVarPath = `/v1-messages`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1012,7 +1012,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         getSchedule: async (id, options = {}) => {
             // verify required parameter 'id' is not null or undefined
             (0, common_1.assertParamExists)('getSchedule', 'id', id);
-            const localVarPath = `/v1/schedule`;
+            const localVarPath = `/v1-schedule`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1043,7 +1043,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         getScheduleGroup: async (id, options = {}) => {
             // verify required parameter 'id' is not null or undefined
             (0, common_1.assertParamExists)('getScheduleGroup', 'id', id);
-            const localVarPath = `/v1/scheduleGroup`;
+            const localVarPath = `/v1-scheduleGroup`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1074,7 +1074,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         getWorkflow: async (id, options = {}) => {
             // verify required parameter 'id' is not null or undefined
             (0, common_1.assertParamExists)('getWorkflow', 'id', id);
-            const localVarPath = `/v1/workflow`;
+            const localVarPath = `/v1-workflow`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1103,7 +1103,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
          * @throws {RequiredError}
          */
         getWorkflows: async (id, options = {}) => {
-            const localVarPath = `/v1/workflows`;
+            const localVarPath = `/v1-workflows`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1134,7 +1134,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         updateAgent: async (updateAgentRequest, options = {}) => {
             // verify required parameter 'updateAgentRequest' is not null or undefined
             (0, common_1.assertParamExists)('updateAgent', 'updateAgentRequest', updateAgentRequest);
-            const localVarPath = `/v1/agent`;
+            const localVarPath = `/v1-agent`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1164,7 +1164,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         updateAgents: async (updateAgentsRequest, options = {}) => {
             // verify required parameter 'updateAgentsRequest' is not null or undefined
             (0, common_1.assertParamExists)('updateAgents', 'updateAgentsRequest', updateAgentsRequest);
-            const localVarPath = `/v1/agents`;
+            const localVarPath = `/v1-agents`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1194,7 +1194,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         updateContext: async (updateContextRequest, options = {}) => {
             // verify required parameter 'updateContextRequest' is not null or undefined
             (0, common_1.assertParamExists)('updateContext', 'updateContextRequest', updateContextRequest);
-            const localVarPath = `/v1/context`;
+            const localVarPath = `/v1-context`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1224,7 +1224,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         updateContexts: async (updateContextRequest, options = {}) => {
             // verify required parameter 'updateContextRequest' is not null or undefined
             (0, common_1.assertParamExists)('updateContexts', 'updateContextRequest', updateContextRequest);
-            const localVarPath = `/v1/contexts`;
+            const localVarPath = `/v1-contexts`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1254,7 +1254,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         updateConversation: async (conversationUpdateRequest, options = {}) => {
             // verify required parameter 'conversationUpdateRequest' is not null or undefined
             (0, common_1.assertParamExists)('updateConversation', 'conversationUpdateRequest', conversationUpdateRequest);
-            const localVarPath = `/v1/conversation`;
+            const localVarPath = `/v1-conversation`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1284,7 +1284,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         updateCustomer: async (updateCustomerRequest, options = {}) => {
             // verify required parameter 'updateCustomerRequest' is not null or undefined
             (0, common_1.assertParamExists)('updateCustomer', 'updateCustomerRequest', updateCustomerRequest);
-            const localVarPath = `/v1/customer`;
+            const localVarPath = `/v1-customer`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1314,7 +1314,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         updateCustomers: async (updateCustomerRequest, options = {}) => {
             // verify required parameter 'updateCustomerRequest' is not null or undefined
             (0, common_1.assertParamExists)('updateCustomers', 'updateCustomerRequest', updateCustomerRequest);
-            const localVarPath = `/v1/customers`;
+            const localVarPath = `/v1-customers`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1344,7 +1344,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         updateSchedule: async (scheduleUpdateRequest, options = {}) => {
             // verify required parameter 'scheduleUpdateRequest' is not null or undefined
             (0, common_1.assertParamExists)('updateSchedule', 'scheduleUpdateRequest', scheduleUpdateRequest);
-            const localVarPath = `/v1/schedule`;
+            const localVarPath = `/v1-schedule`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1374,7 +1374,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         updateScheduleGroup: async (scheduleGroupUpdateRequest, options = {}) => {
             // verify required parameter 'scheduleGroupUpdateRequest' is not null or undefined
             (0, common_1.assertParamExists)('updateScheduleGroup', 'scheduleGroupUpdateRequest', scheduleGroupUpdateRequest);
-            const localVarPath = `/v1/scheduleGroup`;
+            const localVarPath = `/v1-scheduleGroup`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1404,7 +1404,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         updateWorkflow: async (updateWorkflowRequest, options = {}) => {
             // verify required parameter 'updateWorkflowRequest' is not null or undefined
             (0, common_1.assertParamExists)('updateWorkflow', 'updateWorkflowRequest', updateWorkflowRequest);
-            const localVarPath = `/v1/workflow`;
+            const localVarPath = `/v1-workflow`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1434,7 +1434,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         updateWorkflows: async (updateWorkflowRequest, options = {}) => {
             // verify required parameter 'updateWorkflowRequest' is not null or undefined
             (0, common_1.assertParamExists)('updateWorkflows', 'updateWorkflowRequest', updateWorkflowRequest);
-            const localVarPath = `/v1/workflows`;
+            const localVarPath = `/v1-workflows`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
