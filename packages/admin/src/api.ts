@@ -26,6 +26,97 @@ import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError } from './base';
 /**
  *
  * @export
+ * @interface Agent
+ */
+export interface Agent {
+    /**
+     * Agent first name
+     * @type {string}
+     * @memberof Agent
+     */
+    'firstName': string;
+    /**
+     * Agent last name
+     * @type {string}
+     * @memberof Agent
+     */
+    'lastName': string;
+    /**
+     * Agent is inactive
+     * @type {boolean}
+     * @memberof Agent
+     */
+    'inactive'?: boolean;
+    /**
+     * Programmable phone number
+     * @type {string}
+     * @memberof Agent
+     */
+    'programmablePhoneNumber'?: string;
+    /**
+     * Programmable phone number SID
+     * @type {string}
+     * @memberof Agent
+     */
+    'programmablePhoneNumberSid'?: string;
+    /**
+     * Email address from Scout9 gmail subdomain
+     * @type {string}
+     * @memberof Agent
+     */
+    'programmableEmail'?: string;
+    /**
+     * Forward email
+     * @type {string}
+     * @memberof Agent
+     */
+    'forwardEmail'?: string;
+    /**
+     * Forward phone
+     * @type {string}
+     * @memberof Agent
+     */
+    'forwardPhone': string;
+    /**
+     * Title of the agent, defaults to \"Agent\"
+     * @type {string}
+     * @memberof Agent
+     */
+    'title'?: string;
+    /**
+     * Context of the agent, defaults to \"Agent\"
+     * @type {string}
+     * @memberof Agent
+     */
+    'context'?: string;
+    /**
+     * Locations ids the agent is included in
+     * @type {Array<string>}
+     * @memberof Agent
+     */
+    'includedLocations'?: Array<string>;
+    /**
+     * Locations id the agent is excluded from
+     * @type {Array<string>}
+     * @memberof Agent
+     */
+    'excludedLocations'?: Array<string>;
+    /**
+     * Transcript of the agent
+     * @type {string}
+     * @memberof Agent
+     */
+    'transcript'?: string;
+}
+/**
+ * @type AnyValue
+ * @export
+ */
+export type AnyValue = boolean | number | object | string;
+
+/**
+ *
+ * @export
  * @interface BlockInfo
  */
 export interface BlockInfo {
@@ -45,6 +136,173 @@ export interface BlockInfo {
 /**
  *
  * @export
+ * @interface Context
+ */
+export interface Context {
+    /**
+     * The ID of the context
+     * @type {string}
+     * @memberof Context
+     */
+    '$id': string;
+    /**
+     * The name of the context
+     * @type {string}
+     * @memberof Context
+     */
+    'name': string;
+    /**
+     * Whether or not the context is modifiable
+     * @type {boolean}
+     * @memberof Context
+     */
+    'modifiable': boolean;
+    /**
+     * The description of the context
+     * @type {string}
+     * @memberof Context
+     */
+    'description'?: string;
+    /**
+     *
+     * @type {ContextDetectionParams}
+     * @memberof Context
+     */
+    'detection'?: ContextDetectionParams;
+    /**
+     * The ID column of the context
+     * @type {string}
+     * @memberof Context
+     */
+    'idColumn': string;
+    /**
+     * The columns of the context
+     * @type {Array<string>}
+     * @memberof Context
+     */
+    'columns': Array<string>;
+    /**
+     * The required columns of the context
+     * @type {Array<string>}
+     * @memberof Context
+     */
+    'requiredColumns'?: Array<string>;
+}
+/**
+ *
+ * @export
+ * @interface ContextDetectionDocument
+ */
+export interface ContextDetectionDocument {
+    /**
+     * The languages the entity is available in
+     * @type {Array<string>}
+     * @memberof ContextDetectionDocument
+     */
+    'languages'?: Array<string>;
+    /**
+     *
+     * @type {string}
+     * @memberof ContextDetectionDocument
+     */
+    'text': string;
+    /**
+     *
+     * @type {string}
+     * @memberof ContextDetectionDocument
+     */
+    'id': string;
+}
+/**
+ *
+ * @export
+ * @interface ContextDetectionEntity
+ */
+export interface ContextDetectionEntity {
+    /**
+     * The utterance ID of the entity
+     * @type {string}
+     * @memberof ContextDetectionEntity
+     */
+    'utteranceId': string;
+    /**
+     * The classification of the given text
+     * @type {string}
+     * @memberof ContextDetectionEntity
+     */
+    'option': string;
+    /**
+     * The languages the entity is available in
+     * @type {Array<string>}
+     * @memberof ContextDetectionEntity
+     */
+    'languages'?: Array<string>;
+    /**
+     *
+     * @type {Array<string>}
+     * @memberof ContextDetectionEntity
+     */
+    'text': Array<string>;
+}
+/**
+ *
+ * @export
+ * @interface ContextDetectionParams
+ */
+export interface ContextDetectionParams {
+    /**
+     *
+     * @type {Array<ContextDetectionEntity>}
+     * @memberof ContextDetectionParams
+     */
+    'entities': Array<ContextDetectionEntity>;
+    /**
+     *
+     * @type {Array<ContextDetectionDocument>}
+     * @memberof ContextDetectionParams
+     */
+    'documents': Array<ContextDetectionDocument>;
+    /**
+     *
+     * @type {Array<ContextDetectionTest>}
+     * @memberof ContextDetectionParams
+     */
+    'test'?: Array<ContextDetectionTest>;
+}
+/**
+ *
+ * @export
+ * @interface ContextDetectionTest
+ */
+export interface ContextDetectionTest {
+    /**
+     *
+     * @type {string}
+     * @memberof ContextDetectionTest
+     */
+    'language'?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof ContextDetectionTest
+     */
+    'text': string;
+    /**
+     *
+     * @type {string}
+     * @memberof ContextDetectionTest
+     */
+    'targetUtteranceId': string;
+    /**
+     *
+     * @type {string}
+     * @memberof ContextDetectionTest
+     */
+    'targetOption': string;
+}
+/**
+ *
+ * @export
  * @interface Conversation
  */
 export interface Conversation {
@@ -53,25 +311,25 @@ export interface Conversation {
      * @type {string}
      * @memberof Conversation
      */
-    '$customer'?: string;
+    '$customer': string;
     /**
      * Business this conversation is with
      * @type {string}
      * @memberof Conversation
      */
-    '$business'?: string;
+    '$business': string;
     /**
      * Agent assigned to this conversation
      * @type {string}
      * @memberof Conversation
      */
-    '$agent'?: string;
+    '$agent': string;
     /**
      * Thread this conversation is in - this determines what context to pull when loading the conversation
      * @type {string}
      * @memberof Conversation
      */
-    '$thread'?: string;
+    '$thread': string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -88,6 +346,99 @@ export interface Conversation {
 /**
  *
  * @export
+ * @interface ConversationContextField
+ */
+export interface ConversationContextField {
+    /**
+     * The ID of the context
+     * @type {string}
+     * @memberof ConversationContextField
+     */
+    'id': string;
+    /**
+     * The time the context was created
+     * @type {string}
+     * @memberof ConversationContextField
+     */
+    'time'?: string;
+    /**
+     * The context of the conversation
+     * @type {string}
+     * @memberof ConversationContextField
+     */
+    'context': string;
+    /**
+     * The note of the conversation
+     * @type {string}
+     * @memberof ConversationContextField
+     */
+    'note'?: string;
+    /**
+     * The metadata of the conversation
+     * @type {object}
+     * @memberof ConversationContextField
+     */
+    'metadata'?: object;
+    /**
+     * The conditions of the conversation
+     * @type {Array<ConversationContextGroup>}
+     * @memberof ConversationContextField
+     */
+    'conditions'?: Array<ConversationContextGroup>;
+    /**
+     * The triggers of the conversation
+     * @type {Array<string>}
+     * @memberof ConversationContextField
+     */
+    'triggers'?: Array<string>;
+}
+/**
+ *
+ * @export
+ * @interface ConversationContextFieldCondition
+ */
+export interface ConversationContextFieldCondition {
+    /**
+     * The key of the condition
+     * @type {string}
+     * @memberof ConversationContextFieldCondition
+     */
+    'key': string;
+    /**
+     * The operator of the condition
+     * @type {string}
+     * @memberof ConversationContextFieldCondition
+     */
+    'operator': string;
+    /**
+     * The regex of the condition
+     * @type {string}
+     * @memberof ConversationContextFieldCondition
+     */
+    'regex'?: string;
+    /**
+     *
+     * @type {AnyValue}
+     * @memberof ConversationContextFieldCondition
+     */
+    'value': AnyValue;
+}
+/**
+ *
+ * @export
+ * @interface ConversationContextGroup
+ */
+export interface ConversationContextGroup {
+    /**
+     * The conditions of the conversation
+     * @type {Array<ConversationContextFieldCondition>}
+     * @memberof ConversationContextGroup
+     */
+    'conditions': Array<ConversationContextFieldCondition>;
+}
+/**
+ *
+ * @export
  * @interface ConversationCreateRequest
  */
 export interface ConversationCreateRequest {
@@ -96,25 +447,25 @@ export interface ConversationCreateRequest {
      * @type {string}
      * @memberof ConversationCreateRequest
      */
-    '$customer'?: string;
+    '$customer': string;
     /**
      *
      * @type {any}
      * @memberof ConversationCreateRequest
      */
-    '$business'?: any | null;
+    '$business': any | null;
     /**
      * Agent assigned to this conversation
      * @type {string}
      * @memberof ConversationCreateRequest
      */
-    '$agent'?: string;
+    '$agent': string;
     /**
      * Thread this conversation is in - this determines what context to pull when loading the conversation
      * @type {string}
      * @memberof ConversationCreateRequest
      */
-    '$thread'?: string;
+    '$thread': string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -171,25 +522,25 @@ export interface ConversationGetResponse {
      * @type {string}
      * @memberof ConversationGetResponse
      */
-    '$customer'?: string;
+    '$customer': string;
     /**
      * Business this conversation is with
      * @type {string}
      * @memberof ConversationGetResponse
      */
-    '$business'?: string;
+    '$business': string;
     /**
      * Agent assigned to this conversation
      * @type {string}
      * @memberof ConversationGetResponse
      */
-    '$agent'?: string;
+    '$agent': string;
     /**
      * Thread this conversation is in - this determines what context to pull when loading the conversation
      * @type {string}
      * @memberof ConversationGetResponse
      */
-    '$thread'?: string;
+    '$thread': string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -233,25 +584,25 @@ export interface ConversationUpdateRequest {
      * @type {string}
      * @memberof ConversationUpdateRequest
      */
-    '$customer'?: string;
+    '$customer': string;
     /**
      * Business this conversation is with
      * @type {string}
      * @memberof ConversationUpdateRequest
      */
-    '$business'?: string;
+    '$business': string;
     /**
      * Agent assigned to this conversation
      * @type {string}
      * @memberof ConversationUpdateRequest
      */
-    '$agent'?: string;
+    '$agent': string;
     /**
      * Thread this conversation is in - this determines what context to pull when loading the conversation
      * @type {string}
      * @memberof ConversationUpdateRequest
      */
-    '$thread'?: string;
+    '$thread': string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -300,6 +651,388 @@ export interface ConversationUpdateResponse {
      *
      * @type {Error}
      * @memberof ConversationUpdateResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
+ * @interface CreateAgentRequest
+ */
+export interface CreateAgentRequest {
+    /**
+     * Agent first name
+     * @type {string}
+     * @memberof CreateAgentRequest
+     */
+    'firstName': string;
+    /**
+     * Agent last name
+     * @type {string}
+     * @memberof CreateAgentRequest
+     */
+    'lastName': string;
+    /**
+     * Agent is inactive
+     * @type {boolean}
+     * @memberof CreateAgentRequest
+     */
+    'inactive'?: boolean;
+    /**
+     * Programmable phone number
+     * @type {string}
+     * @memberof CreateAgentRequest
+     */
+    'programmablePhoneNumber'?: string;
+    /**
+     * Programmable phone number SID
+     * @type {string}
+     * @memberof CreateAgentRequest
+     */
+    'programmablePhoneNumberSid'?: string;
+    /**
+     * Email address from Scout9 gmail subdomain
+     * @type {string}
+     * @memberof CreateAgentRequest
+     */
+    'programmableEmail'?: string;
+    /**
+     * Forward email
+     * @type {string}
+     * @memberof CreateAgentRequest
+     */
+    'forwardEmail'?: string;
+    /**
+     * Forward phone
+     * @type {string}
+     * @memberof CreateAgentRequest
+     */
+    'forwardPhone': string;
+    /**
+     * Title of the agent, defaults to \"Agent\"
+     * @type {string}
+     * @memberof CreateAgentRequest
+     */
+    'title'?: string;
+    /**
+     * Context of the agent, defaults to \"Agent\"
+     * @type {string}
+     * @memberof CreateAgentRequest
+     */
+    'context'?: string;
+    /**
+     * Locations ids the agent is included in
+     * @type {Array<string>}
+     * @memberof CreateAgentRequest
+     */
+    'includedLocations'?: Array<string>;
+    /**
+     * Locations id the agent is excluded from
+     * @type {Array<string>}
+     * @memberof CreateAgentRequest
+     */
+    'excludedLocations'?: Array<string>;
+    /**
+     * Transcript of the agent
+     * @type {string}
+     * @memberof CreateAgentRequest
+     */
+    'transcript'?: string;
+}
+/**
+ *
+ * @export
+ * @interface CreateAgentResponse
+ */
+export interface CreateAgentResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof CreateAgentResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof CreateAgentResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
+ * @interface CreateAgentsRequest
+ */
+export interface CreateAgentsRequest {
+    /**
+     *
+     * @type {Array<CreateAgentsRequestCustomersInner>}
+     * @memberof CreateAgentsRequest
+     */
+    'customers'?: Array<CreateAgentsRequestCustomersInner>;
+}
+/**
+ *
+ * @export
+ * @interface CreateAgentsRequestCustomersInner
+ */
+export interface CreateAgentsRequestCustomersInner {
+    /**
+     * Agent first name
+     * @type {string}
+     * @memberof CreateAgentsRequestCustomersInner
+     */
+    'firstName': string;
+    /**
+     * Agent last name
+     * @type {string}
+     * @memberof CreateAgentsRequestCustomersInner
+     */
+    'lastName': string;
+    /**
+     * Agent is inactive
+     * @type {boolean}
+     * @memberof CreateAgentsRequestCustomersInner
+     */
+    'inactive'?: boolean;
+    /**
+     * Programmable phone number
+     * @type {string}
+     * @memberof CreateAgentsRequestCustomersInner
+     */
+    'programmablePhoneNumber'?: string;
+    /**
+     * Programmable phone number SID
+     * @type {string}
+     * @memberof CreateAgentsRequestCustomersInner
+     */
+    'programmablePhoneNumberSid'?: string;
+    /**
+     * Email address from Scout9 gmail subdomain
+     * @type {string}
+     * @memberof CreateAgentsRequestCustomersInner
+     */
+    'programmableEmail'?: string;
+    /**
+     * Forward email
+     * @type {string}
+     * @memberof CreateAgentsRequestCustomersInner
+     */
+    'forwardEmail'?: string;
+    /**
+     * Forward phone
+     * @type {string}
+     * @memberof CreateAgentsRequestCustomersInner
+     */
+    'forwardPhone': string;
+    /**
+     * Title of the agent, defaults to \"Agent\"
+     * @type {string}
+     * @memberof CreateAgentsRequestCustomersInner
+     */
+    'title'?: string;
+    /**
+     * Context of the agent, defaults to \"Agent\"
+     * @type {string}
+     * @memberof CreateAgentsRequestCustomersInner
+     */
+    'context'?: string;
+    /**
+     * Locations ids the agent is included in
+     * @type {Array<string>}
+     * @memberof CreateAgentsRequestCustomersInner
+     */
+    'includedLocations'?: Array<string>;
+    /**
+     * Locations id the agent is excluded from
+     * @type {Array<string>}
+     * @memberof CreateAgentsRequestCustomersInner
+     */
+    'excludedLocations'?: Array<string>;
+    /**
+     * Transcript of the agent
+     * @type {string}
+     * @memberof CreateAgentsRequestCustomersInner
+     */
+    'transcript'?: string;
+}
+/**
+ *
+ * @export
+ * @interface CreateAgentsResponse
+ */
+export interface CreateAgentsResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof CreateAgentsResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof CreateAgentsResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
+ * @interface CreateContextRequest
+ */
+export interface CreateContextRequest {
+    /**
+     * The ID of the context
+     * @type {string}
+     * @memberof CreateContextRequest
+     */
+    '$id': string;
+    /**
+     * The name of the context
+     * @type {string}
+     * @memberof CreateContextRequest
+     */
+    'name': string;
+    /**
+     * Whether or not the context is modifiable
+     * @type {boolean}
+     * @memberof CreateContextRequest
+     */
+    'modifiable': boolean;
+    /**
+     * The description of the context
+     * @type {string}
+     * @memberof CreateContextRequest
+     */
+    'description'?: string;
+    /**
+     *
+     * @type {ContextDetectionParams}
+     * @memberof CreateContextRequest
+     */
+    'detection'?: ContextDetectionParams;
+    /**
+     * The ID column of the context
+     * @type {string}
+     * @memberof CreateContextRequest
+     */
+    'idColumn': string;
+    /**
+     * The columns of the context
+     * @type {Array<string>}
+     * @memberof CreateContextRequest
+     */
+    'columns': Array<string>;
+    /**
+     * The required columns of the context
+     * @type {Array<string>}
+     * @memberof CreateContextRequest
+     */
+    'requiredColumns'?: Array<string>;
+}
+/**
+ *
+ * @export
+ * @interface CreateContextResponse
+ */
+export interface CreateContextResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof CreateContextResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof CreateContextResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
+ * @interface CreateContextsRequest
+ */
+export interface CreateContextsRequest {
+    /**
+     *
+     * @type {Array<CreateContextsRequestCustomersInner>}
+     * @memberof CreateContextsRequest
+     */
+    'customers'?: Array<CreateContextsRequestCustomersInner>;
+}
+/**
+ *
+ * @export
+ * @interface CreateContextsRequestCustomersInner
+ */
+export interface CreateContextsRequestCustomersInner {
+    /**
+     * The ID of the context
+     * @type {string}
+     * @memberof CreateContextsRequestCustomersInner
+     */
+    '$id': string;
+    /**
+     * The name of the context
+     * @type {string}
+     * @memberof CreateContextsRequestCustomersInner
+     */
+    'name': string;
+    /**
+     * Whether or not the context is modifiable
+     * @type {boolean}
+     * @memberof CreateContextsRequestCustomersInner
+     */
+    'modifiable': boolean;
+    /**
+     * The description of the context
+     * @type {string}
+     * @memberof CreateContextsRequestCustomersInner
+     */
+    'description'?: string;
+    /**
+     *
+     * @type {ContextDetectionParams}
+     * @memberof CreateContextsRequestCustomersInner
+     */
+    'detection'?: ContextDetectionParams;
+    /**
+     * The ID column of the context
+     * @type {string}
+     * @memberof CreateContextsRequestCustomersInner
+     */
+    'idColumn': string;
+    /**
+     * The columns of the context
+     * @type {Array<string>}
+     * @memberof CreateContextsRequestCustomersInner
+     */
+    'columns': Array<string>;
+    /**
+     * The required columns of the context
+     * @type {Array<string>}
+     * @memberof CreateContextsRequestCustomersInner
+     */
+    'requiredColumns'?: Array<string>;
+}
+/**
+ *
+ * @export
+ * @interface CreateContextsResponse
+ */
+export interface CreateContextsResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof CreateContextsResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof CreateContextsResponse
      */
     'error'?: Error;
 }
@@ -611,6 +1344,167 @@ export interface CreateCustomersResponse {
 /**
  *
  * @export
+ * @interface CreateWorkflowRequest
+ */
+export interface CreateWorkflowRequest {
+    /**
+     * The name of the workflow
+     * @type {string}
+     * @memberof CreateWorkflowRequest
+     */
+    'name': string;
+    /**
+     *
+     * @type {ContextDetectionParams}
+     * @memberof CreateWorkflowRequest
+     */
+    'initiators': ContextDetectionParams;
+    /**
+     * The fields of the workflow
+     * @type {Array<ConversationContextField>}
+     * @memberof CreateWorkflowRequest
+     */
+    'fields': Array<ConversationContextField>;
+    /**
+     * About this conversation - used as initial context
+     * @type {string}
+     * @memberof CreateWorkflowRequest
+     */
+    'context': string;
+    /**
+     * The webhook to call when a workflow is created
+     * @type {string}
+     * @memberof CreateWorkflowRequest
+     */
+    'onCreated'?: string;
+    /**
+     * The webhook to call when a workflow is updated
+     * @type {string}
+     * @memberof CreateWorkflowRequest
+     */
+    'onUpdated'?: string;
+    /**
+     * The webhook to call when a workflow is deleted
+     * @type {string}
+     * @memberof CreateWorkflowRequest
+     */
+    'onDeleted'?: string;
+    /**
+     * The webhook to call when a workflow has an error
+     * @type {string}
+     * @memberof CreateWorkflowRequest
+     */
+    'onError'?: string;
+}
+/**
+ *
+ * @export
+ * @interface CreateWorkflowResponse
+ */
+export interface CreateWorkflowResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof CreateWorkflowResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof CreateWorkflowResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
+ * @interface CreateWorkflowsRequest
+ */
+export interface CreateWorkflowsRequest {
+    /**
+     *
+     * @type {Array<CreateWorkflowsRequestCustomersInner>}
+     * @memberof CreateWorkflowsRequest
+     */
+    'customers'?: Array<CreateWorkflowsRequestCustomersInner>;
+}
+/**
+ *
+ * @export
+ * @interface CreateWorkflowsRequestCustomersInner
+ */
+export interface CreateWorkflowsRequestCustomersInner {
+    /**
+     * The name of the workflow
+     * @type {string}
+     * @memberof CreateWorkflowsRequestCustomersInner
+     */
+    'name': string;
+    /**
+     *
+     * @type {ContextDetectionParams}
+     * @memberof CreateWorkflowsRequestCustomersInner
+     */
+    'initiators': ContextDetectionParams;
+    /**
+     * The fields of the workflow
+     * @type {Array<ConversationContextField>}
+     * @memberof CreateWorkflowsRequestCustomersInner
+     */
+    'fields': Array<ConversationContextField>;
+    /**
+     * About this conversation - used as initial context
+     * @type {string}
+     * @memberof CreateWorkflowsRequestCustomersInner
+     */
+    'context': string;
+    /**
+     * The webhook to call when a workflow is created
+     * @type {string}
+     * @memberof CreateWorkflowsRequestCustomersInner
+     */
+    'onCreated'?: string;
+    /**
+     * The webhook to call when a workflow is updated
+     * @type {string}
+     * @memberof CreateWorkflowsRequestCustomersInner
+     */
+    'onUpdated'?: string;
+    /**
+     * The webhook to call when a workflow is deleted
+     * @type {string}
+     * @memberof CreateWorkflowsRequestCustomersInner
+     */
+    'onDeleted'?: string;
+    /**
+     * The webhook to call when a workflow has an error
+     * @type {string}
+     * @memberof CreateWorkflowsRequestCustomersInner
+     */
+    'onError'?: string;
+}
+/**
+ *
+ * @export
+ * @interface CreateWorkflowsResponse
+ */
+export interface CreateWorkflowsResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof CreateWorkflowsResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof CreateWorkflowsResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
  * @interface Customer
  */
 export interface Customer {
@@ -738,6 +1632,82 @@ export interface Customer {
 /**
  *
  * @export
+ * @interface DeleteAgentResponse
+ */
+export interface DeleteAgentResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof DeleteAgentResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof DeleteAgentResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
+ * @interface DeleteAgentsResponse
+ */
+export interface DeleteAgentsResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof DeleteAgentsResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof DeleteAgentsResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
+ * @interface DeleteContextResponse
+ */
+export interface DeleteContextResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof DeleteContextResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof DeleteContextResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
+ * @interface DeleteContextsResponse
+ */
+export interface DeleteContextsResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof DeleteContextsResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof DeleteContextsResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
  * @interface DeleteCustomerResponse
  */
 export interface DeleteCustomerResponse {
@@ -770,6 +1740,44 @@ export interface DeleteCustomersResponse {
      *
      * @type {Error}
      * @memberof DeleteCustomersResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
+ * @interface DeleteWorkflowResponse
+ */
+export interface DeleteWorkflowResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof DeleteWorkflowResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof DeleteWorkflowResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
+ * @interface DeleteWorkflowsResponse
+ */
+export interface DeleteWorkflowsResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof DeleteWorkflowsResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof DeleteWorkflowsResponse
      */
     'error'?: Error;
 }
@@ -829,6 +1837,146 @@ export interface GenerateResponse {
      * @memberof GenerateResponse
      */
     'time'?: string;
+}
+/**
+ *
+ * @export
+ * @interface GetAgentResponse
+ */
+export interface GetAgentResponse {
+    /**
+     * Agent first name
+     * @type {string}
+     * @memberof GetAgentResponse
+     */
+    'firstName': string;
+    /**
+     * Agent last name
+     * @type {string}
+     * @memberof GetAgentResponse
+     */
+    'lastName': string;
+    /**
+     * Agent is inactive
+     * @type {boolean}
+     * @memberof GetAgentResponse
+     */
+    'inactive'?: boolean;
+    /**
+     * Programmable phone number
+     * @type {string}
+     * @memberof GetAgentResponse
+     */
+    'programmablePhoneNumber'?: string;
+    /**
+     * Programmable phone number SID
+     * @type {string}
+     * @memberof GetAgentResponse
+     */
+    'programmablePhoneNumberSid'?: string;
+    /**
+     * Email address from Scout9 gmail subdomain
+     * @type {string}
+     * @memberof GetAgentResponse
+     */
+    'programmableEmail'?: string;
+    /**
+     * Forward email
+     * @type {string}
+     * @memberof GetAgentResponse
+     */
+    'forwardEmail'?: string;
+    /**
+     * Forward phone
+     * @type {string}
+     * @memberof GetAgentResponse
+     */
+    'forwardPhone': string;
+    /**
+     * Title of the agent, defaults to \"Agent\"
+     * @type {string}
+     * @memberof GetAgentResponse
+     */
+    'title'?: string;
+    /**
+     * Context of the agent, defaults to \"Agent\"
+     * @type {string}
+     * @memberof GetAgentResponse
+     */
+    'context'?: string;
+    /**
+     * Locations ids the agent is included in
+     * @type {Array<string>}
+     * @memberof GetAgentResponse
+     */
+    'includedLocations'?: Array<string>;
+    /**
+     * Locations id the agent is excluded from
+     * @type {Array<string>}
+     * @memberof GetAgentResponse
+     */
+    'excludedLocations'?: Array<string>;
+    /**
+     * Transcript of the agent
+     * @type {string}
+     * @memberof GetAgentResponse
+     */
+    'transcript'?: string;
+}
+/**
+ *
+ * @export
+ * @interface GetContextResponse
+ */
+export interface GetContextResponse {
+    /**
+     * The ID of the context
+     * @type {string}
+     * @memberof GetContextResponse
+     */
+    '$id': string;
+    /**
+     * The name of the context
+     * @type {string}
+     * @memberof GetContextResponse
+     */
+    'name': string;
+    /**
+     * Whether or not the context is modifiable
+     * @type {boolean}
+     * @memberof GetContextResponse
+     */
+    'modifiable': boolean;
+    /**
+     * The description of the context
+     * @type {string}
+     * @memberof GetContextResponse
+     */
+    'description'?: string;
+    /**
+     *
+     * @type {ContextDetectionParams}
+     * @memberof GetContextResponse
+     */
+    'detection'?: ContextDetectionParams;
+    /**
+     * The ID column of the context
+     * @type {string}
+     * @memberof GetContextResponse
+     */
+    'idColumn': string;
+    /**
+     * The columns of the context
+     * @type {Array<string>}
+     * @memberof GetContextResponse
+     */
+    'columns': Array<string>;
+    /**
+     * The required columns of the context
+     * @type {Array<string>}
+     * @memberof GetContextResponse
+     */
+    'requiredColumns'?: Array<string>;
 }
 /**
  *
@@ -956,6 +2104,61 @@ export interface GetCustomerResponse {
      * @memberof GetCustomerResponse
      */
     'stripeDev'?: string | null;
+}
+/**
+ *
+ * @export
+ * @interface GetWorkflowResponse
+ */
+export interface GetWorkflowResponse {
+    /**
+     * The name of the workflow
+     * @type {string}
+     * @memberof GetWorkflowResponse
+     */
+    'name': string;
+    /**
+     *
+     * @type {ContextDetectionParams}
+     * @memberof GetWorkflowResponse
+     */
+    'initiators': ContextDetectionParams;
+    /**
+     * The fields of the workflow
+     * @type {Array<ConversationContextField>}
+     * @memberof GetWorkflowResponse
+     */
+    'fields': Array<ConversationContextField>;
+    /**
+     * About this conversation - used as initial context
+     * @type {string}
+     * @memberof GetWorkflowResponse
+     */
+    'context': string;
+    /**
+     * The webhook to call when a workflow is created
+     * @type {string}
+     * @memberof GetWorkflowResponse
+     */
+    'onCreated'?: string;
+    /**
+     * The webhook to call when a workflow is updated
+     * @type {string}
+     * @memberof GetWorkflowResponse
+     */
+    'onUpdated'?: string;
+    /**
+     * The webhook to call when a workflow is deleted
+     * @type {string}
+     * @memberof GetWorkflowResponse
+     */
+    'onDeleted'?: string;
+    /**
+     * The webhook to call when a workflow has an error
+     * @type {string}
+     * @memberof GetWorkflowResponse
+     */
+    'onError'?: string;
 }
 /**
  *
@@ -1118,25 +2321,25 @@ export interface ScheduleCreateRequest {
      * @type {string}
      * @memberof ScheduleCreateRequest
      */
-    '$customer'?: string;
+    '$customer': string;
     /**
      *
      * @type {any}
      * @memberof ScheduleCreateRequest
      */
-    '$business'?: any | null;
+    '$business': any | null;
     /**
      * Agent assigned to this conversation
      * @type {string}
      * @memberof ScheduleCreateRequest
      */
-    '$agent'?: string;
+    '$agent': string;
     /**
      * Thread this conversation is in - this determines what context to pull when loading the conversation
      * @type {string}
      * @memberof ScheduleCreateRequest
      */
-    '$thread'?: string;
+    '$thread': string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -1210,25 +2413,25 @@ export interface ScheduleGetResponse {
      * @type {string}
      * @memberof ScheduleGetResponse
      */
-    '$customer'?: string;
+    '$customer': string;
     /**
      * Business this conversation is with
      * @type {string}
      * @memberof ScheduleGetResponse
      */
-    '$business'?: string;
+    '$business': string;
     /**
      * Agent assigned to this conversation
      * @type {string}
      * @memberof ScheduleGetResponse
      */
-    '$agent'?: string;
+    '$agent': string;
     /**
      * Thread this conversation is in - this determines what context to pull when loading the conversation
      * @type {string}
      * @memberof ScheduleGetResponse
      */
-    '$thread'?: string;
+    '$thread': string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -1283,25 +2486,25 @@ export interface ScheduleGroupCreateRequest {
      * @type {string}
      * @memberof ScheduleGroupCreateRequest
      */
-    '$customer'?: string;
+    '$customer': string;
     /**
      *
      * @type {any}
      * @memberof ScheduleGroupCreateRequest
      */
-    '$business'?: any | null;
+    '$business': any | null;
     /**
      * Agent assigned to this conversation
      * @type {string}
      * @memberof ScheduleGroupCreateRequest
      */
-    '$agent'?: string;
+    '$agent': string;
     /**
      * Thread this conversation is in - this determines what context to pull when loading the conversation
      * @type {string}
      * @memberof ScheduleGroupCreateRequest
      */
-    '$thread'?: string;
+    '$thread': string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -1387,25 +2590,25 @@ export interface ScheduleGroupGetResponse {
      * @type {string}
      * @memberof ScheduleGroupGetResponse
      */
-    '$customer'?: string;
+    '$customer': string;
     /**
      * Business this conversation is with
      * @type {string}
      * @memberof ScheduleGroupGetResponse
      */
-    '$business'?: string;
+    '$business': string;
     /**
      * Agent assigned to this conversation
      * @type {string}
      * @memberof ScheduleGroupGetResponse
      */
-    '$agent'?: string;
+    '$agent': string;
     /**
      * Thread this conversation is in - this determines what context to pull when loading the conversation
      * @type {string}
      * @memberof ScheduleGroupGetResponse
      */
-    '$thread'?: string;
+    '$thread': string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -1491,25 +2694,25 @@ export interface ScheduleGroupUpdateRequest {
      * @type {string}
      * @memberof ScheduleGroupUpdateRequest
      */
-    '$customer'?: string;
+    '$customer': string;
     /**
      * Business this conversation is with
      * @type {string}
      * @memberof ScheduleGroupUpdateRequest
      */
-    '$business'?: string;
+    '$business': string;
     /**
      * Agent assigned to this conversation
      * @type {string}
      * @memberof ScheduleGroupUpdateRequest
      */
-    '$agent'?: string;
+    '$agent': string;
     /**
      * Thread this conversation is in - this determines what context to pull when loading the conversation
      * @type {string}
      * @memberof ScheduleGroupUpdateRequest
      */
-    '$thread'?: string;
+    '$thread': string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -1633,25 +2836,25 @@ export interface ScheduleUpdateRequest {
      * @type {string}
      * @memberof ScheduleUpdateRequest
      */
-    '$customer'?: string;
+    '$customer': string;
     /**
      * Business this conversation is with
      * @type {string}
      * @memberof ScheduleUpdateRequest
      */
-    '$business'?: string;
+    '$business': string;
     /**
      * Agent assigned to this conversation
      * @type {string}
      * @memberof ScheduleUpdateRequest
      */
-    '$agent'?: string;
+    '$agent': string;
     /**
      * Thread this conversation is in - this determines what context to pull when loading the conversation
      * @type {string}
      * @memberof ScheduleUpdateRequest
      */
-    '$thread'?: string;
+    '$thread': string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -1744,25 +2947,25 @@ export interface ScheduledConversation {
      * @type {string}
      * @memberof ScheduledConversation
      */
-    '$customer'?: string;
+    '$customer': string;
     /**
      * Business this conversation is with
      * @type {string}
      * @memberof ScheduledConversation
      */
-    '$business'?: string;
+    '$business': string;
     /**
      * Agent assigned to this conversation
      * @type {string}
      * @memberof ScheduledConversation
      */
-    '$agent'?: string;
+    '$agent': string;
     /**
      * Thread this conversation is in - this determines what context to pull when loading the conversation
      * @type {string}
      * @memberof ScheduledConversation
      */
-    '$thread'?: string;
+    '$thread': string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -1854,25 +3057,25 @@ export interface ScheduledConversationGroup {
      * @type {string}
      * @memberof ScheduledConversationGroup
      */
-    '$customer'?: string;
+    '$customer': string;
     /**
      * Business this conversation is with
      * @type {string}
      * @memberof ScheduledConversationGroup
      */
-    '$business'?: string;
+    '$business': string;
     /**
      * Agent assigned to this conversation
      * @type {string}
      * @memberof ScheduledConversationGroup
      */
-    '$agent'?: string;
+    '$agent': string;
     /**
      * Thread this conversation is in - this determines what context to pull when loading the conversation
      * @type {string}
      * @memberof ScheduledConversationGroup
      */
-    '$thread'?: string;
+    '$thread': string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -1965,6 +3168,248 @@ export interface ScheduledConversationGroupAllOfCustomers {
      * @memberof ScheduledConversationGroupAllOfCustomers
      */
     'id'?: string;
+}
+/**
+ *
+ * @export
+ * @interface UpdateAgentRequest
+ */
+export interface UpdateAgentRequest {
+    /**
+     * Agent first name
+     * @type {string}
+     * @memberof UpdateAgentRequest
+     */
+    'firstName': string;
+    /**
+     * Agent last name
+     * @type {string}
+     * @memberof UpdateAgentRequest
+     */
+    'lastName': string;
+    /**
+     * Agent is inactive
+     * @type {boolean}
+     * @memberof UpdateAgentRequest
+     */
+    'inactive'?: boolean;
+    /**
+     * Programmable phone number
+     * @type {string}
+     * @memberof UpdateAgentRequest
+     */
+    'programmablePhoneNumber'?: string;
+    /**
+     * Programmable phone number SID
+     * @type {string}
+     * @memberof UpdateAgentRequest
+     */
+    'programmablePhoneNumberSid'?: string;
+    /**
+     * Email address from Scout9 gmail subdomain
+     * @type {string}
+     * @memberof UpdateAgentRequest
+     */
+    'programmableEmail'?: string;
+    /**
+     * Forward email
+     * @type {string}
+     * @memberof UpdateAgentRequest
+     */
+    'forwardEmail'?: string;
+    /**
+     * Forward phone
+     * @type {string}
+     * @memberof UpdateAgentRequest
+     */
+    'forwardPhone': string;
+    /**
+     * Title of the agent, defaults to \"Agent\"
+     * @type {string}
+     * @memberof UpdateAgentRequest
+     */
+    'title'?: string;
+    /**
+     * Context of the agent, defaults to \"Agent\"
+     * @type {string}
+     * @memberof UpdateAgentRequest
+     */
+    'context'?: string;
+    /**
+     * Locations ids the agent is included in
+     * @type {Array<string>}
+     * @memberof UpdateAgentRequest
+     */
+    'includedLocations'?: Array<string>;
+    /**
+     * Locations id the agent is excluded from
+     * @type {Array<string>}
+     * @memberof UpdateAgentRequest
+     */
+    'excludedLocations'?: Array<string>;
+    /**
+     * Transcript of the agent
+     * @type {string}
+     * @memberof UpdateAgentRequest
+     */
+    'transcript'?: string;
+}
+/**
+ *
+ * @export
+ * @interface UpdateAgentResponse
+ */
+export interface UpdateAgentResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof UpdateAgentResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof UpdateAgentResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
+ * @interface UpdateAgentsRequest
+ */
+export interface UpdateAgentsRequest {
+    /**
+     *
+     * @type {Array<Agent>}
+     * @memberof UpdateAgentsRequest
+     */
+    'customers'?: Array<Agent>;
+}
+/**
+ *
+ * @export
+ * @interface UpdateAgentsResponse
+ */
+export interface UpdateAgentsResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof UpdateAgentsResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof UpdateAgentsResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
+ * @interface UpdateContextRequest
+ */
+export interface UpdateContextRequest {
+    /**
+     * The ID of the context
+     * @type {string}
+     * @memberof UpdateContextRequest
+     */
+    '$id': string;
+    /**
+     * The name of the context
+     * @type {string}
+     * @memberof UpdateContextRequest
+     */
+    'name': string;
+    /**
+     * Whether or not the context is modifiable
+     * @type {boolean}
+     * @memberof UpdateContextRequest
+     */
+    'modifiable': boolean;
+    /**
+     * The description of the context
+     * @type {string}
+     * @memberof UpdateContextRequest
+     */
+    'description'?: string;
+    /**
+     *
+     * @type {ContextDetectionParams}
+     * @memberof UpdateContextRequest
+     */
+    'detection'?: ContextDetectionParams;
+    /**
+     * The ID column of the context
+     * @type {string}
+     * @memberof UpdateContextRequest
+     */
+    'idColumn': string;
+    /**
+     * The columns of the context
+     * @type {Array<string>}
+     * @memberof UpdateContextRequest
+     */
+    'columns': Array<string>;
+    /**
+     * The required columns of the context
+     * @type {Array<string>}
+     * @memberof UpdateContextRequest
+     */
+    'requiredColumns'?: Array<string>;
+}
+/**
+ *
+ * @export
+ * @interface UpdateContextResponse
+ */
+export interface UpdateContextResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof UpdateContextResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof UpdateContextResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
+ * @interface UpdateContextsRequest
+ */
+export interface UpdateContextsRequest {
+    /**
+     *
+     * @type {Array<Context>}
+     * @memberof UpdateContextsRequest
+     */
+    'customers'?: Array<Context>;
+}
+/**
+ *
+ * @export
+ * @interface UpdateContextsResponse
+ */
+export interface UpdateContextsResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof UpdateContextsResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof UpdateContextsResponse
+     */
+    'error'?: Error;
 }
 /**
  *
@@ -2144,6 +3589,167 @@ export interface UpdateCustomersResponse {
      */
     'error'?: Error;
 }
+/**
+ *
+ * @export
+ * @interface UpdateWorkflowRequest
+ */
+export interface UpdateWorkflowRequest {
+    /**
+     * The name of the workflow
+     * @type {string}
+     * @memberof UpdateWorkflowRequest
+     */
+    'name': string;
+    /**
+     *
+     * @type {ContextDetectionParams}
+     * @memberof UpdateWorkflowRequest
+     */
+    'initiators': ContextDetectionParams;
+    /**
+     * The fields of the workflow
+     * @type {Array<ConversationContextField>}
+     * @memberof UpdateWorkflowRequest
+     */
+    'fields': Array<ConversationContextField>;
+    /**
+     * About this conversation - used as initial context
+     * @type {string}
+     * @memberof UpdateWorkflowRequest
+     */
+    'context': string;
+    /**
+     * The webhook to call when a workflow is created
+     * @type {string}
+     * @memberof UpdateWorkflowRequest
+     */
+    'onCreated'?: string;
+    /**
+     * The webhook to call when a workflow is updated
+     * @type {string}
+     * @memberof UpdateWorkflowRequest
+     */
+    'onUpdated'?: string;
+    /**
+     * The webhook to call when a workflow is deleted
+     * @type {string}
+     * @memberof UpdateWorkflowRequest
+     */
+    'onDeleted'?: string;
+    /**
+     * The webhook to call when a workflow has an error
+     * @type {string}
+     * @memberof UpdateWorkflowRequest
+     */
+    'onError'?: string;
+}
+/**
+ *
+ * @export
+ * @interface UpdateWorkflowResponse
+ */
+export interface UpdateWorkflowResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof UpdateWorkflowResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof UpdateWorkflowResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
+ * @interface UpdateWorkflowsRequest
+ */
+export interface UpdateWorkflowsRequest {
+    /**
+     *
+     * @type {Array<Workflow>}
+     * @memberof UpdateWorkflowsRequest
+     */
+    'customers'?: Array<Workflow>;
+}
+/**
+ *
+ * @export
+ * @interface UpdateWorkflowsResponse
+ */
+export interface UpdateWorkflowsResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof UpdateWorkflowsResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof UpdateWorkflowsResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
+ * @interface Workflow
+ */
+export interface Workflow {
+    /**
+     * The name of the workflow
+     * @type {string}
+     * @memberof Workflow
+     */
+    'name': string;
+    /**
+     *
+     * @type {ContextDetectionParams}
+     * @memberof Workflow
+     */
+    'initiators': ContextDetectionParams;
+    /**
+     * The fields of the workflow
+     * @type {Array<ConversationContextField>}
+     * @memberof Workflow
+     */
+    'fields': Array<ConversationContextField>;
+    /**
+     * About this conversation - used as initial context
+     * @type {string}
+     * @memberof Workflow
+     */
+    'context': string;
+    /**
+     * The webhook to call when a workflow is created
+     * @type {string}
+     * @memberof Workflow
+     */
+    'onCreated'?: string;
+    /**
+     * The webhook to call when a workflow is updated
+     * @type {string}
+     * @memberof Workflow
+     */
+    'onUpdated'?: string;
+    /**
+     * The webhook to call when a workflow is deleted
+     * @type {string}
+     * @memberof Workflow
+     */
+    'onDeleted'?: string;
+    /**
+     * The webhook to call when a workflow has an error
+     * @type {string}
+     * @memberof Workflow
+     */
+    'onError'?: string;
+}
 
 /**
  * Scout9Api - axios parameter creator
@@ -2151,6 +3757,150 @@ export interface UpdateCustomersResponse {
  */
 export const Scout9ApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
+        /**
+         *
+         * @summary Create a new agent
+         * @param {CreateAgentRequest} createAgentRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createAgent: async (createAgentRequest: CreateAgentRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'createAgentRequest' is not null or undefined
+            assertParamExists('createAgent', 'createAgentRequest', createAgentRequest)
+            const localVarPath = `/v1/agent`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createAgentRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
+         * @summary Creates new agents
+         * @param {CreateAgentsRequest} createAgentsRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createAgents: async (createAgentsRequest: CreateAgentsRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'createAgentsRequest' is not null or undefined
+            assertParamExists('createAgents', 'createAgentsRequest', createAgentsRequest)
+            const localVarPath = `/v1/agents`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createAgentsRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
+         * @summary Create a new context
+         * @param {CreateContextRequest} createContextRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createContext: async (createContextRequest: CreateContextRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'createContextRequest' is not null or undefined
+            assertParamExists('createContext', 'createContextRequest', createContextRequest)
+            const localVarPath = `/v1/context`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createContextRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
+         * @summary Creates new contexts
+         * @param {CreateContextsRequest} createContextsRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createContexts: async (createContextsRequest: CreateContextsRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'createContextsRequest' is not null or undefined
+            assertParamExists('createContexts', 'createContextsRequest', createContextsRequest)
+            const localVarPath = `/v1/contexts`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createContextsRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
         /**
          *
          * @summary Create a new conversation
@@ -2369,6 +4119,226 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         },
         /**
          *
+         * @summary Create a new workflow
+         * @param {CreateWorkflowRequest} createWorkflowRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createWorkflow: async (createWorkflowRequest: CreateWorkflowRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'createWorkflowRequest' is not null or undefined
+            assertParamExists('createWorkflow', 'createWorkflowRequest', createWorkflowRequest)
+            const localVarPath = `/v1/workflow`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createWorkflowRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
+         * @summary Creates new workflows
+         * @param {CreateWorkflowsRequest} createWorkflowsRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createWorkflows: async (createWorkflowsRequest: CreateWorkflowsRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'createWorkflowsRequest' is not null or undefined
+            assertParamExists('createWorkflows', 'createWorkflowsRequest', createWorkflowsRequest)
+            const localVarPath = `/v1/workflows`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createWorkflowsRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
+         * @summary Deletes a agent
+         * @param {string} id Agent ID to delete agent
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteAgent: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deleteAgent', 'id', id)
+            const localVarPath = `/v1/agent`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (id !== undefined) {
+                localVarQueryParameter['id'] = id;
+            }
+
+
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
+         * @summary Deletes multiple agents
+         * @param {string} id Agent IDs to delete multiple agents
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteAgents: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deleteAgents', 'id', id)
+            const localVarPath = `/v1/agents`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (id !== undefined) {
+                localVarQueryParameter['id'] = id;
+            }
+
+
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
+         * @summary Deletes a schedule
+         * @param {string} id Context ID to delete context
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteContext: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deleteContext', 'id', id)
+            const localVarPath = `/v1/context`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (id !== undefined) {
+                localVarQueryParameter['id'] = id;
+            }
+
+
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
+         * @summary Deletes multiple contexts
+         * @param {string} id Context IDs to delete multiple context
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteContexts: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deleteContexts', 'id', id)
+            const localVarPath = `/v1/contexts`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (id !== undefined) {
+                localVarQueryParameter['id'] = id;
+            }
+
+
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
          * @summary Deletes a schedule
          * @param {string} id Schedule ID to delete schedule
          * @param {*} [options] Override http request option.
@@ -2554,6 +4524,80 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         },
         /**
          *
+         * @summary Deletes a workflow
+         * @param {string} id workflow ID to delete workflow
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteWorkflow: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deleteWorkflow', 'id', id)
+            const localVarPath = `/v1/workflow`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (id !== undefined) {
+                localVarQueryParameter['id'] = id;
+            }
+
+
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
+         * @summary Deletes multiple workflows
+         * @param {string} id Workflow IDs to delete multiple workflow
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteWorkflows: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deleteWorkflows', 'id', id)
+            const localVarPath = `/v1/workflows`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (id !== undefined) {
+                localVarQueryParameter['id'] = id;
+            }
+
+
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
          * @summary Generate a message from conversation
          * @param {GenerateRequest} generateRequest
          * @param {*} [options] Override http request option.
@@ -2582,6 +4626,150 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
             localVarRequestOptions.data = serializeDataIfNeeded(generateRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
+         * @summary Gets a agent
+         * @param {string} id Agent ID to get agent
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAgent: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('getAgent', 'id', id)
+            const localVarPath = `/v1/agent`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (id !== undefined) {
+                localVarQueryParameter['id'] = id;
+            }
+
+
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
+         * @summary Gets all or specific set of agents
+         * @param {string} [id] Optional get specific agents
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAgents: async (id?: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/agents`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (id !== undefined) {
+                localVarQueryParameter['id'] = id;
+            }
+
+
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
+         * @summary Gets a context
+         * @param {string} id Context ID to get context
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getContext: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('getContext', 'id', id)
+            const localVarPath = `/v1/context`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (id !== undefined) {
+                localVarQueryParameter['id'] = id;
+            }
+
+
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
+         * @summary Gets all or specific set of contexts
+         * @param {string} [id] Optional get specific contexts
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getContexts: async (id?: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/contexts`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (id !== undefined) {
+                localVarQueryParameter['id'] = id;
+            }
+
+
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -2810,6 +4998,222 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         },
         /**
          *
+         * @summary Gets a workflow
+         * @param {string} id Workflow ID to get workflow
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getWorkflow: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('getWorkflow', 'id', id)
+            const localVarPath = `/v1/workflow`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (id !== undefined) {
+                localVarQueryParameter['id'] = id;
+            }
+
+
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
+         * @summary Gets all or specific set of workflows
+         * @param {string} [id] Optional get specific workflows
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getWorkflows: async (id?: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/v1/workflows`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (id !== undefined) {
+                localVarQueryParameter['id'] = id;
+            }
+
+
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
+         * @summary Update a agent
+         * @param {UpdateAgentRequest} updateAgentRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateAgent: async (updateAgentRequest: UpdateAgentRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'updateAgentRequest' is not null or undefined
+            assertParamExists('updateAgent', 'updateAgentRequest', updateAgentRequest)
+            const localVarPath = `/v1/agent`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(updateAgentRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
+         * @summary Updates multiple agents
+         * @param {UpdateAgentsRequest} updateAgentsRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateAgents: async (updateAgentsRequest: UpdateAgentsRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'updateAgentsRequest' is not null or undefined
+            assertParamExists('updateAgents', 'updateAgentsRequest', updateAgentsRequest)
+            const localVarPath = `/v1/agents`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(updateAgentsRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
+         * @summary Update a context
+         * @param {UpdateContextRequest} updateContextRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateContext: async (updateContextRequest: UpdateContextRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'updateContextRequest' is not null or undefined
+            assertParamExists('updateContext', 'updateContextRequest', updateContextRequest)
+            const localVarPath = `/v1/context`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(updateContextRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
+         * @summary Updates multiple contexts
+         * @param {UpdateContextRequest} updateContextRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateContexts: async (updateContextRequest: UpdateContextRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'updateContextRequest' is not null or undefined
+            assertParamExists('updateContexts', 'updateContextRequest', updateContextRequest)
+            const localVarPath = `/v1/contexts`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(updateContextRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
          * @summary Update a conversation
          * @param {ConversationUpdateRequest} conversationUpdateRequest
          * @param {*} [options] Override http request option.
@@ -2988,6 +5392,78 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
                 options: localVarRequestOptions,
             };
         },
+        /**
+         *
+         * @summary Update a workflow
+         * @param {UpdateWorkflowRequest} updateWorkflowRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateWorkflow: async (updateWorkflowRequest: UpdateWorkflowRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'updateWorkflowRequest' is not null or undefined
+            assertParamExists('updateWorkflow', 'updateWorkflowRequest', updateWorkflowRequest)
+            const localVarPath = `/v1/workflow`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(updateWorkflowRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
+         * @summary Updates multiple workflows
+         * @param {UpdateWorkflowRequest} updateWorkflowRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateWorkflows: async (updateWorkflowRequest: UpdateWorkflowRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'updateWorkflowRequest' is not null or undefined
+            assertParamExists('updateWorkflows', 'updateWorkflowRequest', updateWorkflowRequest)
+            const localVarPath = `/v1/workflows`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(updateWorkflowRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -2998,6 +5474,50 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
 export const Scout9ApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = Scout9ApiAxiosParamCreator(configuration)
     return {
+        /**
+         *
+         * @summary Create a new agent
+         * @param {CreateAgentRequest} createAgentRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createAgent(createAgentRequest: CreateAgentRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateAgentResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createAgent(createAgentRequest, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         *
+         * @summary Creates new agents
+         * @param {CreateAgentsRequest} createAgentsRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createAgents(createAgentsRequest: CreateAgentsRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateAgentsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createAgents(createAgentsRequest, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         *
+         * @summary Create a new context
+         * @param {CreateContextRequest} createContextRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createContext(createContextRequest: CreateContextRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateContextResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createContext(createContextRequest, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         *
+         * @summary Creates new contexts
+         * @param {CreateContextsRequest} createContextsRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createContexts(createContextsRequest: CreateContextsRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateContextsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createContexts(createContextsRequest, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
         /**
          *
          * @summary Create a new conversation
@@ -3066,6 +5586,72 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
         },
         /**
          *
+         * @summary Create a new workflow
+         * @param {CreateWorkflowRequest} createWorkflowRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createWorkflow(createWorkflowRequest: CreateWorkflowRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateWorkflowResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createWorkflow(createWorkflowRequest, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         *
+         * @summary Creates new workflows
+         * @param {CreateWorkflowsRequest} createWorkflowsRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createWorkflows(createWorkflowsRequest: CreateWorkflowsRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateWorkflowsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createWorkflows(createWorkflowsRequest, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         *
+         * @summary Deletes a agent
+         * @param {string} id Agent ID to delete agent
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteAgent(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteAgentResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteAgent(id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         *
+         * @summary Deletes multiple agents
+         * @param {string} id Agent IDs to delete multiple agents
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteAgents(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteAgentsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteAgents(id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         *
+         * @summary Deletes a schedule
+         * @param {string} id Context ID to delete context
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteContext(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteContextResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteContext(id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         *
+         * @summary Deletes multiple contexts
+         * @param {string} id Context IDs to delete multiple context
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteContexts(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteContextsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteContexts(id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         *
          * @summary Deletes a schedule
          * @param {string} id Schedule ID to delete schedule
          * @param {*} [options] Override http request option.
@@ -3121,6 +5707,28 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
         },
         /**
          *
+         * @summary Deletes a workflow
+         * @param {string} id workflow ID to delete workflow
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteWorkflow(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteWorkflowResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteWorkflow(id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         *
+         * @summary Deletes multiple workflows
+         * @param {string} id Workflow IDs to delete multiple workflow
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteWorkflows(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteWorkflowsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteWorkflows(id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         *
          * @summary Generate a message from conversation
          * @param {GenerateRequest} generateRequest
          * @param {*} [options] Override http request option.
@@ -3128,6 +5736,50 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
          */
         async generate(generateRequest: GenerateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GenerateResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.generate(generateRequest, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         *
+         * @summary Gets a agent
+         * @param {string} id Agent ID to get agent
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getAgent(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetAgentResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAgent(id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         *
+         * @summary Gets all or specific set of agents
+         * @param {string} [id] Optional get specific agents
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getAgents(id?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Agent>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAgents(id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         *
+         * @summary Gets a context
+         * @param {string} id Context ID to get context
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getContext(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetContextResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getContext(id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         *
+         * @summary Gets all or specific set of contexts
+         * @param {string} [id] Optional get specific contexts
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getContexts(id?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Context>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getContexts(id, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -3198,6 +5850,72 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
         },
         /**
          *
+         * @summary Gets a workflow
+         * @param {string} id Workflow ID to get workflow
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getWorkflow(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetWorkflowResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getWorkflow(id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         *
+         * @summary Gets all or specific set of workflows
+         * @param {string} [id] Optional get specific workflows
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getWorkflows(id?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Workflow>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getWorkflows(id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         *
+         * @summary Update a agent
+         * @param {UpdateAgentRequest} updateAgentRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateAgent(updateAgentRequest: UpdateAgentRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateAgentResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateAgent(updateAgentRequest, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         *
+         * @summary Updates multiple agents
+         * @param {UpdateAgentsRequest} updateAgentsRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateAgents(updateAgentsRequest: UpdateAgentsRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateAgentsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateAgents(updateAgentsRequest, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         *
+         * @summary Update a context
+         * @param {UpdateContextRequest} updateContextRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateContext(updateContextRequest: UpdateContextRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateContextResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateContext(updateContextRequest, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         *
+         * @summary Updates multiple contexts
+         * @param {UpdateContextRequest} updateContextRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateContexts(updateContextRequest: UpdateContextRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateContextsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateContexts(updateContextRequest, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         *
          * @summary Update a conversation
          * @param {ConversationUpdateRequest} conversationUpdateRequest
          * @param {*} [options] Override http request option.
@@ -3251,6 +5969,28 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.updateScheduleGroup(scheduleGroupUpdateRequest, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
+        /**
+         *
+         * @summary Update a workflow
+         * @param {UpdateWorkflowRequest} updateWorkflowRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateWorkflow(updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateWorkflowResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateWorkflow(updateWorkflowRequest, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         *
+         * @summary Updates multiple workflows
+         * @param {UpdateWorkflowRequest} updateWorkflowRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateWorkflows(updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateWorkflowsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateWorkflows(updateWorkflowRequest, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
     }
 };
 
@@ -3261,6 +6001,46 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
 export const Scout9ApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
     const localVarFp = Scout9ApiFp(configuration)
     return {
+        /**
+         *
+         * @summary Create a new agent
+         * @param {CreateAgentRequest} createAgentRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createAgent(createAgentRequest: CreateAgentRequest, options?: any): AxiosPromise<CreateAgentResponse> {
+            return localVarFp.createAgent(createAgentRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
+         * @summary Creates new agents
+         * @param {CreateAgentsRequest} createAgentsRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createAgents(createAgentsRequest: CreateAgentsRequest, options?: any): AxiosPromise<CreateAgentsResponse> {
+            return localVarFp.createAgents(createAgentsRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
+         * @summary Create a new context
+         * @param {CreateContextRequest} createContextRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createContext(createContextRequest: CreateContextRequest, options?: any): AxiosPromise<CreateContextResponse> {
+            return localVarFp.createContext(createContextRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
+         * @summary Creates new contexts
+         * @param {CreateContextsRequest} createContextsRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createContexts(createContextsRequest: CreateContextsRequest, options?: any): AxiosPromise<CreateContextsResponse> {
+            return localVarFp.createContexts(createContextsRequest, options).then((request) => request(axios, basePath));
+        },
         /**
          *
          * @summary Create a new conversation
@@ -3323,6 +6103,66 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
         },
         /**
          *
+         * @summary Create a new workflow
+         * @param {CreateWorkflowRequest} createWorkflowRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createWorkflow(createWorkflowRequest: CreateWorkflowRequest, options?: any): AxiosPromise<CreateWorkflowResponse> {
+            return localVarFp.createWorkflow(createWorkflowRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
+         * @summary Creates new workflows
+         * @param {CreateWorkflowsRequest} createWorkflowsRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createWorkflows(createWorkflowsRequest: CreateWorkflowsRequest, options?: any): AxiosPromise<CreateWorkflowsResponse> {
+            return localVarFp.createWorkflows(createWorkflowsRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
+         * @summary Deletes a agent
+         * @param {string} id Agent ID to delete agent
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteAgent(id: string, options?: any): AxiosPromise<DeleteAgentResponse> {
+            return localVarFp.deleteAgent(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
+         * @summary Deletes multiple agents
+         * @param {string} id Agent IDs to delete multiple agents
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteAgents(id: string, options?: any): AxiosPromise<DeleteAgentsResponse> {
+            return localVarFp.deleteAgents(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
+         * @summary Deletes a schedule
+         * @param {string} id Context ID to delete context
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteContext(id: string, options?: any): AxiosPromise<DeleteContextResponse> {
+            return localVarFp.deleteContext(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
+         * @summary Deletes multiple contexts
+         * @param {string} id Context IDs to delete multiple context
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteContexts(id: string, options?: any): AxiosPromise<DeleteContextsResponse> {
+            return localVarFp.deleteContexts(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
          * @summary Deletes a schedule
          * @param {string} id Schedule ID to delete schedule
          * @param {*} [options] Override http request option.
@@ -3373,6 +6213,26 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
         },
         /**
          *
+         * @summary Deletes a workflow
+         * @param {string} id workflow ID to delete workflow
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteWorkflow(id: string, options?: any): AxiosPromise<DeleteWorkflowResponse> {
+            return localVarFp.deleteWorkflow(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
+         * @summary Deletes multiple workflows
+         * @param {string} id Workflow IDs to delete multiple workflow
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteWorkflows(id: string, options?: any): AxiosPromise<DeleteWorkflowsResponse> {
+            return localVarFp.deleteWorkflows(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
          * @summary Generate a message from conversation
          * @param {GenerateRequest} generateRequest
          * @param {*} [options] Override http request option.
@@ -3380,6 +6240,46 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
          */
         generate(generateRequest: GenerateRequest, options?: any): AxiosPromise<GenerateResponse> {
             return localVarFp.generate(generateRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
+         * @summary Gets a agent
+         * @param {string} id Agent ID to get agent
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAgent(id: string, options?: any): AxiosPromise<GetAgentResponse> {
+            return localVarFp.getAgent(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
+         * @summary Gets all or specific set of agents
+         * @param {string} [id] Optional get specific agents
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAgents(id?: string, options?: any): AxiosPromise<Array<Agent>> {
+            return localVarFp.getAgents(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
+         * @summary Gets a context
+         * @param {string} id Context ID to get context
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getContext(id: string, options?: any): AxiosPromise<GetContextResponse> {
+            return localVarFp.getContext(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
+         * @summary Gets all or specific set of contexts
+         * @param {string} [id] Optional get specific contexts
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getContexts(id?: string, options?: any): AxiosPromise<Array<Context>> {
+            return localVarFp.getContexts(id, options).then((request) => request(axios, basePath));
         },
         /**
          *
@@ -3443,6 +6343,66 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
         },
         /**
          *
+         * @summary Gets a workflow
+         * @param {string} id Workflow ID to get workflow
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getWorkflow(id: string, options?: any): AxiosPromise<GetWorkflowResponse> {
+            return localVarFp.getWorkflow(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
+         * @summary Gets all or specific set of workflows
+         * @param {string} [id] Optional get specific workflows
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getWorkflows(id?: string, options?: any): AxiosPromise<Array<Workflow>> {
+            return localVarFp.getWorkflows(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
+         * @summary Update a agent
+         * @param {UpdateAgentRequest} updateAgentRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateAgent(updateAgentRequest: UpdateAgentRequest, options?: any): AxiosPromise<UpdateAgentResponse> {
+            return localVarFp.updateAgent(updateAgentRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
+         * @summary Updates multiple agents
+         * @param {UpdateAgentsRequest} updateAgentsRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateAgents(updateAgentsRequest: UpdateAgentsRequest, options?: any): AxiosPromise<UpdateAgentsResponse> {
+            return localVarFp.updateAgents(updateAgentsRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
+         * @summary Update a context
+         * @param {UpdateContextRequest} updateContextRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateContext(updateContextRequest: UpdateContextRequest, options?: any): AxiosPromise<UpdateContextResponse> {
+            return localVarFp.updateContext(updateContextRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
+         * @summary Updates multiple contexts
+         * @param {UpdateContextRequest} updateContextRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateContexts(updateContextRequest: UpdateContextRequest, options?: any): AxiosPromise<UpdateContextsResponse> {
+            return localVarFp.updateContexts(updateContextRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
          * @summary Update a conversation
          * @param {ConversationUpdateRequest} conversationUpdateRequest
          * @param {*} [options] Override http request option.
@@ -3491,6 +6451,26 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
         updateScheduleGroup(scheduleGroupUpdateRequest: ScheduleGroupUpdateRequest, options?: any): AxiosPromise<ScheduleGroupUpdateResponse> {
             return localVarFp.updateScheduleGroup(scheduleGroupUpdateRequest, options).then((request) => request(axios, basePath));
         },
+        /**
+         *
+         * @summary Update a workflow
+         * @param {UpdateWorkflowRequest} updateWorkflowRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateWorkflow(updateWorkflowRequest: UpdateWorkflowRequest, options?: any): AxiosPromise<UpdateWorkflowResponse> {
+            return localVarFp.updateWorkflow(updateWorkflowRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
+         * @summary Updates multiple workflows
+         * @param {UpdateWorkflowRequest} updateWorkflowRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateWorkflows(updateWorkflowRequest: UpdateWorkflowRequest, options?: any): AxiosPromise<UpdateWorkflowsResponse> {
+            return localVarFp.updateWorkflows(updateWorkflowRequest, options).then((request) => request(axios, basePath));
+        },
     };
 };
 
@@ -3501,6 +6481,54 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
  * @extends {BaseAPI}
  */
 export class Scout9Api extends BaseAPI {
+    /**
+     *
+     * @summary Create a new agent
+     * @param {CreateAgentRequest} createAgentRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    public createAgent(createAgentRequest: CreateAgentRequest, options?: AxiosRequestConfig) {
+        return Scout9ApiFp(this.configuration).createAgent(createAgentRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     *
+     * @summary Creates new agents
+     * @param {CreateAgentsRequest} createAgentsRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    public createAgents(createAgentsRequest: CreateAgentsRequest, options?: AxiosRequestConfig) {
+        return Scout9ApiFp(this.configuration).createAgents(createAgentsRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     *
+     * @summary Create a new context
+     * @param {CreateContextRequest} createContextRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    public createContext(createContextRequest: CreateContextRequest, options?: AxiosRequestConfig) {
+        return Scout9ApiFp(this.configuration).createContext(createContextRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     *
+     * @summary Creates new contexts
+     * @param {CreateContextsRequest} createContextsRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    public createContexts(createContextsRequest: CreateContextsRequest, options?: AxiosRequestConfig) {
+        return Scout9ApiFp(this.configuration).createContexts(createContextsRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      *
      * @summary Create a new conversation
@@ -3575,6 +6603,78 @@ export class Scout9Api extends BaseAPI {
 
     /**
      *
+     * @summary Create a new workflow
+     * @param {CreateWorkflowRequest} createWorkflowRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    public createWorkflow(createWorkflowRequest: CreateWorkflowRequest, options?: AxiosRequestConfig) {
+        return Scout9ApiFp(this.configuration).createWorkflow(createWorkflowRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     *
+     * @summary Creates new workflows
+     * @param {CreateWorkflowsRequest} createWorkflowsRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    public createWorkflows(createWorkflowsRequest: CreateWorkflowsRequest, options?: AxiosRequestConfig) {
+        return Scout9ApiFp(this.configuration).createWorkflows(createWorkflowsRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     *
+     * @summary Deletes a agent
+     * @param {string} id Agent ID to delete agent
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    public deleteAgent(id: string, options?: AxiosRequestConfig) {
+        return Scout9ApiFp(this.configuration).deleteAgent(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     *
+     * @summary Deletes multiple agents
+     * @param {string} id Agent IDs to delete multiple agents
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    public deleteAgents(id: string, options?: AxiosRequestConfig) {
+        return Scout9ApiFp(this.configuration).deleteAgents(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     *
+     * @summary Deletes a schedule
+     * @param {string} id Context ID to delete context
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    public deleteContext(id: string, options?: AxiosRequestConfig) {
+        return Scout9ApiFp(this.configuration).deleteContext(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     *
+     * @summary Deletes multiple contexts
+     * @param {string} id Context IDs to delete multiple context
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    public deleteContexts(id: string, options?: AxiosRequestConfig) {
+        return Scout9ApiFp(this.configuration).deleteContexts(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     *
      * @summary Deletes a schedule
      * @param {string} id Schedule ID to delete schedule
      * @param {*} [options] Override http request option.
@@ -3635,6 +6735,30 @@ export class Scout9Api extends BaseAPI {
 
     /**
      *
+     * @summary Deletes a workflow
+     * @param {string} id workflow ID to delete workflow
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    public deleteWorkflow(id: string, options?: AxiosRequestConfig) {
+        return Scout9ApiFp(this.configuration).deleteWorkflow(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     *
+     * @summary Deletes multiple workflows
+     * @param {string} id Workflow IDs to delete multiple workflow
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    public deleteWorkflows(id: string, options?: AxiosRequestConfig) {
+        return Scout9ApiFp(this.configuration).deleteWorkflows(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     *
      * @summary Generate a message from conversation
      * @param {GenerateRequest} generateRequest
      * @param {*} [options] Override http request option.
@@ -3643,6 +6767,54 @@ export class Scout9Api extends BaseAPI {
      */
     public generate(generateRequest: GenerateRequest, options?: AxiosRequestConfig) {
         return Scout9ApiFp(this.configuration).generate(generateRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     *
+     * @summary Gets a agent
+     * @param {string} id Agent ID to get agent
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    public getAgent(id: string, options?: AxiosRequestConfig) {
+        return Scout9ApiFp(this.configuration).getAgent(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     *
+     * @summary Gets all or specific set of agents
+     * @param {string} [id] Optional get specific agents
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    public getAgents(id?: string, options?: AxiosRequestConfig) {
+        return Scout9ApiFp(this.configuration).getAgents(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     *
+     * @summary Gets a context
+     * @param {string} id Context ID to get context
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    public getContext(id: string, options?: AxiosRequestConfig) {
+        return Scout9ApiFp(this.configuration).getContext(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     *
+     * @summary Gets all or specific set of contexts
+     * @param {string} [id] Optional get specific contexts
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    public getContexts(id?: string, options?: AxiosRequestConfig) {
+        return Scout9ApiFp(this.configuration).getContexts(id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -3719,6 +6891,78 @@ export class Scout9Api extends BaseAPI {
 
     /**
      *
+     * @summary Gets a workflow
+     * @param {string} id Workflow ID to get workflow
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    public getWorkflow(id: string, options?: AxiosRequestConfig) {
+        return Scout9ApiFp(this.configuration).getWorkflow(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     *
+     * @summary Gets all or specific set of workflows
+     * @param {string} [id] Optional get specific workflows
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    public getWorkflows(id?: string, options?: AxiosRequestConfig) {
+        return Scout9ApiFp(this.configuration).getWorkflows(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     *
+     * @summary Update a agent
+     * @param {UpdateAgentRequest} updateAgentRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    public updateAgent(updateAgentRequest: UpdateAgentRequest, options?: AxiosRequestConfig) {
+        return Scout9ApiFp(this.configuration).updateAgent(updateAgentRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     *
+     * @summary Updates multiple agents
+     * @param {UpdateAgentsRequest} updateAgentsRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    public updateAgents(updateAgentsRequest: UpdateAgentsRequest, options?: AxiosRequestConfig) {
+        return Scout9ApiFp(this.configuration).updateAgents(updateAgentsRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     *
+     * @summary Update a context
+     * @param {UpdateContextRequest} updateContextRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    public updateContext(updateContextRequest: UpdateContextRequest, options?: AxiosRequestConfig) {
+        return Scout9ApiFp(this.configuration).updateContext(updateContextRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     *
+     * @summary Updates multiple contexts
+     * @param {UpdateContextRequest} updateContextRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    public updateContexts(updateContextRequest: UpdateContextRequest, options?: AxiosRequestConfig) {
+        return Scout9ApiFp(this.configuration).updateContexts(updateContextRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     *
      * @summary Update a conversation
      * @param {ConversationUpdateRequest} conversationUpdateRequest
      * @param {*} [options] Override http request option.
@@ -3775,6 +7019,30 @@ export class Scout9Api extends BaseAPI {
      */
     public updateScheduleGroup(scheduleGroupUpdateRequest: ScheduleGroupUpdateRequest, options?: AxiosRequestConfig) {
         return Scout9ApiFp(this.configuration).updateScheduleGroup(scheduleGroupUpdateRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     *
+     * @summary Update a workflow
+     * @param {UpdateWorkflowRequest} updateWorkflowRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    public updateWorkflow(updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig) {
+        return Scout9ApiFp(this.configuration).updateWorkflow(updateWorkflowRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     *
+     * @summary Updates multiple workflows
+     * @param {UpdateWorkflowRequest} updateWorkflowRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    public updateWorkflows(updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig) {
+        return Scout9ApiFp(this.configuration).updateWorkflows(updateWorkflowRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

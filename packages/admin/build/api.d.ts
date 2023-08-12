@@ -16,6 +16,96 @@ import { BaseAPI } from './base';
 /**
  *
  * @export
+ * @interface Agent
+ */
+export interface Agent {
+    /**
+     * Agent first name
+     * @type {string}
+     * @memberof Agent
+     */
+    'firstName': string;
+    /**
+     * Agent last name
+     * @type {string}
+     * @memberof Agent
+     */
+    'lastName': string;
+    /**
+     * Agent is inactive
+     * @type {boolean}
+     * @memberof Agent
+     */
+    'inactive'?: boolean;
+    /**
+     * Programmable phone number
+     * @type {string}
+     * @memberof Agent
+     */
+    'programmablePhoneNumber'?: string;
+    /**
+     * Programmable phone number SID
+     * @type {string}
+     * @memberof Agent
+     */
+    'programmablePhoneNumberSid'?: string;
+    /**
+     * Email address from Scout9 gmail subdomain
+     * @type {string}
+     * @memberof Agent
+     */
+    'programmableEmail'?: string;
+    /**
+     * Forward email
+     * @type {string}
+     * @memberof Agent
+     */
+    'forwardEmail'?: string;
+    /**
+     * Forward phone
+     * @type {string}
+     * @memberof Agent
+     */
+    'forwardPhone': string;
+    /**
+     * Title of the agent, defaults to \"Agent\"
+     * @type {string}
+     * @memberof Agent
+     */
+    'title'?: string;
+    /**
+     * Context of the agent, defaults to \"Agent\"
+     * @type {string}
+     * @memberof Agent
+     */
+    'context'?: string;
+    /**
+     * Locations ids the agent is included in
+     * @type {Array<string>}
+     * @memberof Agent
+     */
+    'includedLocations'?: Array<string>;
+    /**
+     * Locations id the agent is excluded from
+     * @type {Array<string>}
+     * @memberof Agent
+     */
+    'excludedLocations'?: Array<string>;
+    /**
+     * Transcript of the agent
+     * @type {string}
+     * @memberof Agent
+     */
+    'transcript'?: string;
+}
+/**
+ * @type AnyValue
+ * @export
+ */
+export type AnyValue = boolean | number | object | string;
+/**
+ *
+ * @export
  * @interface BlockInfo
  */
 export interface BlockInfo {
@@ -35,6 +125,173 @@ export interface BlockInfo {
 /**
  *
  * @export
+ * @interface Context
+ */
+export interface Context {
+    /**
+     * The ID of the context
+     * @type {string}
+     * @memberof Context
+     */
+    '$id': string;
+    /**
+     * The name of the context
+     * @type {string}
+     * @memberof Context
+     */
+    'name': string;
+    /**
+     * Whether or not the context is modifiable
+     * @type {boolean}
+     * @memberof Context
+     */
+    'modifiable': boolean;
+    /**
+     * The description of the context
+     * @type {string}
+     * @memberof Context
+     */
+    'description'?: string;
+    /**
+     *
+     * @type {ContextDetectionParams}
+     * @memberof Context
+     */
+    'detection'?: ContextDetectionParams;
+    /**
+     * The ID column of the context
+     * @type {string}
+     * @memberof Context
+     */
+    'idColumn': string;
+    /**
+     * The columns of the context
+     * @type {Array<string>}
+     * @memberof Context
+     */
+    'columns': Array<string>;
+    /**
+     * The required columns of the context
+     * @type {Array<string>}
+     * @memberof Context
+     */
+    'requiredColumns'?: Array<string>;
+}
+/**
+ *
+ * @export
+ * @interface ContextDetectionDocument
+ */
+export interface ContextDetectionDocument {
+    /**
+     * The languages the entity is available in
+     * @type {Array<string>}
+     * @memberof ContextDetectionDocument
+     */
+    'languages'?: Array<string>;
+    /**
+     *
+     * @type {string}
+     * @memberof ContextDetectionDocument
+     */
+    'text': string;
+    /**
+     *
+     * @type {string}
+     * @memberof ContextDetectionDocument
+     */
+    'id': string;
+}
+/**
+ *
+ * @export
+ * @interface ContextDetectionEntity
+ */
+export interface ContextDetectionEntity {
+    /**
+     * The utterance ID of the entity
+     * @type {string}
+     * @memberof ContextDetectionEntity
+     */
+    'utteranceId': string;
+    /**
+     * The classification of the given text
+     * @type {string}
+     * @memberof ContextDetectionEntity
+     */
+    'option': string;
+    /**
+     * The languages the entity is available in
+     * @type {Array<string>}
+     * @memberof ContextDetectionEntity
+     */
+    'languages'?: Array<string>;
+    /**
+     *
+     * @type {Array<string>}
+     * @memberof ContextDetectionEntity
+     */
+    'text': Array<string>;
+}
+/**
+ *
+ * @export
+ * @interface ContextDetectionParams
+ */
+export interface ContextDetectionParams {
+    /**
+     *
+     * @type {Array<ContextDetectionEntity>}
+     * @memberof ContextDetectionParams
+     */
+    'entities': Array<ContextDetectionEntity>;
+    /**
+     *
+     * @type {Array<ContextDetectionDocument>}
+     * @memberof ContextDetectionParams
+     */
+    'documents': Array<ContextDetectionDocument>;
+    /**
+     *
+     * @type {Array<ContextDetectionTest>}
+     * @memberof ContextDetectionParams
+     */
+    'test'?: Array<ContextDetectionTest>;
+}
+/**
+ *
+ * @export
+ * @interface ContextDetectionTest
+ */
+export interface ContextDetectionTest {
+    /**
+     *
+     * @type {string}
+     * @memberof ContextDetectionTest
+     */
+    'language'?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof ContextDetectionTest
+     */
+    'text': string;
+    /**
+     *
+     * @type {string}
+     * @memberof ContextDetectionTest
+     */
+    'targetUtteranceId': string;
+    /**
+     *
+     * @type {string}
+     * @memberof ContextDetectionTest
+     */
+    'targetOption': string;
+}
+/**
+ *
+ * @export
  * @interface Conversation
  */
 export interface Conversation {
@@ -43,25 +300,25 @@ export interface Conversation {
      * @type {string}
      * @memberof Conversation
      */
-    '$customer'?: string;
+    '$customer': string;
     /**
      * Business this conversation is with
      * @type {string}
      * @memberof Conversation
      */
-    '$business'?: string;
+    '$business': string;
     /**
      * Agent assigned to this conversation
      * @type {string}
      * @memberof Conversation
      */
-    '$agent'?: string;
+    '$agent': string;
     /**
      * Thread this conversation is in - this determines what context to pull when loading the conversation
      * @type {string}
      * @memberof Conversation
      */
-    '$thread'?: string;
+    '$thread': string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -78,6 +335,99 @@ export interface Conversation {
 /**
  *
  * @export
+ * @interface ConversationContextField
+ */
+export interface ConversationContextField {
+    /**
+     * The ID of the context
+     * @type {string}
+     * @memberof ConversationContextField
+     */
+    'id': string;
+    /**
+     * The time the context was created
+     * @type {string}
+     * @memberof ConversationContextField
+     */
+    'time'?: string;
+    /**
+     * The context of the conversation
+     * @type {string}
+     * @memberof ConversationContextField
+     */
+    'context': string;
+    /**
+     * The note of the conversation
+     * @type {string}
+     * @memberof ConversationContextField
+     */
+    'note'?: string;
+    /**
+     * The metadata of the conversation
+     * @type {object}
+     * @memberof ConversationContextField
+     */
+    'metadata'?: object;
+    /**
+     * The conditions of the conversation
+     * @type {Array<ConversationContextGroup>}
+     * @memberof ConversationContextField
+     */
+    'conditions'?: Array<ConversationContextGroup>;
+    /**
+     * The triggers of the conversation
+     * @type {Array<string>}
+     * @memberof ConversationContextField
+     */
+    'triggers'?: Array<string>;
+}
+/**
+ *
+ * @export
+ * @interface ConversationContextFieldCondition
+ */
+export interface ConversationContextFieldCondition {
+    /**
+     * The key of the condition
+     * @type {string}
+     * @memberof ConversationContextFieldCondition
+     */
+    'key': string;
+    /**
+     * The operator of the condition
+     * @type {string}
+     * @memberof ConversationContextFieldCondition
+     */
+    'operator': string;
+    /**
+     * The regex of the condition
+     * @type {string}
+     * @memberof ConversationContextFieldCondition
+     */
+    'regex'?: string;
+    /**
+     *
+     * @type {AnyValue}
+     * @memberof ConversationContextFieldCondition
+     */
+    'value': AnyValue;
+}
+/**
+ *
+ * @export
+ * @interface ConversationContextGroup
+ */
+export interface ConversationContextGroup {
+    /**
+     * The conditions of the conversation
+     * @type {Array<ConversationContextFieldCondition>}
+     * @memberof ConversationContextGroup
+     */
+    'conditions': Array<ConversationContextFieldCondition>;
+}
+/**
+ *
+ * @export
  * @interface ConversationCreateRequest
  */
 export interface ConversationCreateRequest {
@@ -86,25 +436,25 @@ export interface ConversationCreateRequest {
      * @type {string}
      * @memberof ConversationCreateRequest
      */
-    '$customer'?: string;
+    '$customer': string;
     /**
      *
      * @type {any}
      * @memberof ConversationCreateRequest
      */
-    '$business'?: any | null;
+    '$business': any | null;
     /**
      * Agent assigned to this conversation
      * @type {string}
      * @memberof ConversationCreateRequest
      */
-    '$agent'?: string;
+    '$agent': string;
     /**
      * Thread this conversation is in - this determines what context to pull when loading the conversation
      * @type {string}
      * @memberof ConversationCreateRequest
      */
-    '$thread'?: string;
+    '$thread': string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -161,25 +511,25 @@ export interface ConversationGetResponse {
      * @type {string}
      * @memberof ConversationGetResponse
      */
-    '$customer'?: string;
+    '$customer': string;
     /**
      * Business this conversation is with
      * @type {string}
      * @memberof ConversationGetResponse
      */
-    '$business'?: string;
+    '$business': string;
     /**
      * Agent assigned to this conversation
      * @type {string}
      * @memberof ConversationGetResponse
      */
-    '$agent'?: string;
+    '$agent': string;
     /**
      * Thread this conversation is in - this determines what context to pull when loading the conversation
      * @type {string}
      * @memberof ConversationGetResponse
      */
-    '$thread'?: string;
+    '$thread': string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -223,25 +573,25 @@ export interface ConversationUpdateRequest {
      * @type {string}
      * @memberof ConversationUpdateRequest
      */
-    '$customer'?: string;
+    '$customer': string;
     /**
      * Business this conversation is with
      * @type {string}
      * @memberof ConversationUpdateRequest
      */
-    '$business'?: string;
+    '$business': string;
     /**
      * Agent assigned to this conversation
      * @type {string}
      * @memberof ConversationUpdateRequest
      */
-    '$agent'?: string;
+    '$agent': string;
     /**
      * Thread this conversation is in - this determines what context to pull when loading the conversation
      * @type {string}
      * @memberof ConversationUpdateRequest
      */
-    '$thread'?: string;
+    '$thread': string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -290,6 +640,388 @@ export interface ConversationUpdateResponse {
      *
      * @type {Error}
      * @memberof ConversationUpdateResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
+ * @interface CreateAgentRequest
+ */
+export interface CreateAgentRequest {
+    /**
+     * Agent first name
+     * @type {string}
+     * @memberof CreateAgentRequest
+     */
+    'firstName': string;
+    /**
+     * Agent last name
+     * @type {string}
+     * @memberof CreateAgentRequest
+     */
+    'lastName': string;
+    /**
+     * Agent is inactive
+     * @type {boolean}
+     * @memberof CreateAgentRequest
+     */
+    'inactive'?: boolean;
+    /**
+     * Programmable phone number
+     * @type {string}
+     * @memberof CreateAgentRequest
+     */
+    'programmablePhoneNumber'?: string;
+    /**
+     * Programmable phone number SID
+     * @type {string}
+     * @memberof CreateAgentRequest
+     */
+    'programmablePhoneNumberSid'?: string;
+    /**
+     * Email address from Scout9 gmail subdomain
+     * @type {string}
+     * @memberof CreateAgentRequest
+     */
+    'programmableEmail'?: string;
+    /**
+     * Forward email
+     * @type {string}
+     * @memberof CreateAgentRequest
+     */
+    'forwardEmail'?: string;
+    /**
+     * Forward phone
+     * @type {string}
+     * @memberof CreateAgentRequest
+     */
+    'forwardPhone': string;
+    /**
+     * Title of the agent, defaults to \"Agent\"
+     * @type {string}
+     * @memberof CreateAgentRequest
+     */
+    'title'?: string;
+    /**
+     * Context of the agent, defaults to \"Agent\"
+     * @type {string}
+     * @memberof CreateAgentRequest
+     */
+    'context'?: string;
+    /**
+     * Locations ids the agent is included in
+     * @type {Array<string>}
+     * @memberof CreateAgentRequest
+     */
+    'includedLocations'?: Array<string>;
+    /**
+     * Locations id the agent is excluded from
+     * @type {Array<string>}
+     * @memberof CreateAgentRequest
+     */
+    'excludedLocations'?: Array<string>;
+    /**
+     * Transcript of the agent
+     * @type {string}
+     * @memberof CreateAgentRequest
+     */
+    'transcript'?: string;
+}
+/**
+ *
+ * @export
+ * @interface CreateAgentResponse
+ */
+export interface CreateAgentResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof CreateAgentResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof CreateAgentResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
+ * @interface CreateAgentsRequest
+ */
+export interface CreateAgentsRequest {
+    /**
+     *
+     * @type {Array<CreateAgentsRequestCustomersInner>}
+     * @memberof CreateAgentsRequest
+     */
+    'customers'?: Array<CreateAgentsRequestCustomersInner>;
+}
+/**
+ *
+ * @export
+ * @interface CreateAgentsRequestCustomersInner
+ */
+export interface CreateAgentsRequestCustomersInner {
+    /**
+     * Agent first name
+     * @type {string}
+     * @memberof CreateAgentsRequestCustomersInner
+     */
+    'firstName': string;
+    /**
+     * Agent last name
+     * @type {string}
+     * @memberof CreateAgentsRequestCustomersInner
+     */
+    'lastName': string;
+    /**
+     * Agent is inactive
+     * @type {boolean}
+     * @memberof CreateAgentsRequestCustomersInner
+     */
+    'inactive'?: boolean;
+    /**
+     * Programmable phone number
+     * @type {string}
+     * @memberof CreateAgentsRequestCustomersInner
+     */
+    'programmablePhoneNumber'?: string;
+    /**
+     * Programmable phone number SID
+     * @type {string}
+     * @memberof CreateAgentsRequestCustomersInner
+     */
+    'programmablePhoneNumberSid'?: string;
+    /**
+     * Email address from Scout9 gmail subdomain
+     * @type {string}
+     * @memberof CreateAgentsRequestCustomersInner
+     */
+    'programmableEmail'?: string;
+    /**
+     * Forward email
+     * @type {string}
+     * @memberof CreateAgentsRequestCustomersInner
+     */
+    'forwardEmail'?: string;
+    /**
+     * Forward phone
+     * @type {string}
+     * @memberof CreateAgentsRequestCustomersInner
+     */
+    'forwardPhone': string;
+    /**
+     * Title of the agent, defaults to \"Agent\"
+     * @type {string}
+     * @memberof CreateAgentsRequestCustomersInner
+     */
+    'title'?: string;
+    /**
+     * Context of the agent, defaults to \"Agent\"
+     * @type {string}
+     * @memberof CreateAgentsRequestCustomersInner
+     */
+    'context'?: string;
+    /**
+     * Locations ids the agent is included in
+     * @type {Array<string>}
+     * @memberof CreateAgentsRequestCustomersInner
+     */
+    'includedLocations'?: Array<string>;
+    /**
+     * Locations id the agent is excluded from
+     * @type {Array<string>}
+     * @memberof CreateAgentsRequestCustomersInner
+     */
+    'excludedLocations'?: Array<string>;
+    /**
+     * Transcript of the agent
+     * @type {string}
+     * @memberof CreateAgentsRequestCustomersInner
+     */
+    'transcript'?: string;
+}
+/**
+ *
+ * @export
+ * @interface CreateAgentsResponse
+ */
+export interface CreateAgentsResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof CreateAgentsResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof CreateAgentsResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
+ * @interface CreateContextRequest
+ */
+export interface CreateContextRequest {
+    /**
+     * The ID of the context
+     * @type {string}
+     * @memberof CreateContextRequest
+     */
+    '$id': string;
+    /**
+     * The name of the context
+     * @type {string}
+     * @memberof CreateContextRequest
+     */
+    'name': string;
+    /**
+     * Whether or not the context is modifiable
+     * @type {boolean}
+     * @memberof CreateContextRequest
+     */
+    'modifiable': boolean;
+    /**
+     * The description of the context
+     * @type {string}
+     * @memberof CreateContextRequest
+     */
+    'description'?: string;
+    /**
+     *
+     * @type {ContextDetectionParams}
+     * @memberof CreateContextRequest
+     */
+    'detection'?: ContextDetectionParams;
+    /**
+     * The ID column of the context
+     * @type {string}
+     * @memberof CreateContextRequest
+     */
+    'idColumn': string;
+    /**
+     * The columns of the context
+     * @type {Array<string>}
+     * @memberof CreateContextRequest
+     */
+    'columns': Array<string>;
+    /**
+     * The required columns of the context
+     * @type {Array<string>}
+     * @memberof CreateContextRequest
+     */
+    'requiredColumns'?: Array<string>;
+}
+/**
+ *
+ * @export
+ * @interface CreateContextResponse
+ */
+export interface CreateContextResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof CreateContextResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof CreateContextResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
+ * @interface CreateContextsRequest
+ */
+export interface CreateContextsRequest {
+    /**
+     *
+     * @type {Array<CreateContextsRequestCustomersInner>}
+     * @memberof CreateContextsRequest
+     */
+    'customers'?: Array<CreateContextsRequestCustomersInner>;
+}
+/**
+ *
+ * @export
+ * @interface CreateContextsRequestCustomersInner
+ */
+export interface CreateContextsRequestCustomersInner {
+    /**
+     * The ID of the context
+     * @type {string}
+     * @memberof CreateContextsRequestCustomersInner
+     */
+    '$id': string;
+    /**
+     * The name of the context
+     * @type {string}
+     * @memberof CreateContextsRequestCustomersInner
+     */
+    'name': string;
+    /**
+     * Whether or not the context is modifiable
+     * @type {boolean}
+     * @memberof CreateContextsRequestCustomersInner
+     */
+    'modifiable': boolean;
+    /**
+     * The description of the context
+     * @type {string}
+     * @memberof CreateContextsRequestCustomersInner
+     */
+    'description'?: string;
+    /**
+     *
+     * @type {ContextDetectionParams}
+     * @memberof CreateContextsRequestCustomersInner
+     */
+    'detection'?: ContextDetectionParams;
+    /**
+     * The ID column of the context
+     * @type {string}
+     * @memberof CreateContextsRequestCustomersInner
+     */
+    'idColumn': string;
+    /**
+     * The columns of the context
+     * @type {Array<string>}
+     * @memberof CreateContextsRequestCustomersInner
+     */
+    'columns': Array<string>;
+    /**
+     * The required columns of the context
+     * @type {Array<string>}
+     * @memberof CreateContextsRequestCustomersInner
+     */
+    'requiredColumns'?: Array<string>;
+}
+/**
+ *
+ * @export
+ * @interface CreateContextsResponse
+ */
+export interface CreateContextsResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof CreateContextsResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof CreateContextsResponse
      */
     'error'?: Error;
 }
@@ -601,6 +1333,167 @@ export interface CreateCustomersResponse {
 /**
  *
  * @export
+ * @interface CreateWorkflowRequest
+ */
+export interface CreateWorkflowRequest {
+    /**
+     * The name of the workflow
+     * @type {string}
+     * @memberof CreateWorkflowRequest
+     */
+    'name': string;
+    /**
+     *
+     * @type {ContextDetectionParams}
+     * @memberof CreateWorkflowRequest
+     */
+    'initiators': ContextDetectionParams;
+    /**
+     * The fields of the workflow
+     * @type {Array<ConversationContextField>}
+     * @memberof CreateWorkflowRequest
+     */
+    'fields': Array<ConversationContextField>;
+    /**
+     * About this conversation - used as initial context
+     * @type {string}
+     * @memberof CreateWorkflowRequest
+     */
+    'context': string;
+    /**
+     * The webhook to call when a workflow is created
+     * @type {string}
+     * @memberof CreateWorkflowRequest
+     */
+    'onCreated'?: string;
+    /**
+     * The webhook to call when a workflow is updated
+     * @type {string}
+     * @memberof CreateWorkflowRequest
+     */
+    'onUpdated'?: string;
+    /**
+     * The webhook to call when a workflow is deleted
+     * @type {string}
+     * @memberof CreateWorkflowRequest
+     */
+    'onDeleted'?: string;
+    /**
+     * The webhook to call when a workflow has an error
+     * @type {string}
+     * @memberof CreateWorkflowRequest
+     */
+    'onError'?: string;
+}
+/**
+ *
+ * @export
+ * @interface CreateWorkflowResponse
+ */
+export interface CreateWorkflowResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof CreateWorkflowResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof CreateWorkflowResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
+ * @interface CreateWorkflowsRequest
+ */
+export interface CreateWorkflowsRequest {
+    /**
+     *
+     * @type {Array<CreateWorkflowsRequestCustomersInner>}
+     * @memberof CreateWorkflowsRequest
+     */
+    'customers'?: Array<CreateWorkflowsRequestCustomersInner>;
+}
+/**
+ *
+ * @export
+ * @interface CreateWorkflowsRequestCustomersInner
+ */
+export interface CreateWorkflowsRequestCustomersInner {
+    /**
+     * The name of the workflow
+     * @type {string}
+     * @memberof CreateWorkflowsRequestCustomersInner
+     */
+    'name': string;
+    /**
+     *
+     * @type {ContextDetectionParams}
+     * @memberof CreateWorkflowsRequestCustomersInner
+     */
+    'initiators': ContextDetectionParams;
+    /**
+     * The fields of the workflow
+     * @type {Array<ConversationContextField>}
+     * @memberof CreateWorkflowsRequestCustomersInner
+     */
+    'fields': Array<ConversationContextField>;
+    /**
+     * About this conversation - used as initial context
+     * @type {string}
+     * @memberof CreateWorkflowsRequestCustomersInner
+     */
+    'context': string;
+    /**
+     * The webhook to call when a workflow is created
+     * @type {string}
+     * @memberof CreateWorkflowsRequestCustomersInner
+     */
+    'onCreated'?: string;
+    /**
+     * The webhook to call when a workflow is updated
+     * @type {string}
+     * @memberof CreateWorkflowsRequestCustomersInner
+     */
+    'onUpdated'?: string;
+    /**
+     * The webhook to call when a workflow is deleted
+     * @type {string}
+     * @memberof CreateWorkflowsRequestCustomersInner
+     */
+    'onDeleted'?: string;
+    /**
+     * The webhook to call when a workflow has an error
+     * @type {string}
+     * @memberof CreateWorkflowsRequestCustomersInner
+     */
+    'onError'?: string;
+}
+/**
+ *
+ * @export
+ * @interface CreateWorkflowsResponse
+ */
+export interface CreateWorkflowsResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof CreateWorkflowsResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof CreateWorkflowsResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
  * @interface Customer
  */
 export interface Customer {
@@ -728,6 +1621,82 @@ export interface Customer {
 /**
  *
  * @export
+ * @interface DeleteAgentResponse
+ */
+export interface DeleteAgentResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof DeleteAgentResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof DeleteAgentResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
+ * @interface DeleteAgentsResponse
+ */
+export interface DeleteAgentsResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof DeleteAgentsResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof DeleteAgentsResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
+ * @interface DeleteContextResponse
+ */
+export interface DeleteContextResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof DeleteContextResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof DeleteContextResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
+ * @interface DeleteContextsResponse
+ */
+export interface DeleteContextsResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof DeleteContextsResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof DeleteContextsResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
  * @interface DeleteCustomerResponse
  */
 export interface DeleteCustomerResponse {
@@ -760,6 +1729,44 @@ export interface DeleteCustomersResponse {
      *
      * @type {Error}
      * @memberof DeleteCustomersResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
+ * @interface DeleteWorkflowResponse
+ */
+export interface DeleteWorkflowResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof DeleteWorkflowResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof DeleteWorkflowResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
+ * @interface DeleteWorkflowsResponse
+ */
+export interface DeleteWorkflowsResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof DeleteWorkflowsResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof DeleteWorkflowsResponse
      */
     'error'?: Error;
 }
@@ -819,6 +1826,146 @@ export interface GenerateResponse {
      * @memberof GenerateResponse
      */
     'time'?: string;
+}
+/**
+ *
+ * @export
+ * @interface GetAgentResponse
+ */
+export interface GetAgentResponse {
+    /**
+     * Agent first name
+     * @type {string}
+     * @memberof GetAgentResponse
+     */
+    'firstName': string;
+    /**
+     * Agent last name
+     * @type {string}
+     * @memberof GetAgentResponse
+     */
+    'lastName': string;
+    /**
+     * Agent is inactive
+     * @type {boolean}
+     * @memberof GetAgentResponse
+     */
+    'inactive'?: boolean;
+    /**
+     * Programmable phone number
+     * @type {string}
+     * @memberof GetAgentResponse
+     */
+    'programmablePhoneNumber'?: string;
+    /**
+     * Programmable phone number SID
+     * @type {string}
+     * @memberof GetAgentResponse
+     */
+    'programmablePhoneNumberSid'?: string;
+    /**
+     * Email address from Scout9 gmail subdomain
+     * @type {string}
+     * @memberof GetAgentResponse
+     */
+    'programmableEmail'?: string;
+    /**
+     * Forward email
+     * @type {string}
+     * @memberof GetAgentResponse
+     */
+    'forwardEmail'?: string;
+    /**
+     * Forward phone
+     * @type {string}
+     * @memberof GetAgentResponse
+     */
+    'forwardPhone': string;
+    /**
+     * Title of the agent, defaults to \"Agent\"
+     * @type {string}
+     * @memberof GetAgentResponse
+     */
+    'title'?: string;
+    /**
+     * Context of the agent, defaults to \"Agent\"
+     * @type {string}
+     * @memberof GetAgentResponse
+     */
+    'context'?: string;
+    /**
+     * Locations ids the agent is included in
+     * @type {Array<string>}
+     * @memberof GetAgentResponse
+     */
+    'includedLocations'?: Array<string>;
+    /**
+     * Locations id the agent is excluded from
+     * @type {Array<string>}
+     * @memberof GetAgentResponse
+     */
+    'excludedLocations'?: Array<string>;
+    /**
+     * Transcript of the agent
+     * @type {string}
+     * @memberof GetAgentResponse
+     */
+    'transcript'?: string;
+}
+/**
+ *
+ * @export
+ * @interface GetContextResponse
+ */
+export interface GetContextResponse {
+    /**
+     * The ID of the context
+     * @type {string}
+     * @memberof GetContextResponse
+     */
+    '$id': string;
+    /**
+     * The name of the context
+     * @type {string}
+     * @memberof GetContextResponse
+     */
+    'name': string;
+    /**
+     * Whether or not the context is modifiable
+     * @type {boolean}
+     * @memberof GetContextResponse
+     */
+    'modifiable': boolean;
+    /**
+     * The description of the context
+     * @type {string}
+     * @memberof GetContextResponse
+     */
+    'description'?: string;
+    /**
+     *
+     * @type {ContextDetectionParams}
+     * @memberof GetContextResponse
+     */
+    'detection'?: ContextDetectionParams;
+    /**
+     * The ID column of the context
+     * @type {string}
+     * @memberof GetContextResponse
+     */
+    'idColumn': string;
+    /**
+     * The columns of the context
+     * @type {Array<string>}
+     * @memberof GetContextResponse
+     */
+    'columns': Array<string>;
+    /**
+     * The required columns of the context
+     * @type {Array<string>}
+     * @memberof GetContextResponse
+     */
+    'requiredColumns'?: Array<string>;
 }
 /**
  *
@@ -946,6 +2093,61 @@ export interface GetCustomerResponse {
      * @memberof GetCustomerResponse
      */
     'stripeDev'?: string | null;
+}
+/**
+ *
+ * @export
+ * @interface GetWorkflowResponse
+ */
+export interface GetWorkflowResponse {
+    /**
+     * The name of the workflow
+     * @type {string}
+     * @memberof GetWorkflowResponse
+     */
+    'name': string;
+    /**
+     *
+     * @type {ContextDetectionParams}
+     * @memberof GetWorkflowResponse
+     */
+    'initiators': ContextDetectionParams;
+    /**
+     * The fields of the workflow
+     * @type {Array<ConversationContextField>}
+     * @memberof GetWorkflowResponse
+     */
+    'fields': Array<ConversationContextField>;
+    /**
+     * About this conversation - used as initial context
+     * @type {string}
+     * @memberof GetWorkflowResponse
+     */
+    'context': string;
+    /**
+     * The webhook to call when a workflow is created
+     * @type {string}
+     * @memberof GetWorkflowResponse
+     */
+    'onCreated'?: string;
+    /**
+     * The webhook to call when a workflow is updated
+     * @type {string}
+     * @memberof GetWorkflowResponse
+     */
+    'onUpdated'?: string;
+    /**
+     * The webhook to call when a workflow is deleted
+     * @type {string}
+     * @memberof GetWorkflowResponse
+     */
+    'onDeleted'?: string;
+    /**
+     * The webhook to call when a workflow has an error
+     * @type {string}
+     * @memberof GetWorkflowResponse
+     */
+    'onError'?: string;
 }
 /**
  *
@@ -1108,25 +2310,25 @@ export interface ScheduleCreateRequest {
      * @type {string}
      * @memberof ScheduleCreateRequest
      */
-    '$customer'?: string;
+    '$customer': string;
     /**
      *
      * @type {any}
      * @memberof ScheduleCreateRequest
      */
-    '$business'?: any | null;
+    '$business': any | null;
     /**
      * Agent assigned to this conversation
      * @type {string}
      * @memberof ScheduleCreateRequest
      */
-    '$agent'?: string;
+    '$agent': string;
     /**
      * Thread this conversation is in - this determines what context to pull when loading the conversation
      * @type {string}
      * @memberof ScheduleCreateRequest
      */
-    '$thread'?: string;
+    '$thread': string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -1200,25 +2402,25 @@ export interface ScheduleGetResponse {
      * @type {string}
      * @memberof ScheduleGetResponse
      */
-    '$customer'?: string;
+    '$customer': string;
     /**
      * Business this conversation is with
      * @type {string}
      * @memberof ScheduleGetResponse
      */
-    '$business'?: string;
+    '$business': string;
     /**
      * Agent assigned to this conversation
      * @type {string}
      * @memberof ScheduleGetResponse
      */
-    '$agent'?: string;
+    '$agent': string;
     /**
      * Thread this conversation is in - this determines what context to pull when loading the conversation
      * @type {string}
      * @memberof ScheduleGetResponse
      */
-    '$thread'?: string;
+    '$thread': string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -1273,25 +2475,25 @@ export interface ScheduleGroupCreateRequest {
      * @type {string}
      * @memberof ScheduleGroupCreateRequest
      */
-    '$customer'?: string;
+    '$customer': string;
     /**
      *
      * @type {any}
      * @memberof ScheduleGroupCreateRequest
      */
-    '$business'?: any | null;
+    '$business': any | null;
     /**
      * Agent assigned to this conversation
      * @type {string}
      * @memberof ScheduleGroupCreateRequest
      */
-    '$agent'?: string;
+    '$agent': string;
     /**
      * Thread this conversation is in - this determines what context to pull when loading the conversation
      * @type {string}
      * @memberof ScheduleGroupCreateRequest
      */
-    '$thread'?: string;
+    '$thread': string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -1377,25 +2579,25 @@ export interface ScheduleGroupGetResponse {
      * @type {string}
      * @memberof ScheduleGroupGetResponse
      */
-    '$customer'?: string;
+    '$customer': string;
     /**
      * Business this conversation is with
      * @type {string}
      * @memberof ScheduleGroupGetResponse
      */
-    '$business'?: string;
+    '$business': string;
     /**
      * Agent assigned to this conversation
      * @type {string}
      * @memberof ScheduleGroupGetResponse
      */
-    '$agent'?: string;
+    '$agent': string;
     /**
      * Thread this conversation is in - this determines what context to pull when loading the conversation
      * @type {string}
      * @memberof ScheduleGroupGetResponse
      */
-    '$thread'?: string;
+    '$thread': string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -1481,25 +2683,25 @@ export interface ScheduleGroupUpdateRequest {
      * @type {string}
      * @memberof ScheduleGroupUpdateRequest
      */
-    '$customer'?: string;
+    '$customer': string;
     /**
      * Business this conversation is with
      * @type {string}
      * @memberof ScheduleGroupUpdateRequest
      */
-    '$business'?: string;
+    '$business': string;
     /**
      * Agent assigned to this conversation
      * @type {string}
      * @memberof ScheduleGroupUpdateRequest
      */
-    '$agent'?: string;
+    '$agent': string;
     /**
      * Thread this conversation is in - this determines what context to pull when loading the conversation
      * @type {string}
      * @memberof ScheduleGroupUpdateRequest
      */
-    '$thread'?: string;
+    '$thread': string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -1623,25 +2825,25 @@ export interface ScheduleUpdateRequest {
      * @type {string}
      * @memberof ScheduleUpdateRequest
      */
-    '$customer'?: string;
+    '$customer': string;
     /**
      * Business this conversation is with
      * @type {string}
      * @memberof ScheduleUpdateRequest
      */
-    '$business'?: string;
+    '$business': string;
     /**
      * Agent assigned to this conversation
      * @type {string}
      * @memberof ScheduleUpdateRequest
      */
-    '$agent'?: string;
+    '$agent': string;
     /**
      * Thread this conversation is in - this determines what context to pull when loading the conversation
      * @type {string}
      * @memberof ScheduleUpdateRequest
      */
-    '$thread'?: string;
+    '$thread': string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -1734,25 +2936,25 @@ export interface ScheduledConversation {
      * @type {string}
      * @memberof ScheduledConversation
      */
-    '$customer'?: string;
+    '$customer': string;
     /**
      * Business this conversation is with
      * @type {string}
      * @memberof ScheduledConversation
      */
-    '$business'?: string;
+    '$business': string;
     /**
      * Agent assigned to this conversation
      * @type {string}
      * @memberof ScheduledConversation
      */
-    '$agent'?: string;
+    '$agent': string;
     /**
      * Thread this conversation is in - this determines what context to pull when loading the conversation
      * @type {string}
      * @memberof ScheduledConversation
      */
-    '$thread'?: string;
+    '$thread': string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -1844,25 +3046,25 @@ export interface ScheduledConversationGroup {
      * @type {string}
      * @memberof ScheduledConversationGroup
      */
-    '$customer'?: string;
+    '$customer': string;
     /**
      * Business this conversation is with
      * @type {string}
      * @memberof ScheduledConversationGroup
      */
-    '$business'?: string;
+    '$business': string;
     /**
      * Agent assigned to this conversation
      * @type {string}
      * @memberof ScheduledConversationGroup
      */
-    '$agent'?: string;
+    '$agent': string;
     /**
      * Thread this conversation is in - this determines what context to pull when loading the conversation
      * @type {string}
      * @memberof ScheduledConversationGroup
      */
-    '$thread'?: string;
+    '$thread': string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -1955,6 +3157,248 @@ export interface ScheduledConversationGroupAllOfCustomers {
      * @memberof ScheduledConversationGroupAllOfCustomers
      */
     'id'?: string;
+}
+/**
+ *
+ * @export
+ * @interface UpdateAgentRequest
+ */
+export interface UpdateAgentRequest {
+    /**
+     * Agent first name
+     * @type {string}
+     * @memberof UpdateAgentRequest
+     */
+    'firstName': string;
+    /**
+     * Agent last name
+     * @type {string}
+     * @memberof UpdateAgentRequest
+     */
+    'lastName': string;
+    /**
+     * Agent is inactive
+     * @type {boolean}
+     * @memberof UpdateAgentRequest
+     */
+    'inactive'?: boolean;
+    /**
+     * Programmable phone number
+     * @type {string}
+     * @memberof UpdateAgentRequest
+     */
+    'programmablePhoneNumber'?: string;
+    /**
+     * Programmable phone number SID
+     * @type {string}
+     * @memberof UpdateAgentRequest
+     */
+    'programmablePhoneNumberSid'?: string;
+    /**
+     * Email address from Scout9 gmail subdomain
+     * @type {string}
+     * @memberof UpdateAgentRequest
+     */
+    'programmableEmail'?: string;
+    /**
+     * Forward email
+     * @type {string}
+     * @memberof UpdateAgentRequest
+     */
+    'forwardEmail'?: string;
+    /**
+     * Forward phone
+     * @type {string}
+     * @memberof UpdateAgentRequest
+     */
+    'forwardPhone': string;
+    /**
+     * Title of the agent, defaults to \"Agent\"
+     * @type {string}
+     * @memberof UpdateAgentRequest
+     */
+    'title'?: string;
+    /**
+     * Context of the agent, defaults to \"Agent\"
+     * @type {string}
+     * @memberof UpdateAgentRequest
+     */
+    'context'?: string;
+    /**
+     * Locations ids the agent is included in
+     * @type {Array<string>}
+     * @memberof UpdateAgentRequest
+     */
+    'includedLocations'?: Array<string>;
+    /**
+     * Locations id the agent is excluded from
+     * @type {Array<string>}
+     * @memberof UpdateAgentRequest
+     */
+    'excludedLocations'?: Array<string>;
+    /**
+     * Transcript of the agent
+     * @type {string}
+     * @memberof UpdateAgentRequest
+     */
+    'transcript'?: string;
+}
+/**
+ *
+ * @export
+ * @interface UpdateAgentResponse
+ */
+export interface UpdateAgentResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof UpdateAgentResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof UpdateAgentResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
+ * @interface UpdateAgentsRequest
+ */
+export interface UpdateAgentsRequest {
+    /**
+     *
+     * @type {Array<Agent>}
+     * @memberof UpdateAgentsRequest
+     */
+    'customers'?: Array<Agent>;
+}
+/**
+ *
+ * @export
+ * @interface UpdateAgentsResponse
+ */
+export interface UpdateAgentsResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof UpdateAgentsResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof UpdateAgentsResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
+ * @interface UpdateContextRequest
+ */
+export interface UpdateContextRequest {
+    /**
+     * The ID of the context
+     * @type {string}
+     * @memberof UpdateContextRequest
+     */
+    '$id': string;
+    /**
+     * The name of the context
+     * @type {string}
+     * @memberof UpdateContextRequest
+     */
+    'name': string;
+    /**
+     * Whether or not the context is modifiable
+     * @type {boolean}
+     * @memberof UpdateContextRequest
+     */
+    'modifiable': boolean;
+    /**
+     * The description of the context
+     * @type {string}
+     * @memberof UpdateContextRequest
+     */
+    'description'?: string;
+    /**
+     *
+     * @type {ContextDetectionParams}
+     * @memberof UpdateContextRequest
+     */
+    'detection'?: ContextDetectionParams;
+    /**
+     * The ID column of the context
+     * @type {string}
+     * @memberof UpdateContextRequest
+     */
+    'idColumn': string;
+    /**
+     * The columns of the context
+     * @type {Array<string>}
+     * @memberof UpdateContextRequest
+     */
+    'columns': Array<string>;
+    /**
+     * The required columns of the context
+     * @type {Array<string>}
+     * @memberof UpdateContextRequest
+     */
+    'requiredColumns'?: Array<string>;
+}
+/**
+ *
+ * @export
+ * @interface UpdateContextResponse
+ */
+export interface UpdateContextResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof UpdateContextResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof UpdateContextResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
+ * @interface UpdateContextsRequest
+ */
+export interface UpdateContextsRequest {
+    /**
+     *
+     * @type {Array<Context>}
+     * @memberof UpdateContextsRequest
+     */
+    'customers'?: Array<Context>;
+}
+/**
+ *
+ * @export
+ * @interface UpdateContextsResponse
+ */
+export interface UpdateContextsResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof UpdateContextsResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof UpdateContextsResponse
+     */
+    'error'?: Error;
 }
 /**
  *
@@ -2135,10 +3579,203 @@ export interface UpdateCustomersResponse {
     'error'?: Error;
 }
 /**
+ *
+ * @export
+ * @interface UpdateWorkflowRequest
+ */
+export interface UpdateWorkflowRequest {
+    /**
+     * The name of the workflow
+     * @type {string}
+     * @memberof UpdateWorkflowRequest
+     */
+    'name': string;
+    /**
+     *
+     * @type {ContextDetectionParams}
+     * @memberof UpdateWorkflowRequest
+     */
+    'initiators': ContextDetectionParams;
+    /**
+     * The fields of the workflow
+     * @type {Array<ConversationContextField>}
+     * @memberof UpdateWorkflowRequest
+     */
+    'fields': Array<ConversationContextField>;
+    /**
+     * About this conversation - used as initial context
+     * @type {string}
+     * @memberof UpdateWorkflowRequest
+     */
+    'context': string;
+    /**
+     * The webhook to call when a workflow is created
+     * @type {string}
+     * @memberof UpdateWorkflowRequest
+     */
+    'onCreated'?: string;
+    /**
+     * The webhook to call when a workflow is updated
+     * @type {string}
+     * @memberof UpdateWorkflowRequest
+     */
+    'onUpdated'?: string;
+    /**
+     * The webhook to call when a workflow is deleted
+     * @type {string}
+     * @memberof UpdateWorkflowRequest
+     */
+    'onDeleted'?: string;
+    /**
+     * The webhook to call when a workflow has an error
+     * @type {string}
+     * @memberof UpdateWorkflowRequest
+     */
+    'onError'?: string;
+}
+/**
+ *
+ * @export
+ * @interface UpdateWorkflowResponse
+ */
+export interface UpdateWorkflowResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof UpdateWorkflowResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof UpdateWorkflowResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
+ * @interface UpdateWorkflowsRequest
+ */
+export interface UpdateWorkflowsRequest {
+    /**
+     *
+     * @type {Array<Workflow>}
+     * @memberof UpdateWorkflowsRequest
+     */
+    'customers'?: Array<Workflow>;
+}
+/**
+ *
+ * @export
+ * @interface UpdateWorkflowsResponse
+ */
+export interface UpdateWorkflowsResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof UpdateWorkflowsResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof UpdateWorkflowsResponse
+     */
+    'error'?: Error;
+}
+/**
+ *
+ * @export
+ * @interface Workflow
+ */
+export interface Workflow {
+    /**
+     * The name of the workflow
+     * @type {string}
+     * @memberof Workflow
+     */
+    'name': string;
+    /**
+     *
+     * @type {ContextDetectionParams}
+     * @memberof Workflow
+     */
+    'initiators': ContextDetectionParams;
+    /**
+     * The fields of the workflow
+     * @type {Array<ConversationContextField>}
+     * @memberof Workflow
+     */
+    'fields': Array<ConversationContextField>;
+    /**
+     * About this conversation - used as initial context
+     * @type {string}
+     * @memberof Workflow
+     */
+    'context': string;
+    /**
+     * The webhook to call when a workflow is created
+     * @type {string}
+     * @memberof Workflow
+     */
+    'onCreated'?: string;
+    /**
+     * The webhook to call when a workflow is updated
+     * @type {string}
+     * @memberof Workflow
+     */
+    'onUpdated'?: string;
+    /**
+     * The webhook to call when a workflow is deleted
+     * @type {string}
+     * @memberof Workflow
+     */
+    'onDeleted'?: string;
+    /**
+     * The webhook to call when a workflow has an error
+     * @type {string}
+     * @memberof Workflow
+     */
+    'onError'?: string;
+}
+/**
  * Scout9Api - axios parameter creator
  * @export
  */
 export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration) => {
+    /**
+     *
+     * @summary Create a new agent
+     * @param {CreateAgentRequest} createAgentRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createAgent: (createAgentRequest: CreateAgentRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Creates new agents
+     * @param {CreateAgentsRequest} createAgentsRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createAgents: (createAgentsRequest: CreateAgentsRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Create a new context
+     * @param {CreateContextRequest} createContextRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createContext: (createContextRequest: CreateContextRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Creates new contexts
+     * @param {CreateContextsRequest} createContextsRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createContexts: (createContextsRequest: CreateContextsRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
      * @summary Create a new conversation
@@ -2189,6 +3826,54 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
     createScheduleGroup: (scheduleGroupCreateRequest: ScheduleGroupCreateRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
+     * @summary Create a new workflow
+     * @param {CreateWorkflowRequest} createWorkflowRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createWorkflow: (createWorkflowRequest: CreateWorkflowRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Creates new workflows
+     * @param {CreateWorkflowsRequest} createWorkflowsRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createWorkflows: (createWorkflowsRequest: CreateWorkflowsRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Deletes a agent
+     * @param {string} id Agent ID to delete agent
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteAgent: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Deletes multiple agents
+     * @param {string} id Agent IDs to delete multiple agents
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteAgents: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Deletes a schedule
+     * @param {string} id Context ID to delete context
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteContext: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Deletes multiple contexts
+     * @param {string} id Context IDs to delete multiple context
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteContexts: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
      * @summary Deletes a schedule
      * @param {string} id Schedule ID to delete schedule
      * @param {*} [options] Override http request option.
@@ -2229,12 +3914,60 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
     deleteScheduleGroup: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
+     * @summary Deletes a workflow
+     * @param {string} id workflow ID to delete workflow
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteWorkflow: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Deletes multiple workflows
+     * @param {string} id Workflow IDs to delete multiple workflow
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteWorkflows: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
      * @summary Generate a message from conversation
      * @param {GenerateRequest} generateRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     generate: (generateRequest: GenerateRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Gets a agent
+     * @param {string} id Agent ID to get agent
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getAgent: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Gets all or specific set of agents
+     * @param {string} [id] Optional get specific agents
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getAgents: (id?: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Gets a context
+     * @param {string} id Context ID to get context
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getContext: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Gets all or specific set of contexts
+     * @param {string} [id] Optional get specific contexts
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getContexts: (id?: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
      * @summary Gets a conversation
@@ -2285,6 +4018,54 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
     getScheduleGroup: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
+     * @summary Gets a workflow
+     * @param {string} id Workflow ID to get workflow
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getWorkflow: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Gets all or specific set of workflows
+     * @param {string} [id] Optional get specific workflows
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getWorkflows: (id?: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Update a agent
+     * @param {UpdateAgentRequest} updateAgentRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateAgent: (updateAgentRequest: UpdateAgentRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Updates multiple agents
+     * @param {UpdateAgentsRequest} updateAgentsRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateAgents: (updateAgentsRequest: UpdateAgentsRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Update a context
+     * @param {UpdateContextRequest} updateContextRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateContext: (updateContextRequest: UpdateContextRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Updates multiple contexts
+     * @param {UpdateContextRequest} updateContextRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateContexts: (updateContextRequest: UpdateContextRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
      * @summary Update a conversation
      * @param {ConversationUpdateRequest} conversationUpdateRequest
      * @param {*} [options] Override http request option.
@@ -2323,12 +4104,60 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
      * @throws {RequiredError}
      */
     updateScheduleGroup: (scheduleGroupUpdateRequest: ScheduleGroupUpdateRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Update a workflow
+     * @param {UpdateWorkflowRequest} updateWorkflowRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateWorkflow: (updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Updates multiple workflows
+     * @param {UpdateWorkflowRequest} updateWorkflowRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateWorkflows: (updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
 };
 /**
  * Scout9Api - functional programming interface
  * @export
  */
 export declare const Scout9ApiFp: (configuration?: Configuration) => {
+    /**
+     *
+     * @summary Create a new agent
+     * @param {CreateAgentRequest} createAgentRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createAgent(createAgentRequest: CreateAgentRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateAgentResponse>>;
+    /**
+     *
+     * @summary Creates new agents
+     * @param {CreateAgentsRequest} createAgentsRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createAgents(createAgentsRequest: CreateAgentsRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateAgentsResponse>>;
+    /**
+     *
+     * @summary Create a new context
+     * @param {CreateContextRequest} createContextRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createContext(createContextRequest: CreateContextRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateContextResponse>>;
+    /**
+     *
+     * @summary Creates new contexts
+     * @param {CreateContextsRequest} createContextsRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createContexts(createContextsRequest: CreateContextsRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateContextsResponse>>;
     /**
      *
      * @summary Create a new conversation
@@ -2379,6 +4208,54 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
     createScheduleGroup(scheduleGroupCreateRequest: ScheduleGroupCreateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleGroupCreateResponse>>;
     /**
      *
+     * @summary Create a new workflow
+     * @param {CreateWorkflowRequest} createWorkflowRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createWorkflow(createWorkflowRequest: CreateWorkflowRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateWorkflowResponse>>;
+    /**
+     *
+     * @summary Creates new workflows
+     * @param {CreateWorkflowsRequest} createWorkflowsRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createWorkflows(createWorkflowsRequest: CreateWorkflowsRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateWorkflowsResponse>>;
+    /**
+     *
+     * @summary Deletes a agent
+     * @param {string} id Agent ID to delete agent
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteAgent(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteAgentResponse>>;
+    /**
+     *
+     * @summary Deletes multiple agents
+     * @param {string} id Agent IDs to delete multiple agents
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteAgents(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteAgentsResponse>>;
+    /**
+     *
+     * @summary Deletes a schedule
+     * @param {string} id Context ID to delete context
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteContext(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteContextResponse>>;
+    /**
+     *
+     * @summary Deletes multiple contexts
+     * @param {string} id Context IDs to delete multiple context
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteContexts(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteContextsResponse>>;
+    /**
+     *
      * @summary Deletes a schedule
      * @param {string} id Schedule ID to delete schedule
      * @param {*} [options] Override http request option.
@@ -2419,12 +4296,60 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
     deleteScheduleGroup(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleGroupRemoveResponse>>;
     /**
      *
+     * @summary Deletes a workflow
+     * @param {string} id workflow ID to delete workflow
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteWorkflow(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteWorkflowResponse>>;
+    /**
+     *
+     * @summary Deletes multiple workflows
+     * @param {string} id Workflow IDs to delete multiple workflow
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteWorkflows(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteWorkflowsResponse>>;
+    /**
+     *
      * @summary Generate a message from conversation
      * @param {GenerateRequest} generateRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     generate(generateRequest: GenerateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GenerateResponse>>;
+    /**
+     *
+     * @summary Gets a agent
+     * @param {string} id Agent ID to get agent
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getAgent(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetAgentResponse>>;
+    /**
+     *
+     * @summary Gets all or specific set of agents
+     * @param {string} [id] Optional get specific agents
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getAgents(id?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Agent>>>;
+    /**
+     *
+     * @summary Gets a context
+     * @param {string} id Context ID to get context
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getContext(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetContextResponse>>;
+    /**
+     *
+     * @summary Gets all or specific set of contexts
+     * @param {string} [id] Optional get specific contexts
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getContexts(id?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Context>>>;
     /**
      *
      * @summary Gets a conversation
@@ -2475,6 +4400,54 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
     getScheduleGroup(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleGroupGetResponse>>;
     /**
      *
+     * @summary Gets a workflow
+     * @param {string} id Workflow ID to get workflow
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getWorkflow(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetWorkflowResponse>>;
+    /**
+     *
+     * @summary Gets all or specific set of workflows
+     * @param {string} [id] Optional get specific workflows
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getWorkflows(id?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Workflow>>>;
+    /**
+     *
+     * @summary Update a agent
+     * @param {UpdateAgentRequest} updateAgentRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateAgent(updateAgentRequest: UpdateAgentRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateAgentResponse>>;
+    /**
+     *
+     * @summary Updates multiple agents
+     * @param {UpdateAgentsRequest} updateAgentsRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateAgents(updateAgentsRequest: UpdateAgentsRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateAgentsResponse>>;
+    /**
+     *
+     * @summary Update a context
+     * @param {UpdateContextRequest} updateContextRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateContext(updateContextRequest: UpdateContextRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateContextResponse>>;
+    /**
+     *
+     * @summary Updates multiple contexts
+     * @param {UpdateContextRequest} updateContextRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateContexts(updateContextRequest: UpdateContextRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateContextsResponse>>;
+    /**
+     *
      * @summary Update a conversation
      * @param {ConversationUpdateRequest} conversationUpdateRequest
      * @param {*} [options] Override http request option.
@@ -2513,12 +4486,60 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
      * @throws {RequiredError}
      */
     updateScheduleGroup(scheduleGroupUpdateRequest: ScheduleGroupUpdateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleGroupUpdateResponse>>;
+    /**
+     *
+     * @summary Update a workflow
+     * @param {UpdateWorkflowRequest} updateWorkflowRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateWorkflow(updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateWorkflowResponse>>;
+    /**
+     *
+     * @summary Updates multiple workflows
+     * @param {UpdateWorkflowRequest} updateWorkflowRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateWorkflows(updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateWorkflowsResponse>>;
 };
 /**
  * Scout9Api - factory interface
  * @export
  */
 export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) => {
+    /**
+     *
+     * @summary Create a new agent
+     * @param {CreateAgentRequest} createAgentRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createAgent(createAgentRequest: CreateAgentRequest, options?: any): AxiosPromise<CreateAgentResponse>;
+    /**
+     *
+     * @summary Creates new agents
+     * @param {CreateAgentsRequest} createAgentsRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createAgents(createAgentsRequest: CreateAgentsRequest, options?: any): AxiosPromise<CreateAgentsResponse>;
+    /**
+     *
+     * @summary Create a new context
+     * @param {CreateContextRequest} createContextRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createContext(createContextRequest: CreateContextRequest, options?: any): AxiosPromise<CreateContextResponse>;
+    /**
+     *
+     * @summary Creates new contexts
+     * @param {CreateContextsRequest} createContextsRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createContexts(createContextsRequest: CreateContextsRequest, options?: any): AxiosPromise<CreateContextsResponse>;
     /**
      *
      * @summary Create a new conversation
@@ -2569,6 +4590,54 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
     createScheduleGroup(scheduleGroupCreateRequest: ScheduleGroupCreateRequest, options?: any): AxiosPromise<ScheduleGroupCreateResponse>;
     /**
      *
+     * @summary Create a new workflow
+     * @param {CreateWorkflowRequest} createWorkflowRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createWorkflow(createWorkflowRequest: CreateWorkflowRequest, options?: any): AxiosPromise<CreateWorkflowResponse>;
+    /**
+     *
+     * @summary Creates new workflows
+     * @param {CreateWorkflowsRequest} createWorkflowsRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createWorkflows(createWorkflowsRequest: CreateWorkflowsRequest, options?: any): AxiosPromise<CreateWorkflowsResponse>;
+    /**
+     *
+     * @summary Deletes a agent
+     * @param {string} id Agent ID to delete agent
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteAgent(id: string, options?: any): AxiosPromise<DeleteAgentResponse>;
+    /**
+     *
+     * @summary Deletes multiple agents
+     * @param {string} id Agent IDs to delete multiple agents
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteAgents(id: string, options?: any): AxiosPromise<DeleteAgentsResponse>;
+    /**
+     *
+     * @summary Deletes a schedule
+     * @param {string} id Context ID to delete context
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteContext(id: string, options?: any): AxiosPromise<DeleteContextResponse>;
+    /**
+     *
+     * @summary Deletes multiple contexts
+     * @param {string} id Context IDs to delete multiple context
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteContexts(id: string, options?: any): AxiosPromise<DeleteContextsResponse>;
+    /**
+     *
      * @summary Deletes a schedule
      * @param {string} id Schedule ID to delete schedule
      * @param {*} [options] Override http request option.
@@ -2609,12 +4678,60 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
     deleteScheduleGroup(id: string, options?: any): AxiosPromise<ScheduleGroupRemoveResponse>;
     /**
      *
+     * @summary Deletes a workflow
+     * @param {string} id workflow ID to delete workflow
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteWorkflow(id: string, options?: any): AxiosPromise<DeleteWorkflowResponse>;
+    /**
+     *
+     * @summary Deletes multiple workflows
+     * @param {string} id Workflow IDs to delete multiple workflow
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteWorkflows(id: string, options?: any): AxiosPromise<DeleteWorkflowsResponse>;
+    /**
+     *
      * @summary Generate a message from conversation
      * @param {GenerateRequest} generateRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     generate(generateRequest: GenerateRequest, options?: any): AxiosPromise<GenerateResponse>;
+    /**
+     *
+     * @summary Gets a agent
+     * @param {string} id Agent ID to get agent
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getAgent(id: string, options?: any): AxiosPromise<GetAgentResponse>;
+    /**
+     *
+     * @summary Gets all or specific set of agents
+     * @param {string} [id] Optional get specific agents
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getAgents(id?: string, options?: any): AxiosPromise<Array<Agent>>;
+    /**
+     *
+     * @summary Gets a context
+     * @param {string} id Context ID to get context
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getContext(id: string, options?: any): AxiosPromise<GetContextResponse>;
+    /**
+     *
+     * @summary Gets all or specific set of contexts
+     * @param {string} [id] Optional get specific contexts
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getContexts(id?: string, options?: any): AxiosPromise<Array<Context>>;
     /**
      *
      * @summary Gets a conversation
@@ -2665,6 +4782,54 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
     getScheduleGroup(id: string, options?: any): AxiosPromise<ScheduleGroupGetResponse>;
     /**
      *
+     * @summary Gets a workflow
+     * @param {string} id Workflow ID to get workflow
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getWorkflow(id: string, options?: any): AxiosPromise<GetWorkflowResponse>;
+    /**
+     *
+     * @summary Gets all or specific set of workflows
+     * @param {string} [id] Optional get specific workflows
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getWorkflows(id?: string, options?: any): AxiosPromise<Array<Workflow>>;
+    /**
+     *
+     * @summary Update a agent
+     * @param {UpdateAgentRequest} updateAgentRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateAgent(updateAgentRequest: UpdateAgentRequest, options?: any): AxiosPromise<UpdateAgentResponse>;
+    /**
+     *
+     * @summary Updates multiple agents
+     * @param {UpdateAgentsRequest} updateAgentsRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateAgents(updateAgentsRequest: UpdateAgentsRequest, options?: any): AxiosPromise<UpdateAgentsResponse>;
+    /**
+     *
+     * @summary Update a context
+     * @param {UpdateContextRequest} updateContextRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateContext(updateContextRequest: UpdateContextRequest, options?: any): AxiosPromise<UpdateContextResponse>;
+    /**
+     *
+     * @summary Updates multiple contexts
+     * @param {UpdateContextRequest} updateContextRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateContexts(updateContextRequest: UpdateContextRequest, options?: any): AxiosPromise<UpdateContextsResponse>;
+    /**
+     *
      * @summary Update a conversation
      * @param {ConversationUpdateRequest} conversationUpdateRequest
      * @param {*} [options] Override http request option.
@@ -2703,6 +4868,22 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
      * @throws {RequiredError}
      */
     updateScheduleGroup(scheduleGroupUpdateRequest: ScheduleGroupUpdateRequest, options?: any): AxiosPromise<ScheduleGroupUpdateResponse>;
+    /**
+     *
+     * @summary Update a workflow
+     * @param {UpdateWorkflowRequest} updateWorkflowRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateWorkflow(updateWorkflowRequest: UpdateWorkflowRequest, options?: any): AxiosPromise<UpdateWorkflowResponse>;
+    /**
+     *
+     * @summary Updates multiple workflows
+     * @param {UpdateWorkflowRequest} updateWorkflowRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateWorkflows(updateWorkflowRequest: UpdateWorkflowRequest, options?: any): AxiosPromise<UpdateWorkflowsResponse>;
 };
 /**
  * Scout9Api - object-oriented interface
@@ -2711,6 +4892,42 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
  * @extends {BaseAPI}
  */
 export declare class Scout9Api extends BaseAPI {
+    /**
+     *
+     * @summary Create a new agent
+     * @param {CreateAgentRequest} createAgentRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    createAgent(createAgentRequest: CreateAgentRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateAgentResponse, any>>;
+    /**
+     *
+     * @summary Creates new agents
+     * @param {CreateAgentsRequest} createAgentsRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    createAgents(createAgentsRequest: CreateAgentsRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateAgentsResponse, any>>;
+    /**
+     *
+     * @summary Create a new context
+     * @param {CreateContextRequest} createContextRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    createContext(createContextRequest: CreateContextRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateContextResponse, any>>;
+    /**
+     *
+     * @summary Creates new contexts
+     * @param {CreateContextsRequest} createContextsRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    createContexts(createContextsRequest: CreateContextsRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateContextsResponse, any>>;
     /**
      *
      * @summary Create a new conversation
@@ -2767,6 +4984,60 @@ export declare class Scout9Api extends BaseAPI {
     createScheduleGroup(scheduleGroupCreateRequest: ScheduleGroupCreateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleGroupCreateResponse, any>>;
     /**
      *
+     * @summary Create a new workflow
+     * @param {CreateWorkflowRequest} createWorkflowRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    createWorkflow(createWorkflowRequest: CreateWorkflowRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateWorkflowResponse, any>>;
+    /**
+     *
+     * @summary Creates new workflows
+     * @param {CreateWorkflowsRequest} createWorkflowsRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    createWorkflows(createWorkflowsRequest: CreateWorkflowsRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateWorkflowsResponse, any>>;
+    /**
+     *
+     * @summary Deletes a agent
+     * @param {string} id Agent ID to delete agent
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    deleteAgent(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteAgentResponse, any>>;
+    /**
+     *
+     * @summary Deletes multiple agents
+     * @param {string} id Agent IDs to delete multiple agents
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    deleteAgents(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteAgentsResponse, any>>;
+    /**
+     *
+     * @summary Deletes a schedule
+     * @param {string} id Context ID to delete context
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    deleteContext(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteContextResponse, any>>;
+    /**
+     *
+     * @summary Deletes multiple contexts
+     * @param {string} id Context IDs to delete multiple context
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    deleteContexts(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteContextsResponse, any>>;
+    /**
+     *
      * @summary Deletes a schedule
      * @param {string} id Schedule ID to delete schedule
      * @param {*} [options] Override http request option.
@@ -2812,6 +5083,24 @@ export declare class Scout9Api extends BaseAPI {
     deleteScheduleGroup(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleGroupRemoveResponse, any>>;
     /**
      *
+     * @summary Deletes a workflow
+     * @param {string} id workflow ID to delete workflow
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    deleteWorkflow(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteWorkflowResponse, any>>;
+    /**
+     *
+     * @summary Deletes multiple workflows
+     * @param {string} id Workflow IDs to delete multiple workflow
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    deleteWorkflows(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteWorkflowsResponse, any>>;
+    /**
+     *
      * @summary Generate a message from conversation
      * @param {GenerateRequest} generateRequest
      * @param {*} [options] Override http request option.
@@ -2819,6 +5108,42 @@ export declare class Scout9Api extends BaseAPI {
      * @memberof Scout9Api
      */
     generate(generateRequest: GenerateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<GenerateResponse, any>>;
+    /**
+     *
+     * @summary Gets a agent
+     * @param {string} id Agent ID to get agent
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    getAgent(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<GetAgentResponse, any>>;
+    /**
+     *
+     * @summary Gets all or specific set of agents
+     * @param {string} [id] Optional get specific agents
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    getAgents(id?: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<Agent[], any>>;
+    /**
+     *
+     * @summary Gets a context
+     * @param {string} id Context ID to get context
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    getContext(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<GetContextResponse, any>>;
+    /**
+     *
+     * @summary Gets all or specific set of contexts
+     * @param {string} [id] Optional get specific contexts
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    getContexts(id?: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<Context[], any>>;
     /**
      *
      * @summary Gets a conversation
@@ -2875,6 +5200,60 @@ export declare class Scout9Api extends BaseAPI {
     getScheduleGroup(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleGroupGetResponse, any>>;
     /**
      *
+     * @summary Gets a workflow
+     * @param {string} id Workflow ID to get workflow
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    getWorkflow(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<GetWorkflowResponse, any>>;
+    /**
+     *
+     * @summary Gets all or specific set of workflows
+     * @param {string} [id] Optional get specific workflows
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    getWorkflows(id?: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<Workflow[], any>>;
+    /**
+     *
+     * @summary Update a agent
+     * @param {UpdateAgentRequest} updateAgentRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    updateAgent(updateAgentRequest: UpdateAgentRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateAgentResponse, any>>;
+    /**
+     *
+     * @summary Updates multiple agents
+     * @param {UpdateAgentsRequest} updateAgentsRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    updateAgents(updateAgentsRequest: UpdateAgentsRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateAgentsResponse, any>>;
+    /**
+     *
+     * @summary Update a context
+     * @param {UpdateContextRequest} updateContextRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    updateContext(updateContextRequest: UpdateContextRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateContextResponse, any>>;
+    /**
+     *
+     * @summary Updates multiple contexts
+     * @param {UpdateContextRequest} updateContextRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    updateContexts(updateContextRequest: UpdateContextRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateContextsResponse, any>>;
+    /**
+     *
      * @summary Update a conversation
      * @param {ConversationUpdateRequest} conversationUpdateRequest
      * @param {*} [options] Override http request option.
@@ -2918,4 +5297,22 @@ export declare class Scout9Api extends BaseAPI {
      * @memberof Scout9Api
      */
     updateScheduleGroup(scheduleGroupUpdateRequest: ScheduleGroupUpdateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleGroupUpdateResponse, any>>;
+    /**
+     *
+     * @summary Update a workflow
+     * @param {UpdateWorkflowRequest} updateWorkflowRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    updateWorkflow(updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateWorkflowResponse, any>>;
+    /**
+     *
+     * @summary Updates multiple workflows
+     * @param {UpdateWorkflowRequest} updateWorkflowRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    updateWorkflows(updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateWorkflowsResponse, any>>;
 }
