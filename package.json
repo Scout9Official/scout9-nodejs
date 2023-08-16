@@ -4,7 +4,7 @@
   "description": "Scout9 Node.js API library",
   "scripts": {
     "build": "tsc --build --verbose",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "echo \\\"Error: no examples specified\\\" && exit 1",
     "temp:init": "npm init --scope @scout9 --workspace ./packages/client -y && echo \"<-- Script inits another package\""
   },
   "engines": {
@@ -21,6 +21,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "dotenv": "^16.3.1",
+    "minimist": "^1.2.8",
     "typescript": "^5.1.6"
   },
   "devDependencies": {

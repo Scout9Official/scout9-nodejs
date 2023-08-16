@@ -14,6 +14,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Configuration = void 0;
+const packageJson = require("../package.json");
 class Configuration {
     /**
      * parameter for apiKey security
@@ -21,6 +22,13 @@ class Configuration {
      * @memberof Configuration
      */
     apiKey;
+    /**
+     * Scout9 business id
+     *
+     * @type {string}
+     * @memberof Configuration
+     */
+    business;
     /**
      * parameter for basic security
      *
@@ -66,12 +74,27 @@ class Configuration {
     formDataCtor;
     constructor(param = {}) {
         this.apiKey = param.apiKey;
+        this.business = param.business;
         this.username = param.username;
         this.password = param.password;
         this.accessToken = param.accessToken;
         this.basePath = param.basePath;
         this.baseOptions = param.baseOptions;
         this.formDataCtor = param.formDataCtor;
+        if (!this.baseOptions) {
+            this.baseOptions = {};
+        }
+        this.baseOptions.headers = {
+            'User-Agent': `Scout9/NodeJS/${packageJson.version}`,
+            'Authorization': `Bearer ${this.apiKey}`,
+            ...this.baseOptions.headers,
+        };
+        if (this.business) {
+            this.baseOptions.headers['Scout9-Business'] = this.business;
+        }
+        if (!this.formDataCtor) {
+            this.formDataCtor = require("form-data");
+        }
     }
     /**
      * Check if the given MIME is a JSON MIME.

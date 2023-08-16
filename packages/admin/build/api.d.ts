@@ -1,6 +1,6 @@
 /**
- * Scout9 API
- * APIs for managing Scout9 users and conversations
+ * Scout9 Pocket Scout API
+ * Pocket Scout APIs for managing Scout9 users and conversations with your Pocket Scout agents
  *
  * The version of the OpenAPI document: 1.0.0
  *
@@ -106,6 +106,47 @@ export type AnyValue = boolean | number | object | string;
 /**
  *
  * @export
+ * @interface ApiOperation
+ */
+export interface ApiOperation {
+    /**
+     * ISO 8601 datetime string
+     * @type {string}
+     * @memberof ApiOperation
+     */
+    'time': string;
+    /**
+     * The model that was created, updated, or deleted
+     * @type {string}
+     * @memberof ApiOperation
+     */
+    'model': string;
+    /**
+     * The method that was called
+     * @type {string}
+     * @memberof ApiOperation
+     */
+    'method': ApiOperationMethodEnum;
+    /**
+     *
+     * @type {{ [key: string]: any; }}
+     * @memberof ApiOperation
+     */
+    'results': {
+        [key: string]: any;
+    };
+}
+export declare const ApiOperationMethodEnum: {
+    readonly Get: "get";
+    readonly Post: "post";
+    readonly Put: "put";
+    readonly Delete: "delete";
+    readonly Patch: "patch";
+};
+export type ApiOperationMethodEnum = typeof ApiOperationMethodEnum[keyof typeof ApiOperationMethodEnum];
+/**
+ *
+ * @export
  * @interface BlockInfo
  */
 export interface BlockInfo {
@@ -128,12 +169,6 @@ export interface BlockInfo {
  * @interface Context
  */
 export interface Context {
-    /**
-     * The ID of the context
-     * @type {string}
-     * @memberof Context
-     */
-    '$id': string;
     /**
      * The name of the context
      * @type {string}
@@ -296,19 +331,7 @@ export interface ContextDetectionTest {
  */
 export interface Conversation {
     /**
-     * Customer this conversation is with
-     * @type {string}
-     * @memberof Conversation
-     */
-    '$customer': string;
-    /**
-     * Business this conversation is with
-     * @type {string}
-     * @memberof Conversation
-     */
-    '$business': string;
-    /**
-     * Agent assigned to this conversation
+     * Default agent assigned to the conversation(s)
      * @type {string}
      * @memberof Conversation
      */
@@ -318,7 +341,7 @@ export interface Conversation {
      * @type {string}
      * @memberof Conversation
      */
-    '$thread': string;
+    '$thread'?: string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -326,11 +349,92 @@ export interface Conversation {
      */
     'initialContexts'?: Array<string>;
     /**
-     * Environment this conversation is in (phone, web, or email) - this determines which device to send messages to
+     *
+     * @type {ConversationBaseEnvironmentProps}
+     * @memberof Conversation
+     */
+    'environmentProps'?: ConversationBaseEnvironmentProps;
+    /**
+     * Customer this conversation is with
      * @type {string}
      * @memberof Conversation
      */
-    'environment'?: string;
+    '$customer': string;
+    /**
+     *
+     * @type {ConversationEnvironment}
+     * @memberof Conversation
+     */
+    'environment': ConversationEnvironment;
+}
+/**
+ *
+ * @export
+ * @interface ConversationAllOf
+ */
+export interface ConversationAllOf {
+    /**
+     * Customer this conversation is with
+     * @type {string}
+     * @memberof ConversationAllOf
+     */
+    '$customer': string;
+    /**
+     *
+     * @type {ConversationEnvironment}
+     * @memberof ConversationAllOf
+     */
+    'environment': ConversationEnvironment;
+}
+/**
+ * Base props all conversation types will have
+ * @export
+ * @interface ConversationBase
+ */
+export interface ConversationBase {
+    /**
+     * Default agent assigned to the conversation(s)
+     * @type {string}
+     * @memberof ConversationBase
+     */
+    '$agent': string;
+    /**
+     * Thread this conversation is in - this determines what context to pull when loading the conversation
+     * @type {string}
+     * @memberof ConversationBase
+     */
+    '$thread'?: string;
+    /**
+     * Initial contexts to load when starting the conversation
+     * @type {Array<string>}
+     * @memberof ConversationBase
+     */
+    'initialContexts'?: Array<string>;
+    /**
+     *
+     * @type {ConversationBaseEnvironmentProps}
+     * @memberof ConversationBase
+     */
+    'environmentProps'?: ConversationBaseEnvironmentProps;
+}
+/**
+ * Environment properties for the conversation
+ * @export
+ * @interface ConversationBaseEnvironmentProps
+ */
+export interface ConversationBaseEnvironmentProps {
+    /**
+     * HTML subject line
+     * @type {string}
+     * @memberof ConversationBaseEnvironmentProps
+     */
+    'subject'?: string;
+    /**
+     * Used to sync email messages with the conversation
+     * @type {string}
+     * @memberof ConversationBaseEnvironmentProps
+     */
+    'platformEmailThreadId'?: string;
 }
 /**
  *
@@ -394,11 +498,11 @@ export interface ConversationContextFieldCondition {
      */
     'key': string;
     /**
-     * The operator of the condition
-     * @type {string}
+     *
+     * @type {Operator}
      * @memberof ConversationContextFieldCondition
      */
-    'operator': string;
+    'operator': Operator;
     /**
      * The regex of the condition
      * @type {string}
@@ -432,19 +536,7 @@ export interface ConversationContextGroup {
  */
 export interface ConversationCreateRequest {
     /**
-     * Customer this conversation is with
-     * @type {string}
-     * @memberof ConversationCreateRequest
-     */
-    '$customer': string;
-    /**
-     *
-     * @type {any}
-     * @memberof ConversationCreateRequest
-     */
-    '$business': any | null;
-    /**
-     * Agent assigned to this conversation
+     * Default agent assigned to the conversation(s)
      * @type {string}
      * @memberof ConversationCreateRequest
      */
@@ -454,7 +546,7 @@ export interface ConversationCreateRequest {
      * @type {string}
      * @memberof ConversationCreateRequest
      */
-    '$thread': string;
+    '$thread'?: string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -462,24 +554,23 @@ export interface ConversationCreateRequest {
      */
     'initialContexts'?: Array<string>;
     /**
-     * Environment this conversation is in (phone, web, or email) - this determines which device to send messages to
+     *
+     * @type {ConversationBaseEnvironmentProps}
+     * @memberof ConversationCreateRequest
+     */
+    'environmentProps'?: ConversationBaseEnvironmentProps;
+    /**
+     * Customer this conversation is with
      * @type {string}
      * @memberof ConversationCreateRequest
      */
-    'environment'?: string;
-}
-/**
- *
- * @export
- * @interface ConversationCreateRequestAllOf
- */
-export interface ConversationCreateRequestAllOf {
+    '$customer': string;
     /**
      *
-     * @type {any}
-     * @memberof ConversationCreateRequestAllOf
+     * @type {ConversationEnvironment}
+     * @memberof ConversationCreateRequest
      */
-    '$business'?: any | null;
+    'environment': ConversationEnvironment;
 }
 /**
  *
@@ -499,7 +590,73 @@ export interface ConversationCreateResponse {
      * @memberof ConversationCreateResponse
      */
     'error'?: Error;
+    /**
+     * The id of the document that was created, updated, or deleted
+     * @type {string}
+     * @memberof ConversationCreateResponse
+     */
+    'id': string;
+    /**
+     * The client web url of the conversation
+     * @type {string}
+     * @memberof ConversationCreateResponse
+     */
+    'clientWebUrl'?: string;
+    /**
+     * The agent web url of the conversation (requires phone two-factor authentication)
+     * @type {string}
+     * @memberof ConversationCreateResponse
+     */
+    'agentWebUrl'?: string;
+    /**
+     * The agent test web url of the conversation, used for testing the conversation without notifying the customer
+     * @type {string}
+     * @memberof ConversationCreateResponse
+     */
+    'agentTestWebUrl'?: string;
+    /**
+     * The ID of the conversation
+     * @type {string}
+     * @memberof ConversationCreateResponse
+     */
+    '$id': string;
+    /**
+     * ISO 8601 date string of when the conversation was initiated
+     * @type {string}
+     * @memberof ConversationCreateResponse
+     */
+    'initiated': string;
 }
+/**
+ *
+ * @export
+ * @interface ConversationCreateResponseAllOf
+ */
+export interface ConversationCreateResponseAllOf {
+    /**
+     * The ID of the conversation
+     * @type {string}
+     * @memberof ConversationCreateResponseAllOf
+     */
+    '$id': string;
+    /**
+     * ISO 8601 date string of when the conversation was initiated
+     * @type {string}
+     * @memberof ConversationCreateResponseAllOf
+     */
+    'initiated': string;
+}
+/**
+ * Environment this conversation is in (phone, web, or email) - this determines which device to send messages to
+ * @export
+ * @enum {string}
+ */
+export declare const ConversationEnvironment: {
+    readonly Phone: "phone";
+    readonly Web: "web";
+    readonly Email: "email";
+};
+export type ConversationEnvironment = typeof ConversationEnvironment[keyof typeof ConversationEnvironment];
 /**
  *
  * @export
@@ -507,19 +664,7 @@ export interface ConversationCreateResponse {
  */
 export interface ConversationGetResponse {
     /**
-     * Customer this conversation is with
-     * @type {string}
-     * @memberof ConversationGetResponse
-     */
-    '$customer': string;
-    /**
-     * Business this conversation is with
-     * @type {string}
-     * @memberof ConversationGetResponse
-     */
-    '$business': string;
-    /**
-     * Agent assigned to this conversation
+     * Default agent assigned to the conversation(s)
      * @type {string}
      * @memberof ConversationGetResponse
      */
@@ -529,7 +674,7 @@ export interface ConversationGetResponse {
      * @type {string}
      * @memberof ConversationGetResponse
      */
-    '$thread': string;
+    '$thread'?: string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -537,11 +682,72 @@ export interface ConversationGetResponse {
      */
     'initialContexts'?: Array<string>;
     /**
-     * Environment this conversation is in (phone, web, or email) - this determines which device to send messages to
+     *
+     * @type {ConversationBaseEnvironmentProps}
+     * @memberof ConversationGetResponse
+     */
+    'environmentProps'?: ConversationBaseEnvironmentProps;
+    /**
+     * Customer this conversation is with
      * @type {string}
      * @memberof ConversationGetResponse
      */
-    'environment'?: string;
+    '$customer': string;
+    /**
+     *
+     * @type {ConversationEnvironment}
+     * @memberof ConversationGetResponse
+     */
+    'environment': ConversationEnvironment;
+    /**
+     * The client web url of the conversation
+     * @type {string}
+     * @memberof ConversationGetResponse
+     */
+    'clientWebUrl'?: string;
+    /**
+     * The agent web url of the conversation (requires phone two-factor authentication)
+     * @type {string}
+     * @memberof ConversationGetResponse
+     */
+    'agentWebUrl'?: string;
+    /**
+     * The agent test web url of the conversation, used for testing the conversation without notifying the customer
+     * @type {string}
+     * @memberof ConversationGetResponse
+     */
+    'agentTestWebUrl'?: string;
+    /**
+     * ISO 8601 date string of when the conversation was initiated
+     * @type {string}
+     * @memberof ConversationGetResponse
+     */
+    'initiated': string;
+    /**
+     * The ID of the conversation
+     * @type {string}
+     * @memberof ConversationGetResponse
+     */
+    '$id': string;
+}
+/**
+ *
+ * @export
+ * @interface ConversationGetResponseAllOf
+ */
+export interface ConversationGetResponseAllOf {
+    /**
+     * ISO 8601 date string of when the conversation was initiated
+     * @type {string}
+     * @memberof ConversationGetResponseAllOf
+     */
+    'initiated': string;
+    /**
+     * The ID of the conversation
+     * @type {string}
+     * @memberof ConversationGetResponseAllOf
+     */
+    '$id': string;
 }
 /**
  *
@@ -561,6 +767,37 @@ export interface ConversationRemoveResponse {
      * @memberof ConversationRemoveResponse
      */
     'error'?: Error;
+    /**
+     * The id of the document that was created, updated, or deleted
+     * @type {string}
+     * @memberof ConversationRemoveResponse
+     */
+    'id': string;
+}
+/**
+ * Base properties for all scheduled conversation types
+ * @export
+ * @interface ConversationScheduleParams
+ */
+export interface ConversationScheduleParams {
+    /**
+     * ISO 8601 datetime string
+     * @type {string}
+     * @memberof ConversationScheduleParams
+     */
+    'scheduled': string;
+    /**
+     * The initial message to send to the customer
+     * @type {string}
+     * @memberof ConversationScheduleParams
+     */
+    'initialMessage': string;
+    /**
+     * The initial message to send to the customer in HTML
+     * @type {string}
+     * @memberof ConversationScheduleParams
+     */
+    'initialMessageHtml'?: string | null;
 }
 /**
  *
@@ -569,19 +806,7 @@ export interface ConversationRemoveResponse {
  */
 export interface ConversationUpdateRequest {
     /**
-     * Customer this conversation is with
-     * @type {string}
-     * @memberof ConversationUpdateRequest
-     */
-    '$customer': string;
-    /**
-     * Business this conversation is with
-     * @type {string}
-     * @memberof ConversationUpdateRequest
-     */
-    '$business': string;
-    /**
-     * Agent assigned to this conversation
+     * Default agent assigned to the conversation(s)
      * @type {string}
      * @memberof ConversationUpdateRequest
      */
@@ -591,7 +816,7 @@ export interface ConversationUpdateRequest {
      * @type {string}
      * @memberof ConversationUpdateRequest
      */
-    '$thread': string;
+    '$thread'?: string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -599,17 +824,29 @@ export interface ConversationUpdateRequest {
      */
     'initialContexts'?: Array<string>;
     /**
-     * Environment this conversation is in (phone, web, or email) - this determines which device to send messages to
+     *
+     * @type {ConversationBaseEnvironmentProps}
+     * @memberof ConversationUpdateRequest
+     */
+    'environmentProps'?: ConversationBaseEnvironmentProps;
+    /**
+     * Customer this conversation is with
      * @type {string}
      * @memberof ConversationUpdateRequest
      */
-    'environment'?: string;
+    '$customer': string;
+    /**
+     *
+     * @type {ConversationEnvironment}
+     * @memberof ConversationUpdateRequest
+     */
+    'environment': ConversationEnvironment;
     /**
      * The ID of the conversation to update
      * @type {string}
      * @memberof ConversationUpdateRequest
      */
-    'id'?: string;
+    '$id': string;
 }
 /**
  *
@@ -622,7 +859,7 @@ export interface ConversationUpdateRequestAllOf {
      * @type {string}
      * @memberof ConversationUpdateRequestAllOf
      */
-    'id'?: string;
+    '$id': string;
 }
 /**
  *
@@ -642,6 +879,37 @@ export interface ConversationUpdateResponse {
      * @memberof ConversationUpdateResponse
      */
     'error'?: Error;
+    /**
+     * The id of the document that was created, updated, or deleted
+     * @type {string}
+     * @memberof ConversationUpdateResponse
+     */
+    'id': string;
+}
+/**
+ * Conversation web urls
+ * @export
+ * @interface ConversationUrls
+ */
+export interface ConversationUrls {
+    /**
+     * The client web url of the conversation
+     * @type {string}
+     * @memberof ConversationUrls
+     */
+    'clientWebUrl'?: string;
+    /**
+     * The agent web url of the conversation (requires phone two-factor authentication)
+     * @type {string}
+     * @memberof ConversationUrls
+     */
+    'agentWebUrl'?: string;
+    /**
+     * The agent test web url of the conversation, used for testing the conversation without notifying the customer
+     * @type {string}
+     * @memberof ConversationUrls
+     */
+    'agentTestWebUrl'?: string;
 }
 /**
  *
@@ -746,6 +1014,12 @@ export interface CreateAgentResponse {
      * @memberof CreateAgentResponse
      */
     'error'?: Error;
+    /**
+     * The id of the document that was created, updated, or deleted
+     * @type {string}
+     * @memberof CreateAgentResponse
+     */
+    'id': string;
 }
 /**
  *
@@ -852,17 +1126,17 @@ export interface CreateAgentsRequestCustomersInner {
  */
 export interface CreateAgentsResponse {
     /**
-     *
-     * @type {boolean}
+     * ISO 8601 datetime string of when the operation was queued
+     * @type {string}
      * @memberof CreateAgentsResponse
      */
-    'success': boolean;
+    'queued': string;
     /**
-     *
-     * @type {Error}
+     * The operation id to view the operation end results
+     * @type {string}
      * @memberof CreateAgentsResponse
      */
-    'error'?: Error;
+    '$operation': string;
 }
 /**
  *
@@ -870,12 +1144,6 @@ export interface CreateAgentsResponse {
  * @interface CreateContextRequest
  */
 export interface CreateContextRequest {
-    /**
-     * The ID of the context
-     * @type {string}
-     * @memberof CreateContextRequest
-     */
-    '$id': string;
     /**
      * The name of the context
      * @type {string}
@@ -937,6 +1205,12 @@ export interface CreateContextResponse {
      * @memberof CreateContextResponse
      */
     'error'?: Error;
+    /**
+     * The id of the document that was created, updated, or deleted
+     * @type {string}
+     * @memberof CreateContextResponse
+     */
+    'id': string;
 }
 /**
  *
@@ -957,12 +1231,6 @@ export interface CreateContextsRequest {
  * @interface CreateContextsRequestCustomersInner
  */
 export interface CreateContextsRequestCustomersInner {
-    /**
-     * The ID of the context
-     * @type {string}
-     * @memberof CreateContextsRequestCustomersInner
-     */
-    '$id': string;
     /**
      * The name of the context
      * @type {string}
@@ -1013,17 +1281,17 @@ export interface CreateContextsRequestCustomersInner {
  */
 export interface CreateContextsResponse {
     /**
-     *
-     * @type {boolean}
+     * ISO 8601 datetime string of when the operation was queued
+     * @type {string}
      * @memberof CreateContextsResponse
      */
-    'success': boolean;
+    'queued': string;
     /**
-     *
-     * @type {Error}
+     * The operation id to view the operation end results
+     * @type {string}
      * @memberof CreateContextsResponse
      */
-    'error'?: Error;
+    '$operation': string;
 }
 /**
  *
@@ -1036,19 +1304,19 @@ export interface CreateCustomerRequest {
      * @type {string}
      * @memberof CreateCustomerRequest
      */
-    'firstName': string;
+    'firstName'?: string;
     /**
      * The customers last name
      * @type {string}
      * @memberof CreateCustomerRequest
      */
-    'lastName': string;
+    'lastName'?: string;
     /**
      * The customers full name
      * @type {string}
      * @memberof CreateCustomerRequest
      */
-    'name'?: string;
+    'name': string;
     /**
      * The customers email address
      * @type {string}
@@ -1170,6 +1438,12 @@ export interface CreateCustomerResponse {
      * @memberof CreateCustomerResponse
      */
     'error'?: Error;
+    /**
+     * The id of the document that was created, updated, or deleted
+     * @type {string}
+     * @memberof CreateCustomerResponse
+     */
+    'id': string;
 }
 /**
  *
@@ -1179,137 +1453,10 @@ export interface CreateCustomerResponse {
 export interface CreateCustomersRequest {
     /**
      *
-     * @type {Array<CreateCustomersRequestCustomersInner>}
+     * @type {Array<Customer>}
      * @memberof CreateCustomersRequest
      */
-    'customers'?: Array<CreateCustomersRequestCustomersInner>;
-}
-/**
- *
- * @export
- * @interface CreateCustomersRequestCustomersInner
- */
-export interface CreateCustomersRequestCustomersInner {
-    /**
-     * The customers first name
-     * @type {string}
-     * @memberof CreateCustomersRequestCustomersInner
-     */
-    'firstName': string;
-    /**
-     * The customers last name
-     * @type {string}
-     * @memberof CreateCustomersRequestCustomersInner
-     */
-    'lastName': string;
-    /**
-     * The customers full name
-     * @type {string}
-     * @memberof CreateCustomersRequestCustomersInner
-     */
-    'name'?: string;
-    /**
-     * The customers email address
-     * @type {string}
-     * @memberof CreateCustomersRequestCustomersInner
-     */
-    'email'?: string | null;
-    /**
-     * The customers phone number
-     * @type {string}
-     * @memberof CreateCustomersRequestCustomersInner
-     */
-    'phone'?: string | null;
-    /**
-     * The customers profile image
-     * @type {string}
-     * @memberof CreateCustomersRequestCustomersInner
-     */
-    'img'?: string | null;
-    /**
-     * The customers neighborhood
-     * @type {string}
-     * @memberof CreateCustomersRequestCustomersInner
-     */
-    'neighborhood'?: string | null;
-    /**
-     * The customers city
-     * @type {string}
-     * @memberof CreateCustomersRequestCustomersInner
-     */
-    'city'?: string | null;
-    /**
-     * The customers 2-letter country code
-     * @type {string}
-     * @memberof CreateCustomersRequestCustomersInner
-     */
-    'country'?: string | null;
-    /**
-     * The customers street address
-     * @type {string}
-     * @memberof CreateCustomersRequestCustomersInner
-     */
-    'line1'?: string | null;
-    /**
-     * The customers street address
-     * @type {string}
-     * @memberof CreateCustomersRequestCustomersInner
-     */
-    'line2'?: string | null;
-    /**
-     * The customers postal code
-     * @type {string}
-     * @memberof CreateCustomersRequestCustomersInner
-     */
-    'postal_code'?: string | null;
-    /**
-     * The customers state, county, province, or region
-     * @type {string}
-     * @memberof CreateCustomersRequestCustomersInner
-     */
-    'state'?: string | null;
-    /**
-     * The customers town (only used in Japan)
-     * @type {string}
-     * @memberof CreateCustomersRequestCustomersInner
-     */
-    'town'?: string | null;
-    /**
-     *
-     * @type {BlockInfo}
-     * @memberof CreateCustomersRequestCustomersInner
-     */
-    'blocked'?: BlockInfo;
-    /**
-     *
-     * @type {BlockInfo}
-     * @memberof CreateCustomersRequestCustomersInner
-     */
-    'phoneBlocked'?: BlockInfo;
-    /**
-     *
-     * @type {BlockInfo}
-     * @memberof CreateCustomersRequestCustomersInner
-     */
-    'emailBlocked'?: BlockInfo;
-    /**
-     * The date the customer joined the business
-     * @type {string}
-     * @memberof CreateCustomersRequestCustomersInner
-     */
-    'joined'?: string | null;
-    /**
-     * The customers stripe ID
-     * @type {string}
-     * @memberof CreateCustomersRequestCustomersInner
-     */
-    'stripe'?: string | null;
-    /**
-     * The customers stripe ID in the dev environment
-     * @type {string}
-     * @memberof CreateCustomersRequestCustomersInner
-     */
-    'stripeDev'?: string | null;
+    'customers': Array<Customer>;
 }
 /**
  *
@@ -1318,17 +1465,17 @@ export interface CreateCustomersRequestCustomersInner {
  */
 export interface CreateCustomersResponse {
     /**
-     *
-     * @type {boolean}
+     * ISO 8601 datetime string of when the operation was queued
+     * @type {string}
      * @memberof CreateCustomersResponse
      */
-    'success': boolean;
+    'queued': string;
     /**
-     *
-     * @type {Error}
+     * The operation id to view the operation end results
+     * @type {string}
      * @memberof CreateCustomersResponse
      */
-    'error'?: Error;
+    '$operation': string;
 }
 /**
  *
@@ -1403,6 +1550,12 @@ export interface CreateWorkflowResponse {
      * @memberof CreateWorkflowResponse
      */
     'error'?: Error;
+    /**
+     * The id of the document that was created, updated, or deleted
+     * @type {string}
+     * @memberof CreateWorkflowResponse
+     */
+    'id': string;
 }
 /**
  *
@@ -1479,24 +1632,25 @@ export interface CreateWorkflowsRequestCustomersInner {
  */
 export interface CreateWorkflowsResponse {
     /**
-     *
-     * @type {boolean}
+     * ISO 8601 datetime string of when the operation was queued
+     * @type {string}
      * @memberof CreateWorkflowsResponse
      */
-    'success': boolean;
+    'queued': string;
     /**
-     *
-     * @type {Error}
+     * The operation id to view the operation end results
+     * @type {string}
      * @memberof CreateWorkflowsResponse
      */
-    'error'?: Error;
+    '$operation': string;
 }
 /**
- *
+ * Customers that your agents can communicate with their pocket scouts
  * @export
  * @interface Customer
  */
 export interface Customer {
+    [key: string]: CustomerValue | any;
     /**
      * The customers first name
      * @type {string}
@@ -1514,7 +1668,7 @@ export interface Customer {
      * @type {string}
      * @memberof Customer
      */
-    'name'?: string;
+    'name': string;
     /**
      * The customers email address
      * @type {string}
@@ -1619,6 +1773,11 @@ export interface Customer {
     'stripeDev'?: string | null;
 }
 /**
+ * @type CustomerValue
+ * @export
+ */
+export type CustomerValue = boolean | number | string;
+/**
  *
  * @export
  * @interface DeleteAgentResponse
@@ -1636,6 +1795,12 @@ export interface DeleteAgentResponse {
      * @memberof DeleteAgentResponse
      */
     'error'?: Error;
+    /**
+     * The id of the document that was created, updated, or deleted
+     * @type {string}
+     * @memberof DeleteAgentResponse
+     */
+    'id': string;
 }
 /**
  *
@@ -1644,17 +1809,17 @@ export interface DeleteAgentResponse {
  */
 export interface DeleteAgentsResponse {
     /**
-     *
-     * @type {boolean}
+     * ISO 8601 datetime string of when the operation was queued
+     * @type {string}
      * @memberof DeleteAgentsResponse
      */
-    'success': boolean;
+    'queued': string;
     /**
-     *
-     * @type {Error}
+     * The operation id to view the operation end results
+     * @type {string}
      * @memberof DeleteAgentsResponse
      */
-    'error'?: Error;
+    '$operation': string;
 }
 /**
  *
@@ -1674,6 +1839,12 @@ export interface DeleteContextResponse {
      * @memberof DeleteContextResponse
      */
     'error'?: Error;
+    /**
+     * The id of the document that was created, updated, or deleted
+     * @type {string}
+     * @memberof DeleteContextResponse
+     */
+    'id': string;
 }
 /**
  *
@@ -1682,17 +1853,17 @@ export interface DeleteContextResponse {
  */
 export interface DeleteContextsResponse {
     /**
-     *
-     * @type {boolean}
+     * ISO 8601 datetime string of when the operation was queued
+     * @type {string}
      * @memberof DeleteContextsResponse
      */
-    'success': boolean;
+    'queued': string;
     /**
-     *
-     * @type {Error}
+     * The operation id to view the operation end results
+     * @type {string}
      * @memberof DeleteContextsResponse
      */
-    'error'?: Error;
+    '$operation': string;
 }
 /**
  *
@@ -1712,6 +1883,12 @@ export interface DeleteCustomerResponse {
      * @memberof DeleteCustomerResponse
      */
     'error'?: Error;
+    /**
+     * The id of the document that was created, updated, or deleted
+     * @type {string}
+     * @memberof DeleteCustomerResponse
+     */
+    'id': string;
 }
 /**
  *
@@ -1720,17 +1897,17 @@ export interface DeleteCustomerResponse {
  */
 export interface DeleteCustomersResponse {
     /**
-     *
-     * @type {boolean}
+     * ISO 8601 datetime string of when the operation was queued
+     * @type {string}
      * @memberof DeleteCustomersResponse
      */
-    'success': boolean;
+    'queued': string;
     /**
-     *
-     * @type {Error}
+     * The operation id to view the operation end results
+     * @type {string}
      * @memberof DeleteCustomersResponse
      */
-    'error'?: Error;
+    '$operation': string;
 }
 /**
  *
@@ -1750,6 +1927,12 @@ export interface DeleteWorkflowResponse {
      * @memberof DeleteWorkflowResponse
      */
     'error'?: Error;
+    /**
+     * The id of the document that was created, updated, or deleted
+     * @type {string}
+     * @memberof DeleteWorkflowResponse
+     */
+    'id': string;
 }
 /**
  *
@@ -1758,17 +1941,17 @@ export interface DeleteWorkflowResponse {
  */
 export interface DeleteWorkflowsResponse {
     /**
-     *
-     * @type {boolean}
+     * ISO 8601 datetime string of when the operation was queued
+     * @type {string}
      * @memberof DeleteWorkflowsResponse
      */
-    'success': boolean;
+    'queued': string;
     /**
-     *
-     * @type {Error}
+     * The operation id to view the operation end results
+     * @type {string}
      * @memberof DeleteWorkflowsResponse
      */
-    'error'?: Error;
+    '$operation': string;
 }
 /**
  *
@@ -1794,7 +1977,7 @@ export interface GenerateRequest {
      * @type {string}
      * @memberof GenerateRequest
      */
-    'convo'?: string;
+    'convo': string;
 }
 /**
  *
@@ -1807,13 +1990,13 @@ export interface GenerateResponse {
      * @type {string}
      * @memberof GenerateResponse
      */
-    'role'?: string;
+    'role': GenerateResponseRoleEnum;
     /**
      * The content of the message
      * @type {string}
      * @memberof GenerateResponse
      */
-    'content'?: string;
+    'content': string;
     /**
      * The name of the sender
      * @type {string}
@@ -1825,8 +2008,14 @@ export interface GenerateResponse {
      * @type {string}
      * @memberof GenerateResponse
      */
-    'time'?: string;
+    'time': string;
 }
+export declare const GenerateResponseRoleEnum: {
+    readonly User: "user";
+    readonly Assistant: "assistant";
+    readonly System: "system";
+};
+export type GenerateResponseRoleEnum = typeof GenerateResponseRoleEnum[keyof typeof GenerateResponseRoleEnum];
 /**
  *
  * @export
@@ -1911,6 +2100,85 @@ export interface GetAgentResponse {
      * @memberof GetAgentResponse
      */
     'transcript'?: string;
+    /**
+     * The ID of the agent
+     * @type {string}
+     * @memberof GetAgentResponse
+     */
+    '$id': string;
+}
+/**
+ *
+ * @export
+ * @interface GetAgentResponseAllOf
+ */
+export interface GetAgentResponseAllOf {
+    /**
+     * The ID of the agent
+     * @type {string}
+     * @memberof GetAgentResponseAllOf
+     */
+    '$id': string;
+}
+/**
+ *
+ * @export
+ * @interface GetApiOperationResponse
+ */
+export interface GetApiOperationResponse {
+    /**
+     * ISO 8601 datetime string
+     * @type {string}
+     * @memberof GetApiOperationResponse
+     */
+    'time': string;
+    /**
+     * The model that was created, updated, or deleted
+     * @type {string}
+     * @memberof GetApiOperationResponse
+     */
+    'model': string;
+    /**
+     * The method that was called
+     * @type {string}
+     * @memberof GetApiOperationResponse
+     */
+    'method': GetApiOperationResponseMethodEnum;
+    /**
+     *
+     * @type {{ [key: string]: any; }}
+     * @memberof GetApiOperationResponse
+     */
+    'results': {
+        [key: string]: any;
+    };
+    /**
+     * The ID of the operation
+     * @type {string}
+     * @memberof GetApiOperationResponse
+     */
+    '$id': string;
+}
+export declare const GetApiOperationResponseMethodEnum: {
+    readonly Get: "get";
+    readonly Post: "post";
+    readonly Put: "put";
+    readonly Delete: "delete";
+    readonly Patch: "patch";
+};
+export type GetApiOperationResponseMethodEnum = typeof GetApiOperationResponseMethodEnum[keyof typeof GetApiOperationResponseMethodEnum];
+/**
+ *
+ * @export
+ * @interface GetApiOperationResponseAllOf
+ */
+export interface GetApiOperationResponseAllOf {
+    /**
+     * The ID of the operation
+     * @type {string}
+     * @memberof GetApiOperationResponseAllOf
+     */
+    '$id': string;
 }
 /**
  *
@@ -1918,12 +2186,6 @@ export interface GetAgentResponse {
  * @interface GetContextResponse
  */
 export interface GetContextResponse {
-    /**
-     * The ID of the context
-     * @type {string}
-     * @memberof GetContextResponse
-     */
-    '$id': string;
     /**
      * The name of the context
      * @type {string}
@@ -1966,6 +2228,25 @@ export interface GetContextResponse {
      * @memberof GetContextResponse
      */
     'requiredColumns'?: Array<string>;
+    /**
+     * The ID of the context
+     * @type {string}
+     * @memberof GetContextResponse
+     */
+    '$id': string;
+}
+/**
+ *
+ * @export
+ * @interface GetContextResponseAllOf
+ */
+export interface GetContextResponseAllOf {
+    /**
+     * The ID of the context
+     * @type {string}
+     * @memberof GetContextResponseAllOf
+     */
+    '$id': string;
 }
 /**
  *
@@ -1990,7 +2271,7 @@ export interface GetCustomerResponse {
      * @type {string}
      * @memberof GetCustomerResponse
      */
-    'name'?: string;
+    'name': string;
     /**
      * The customers email address
      * @type {string}
@@ -2093,6 +2374,25 @@ export interface GetCustomerResponse {
      * @memberof GetCustomerResponse
      */
     'stripeDev'?: string | null;
+    /**
+     * The ID of the customer
+     * @type {string}
+     * @memberof GetCustomerResponse
+     */
+    '$id'?: string;
+}
+/**
+ *
+ * @export
+ * @interface GetCustomerResponseAllOf
+ */
+export interface GetCustomerResponseAllOf {
+    /**
+     * The ID of the customer
+     * @type {string}
+     * @memberof GetCustomerResponseAllOf
+     */
+    '$id'?: string;
 }
 /**
  *
@@ -2148,6 +2448,526 @@ export interface GetWorkflowResponse {
      * @memberof GetWorkflowResponse
      */
     'onError'?: string;
+    /**
+     * The ID of the workflow
+     * @type {string}
+     * @memberof GetWorkflowResponse
+     */
+    '$id': string;
+}
+/**
+ *
+ * @export
+ * @interface GetWorkflowResponseAllOf
+ */
+export interface GetWorkflowResponseAllOf {
+    /**
+     * The ID of the workflow
+     * @type {string}
+     * @memberof GetWorkflowResponseAllOf
+     */
+    '$id': string;
+}
+/**
+ *
+ * @export
+ * @interface ListAgentsResponseInner
+ */
+export interface ListAgentsResponseInner {
+    /**
+     * Agent first name
+     * @type {string}
+     * @memberof ListAgentsResponseInner
+     */
+    'firstName': string;
+    /**
+     * Agent last name
+     * @type {string}
+     * @memberof ListAgentsResponseInner
+     */
+    'lastName': string;
+    /**
+     * Agent is inactive
+     * @type {boolean}
+     * @memberof ListAgentsResponseInner
+     */
+    'inactive'?: boolean;
+    /**
+     * Programmable phone number
+     * @type {string}
+     * @memberof ListAgentsResponseInner
+     */
+    'programmablePhoneNumber'?: string;
+    /**
+     * Programmable phone number SID
+     * @type {string}
+     * @memberof ListAgentsResponseInner
+     */
+    'programmablePhoneNumberSid'?: string;
+    /**
+     * Email address from Scout9 gmail subdomain
+     * @type {string}
+     * @memberof ListAgentsResponseInner
+     */
+    'programmableEmail'?: string;
+    /**
+     * Forward email
+     * @type {string}
+     * @memberof ListAgentsResponseInner
+     */
+    'forwardEmail'?: string;
+    /**
+     * Forward phone
+     * @type {string}
+     * @memberof ListAgentsResponseInner
+     */
+    'forwardPhone': string;
+    /**
+     * Title of the agent, defaults to \"Agent\"
+     * @type {string}
+     * @memberof ListAgentsResponseInner
+     */
+    'title'?: string;
+    /**
+     * Context of the agent, defaults to \"Agent\"
+     * @type {string}
+     * @memberof ListAgentsResponseInner
+     */
+    'context'?: string;
+    /**
+     * Locations ids the agent is included in
+     * @type {Array<string>}
+     * @memberof ListAgentsResponseInner
+     */
+    'includedLocations'?: Array<string>;
+    /**
+     * Locations id the agent is excluded from
+     * @type {Array<string>}
+     * @memberof ListAgentsResponseInner
+     */
+    'excludedLocations'?: Array<string>;
+    /**
+     * Transcript of the agent
+     * @type {string}
+     * @memberof ListAgentsResponseInner
+     */
+    'transcript'?: string;
+    /**
+     * The ID of the agent
+     * @type {string}
+     * @memberof ListAgentsResponseInner
+     */
+    '$id': string;
+}
+/**
+ *
+ * @export
+ * @interface ListAgentsResponseInnerAllOf
+ */
+export interface ListAgentsResponseInnerAllOf {
+    /**
+     * The ID of the agent
+     * @type {string}
+     * @memberof ListAgentsResponseInnerAllOf
+     */
+    '$id': string;
+}
+/**
+ *
+ * @export
+ * @interface ListApiOperationsResponseInner
+ */
+export interface ListApiOperationsResponseInner {
+    /**
+     * ISO 8601 datetime string
+     * @type {string}
+     * @memberof ListApiOperationsResponseInner
+     */
+    'time': string;
+    /**
+     * The model that was created, updated, or deleted
+     * @type {string}
+     * @memberof ListApiOperationsResponseInner
+     */
+    'model': string;
+    /**
+     * The method that was called
+     * @type {string}
+     * @memberof ListApiOperationsResponseInner
+     */
+    'method': ListApiOperationsResponseInnerMethodEnum;
+    /**
+     *
+     * @type {{ [key: string]: any; }}
+     * @memberof ListApiOperationsResponseInner
+     */
+    'results': {
+        [key: string]: any;
+    };
+    /**
+     * The ID of the operation
+     * @type {string}
+     * @memberof ListApiOperationsResponseInner
+     */
+    '$id': string;
+}
+export declare const ListApiOperationsResponseInnerMethodEnum: {
+    readonly Get: "get";
+    readonly Post: "post";
+    readonly Put: "put";
+    readonly Delete: "delete";
+    readonly Patch: "patch";
+};
+export type ListApiOperationsResponseInnerMethodEnum = typeof ListApiOperationsResponseInnerMethodEnum[keyof typeof ListApiOperationsResponseInnerMethodEnum];
+/**
+ *
+ * @export
+ * @interface ListApiOperationsResponseInnerAllOf
+ */
+export interface ListApiOperationsResponseInnerAllOf {
+    /**
+     * The ID of the operation
+     * @type {string}
+     * @memberof ListApiOperationsResponseInnerAllOf
+     */
+    '$id': string;
+}
+/**
+ *
+ * @export
+ * @interface ListContextsResponseInner
+ */
+export interface ListContextsResponseInner {
+    /**
+     * The name of the context
+     * @type {string}
+     * @memberof ListContextsResponseInner
+     */
+    'name': string;
+    /**
+     * Whether or not the context is modifiable
+     * @type {boolean}
+     * @memberof ListContextsResponseInner
+     */
+    'modifiable': boolean;
+    /**
+     * The description of the context
+     * @type {string}
+     * @memberof ListContextsResponseInner
+     */
+    'description'?: string;
+    /**
+     *
+     * @type {ContextDetectionParams}
+     * @memberof ListContextsResponseInner
+     */
+    'detection'?: ContextDetectionParams;
+    /**
+     * The ID column of the context
+     * @type {string}
+     * @memberof ListContextsResponseInner
+     */
+    'idColumn': string;
+    /**
+     * The columns of the context
+     * @type {Array<string>}
+     * @memberof ListContextsResponseInner
+     */
+    'columns': Array<string>;
+    /**
+     * The required columns of the context
+     * @type {Array<string>}
+     * @memberof ListContextsResponseInner
+     */
+    'requiredColumns'?: Array<string>;
+    /**
+     * The ID of the context
+     * @type {string}
+     * @memberof ListContextsResponseInner
+     */
+    '$id': string;
+}
+/**
+ *
+ * @export
+ * @interface ListContextsResponseInnerAllOf
+ */
+export interface ListContextsResponseInnerAllOf {
+    /**
+     * The ID of the context
+     * @type {string}
+     * @memberof ListContextsResponseInnerAllOf
+     */
+    '$id': string;
+}
+/**
+ *
+ * @export
+ * @interface ListCustomersResponseInner
+ */
+export interface ListCustomersResponseInner {
+    /**
+     * The customers first name
+     * @type {string}
+     * @memberof ListCustomersResponseInner
+     */
+    'firstName'?: string;
+    /**
+     * The customers last name
+     * @type {string}
+     * @memberof ListCustomersResponseInner
+     */
+    'lastName'?: string;
+    /**
+     * The customers full name
+     * @type {string}
+     * @memberof ListCustomersResponseInner
+     */
+    'name': string;
+    /**
+     * The customers email address
+     * @type {string}
+     * @memberof ListCustomersResponseInner
+     */
+    'email'?: string | null;
+    /**
+     * The customers phone number
+     * @type {string}
+     * @memberof ListCustomersResponseInner
+     */
+    'phone'?: string | null;
+    /**
+     * The customers profile image
+     * @type {string}
+     * @memberof ListCustomersResponseInner
+     */
+    'img'?: string | null;
+    /**
+     * The customers neighborhood
+     * @type {string}
+     * @memberof ListCustomersResponseInner
+     */
+    'neighborhood'?: string | null;
+    /**
+     * The customers city
+     * @type {string}
+     * @memberof ListCustomersResponseInner
+     */
+    'city'?: string | null;
+    /**
+     * The customers 2-letter country code
+     * @type {string}
+     * @memberof ListCustomersResponseInner
+     */
+    'country'?: string | null;
+    /**
+     * The customers street address
+     * @type {string}
+     * @memberof ListCustomersResponseInner
+     */
+    'line1'?: string | null;
+    /**
+     * The customers street address
+     * @type {string}
+     * @memberof ListCustomersResponseInner
+     */
+    'line2'?: string | null;
+    /**
+     * The customers postal code
+     * @type {string}
+     * @memberof ListCustomersResponseInner
+     */
+    'postal_code'?: string | null;
+    /**
+     * The customers state, county, province, or region
+     * @type {string}
+     * @memberof ListCustomersResponseInner
+     */
+    'state'?: string | null;
+    /**
+     * The customers town (only used in Japan)
+     * @type {string}
+     * @memberof ListCustomersResponseInner
+     */
+    'town'?: string | null;
+    /**
+     *
+     * @type {BlockInfo}
+     * @memberof ListCustomersResponseInner
+     */
+    'blocked'?: BlockInfo;
+    /**
+     *
+     * @type {BlockInfo}
+     * @memberof ListCustomersResponseInner
+     */
+    'phoneBlocked'?: BlockInfo;
+    /**
+     *
+     * @type {BlockInfo}
+     * @memberof ListCustomersResponseInner
+     */
+    'emailBlocked'?: BlockInfo;
+    /**
+     * The date the customer joined the business
+     * @type {string}
+     * @memberof ListCustomersResponseInner
+     */
+    'joined'?: string | null;
+    /**
+     * The customers stripe ID
+     * @type {string}
+     * @memberof ListCustomersResponseInner
+     */
+    'stripe'?: string | null;
+    /**
+     * The customers stripe ID in the dev environment
+     * @type {string}
+     * @memberof ListCustomersResponseInner
+     */
+    'stripeDev'?: string | null;
+    /**
+     * The ID of the customer
+     * @type {string}
+     * @memberof ListCustomersResponseInner
+     */
+    '$id': string;
+}
+/**
+ *
+ * @export
+ * @interface ListCustomersResponseInnerAllOf
+ */
+export interface ListCustomersResponseInnerAllOf {
+    /**
+     * The ID of the customer
+     * @type {string}
+     * @memberof ListCustomersResponseInnerAllOf
+     */
+    '$id': string;
+}
+/**
+ *
+ * @export
+ * @interface ListQuery
+ */
+export interface ListQuery {
+    /**
+     *
+     * @type {ListQueryId}
+     * @memberof ListQuery
+     */
+    'id'?: ListQueryId;
+    /**
+     *
+     * @type {Array<ListQueryOperationsInner>}
+     * @memberof ListQuery
+     */
+    'operations'?: Array<ListQueryOperationsInner>;
+}
+/**
+ * @type ListQueryId
+ * @export
+ */
+export type ListQueryId = Array<string> | string;
+/**
+ *
+ * @export
+ * @interface ListQueryOperationsInner
+ */
+export interface ListQueryOperationsInner {
+    /**
+     * The field path to filter on
+     * @type {string}
+     * @memberof ListQueryOperationsInner
+     */
+    'fieldPath': string;
+    /**
+     *
+     * @type {Operator}
+     * @memberof ListQueryOperationsInner
+     */
+    'operator': Operator;
+    /**
+     *
+     * @type {AnyValue}
+     * @memberof ListQueryOperationsInner
+     */
+    'value': AnyValue;
+}
+/**
+ *
+ * @export
+ * @interface ListWorkflowsResponseInner
+ */
+export interface ListWorkflowsResponseInner {
+    /**
+     * The name of the workflow
+     * @type {string}
+     * @memberof ListWorkflowsResponseInner
+     */
+    'name': string;
+    /**
+     *
+     * @type {ContextDetectionParams}
+     * @memberof ListWorkflowsResponseInner
+     */
+    'initiators': ContextDetectionParams;
+    /**
+     * The fields of the workflow
+     * @type {Array<ConversationContextField>}
+     * @memberof ListWorkflowsResponseInner
+     */
+    'fields': Array<ConversationContextField>;
+    /**
+     * About this conversation - used as initial context
+     * @type {string}
+     * @memberof ListWorkflowsResponseInner
+     */
+    'context': string;
+    /**
+     * The webhook to call when a workflow is created
+     * @type {string}
+     * @memberof ListWorkflowsResponseInner
+     */
+    'onCreated'?: string;
+    /**
+     * The webhook to call when a workflow is updated
+     * @type {string}
+     * @memberof ListWorkflowsResponseInner
+     */
+    'onUpdated'?: string;
+    /**
+     * The webhook to call when a workflow is deleted
+     * @type {string}
+     * @memberof ListWorkflowsResponseInner
+     */
+    'onDeleted'?: string;
+    /**
+     * The webhook to call when a workflow has an error
+     * @type {string}
+     * @memberof ListWorkflowsResponseInner
+     */
+    'onError'?: string;
+    /**
+     * The ID of the workflow
+     * @type {string}
+     * @memberof ListWorkflowsResponseInner
+     */
+    '$id': string;
+}
+/**
+ *
+ * @export
+ * @interface ListWorkflowsResponseInnerAllOf
+ */
+export interface ListWorkflowsResponseInnerAllOf {
+    /**
+     * The ID of the workflow
+     * @type {string}
+     * @memberof ListWorkflowsResponseInnerAllOf
+     */
+    '$id': string;
 }
 /**
  *
@@ -2160,13 +2980,13 @@ export interface Message {
      * @type {string}
      * @memberof Message
      */
-    'role'?: string;
+    'role': MessageRoleEnum;
     /**
      * The content of the message
      * @type {string}
      * @memberof Message
      */
-    'content'?: string;
+    'content': string;
     /**
      * The name of the sender
      * @type {string}
@@ -2178,8 +2998,14 @@ export interface Message {
      * @type {string}
      * @memberof Message
      */
-    'time'?: string;
+    'time': string;
 }
+export declare const MessageRoleEnum: {
+    readonly User: "user";
+    readonly Assistant: "assistant";
+    readonly System: "system";
+};
+export type MessageRoleEnum = typeof MessageRoleEnum[keyof typeof MessageRoleEnum];
 /**
  *
  * @export
@@ -2187,18 +3013,36 @@ export interface Message {
  */
 export interface MessageCreateRequest {
     /**
-     * Conveersation ID this belonds to
+     * Conversation ID this belonds to
      * @type {string}
      * @memberof MessageCreateRequest
      */
-    'convo'?: string;
+    'convo': string;
     /**
-     *
-     * @type {MessageGetResponseInner}
+     * The message content to send to a user
+     * @type {string}
      * @memberof MessageCreateRequest
      */
-    'message'?: MessageGetResponseInner;
+    'message': string;
+    /**
+     * The message content to send to a user in HTML format (only available in email)
+     * @type {string}
+     * @memberof MessageCreateRequest
+     */
+    'messageHtml'?: string;
+    /**
+     * Overrides the role of the user sending the message
+     * @type {string}
+     * @memberof MessageCreateRequest
+     */
+    'role'?: MessageCreateRequestRoleEnum;
 }
+export declare const MessageCreateRequestRoleEnum: {
+    readonly Agent: "agent";
+    readonly Customer: "customer";
+    readonly Context: "context";
+};
+export type MessageCreateRequestRoleEnum = typeof MessageCreateRequestRoleEnum[keyof typeof MessageCreateRequestRoleEnum];
 /**
  *
  * @export
@@ -2217,6 +3061,12 @@ export interface MessageCreateResponse {
      * @memberof MessageCreateResponse
      */
     'error'?: Error;
+    /**
+     * The id of the document that was created, updated, or deleted
+     * @type {string}
+     * @memberof MessageCreateResponse
+     */
+    'id': string;
 }
 /**
  *
@@ -2229,13 +3079,13 @@ export interface MessageGetResponseInner {
      * @type {string}
      * @memberof MessageGetResponseInner
      */
-    'role'?: string;
+    'role': MessageGetResponseInnerRoleEnum;
     /**
      * The content of the message
      * @type {string}
      * @memberof MessageGetResponseInner
      */
-    'content'?: string;
+    'content': string;
     /**
      * The name of the sender
      * @type {string}
@@ -2247,7 +3097,32 @@ export interface MessageGetResponseInner {
      * @type {string}
      * @memberof MessageGetResponseInner
      */
-    'time'?: string;
+    'time': string;
+    /**
+     * The ID of the message to get
+     * @type {string}
+     * @memberof MessageGetResponseInner
+     */
+    '$id': string;
+}
+export declare const MessageGetResponseInnerRoleEnum: {
+    readonly User: "user";
+    readonly Assistant: "assistant";
+    readonly System: "system";
+};
+export type MessageGetResponseInnerRoleEnum = typeof MessageGetResponseInnerRoleEnum[keyof typeof MessageGetResponseInnerRoleEnum];
+/**
+ *
+ * @export
+ * @interface MessageGetResponseInnerAllOf
+ */
+export interface MessageGetResponseInnerAllOf {
+    /**
+     * The ID of the message to get
+     * @type {string}
+     * @memberof MessageGetResponseInnerAllOf
+     */
+    '$id': string;
 }
 /**
  *
@@ -2283,6 +3158,63 @@ export interface ModelError {
 /**
  *
  * @export
+ * @interface OperationBulkResponse
+ */
+export interface OperationBulkResponse {
+    /**
+     * ISO 8601 datetime string of when the operation was queued
+     * @type {string}
+     * @memberof OperationBulkResponse
+     */
+    'queued': string;
+    /**
+     * The operation id to view the operation end results
+     * @type {string}
+     * @memberof OperationBulkResponse
+     */
+    '$operation': string;
+}
+/**
+ *
+ * @export
+ * @interface OperationDocResponse
+ */
+export interface OperationDocResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof OperationDocResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof OperationDocResponse
+     */
+    'error'?: Error;
+    /**
+     * The id of the document that was created, updated, or deleted
+     * @type {string}
+     * @memberof OperationDocResponse
+     */
+    'id': string;
+}
+/**
+ *
+ * @export
+ * @interface OperationDocResponseAllOf
+ */
+export interface OperationDocResponseAllOf {
+    /**
+     * The id of the document that was created, updated, or deleted
+     * @type {string}
+     * @memberof OperationDocResponseAllOf
+     */
+    'id': string;
+}
+/**
+ *
+ * @export
  * @interface OperationResponse
  */
 export interface OperationResponse {
@@ -2300,25 +3232,37 @@ export interface OperationResponse {
     'error'?: Error;
 }
 /**
+ * The operator of the condition or query
+ * @export
+ * @enum {string}
+ */
+export declare const Operator: {
+    readonly Eq: "eq";
+    readonly Equal: "equal";
+    readonly Ne: "ne";
+    readonly NotEquals: "not-equals";
+    readonly Gt: "gt";
+    readonly GreaterThan: "greater-than";
+    readonly Gte: "gte";
+    readonly GreaterThanEquals: "greater-than-equals";
+    readonly Lt: "lt";
+    readonly LessThan: "less-than";
+    readonly Lte: "lte";
+    readonly LessThanEquals: "less-than-equals";
+    readonly ArrayContains: "array-contains";
+    readonly In: "in";
+    readonly ArrayContainsAny: "array-contains-any";
+    readonly NotIn: "not-in";
+};
+export type Operator = typeof Operator[keyof typeof Operator];
+/**
  *
  * @export
  * @interface ScheduleCreateRequest
  */
 export interface ScheduleCreateRequest {
     /**
-     * Customer this conversation is with
-     * @type {string}
-     * @memberof ScheduleCreateRequest
-     */
-    '$customer': string;
-    /**
-     *
-     * @type {any}
-     * @memberof ScheduleCreateRequest
-     */
-    '$business': any | null;
-    /**
-     * Agent assigned to this conversation
+     * Default agent assigned to the conversation(s)
      * @type {string}
      * @memberof ScheduleCreateRequest
      */
@@ -2328,7 +3272,7 @@ export interface ScheduleCreateRequest {
      * @type {string}
      * @memberof ScheduleCreateRequest
      */
-    '$thread': string;
+    '$thread'?: string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -2336,35 +3280,41 @@ export interface ScheduleCreateRequest {
      */
     'initialContexts'?: Array<string>;
     /**
-     * Environment this conversation is in (phone, web, or email) - this determines which device to send messages to
+     *
+     * @type {ConversationBaseEnvironmentProps}
+     * @memberof ScheduleCreateRequest
+     */
+    'environmentProps'?: ConversationBaseEnvironmentProps;
+    /**
+     * Customer this conversation is with
      * @type {string}
      * @memberof ScheduleCreateRequest
      */
-    'environment'?: string;
+    '$customer': string;
+    /**
+     *
+     * @type {ConversationEnvironment}
+     * @memberof ScheduleCreateRequest
+     */
+    'environment': ConversationEnvironment;
     /**
      * ISO 8601 datetime string
      * @type {string}
      * @memberof ScheduleCreateRequest
      */
-    'scheduled'?: string;
+    'scheduled': string;
     /**
      * The initial message to send to the customer
      * @type {string}
      * @memberof ScheduleCreateRequest
      */
-    'initialMessage'?: string;
+    'initialMessage': string;
     /**
      * The initial message to send to the customer in HTML
      * @type {string}
      * @memberof ScheduleCreateRequest
      */
     'initialMessageHtml'?: string | null;
-    /**
-     * Whether the initial message has been sent
-     * @type {boolean}
-     * @memberof ScheduleCreateRequest
-     */
-    'sent'?: boolean;
     /**
      * Group this conversation is in
      * @type {string}
@@ -2390,6 +3340,31 @@ export interface ScheduleCreateResponse {
      * @memberof ScheduleCreateResponse
      */
     'error'?: Error;
+    /**
+     * The id of the document that was created, updated, or deleted
+     * @type {string}
+     * @memberof ScheduleCreateResponse
+     */
+    'id': string;
+    /**
+     * ISO Time the initial message has been sent
+     * @type {string}
+     * @memberof ScheduleCreateResponse
+     */
+    'sent'?: string;
+}
+/**
+ *
+ * @export
+ * @interface ScheduleCreateResponseAllOf
+ */
+export interface ScheduleCreateResponseAllOf {
+    /**
+     * ISO Time the initial message has been sent
+     * @type {string}
+     * @memberof ScheduleCreateResponseAllOf
+     */
+    'sent'?: string;
 }
 /**
  *
@@ -2398,19 +3373,7 @@ export interface ScheduleCreateResponse {
  */
 export interface ScheduleGetResponse {
     /**
-     * Customer this conversation is with
-     * @type {string}
-     * @memberof ScheduleGetResponse
-     */
-    '$customer': string;
-    /**
-     * Business this conversation is with
-     * @type {string}
-     * @memberof ScheduleGetResponse
-     */
-    '$business': string;
-    /**
-     * Agent assigned to this conversation
+     * Default agent assigned to the conversation(s)
      * @type {string}
      * @memberof ScheduleGetResponse
      */
@@ -2420,7 +3383,7 @@ export interface ScheduleGetResponse {
      * @type {string}
      * @memberof ScheduleGetResponse
      */
-    '$thread': string;
+    '$thread'?: string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -2428,35 +3391,41 @@ export interface ScheduleGetResponse {
      */
     'initialContexts'?: Array<string>;
     /**
-     * Environment this conversation is in (phone, web, or email) - this determines which device to send messages to
+     *
+     * @type {ConversationBaseEnvironmentProps}
+     * @memberof ScheduleGetResponse
+     */
+    'environmentProps'?: ConversationBaseEnvironmentProps;
+    /**
+     * Customer this conversation is with
      * @type {string}
      * @memberof ScheduleGetResponse
      */
-    'environment'?: string;
+    '$customer': string;
+    /**
+     *
+     * @type {ConversationEnvironment}
+     * @memberof ScheduleGetResponse
+     */
+    'environment': ConversationEnvironment;
     /**
      * ISO 8601 datetime string
      * @type {string}
      * @memberof ScheduleGetResponse
      */
-    'scheduled'?: string;
+    'scheduled': string;
     /**
      * The initial message to send to the customer
      * @type {string}
      * @memberof ScheduleGetResponse
      */
-    'initialMessage'?: string;
+    'initialMessage': string;
     /**
      * The initial message to send to the customer in HTML
      * @type {string}
      * @memberof ScheduleGetResponse
      */
     'initialMessageHtml'?: string | null;
-    /**
-     * Whether the initial message has been sent
-     * @type {boolean}
-     * @memberof ScheduleGetResponse
-     */
-    'sent'?: boolean;
     /**
      * Group this conversation is in
      * @type {string}
@@ -2471,19 +3440,7 @@ export interface ScheduleGetResponse {
  */
 export interface ScheduleGroupCreateRequest {
     /**
-     * Customer this conversation is with
-     * @type {string}
-     * @memberof ScheduleGroupCreateRequest
-     */
-    '$customer': string;
-    /**
-     *
-     * @type {any}
-     * @memberof ScheduleGroupCreateRequest
-     */
-    '$business': any | null;
-    /**
-     * Agent assigned to this conversation
+     * Default agent assigned to the conversation(s)
      * @type {string}
      * @memberof ScheduleGroupCreateRequest
      */
@@ -2493,7 +3450,7 @@ export interface ScheduleGroupCreateRequest {
      * @type {string}
      * @memberof ScheduleGroupCreateRequest
      */
-    '$thread': string;
+    '$thread'?: string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -2501,23 +3458,23 @@ export interface ScheduleGroupCreateRequest {
      */
     'initialContexts'?: Array<string>;
     /**
-     * Environment this conversation is in (phone, web, or email) - this determines which device to send messages to
-     * @type {string}
+     *
+     * @type {ConversationBaseEnvironmentProps}
      * @memberof ScheduleGroupCreateRequest
      */
-    'environment'?: string;
+    'environmentProps'?: ConversationBaseEnvironmentProps;
     /**
      * ISO 8601 datetime string
      * @type {string}
      * @memberof ScheduleGroupCreateRequest
      */
-    'scheduled'?: string;
+    'scheduled': string;
     /**
      * The initial message to send to the customer
      * @type {string}
      * @memberof ScheduleGroupCreateRequest
      */
-    'initialMessage'?: string;
+    'initialMessage': string;
     /**
      * The initial message to send to the customer in HTML
      * @type {string}
@@ -2525,19 +3482,7 @@ export interface ScheduleGroupCreateRequest {
      */
     'initialMessageHtml'?: string | null;
     /**
-     * Whether the initial message has been sent
-     * @type {boolean}
-     * @memberof ScheduleGroupCreateRequest
-     */
-    'sent'?: boolean;
-    /**
-     * Group this conversation is in
-     * @type {string}
-     * @memberof ScheduleGroupCreateRequest
-     */
-    '$group'?: string;
-    /**
-     * The delay in miliseconds between each conversation
+     * The delay in miliseconds between each customer, defaults to 15000 (15 seconds)
      * @type {number}
      * @memberof ScheduleGroupCreateRequest
      */
@@ -2547,7 +3492,7 @@ export interface ScheduleGroupCreateRequest {
      * @type {Array<ScheduledConversationGroupAllOfCustomers>}
      * @memberof ScheduleGroupCreateRequest
      */
-    'customers'?: Array<ScheduledConversationGroupAllOfCustomers>;
+    'customers': Array<ScheduledConversationGroupAllOfCustomers>;
 }
 /**
  *
@@ -2567,6 +3512,12 @@ export interface ScheduleGroupCreateResponse {
      * @memberof ScheduleGroupCreateResponse
      */
     'error'?: Error;
+    /**
+     * The id of the document that was created, updated, or deleted
+     * @type {string}
+     * @memberof ScheduleGroupCreateResponse
+     */
+    'id': string;
 }
 /**
  *
@@ -2575,19 +3526,7 @@ export interface ScheduleGroupCreateResponse {
  */
 export interface ScheduleGroupGetResponse {
     /**
-     * Customer this conversation is with
-     * @type {string}
-     * @memberof ScheduleGroupGetResponse
-     */
-    '$customer': string;
-    /**
-     * Business this conversation is with
-     * @type {string}
-     * @memberof ScheduleGroupGetResponse
-     */
-    '$business': string;
-    /**
-     * Agent assigned to this conversation
+     * Default agent assigned to the conversation(s)
      * @type {string}
      * @memberof ScheduleGroupGetResponse
      */
@@ -2597,7 +3536,7 @@ export interface ScheduleGroupGetResponse {
      * @type {string}
      * @memberof ScheduleGroupGetResponse
      */
-    '$thread': string;
+    '$thread'?: string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -2605,23 +3544,23 @@ export interface ScheduleGroupGetResponse {
      */
     'initialContexts'?: Array<string>;
     /**
-     * Environment this conversation is in (phone, web, or email) - this determines which device to send messages to
-     * @type {string}
+     *
+     * @type {ConversationBaseEnvironmentProps}
      * @memberof ScheduleGroupGetResponse
      */
-    'environment'?: string;
+    'environmentProps'?: ConversationBaseEnvironmentProps;
     /**
      * ISO 8601 datetime string
      * @type {string}
      * @memberof ScheduleGroupGetResponse
      */
-    'scheduled'?: string;
+    'scheduled': string;
     /**
      * The initial message to send to the customer
      * @type {string}
      * @memberof ScheduleGroupGetResponse
      */
-    'initialMessage'?: string;
+    'initialMessage': string;
     /**
      * The initial message to send to the customer in HTML
      * @type {string}
@@ -2629,19 +3568,7 @@ export interface ScheduleGroupGetResponse {
      */
     'initialMessageHtml'?: string | null;
     /**
-     * Whether the initial message has been sent
-     * @type {boolean}
-     * @memberof ScheduleGroupGetResponse
-     */
-    'sent'?: boolean;
-    /**
-     * Group this conversation is in
-     * @type {string}
-     * @memberof ScheduleGroupGetResponse
-     */
-    '$group'?: string;
-    /**
-     * The delay in miliseconds between each conversation
+     * The delay in miliseconds between each customer, defaults to 15000 (15 seconds)
      * @type {number}
      * @memberof ScheduleGroupGetResponse
      */
@@ -2651,7 +3578,38 @@ export interface ScheduleGroupGetResponse {
      * @type {Array<ScheduledConversationGroupAllOfCustomers>}
      * @memberof ScheduleGroupGetResponse
      */
-    'customers'?: Array<ScheduledConversationGroupAllOfCustomers>;
+    'customers': Array<ScheduledConversationGroupAllOfCustomers>;
+    /**
+     * The ID of the scheduled conversation group
+     * @type {string}
+     * @memberof ScheduleGroupGetResponse
+     */
+    '$id': string;
+    /**
+     * ISO Time the initial message has been sent
+     * @type {boolean}
+     * @memberof ScheduleGroupGetResponse
+     */
+    'sent'?: boolean;
+}
+/**
+ *
+ * @export
+ * @interface ScheduleGroupGetResponseAllOf
+ */
+export interface ScheduleGroupGetResponseAllOf {
+    /**
+     * The ID of the scheduled conversation group
+     * @type {string}
+     * @memberof ScheduleGroupGetResponseAllOf
+     */
+    '$id': string;
+    /**
+     * ISO Time the initial message has been sent
+     * @type {boolean}
+     * @memberof ScheduleGroupGetResponseAllOf
+     */
+    'sent'?: boolean;
 }
 /**
  *
@@ -2671,6 +3629,12 @@ export interface ScheduleGroupRemoveResponse {
      * @memberof ScheduleGroupRemoveResponse
      */
     'error'?: Error;
+    /**
+     * The id of the document that was created, updated, or deleted
+     * @type {string}
+     * @memberof ScheduleGroupRemoveResponse
+     */
+    'id': string;
 }
 /**
  *
@@ -2679,19 +3643,7 @@ export interface ScheduleGroupRemoveResponse {
  */
 export interface ScheduleGroupUpdateRequest {
     /**
-     * Customer this conversation is with
-     * @type {string}
-     * @memberof ScheduleGroupUpdateRequest
-     */
-    '$customer': string;
-    /**
-     * Business this conversation is with
-     * @type {string}
-     * @memberof ScheduleGroupUpdateRequest
-     */
-    '$business': string;
-    /**
-     * Agent assigned to this conversation
+     * Default agent assigned to the conversation(s)
      * @type {string}
      * @memberof ScheduleGroupUpdateRequest
      */
@@ -2701,7 +3653,7 @@ export interface ScheduleGroupUpdateRequest {
      * @type {string}
      * @memberof ScheduleGroupUpdateRequest
      */
-    '$thread': string;
+    '$thread'?: string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -2709,23 +3661,23 @@ export interface ScheduleGroupUpdateRequest {
      */
     'initialContexts'?: Array<string>;
     /**
-     * Environment this conversation is in (phone, web, or email) - this determines which device to send messages to
-     * @type {string}
+     *
+     * @type {ConversationBaseEnvironmentProps}
      * @memberof ScheduleGroupUpdateRequest
      */
-    'environment'?: string;
+    'environmentProps'?: ConversationBaseEnvironmentProps;
     /**
      * ISO 8601 datetime string
      * @type {string}
      * @memberof ScheduleGroupUpdateRequest
      */
-    'scheduled'?: string;
+    'scheduled': string;
     /**
      * The initial message to send to the customer
      * @type {string}
      * @memberof ScheduleGroupUpdateRequest
      */
-    'initialMessage'?: string;
+    'initialMessage': string;
     /**
      * The initial message to send to the customer in HTML
      * @type {string}
@@ -2733,19 +3685,7 @@ export interface ScheduleGroupUpdateRequest {
      */
     'initialMessageHtml'?: string | null;
     /**
-     * Whether the initial message has been sent
-     * @type {boolean}
-     * @memberof ScheduleGroupUpdateRequest
-     */
-    'sent'?: boolean;
-    /**
-     * Group this conversation is in
-     * @type {string}
-     * @memberof ScheduleGroupUpdateRequest
-     */
-    '$group'?: string;
-    /**
-     * The delay in miliseconds between each conversation
+     * The delay in miliseconds between each customer, defaults to 15000 (15 seconds)
      * @type {number}
      * @memberof ScheduleGroupUpdateRequest
      */
@@ -2755,13 +3695,13 @@ export interface ScheduleGroupUpdateRequest {
      * @type {Array<ScheduledConversationGroupAllOfCustomers>}
      * @memberof ScheduleGroupUpdateRequest
      */
-    'customers'?: Array<ScheduledConversationGroupAllOfCustomers>;
+    'customers': Array<ScheduledConversationGroupAllOfCustomers>;
     /**
      * The ID of the scheduled conversation group to update
      * @type {string}
      * @memberof ScheduleGroupUpdateRequest
      */
-    'id'?: string;
+    '$id': string;
 }
 /**
  *
@@ -2774,7 +3714,7 @@ export interface ScheduleGroupUpdateRequestAllOf {
      * @type {string}
      * @memberof ScheduleGroupUpdateRequestAllOf
      */
-    'id'?: string;
+    '$id': string;
 }
 /**
  *
@@ -2794,6 +3734,12 @@ export interface ScheduleGroupUpdateResponse {
      * @memberof ScheduleGroupUpdateResponse
      */
     'error'?: Error;
+    /**
+     * The id of the document that was created, updated, or deleted
+     * @type {string}
+     * @memberof ScheduleGroupUpdateResponse
+     */
+    'id': string;
 }
 /**
  *
@@ -2813,6 +3759,12 @@ export interface ScheduleRemoveResponse {
      * @memberof ScheduleRemoveResponse
      */
     'error'?: Error;
+    /**
+     * The id of the document that was created, updated, or deleted
+     * @type {string}
+     * @memberof ScheduleRemoveResponse
+     */
+    'id': string;
 }
 /**
  *
@@ -2821,19 +3773,7 @@ export interface ScheduleRemoveResponse {
  */
 export interface ScheduleUpdateRequest {
     /**
-     * Customer this conversation is with
-     * @type {string}
-     * @memberof ScheduleUpdateRequest
-     */
-    '$customer': string;
-    /**
-     * Business this conversation is with
-     * @type {string}
-     * @memberof ScheduleUpdateRequest
-     */
-    '$business': string;
-    /**
-     * Agent assigned to this conversation
+     * Default agent assigned to the conversation(s)
      * @type {string}
      * @memberof ScheduleUpdateRequest
      */
@@ -2843,7 +3783,7 @@ export interface ScheduleUpdateRequest {
      * @type {string}
      * @memberof ScheduleUpdateRequest
      */
-    '$thread': string;
+    '$thread'?: string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -2851,35 +3791,41 @@ export interface ScheduleUpdateRequest {
      */
     'initialContexts'?: Array<string>;
     /**
-     * Environment this conversation is in (phone, web, or email) - this determines which device to send messages to
+     *
+     * @type {ConversationBaseEnvironmentProps}
+     * @memberof ScheduleUpdateRequest
+     */
+    'environmentProps'?: ConversationBaseEnvironmentProps;
+    /**
+     * Customer this conversation is with
      * @type {string}
      * @memberof ScheduleUpdateRequest
      */
-    'environment'?: string;
+    '$customer': string;
+    /**
+     *
+     * @type {ConversationEnvironment}
+     * @memberof ScheduleUpdateRequest
+     */
+    'environment': ConversationEnvironment;
     /**
      * ISO 8601 datetime string
      * @type {string}
      * @memberof ScheduleUpdateRequest
      */
-    'scheduled'?: string;
+    'scheduled': string;
     /**
      * The initial message to send to the customer
      * @type {string}
      * @memberof ScheduleUpdateRequest
      */
-    'initialMessage'?: string;
+    'initialMessage': string;
     /**
      * The initial message to send to the customer in HTML
      * @type {string}
      * @memberof ScheduleUpdateRequest
      */
     'initialMessageHtml'?: string | null;
-    /**
-     * Whether the initial message has been sent
-     * @type {boolean}
-     * @memberof ScheduleUpdateRequest
-     */
-    'sent'?: boolean;
     /**
      * Group this conversation is in
      * @type {string}
@@ -2891,7 +3837,7 @@ export interface ScheduleUpdateRequest {
      * @type {string}
      * @memberof ScheduleUpdateRequest
      */
-    'id'?: string;
+    '$id'?: string;
 }
 /**
  *
@@ -2904,7 +3850,7 @@ export interface ScheduleUpdateRequestAllOf {
      * @type {string}
      * @memberof ScheduleUpdateRequestAllOf
      */
-    'id'?: string;
+    '$id'?: string;
 }
 /**
  *
@@ -2924,6 +3870,12 @@ export interface ScheduleUpdateResponse {
      * @memberof ScheduleUpdateResponse
      */
     'error'?: Error;
+    /**
+     * The id of the document that was created, updated, or deleted
+     * @type {string}
+     * @memberof ScheduleUpdateResponse
+     */
+    'id': string;
 }
 /**
  *
@@ -2932,19 +3884,7 @@ export interface ScheduleUpdateResponse {
  */
 export interface ScheduledConversation {
     /**
-     * Customer this conversation is with
-     * @type {string}
-     * @memberof ScheduledConversation
-     */
-    '$customer': string;
-    /**
-     * Business this conversation is with
-     * @type {string}
-     * @memberof ScheduledConversation
-     */
-    '$business': string;
-    /**
-     * Agent assigned to this conversation
+     * Default agent assigned to the conversation(s)
      * @type {string}
      * @memberof ScheduledConversation
      */
@@ -2954,7 +3894,7 @@ export interface ScheduledConversation {
      * @type {string}
      * @memberof ScheduledConversation
      */
-    '$thread': string;
+    '$thread'?: string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -2962,35 +3902,41 @@ export interface ScheduledConversation {
      */
     'initialContexts'?: Array<string>;
     /**
-     * Environment this conversation is in (phone, web, or email) - this determines which device to send messages to
+     *
+     * @type {ConversationBaseEnvironmentProps}
+     * @memberof ScheduledConversation
+     */
+    'environmentProps'?: ConversationBaseEnvironmentProps;
+    /**
+     * Customer this conversation is with
      * @type {string}
      * @memberof ScheduledConversation
      */
-    'environment'?: string;
+    '$customer': string;
+    /**
+     *
+     * @type {ConversationEnvironment}
+     * @memberof ScheduledConversation
+     */
+    'environment': ConversationEnvironment;
     /**
      * ISO 8601 datetime string
      * @type {string}
      * @memberof ScheduledConversation
      */
-    'scheduled'?: string;
+    'scheduled': string;
     /**
      * The initial message to send to the customer
      * @type {string}
      * @memberof ScheduledConversation
      */
-    'initialMessage'?: string;
+    'initialMessage': string;
     /**
      * The initial message to send to the customer in HTML
      * @type {string}
      * @memberof ScheduledConversation
      */
     'initialMessageHtml'?: string | null;
-    /**
-     * Whether the initial message has been sent
-     * @type {boolean}
-     * @memberof ScheduledConversation
-     */
-    'sent'?: boolean;
     /**
      * Group this conversation is in
      * @type {string}
@@ -3005,30 +3951,6 @@ export interface ScheduledConversation {
  */
 export interface ScheduledConversationAllOf {
     /**
-     * ISO 8601 datetime string
-     * @type {string}
-     * @memberof ScheduledConversationAllOf
-     */
-    'scheduled'?: string;
-    /**
-     * The initial message to send to the customer
-     * @type {string}
-     * @memberof ScheduledConversationAllOf
-     */
-    'initialMessage'?: string;
-    /**
-     * The initial message to send to the customer in HTML
-     * @type {string}
-     * @memberof ScheduledConversationAllOf
-     */
-    'initialMessageHtml'?: string | null;
-    /**
-     * Whether the initial message has been sent
-     * @type {boolean}
-     * @memberof ScheduledConversationAllOf
-     */
-    'sent'?: boolean;
-    /**
      * Group this conversation is in
      * @type {string}
      * @memberof ScheduledConversationAllOf
@@ -3042,19 +3964,7 @@ export interface ScheduledConversationAllOf {
  */
 export interface ScheduledConversationGroup {
     /**
-     * Customer this conversation is with
-     * @type {string}
-     * @memberof ScheduledConversationGroup
-     */
-    '$customer': string;
-    /**
-     * Business this conversation is with
-     * @type {string}
-     * @memberof ScheduledConversationGroup
-     */
-    '$business': string;
-    /**
-     * Agent assigned to this conversation
+     * Default agent assigned to the conversation(s)
      * @type {string}
      * @memberof ScheduledConversationGroup
      */
@@ -3064,7 +3974,7 @@ export interface ScheduledConversationGroup {
      * @type {string}
      * @memberof ScheduledConversationGroup
      */
-    '$thread': string;
+    '$thread'?: string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -3072,23 +3982,23 @@ export interface ScheduledConversationGroup {
      */
     'initialContexts'?: Array<string>;
     /**
-     * Environment this conversation is in (phone, web, or email) - this determines which device to send messages to
-     * @type {string}
+     *
+     * @type {ConversationBaseEnvironmentProps}
      * @memberof ScheduledConversationGroup
      */
-    'environment'?: string;
+    'environmentProps'?: ConversationBaseEnvironmentProps;
     /**
      * ISO 8601 datetime string
      * @type {string}
      * @memberof ScheduledConversationGroup
      */
-    'scheduled'?: string;
+    'scheduled': string;
     /**
      * The initial message to send to the customer
      * @type {string}
      * @memberof ScheduledConversationGroup
      */
-    'initialMessage'?: string;
+    'initialMessage': string;
     /**
      * The initial message to send to the customer in HTML
      * @type {string}
@@ -3096,19 +4006,7 @@ export interface ScheduledConversationGroup {
      */
     'initialMessageHtml'?: string | null;
     /**
-     * Whether the initial message has been sent
-     * @type {boolean}
-     * @memberof ScheduledConversationGroup
-     */
-    'sent'?: boolean;
-    /**
-     * Group this conversation is in
-     * @type {string}
-     * @memberof ScheduledConversationGroup
-     */
-    '$group'?: string;
-    /**
-     * The delay in miliseconds between each conversation
+     * The delay in miliseconds between each customer, defaults to 15000 (15 seconds)
      * @type {number}
      * @memberof ScheduledConversationGroup
      */
@@ -3118,7 +4016,7 @@ export interface ScheduledConversationGroup {
      * @type {Array<ScheduledConversationGroupAllOfCustomers>}
      * @memberof ScheduledConversationGroup
      */
-    'customers'?: Array<ScheduledConversationGroupAllOfCustomers>;
+    'customers': Array<ScheduledConversationGroupAllOfCustomers>;
 }
 /**
  *
@@ -3127,7 +4025,7 @@ export interface ScheduledConversationGroup {
  */
 export interface ScheduledConversationGroupAllOf {
     /**
-     * The delay in miliseconds between each conversation
+     * The delay in miliseconds between each customer, defaults to 15000 (15 seconds)
      * @type {number}
      * @memberof ScheduledConversationGroupAllOf
      */
@@ -3137,7 +4035,7 @@ export interface ScheduledConversationGroupAllOf {
      * @type {Array<ScheduledConversationGroupAllOfCustomers>}
      * @memberof ScheduledConversationGroupAllOf
      */
-    'customers'?: Array<ScheduledConversationGroupAllOfCustomers>;
+    'customers': Array<ScheduledConversationGroupAllOfCustomers>;
 }
 /**
  *
@@ -3146,17 +4044,23 @@ export interface ScheduledConversationGroupAllOf {
  */
 export interface ScheduledConversationGroupAllOfCustomers {
     /**
-     * Environment this conversation is in (phone, web, or email) - this determines which device to send messages to
-     * @type {string}
+     *
+     * @type {ConversationEnvironment}
      * @memberof ScheduledConversationGroupAllOfCustomers
      */
-    'environment'?: string;
+    'environment': ConversationEnvironment;
     /**
      * Customer ID
      * @type {string}
      * @memberof ScheduledConversationGroupAllOfCustomers
      */
-    'id'?: string;
+    'id': string;
+    /**
+     * Overrides default $agent for this customer
+     * @type {string}
+     * @memberof ScheduledConversationGroupAllOfCustomers
+     */
+    '$agent'?: string;
 }
 /**
  *
@@ -3242,6 +4146,25 @@ export interface UpdateAgentRequest {
      * @memberof UpdateAgentRequest
      */
     'transcript'?: string;
+    /**
+     * The ID of the agent to update
+     * @type {string}
+     * @memberof UpdateAgentRequest
+     */
+    '$id': string;
+}
+/**
+ *
+ * @export
+ * @interface UpdateAgentRequestAllOf
+ */
+export interface UpdateAgentRequestAllOf {
+    /**
+     * The ID of the agent to update
+     * @type {string}
+     * @memberof UpdateAgentRequestAllOf
+     */
+    '$id': string;
 }
 /**
  *
@@ -3261,6 +4184,12 @@ export interface UpdateAgentResponse {
      * @memberof UpdateAgentResponse
      */
     'error'?: Error;
+    /**
+     * The id of the document that was created, updated, or deleted
+     * @type {string}
+     * @memberof UpdateAgentResponse
+     */
+    'id': string;
 }
 /**
  *
@@ -3270,10 +4199,114 @@ export interface UpdateAgentResponse {
 export interface UpdateAgentsRequest {
     /**
      *
-     * @type {Array<Agent>}
+     * @type {Array<UpdateAgentsRequestCustomersInner>}
      * @memberof UpdateAgentsRequest
      */
-    'customers'?: Array<Agent>;
+    'customers'?: Array<UpdateAgentsRequestCustomersInner>;
+}
+/**
+ *
+ * @export
+ * @interface UpdateAgentsRequestCustomersInner
+ */
+export interface UpdateAgentsRequestCustomersInner {
+    /**
+     * Agent first name
+     * @type {string}
+     * @memberof UpdateAgentsRequestCustomersInner
+     */
+    'firstName': string;
+    /**
+     * Agent last name
+     * @type {string}
+     * @memberof UpdateAgentsRequestCustomersInner
+     */
+    'lastName': string;
+    /**
+     * Agent is inactive
+     * @type {boolean}
+     * @memberof UpdateAgentsRequestCustomersInner
+     */
+    'inactive'?: boolean;
+    /**
+     * Programmable phone number
+     * @type {string}
+     * @memberof UpdateAgentsRequestCustomersInner
+     */
+    'programmablePhoneNumber'?: string;
+    /**
+     * Programmable phone number SID
+     * @type {string}
+     * @memberof UpdateAgentsRequestCustomersInner
+     */
+    'programmablePhoneNumberSid'?: string;
+    /**
+     * Email address from Scout9 gmail subdomain
+     * @type {string}
+     * @memberof UpdateAgentsRequestCustomersInner
+     */
+    'programmableEmail'?: string;
+    /**
+     * Forward email
+     * @type {string}
+     * @memberof UpdateAgentsRequestCustomersInner
+     */
+    'forwardEmail'?: string;
+    /**
+     * Forward phone
+     * @type {string}
+     * @memberof UpdateAgentsRequestCustomersInner
+     */
+    'forwardPhone': string;
+    /**
+     * Title of the agent, defaults to \"Agent\"
+     * @type {string}
+     * @memberof UpdateAgentsRequestCustomersInner
+     */
+    'title'?: string;
+    /**
+     * Context of the agent, defaults to \"Agent\"
+     * @type {string}
+     * @memberof UpdateAgentsRequestCustomersInner
+     */
+    'context'?: string;
+    /**
+     * Locations ids the agent is included in
+     * @type {Array<string>}
+     * @memberof UpdateAgentsRequestCustomersInner
+     */
+    'includedLocations'?: Array<string>;
+    /**
+     * Locations id the agent is excluded from
+     * @type {Array<string>}
+     * @memberof UpdateAgentsRequestCustomersInner
+     */
+    'excludedLocations'?: Array<string>;
+    /**
+     * Transcript of the agent
+     * @type {string}
+     * @memberof UpdateAgentsRequestCustomersInner
+     */
+    'transcript'?: string;
+    /**
+     * The ID of the agent
+     * @type {string}
+     * @memberof UpdateAgentsRequestCustomersInner
+     */
+    '$id': string;
+}
+/**
+ *
+ * @export
+ * @interface UpdateAgentsRequestCustomersInnerAllOf
+ */
+export interface UpdateAgentsRequestCustomersInnerAllOf {
+    /**
+     * The ID of the agent
+     * @type {string}
+     * @memberof UpdateAgentsRequestCustomersInnerAllOf
+     */
+    '$id': string;
 }
 /**
  *
@@ -3282,17 +4315,17 @@ export interface UpdateAgentsRequest {
  */
 export interface UpdateAgentsResponse {
     /**
-     *
-     * @type {boolean}
+     * ISO 8601 datetime string of when the operation was queued
+     * @type {string}
      * @memberof UpdateAgentsResponse
      */
-    'success': boolean;
+    'queued': string;
     /**
-     *
-     * @type {Error}
+     * The operation id to view the operation end results
+     * @type {string}
      * @memberof UpdateAgentsResponse
      */
-    'error'?: Error;
+    '$operation': string;
 }
 /**
  *
@@ -3300,12 +4333,6 @@ export interface UpdateAgentsResponse {
  * @interface UpdateContextRequest
  */
 export interface UpdateContextRequest {
-    /**
-     * The ID of the context
-     * @type {string}
-     * @memberof UpdateContextRequest
-     */
-    '$id': string;
     /**
      * The name of the context
      * @type {string}
@@ -3348,6 +4375,25 @@ export interface UpdateContextRequest {
      * @memberof UpdateContextRequest
      */
     'requiredColumns'?: Array<string>;
+    /**
+     * The ID of the context to update
+     * @type {string}
+     * @memberof UpdateContextRequest
+     */
+    '$id': string;
+}
+/**
+ *
+ * @export
+ * @interface UpdateContextRequestAllOf
+ */
+export interface UpdateContextRequestAllOf {
+    /**
+     * The ID of the context to update
+     * @type {string}
+     * @memberof UpdateContextRequestAllOf
+     */
+    '$id': string;
 }
 /**
  *
@@ -3367,6 +4413,12 @@ export interface UpdateContextResponse {
      * @memberof UpdateContextResponse
      */
     'error'?: Error;
+    /**
+     * The id of the document that was created, updated, or deleted
+     * @type {string}
+     * @memberof UpdateContextResponse
+     */
+    'id': string;
 }
 /**
  *
@@ -3376,10 +4428,10 @@ export interface UpdateContextResponse {
 export interface UpdateContextsRequest {
     /**
      *
-     * @type {Array<Context>}
+     * @type {Array<ListContextsResponseInner>}
      * @memberof UpdateContextsRequest
      */
-    'customers'?: Array<Context>;
+    'customers'?: Array<ListContextsResponseInner>;
 }
 /**
  *
@@ -3388,17 +4440,17 @@ export interface UpdateContextsRequest {
  */
 export interface UpdateContextsResponse {
     /**
-     *
-     * @type {boolean}
+     * ISO 8601 datetime string of when the operation was queued
+     * @type {string}
      * @memberof UpdateContextsResponse
      */
-    'success': boolean;
+    'queued': string;
     /**
-     *
-     * @type {Error}
+     * The operation id to view the operation end results
+     * @type {string}
      * @memberof UpdateContextsResponse
      */
-    'error'?: Error;
+    '$operation': string;
 }
 /**
  *
@@ -3423,7 +4475,7 @@ export interface UpdateCustomerRequest {
      * @type {string}
      * @memberof UpdateCustomerRequest
      */
-    'name'?: string;
+    'name': string;
     /**
      * The customers email address
      * @type {string}
@@ -3526,6 +4578,25 @@ export interface UpdateCustomerRequest {
      * @memberof UpdateCustomerRequest
      */
     'stripeDev'?: string | null;
+    /**
+     * The ID of the customer
+     * @type {string}
+     * @memberof UpdateCustomerRequest
+     */
+    '$id': string;
+}
+/**
+ *
+ * @export
+ * @interface UpdateCustomerRequestAllOf
+ */
+export interface UpdateCustomerRequestAllOf {
+    /**
+     * The ID of the customer
+     * @type {string}
+     * @memberof UpdateCustomerRequestAllOf
+     */
+    '$id': string;
 }
 /**
  *
@@ -3545,6 +4616,12 @@ export interface UpdateCustomerResponse {
      * @memberof UpdateCustomerResponse
      */
     'error'?: Error;
+    /**
+     * The id of the document that was created, updated, or deleted
+     * @type {string}
+     * @memberof UpdateCustomerResponse
+     */
+    'id': string;
 }
 /**
  *
@@ -3554,10 +4631,10 @@ export interface UpdateCustomerResponse {
 export interface UpdateCustomersRequest {
     /**
      *
-     * @type {Array<Customer>}
+     * @type {Array<ListCustomersResponseInner>}
      * @memberof UpdateCustomersRequest
      */
-    'customers'?: Array<Customer>;
+    'customers'?: Array<ListCustomersResponseInner>;
 }
 /**
  *
@@ -3566,17 +4643,17 @@ export interface UpdateCustomersRequest {
  */
 export interface UpdateCustomersResponse {
     /**
-     *
-     * @type {boolean}
+     * ISO 8601 datetime string of when the operation was queued
+     * @type {string}
      * @memberof UpdateCustomersResponse
      */
-    'success': boolean;
+    'queued': string;
     /**
-     *
-     * @type {Error}
+     * The operation id to view the operation end results
+     * @type {string}
      * @memberof UpdateCustomersResponse
      */
-    'error'?: Error;
+    '$operation': string;
 }
 /**
  *
@@ -3632,6 +4709,25 @@ export interface UpdateWorkflowRequest {
      * @memberof UpdateWorkflowRequest
      */
     'onError'?: string;
+    /**
+     * The ID of the workflow to update
+     * @type {string}
+     * @memberof UpdateWorkflowRequest
+     */
+    '$id': string;
+}
+/**
+ *
+ * @export
+ * @interface UpdateWorkflowRequestAllOf
+ */
+export interface UpdateWorkflowRequestAllOf {
+    /**
+     * The ID of the workflow to update
+     * @type {string}
+     * @memberof UpdateWorkflowRequestAllOf
+     */
+    '$id': string;
 }
 /**
  *
@@ -3651,6 +4747,12 @@ export interface UpdateWorkflowResponse {
      * @memberof UpdateWorkflowResponse
      */
     'error'?: Error;
+    /**
+     * The id of the document that was created, updated, or deleted
+     * @type {string}
+     * @memberof UpdateWorkflowResponse
+     */
+    'id': string;
 }
 /**
  *
@@ -3660,10 +4762,10 @@ export interface UpdateWorkflowResponse {
 export interface UpdateWorkflowsRequest {
     /**
      *
-     * @type {Array<Workflow>}
+     * @type {Array<ListWorkflowsResponseInner>}
      * @memberof UpdateWorkflowsRequest
      */
-    'customers'?: Array<Workflow>;
+    'customers'?: Array<ListWorkflowsResponseInner>;
 }
 /**
  *
@@ -3672,17 +4774,17 @@ export interface UpdateWorkflowsRequest {
  */
 export interface UpdateWorkflowsResponse {
     /**
-     *
-     * @type {boolean}
+     * ISO 8601 datetime string of when the operation was queued
+     * @type {string}
      * @memberof UpdateWorkflowsResponse
      */
-    'success': boolean;
+    'queued': string;
     /**
-     *
-     * @type {Error}
+     * The operation id to view the operation end results
+     * @type {string}
      * @memberof UpdateWorkflowsResponse
      */
-    'error'?: Error;
+    '$operation': string;
 }
 /**
  *
@@ -3746,292 +4848,28 @@ export interface Workflow {
 export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration) => {
     /**
      *
+     * @summary Gets a agent
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    agent: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
      * @summary Create a new agent
      * @param {CreateAgentRequest} createAgentRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    createAgent: (createAgentRequest: CreateAgentRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Creates new agents
-     * @param {CreateAgentsRequest} createAgentsRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    createAgents: (createAgentsRequest: CreateAgentsRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Create a new context
-     * @param {CreateContextRequest} createContextRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    createContext: (createContextRequest: CreateContextRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Creates new contexts
-     * @param {CreateContextsRequest} createContextsRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    createContexts: (createContextsRequest: CreateContextsRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Create a new conversation
-     * @param {ConversationCreateRequest} conversationCreateRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    createConversation: (conversationCreateRequest: ConversationCreateRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Creates a new customer
-     * @param {CreateCustomerRequest} createCustomerRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    createCustomer: (createCustomerRequest: CreateCustomerRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Creates new customers
-     * @param {CreateCustomersRequest} createCustomersRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    createCustomers: (createCustomersRequest: CreateCustomersRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Create and send message
-     * @param {MessageCreateRequest} messageCreateRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    createMessage: (messageCreateRequest: MessageCreateRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Creates a new scheduled conversation
-     * @param {ScheduleCreateRequest} scheduleCreateRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    createSchedule: (scheduleCreateRequest: ScheduleCreateRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Creates a new schedule group
-     * @param {ScheduleGroupCreateRequest} scheduleGroupCreateRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    createScheduleGroup: (scheduleGroupCreateRequest: ScheduleGroupCreateRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Create a new workflow
-     * @param {CreateWorkflowRequest} createWorkflowRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    createWorkflow: (createWorkflowRequest: CreateWorkflowRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Creates new workflows
-     * @param {CreateWorkflowsRequest} createWorkflowsRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    createWorkflows: (createWorkflowsRequest: CreateWorkflowsRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    agentCreate: (createAgentRequest: CreateAgentRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
      * @summary Deletes a agent
-     * @param {string} id Agent ID to delete agent
+     * @param {string} id
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    deleteAgent: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Deletes multiple agents
-     * @param {string} id Agent IDs to delete multiple agents
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    deleteAgents: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Deletes a schedule
-     * @param {string} id Context ID to delete context
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    deleteContext: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Deletes multiple contexts
-     * @param {string} id Context IDs to delete multiple context
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    deleteContexts: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Deletes a schedule
-     * @param {string} id Schedule ID to delete schedule
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    deleteConversation: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Deletes a customer
-     * @param {string} id Customer ID to delete customer
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    deleteCustomer: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Deletes multiple customers
-     * @param {string} id Customer IDs to delete multiple customer
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    deleteCustomers: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Deletes a schedule
-     * @param {string} id Schedule ID to delete schedule
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    deleteSchedule: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Deletes a schedule group
-     * @param {string} id Schedule group ID to delete schedule group
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    deleteScheduleGroup: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Deletes a workflow
-     * @param {string} id workflow ID to delete workflow
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    deleteWorkflow: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Deletes multiple workflows
-     * @param {string} id Workflow IDs to delete multiple workflow
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    deleteWorkflows: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Generate a message from conversation
-     * @param {GenerateRequest} generateRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    generate: (generateRequest: GenerateRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Gets a agent
-     * @param {string} id Agent ID to get agent
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getAgent: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Gets all or specific set of agents
-     * @param {string} [id] Optional get specific agents
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getAgents: (id?: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Gets a context
-     * @param {string} id Context ID to get context
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getContext: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Gets all or specific set of contexts
-     * @param {string} [id] Optional get specific contexts
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getContexts: (id?: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Gets a conversation
-     * @param {string} id Conversation ID to get conversation
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getConversation: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Gets a customer
-     * @param {string} id Customer ID to get customer
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getCustomer: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Gets all or specific set of customers
-     * @param {string} [id] Optional get specific customers
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getCustomers: (id?: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Get all messages from a conversation
-     * @param {string} id Conversation ID to get messages
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getMessage: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Gets a schedule
-     * @param {string} id Schedule ID to get schedule
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getSchedule: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Gets a schedule group
-     * @param {string} id Schedule group ID to get schedule group
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getScheduleGroup: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Gets a workflow
-     * @param {string} id Workflow ID to get workflow
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getWorkflow: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Gets all or specific set of workflows
-     * @param {string} [id] Optional get specific workflows
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getWorkflows: (id?: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    agentDelete: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
      * @summary Update a agent
@@ -4039,7 +4877,32 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateAgent: (updateAgentRequest: UpdateAgentRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    agentUpdate: (updateAgentRequest: UpdateAgentRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Gets all or specific set of agents
+     * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    agents: (q?: string, id?: Array<string>, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Creates new agents
+     * @param {CreateAgentsRequest} createAgentsRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    agentsCreate: (createAgentsRequest: CreateAgentsRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Deletes multiple agents
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    agentsDelete: (id?: Array<string>, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
      * @summary Updates multiple agents
@@ -4047,7 +4910,31 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateAgents: (updateAgentsRequest: UpdateAgentsRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    agentsUpdate: (updateAgentsRequest: UpdateAgentsRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Gets a context
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    context: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Create a new context
+     * @param {CreateContextRequest} createContextRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contextCreate: (createContextRequest: CreateContextRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Deletes a schedule
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contextDelete: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
      * @summary Update a context
@@ -4055,7 +4942,32 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateContext: (updateContextRequest: UpdateContextRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    contextUpdate: (updateContextRequest: UpdateContextRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Gets all or specific set of contexts
+     * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contexts: (q?: string, id?: Array<string>, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Creates new contexts
+     * @param {CreateContextsRequest} createContextsRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contextsCreate: (createContextsRequest: CreateContextsRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Deletes multiple contexts
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contextsDelete: (id?: Array<string>, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
      * @summary Updates multiple contexts
@@ -4063,7 +4975,31 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateContexts: (updateContextRequest: UpdateContextRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    contextsUpdate: (updateContextRequest: UpdateContextRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Gets a conversation
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    conversation: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Create a new conversation
+     * @param {ConversationCreateRequest} conversationCreateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    conversationCreate: (conversationCreateRequest: ConversationCreateRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Deletes a schedule
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    conversationDelete: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
      * @summary Update a conversation
@@ -4071,7 +5007,31 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateConversation: (conversationUpdateRequest: ConversationUpdateRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    conversationUpdate: (conversationUpdateRequest: ConversationUpdateRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Gets a customer
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    customer: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Creates a new customer
+     * @param {CreateCustomerRequest} createCustomerRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    customerCreate: (createCustomerRequest: CreateCustomerRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Deletes a customer
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    customerDelete: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
      * @summary Updates a customer
@@ -4079,7 +5039,32 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateCustomer: (updateCustomerRequest: UpdateCustomerRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    customerUpdate: (updateCustomerRequest: UpdateCustomerRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Gets all or specific set of customers
+     * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    customers: (q?: string, id?: Array<string>, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Creates new customers
+     * @param {CreateCustomersRequest} createCustomersRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    customersCreate: (createCustomersRequest: CreateCustomersRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Deletes multiple customers
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    customersDelete: (id?: Array<string>, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
      * @summary Updates multiple customers
@@ -4087,15 +5072,89 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateCustomers: (updateCustomerRequest: UpdateCustomerRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    customersUpdate: (updateCustomerRequest: UpdateCustomerRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
-     *
-     * @summary Updates a schedule
-     * @param {ScheduleUpdateRequest} scheduleUpdateRequest
+     * Generates a message in the agent\'s voice based on the state of the given conversation. This is useful for testing and debugging. The message will not be sent to the conversation, you must run .message() with the body of the generated message to send it to the conversation.
+     * @summary Generate a message from conversation
+     * @param {GenerateRequest} generateRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateSchedule: (scheduleUpdateRequest: ScheduleUpdateRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    generate: (generateRequest: GenerateRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     * Creates a new message and sends it to the conversation. If the conversation is scheduled, the message will be scheduled as well. @TODO does not support the ability to mute or delay send
+     * @summary Create and send message
+     * @param {MessageCreateRequest} messageCreateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    message: (messageCreateRequest: MessageCreateRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Get all messages from a conversation
+     * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    messages: (q?: string, id?: Array<string>, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Get the results of a bulk API operation
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    operation: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Gets all or specific set of bulk API operations
+     * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    operations: (q?: string, id?: Array<string>, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Creates a new scheduled conversation
+     * @param {ScheduleCreateRequest} scheduleCreateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    scheduleCreate: (scheduleCreateRequest: ScheduleCreateRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Deletes a schedule
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    scheduleDelete: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Creates a new schedule group
+     * @param {ScheduleGroupCreateRequest} scheduleGroupCreateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    scheduleGroupCreate: (scheduleGroupCreateRequest: ScheduleGroupCreateRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Deletes and cancels a schedule group
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    scheduleGroupDelete: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Gets a schedule group
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    scheduleGroupRetrieve: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
      * @summary Updates a schedule group
@@ -4103,7 +5162,47 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateScheduleGroup: (scheduleGroupUpdateRequest: ScheduleGroupUpdateRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    scheduleGroupUpdate: (scheduleGroupUpdateRequest: ScheduleGroupUpdateRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Gets a schedule
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    scheduleRetrieve: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Updates a schedule
+     * @param {ScheduleUpdateRequest} scheduleUpdateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    scheduleUpdate: (scheduleUpdateRequest: ScheduleUpdateRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Gets a workflow
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    workflow: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Create a new workflow
+     * @param {CreateWorkflowRequest} createWorkflowRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    workflowCreate: (createWorkflowRequest: CreateWorkflowRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Deletes a workflow
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    workflowDelete: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
      * @summary Update a workflow
@@ -4111,7 +5210,32 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateWorkflow: (updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    workflowUpdate: (updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Gets all or specific set of workflows
+     * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    workflows: (q?: string, id?: Array<string>, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Creates new workflows
+     * @param {CreateWorkflowsRequest} createWorkflowsRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    workflowsCreate: (createWorkflowsRequest: CreateWorkflowsRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Deletes multiple workflows
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    workflowsDelete: (id?: Array<string>, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
      * @summary Updates multiple workflows
@@ -4119,7 +5243,7 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateWorkflows: (updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    workflowsUpdate: (updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
 };
 /**
  * Scout9Api - functional programming interface
@@ -4128,292 +5252,28 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
 export declare const Scout9ApiFp: (configuration?: Configuration) => {
     /**
      *
+     * @summary Gets a agent
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    agent(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetAgentResponse>>;
+    /**
+     *
      * @summary Create a new agent
      * @param {CreateAgentRequest} createAgentRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    createAgent(createAgentRequest: CreateAgentRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateAgentResponse>>;
-    /**
-     *
-     * @summary Creates new agents
-     * @param {CreateAgentsRequest} createAgentsRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    createAgents(createAgentsRequest: CreateAgentsRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateAgentsResponse>>;
-    /**
-     *
-     * @summary Create a new context
-     * @param {CreateContextRequest} createContextRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    createContext(createContextRequest: CreateContextRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateContextResponse>>;
-    /**
-     *
-     * @summary Creates new contexts
-     * @param {CreateContextsRequest} createContextsRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    createContexts(createContextsRequest: CreateContextsRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateContextsResponse>>;
-    /**
-     *
-     * @summary Create a new conversation
-     * @param {ConversationCreateRequest} conversationCreateRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    createConversation(conversationCreateRequest: ConversationCreateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ConversationCreateResponse>>;
-    /**
-     *
-     * @summary Creates a new customer
-     * @param {CreateCustomerRequest} createCustomerRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    createCustomer(createCustomerRequest: CreateCustomerRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateCustomerResponse>>;
-    /**
-     *
-     * @summary Creates new customers
-     * @param {CreateCustomersRequest} createCustomersRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    createCustomers(createCustomersRequest: CreateCustomersRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateCustomersResponse>>;
-    /**
-     *
-     * @summary Create and send message
-     * @param {MessageCreateRequest} messageCreateRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    createMessage(messageCreateRequest: MessageCreateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<MessageCreateResponse>>;
-    /**
-     *
-     * @summary Creates a new scheduled conversation
-     * @param {ScheduleCreateRequest} scheduleCreateRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    createSchedule(scheduleCreateRequest: ScheduleCreateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleCreateResponse>>;
-    /**
-     *
-     * @summary Creates a new schedule group
-     * @param {ScheduleGroupCreateRequest} scheduleGroupCreateRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    createScheduleGroup(scheduleGroupCreateRequest: ScheduleGroupCreateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleGroupCreateResponse>>;
-    /**
-     *
-     * @summary Create a new workflow
-     * @param {CreateWorkflowRequest} createWorkflowRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    createWorkflow(createWorkflowRequest: CreateWorkflowRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateWorkflowResponse>>;
-    /**
-     *
-     * @summary Creates new workflows
-     * @param {CreateWorkflowsRequest} createWorkflowsRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    createWorkflows(createWorkflowsRequest: CreateWorkflowsRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateWorkflowsResponse>>;
+    agentCreate(createAgentRequest: CreateAgentRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateAgentResponse>>;
     /**
      *
      * @summary Deletes a agent
-     * @param {string} id Agent ID to delete agent
+     * @param {string} id
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    deleteAgent(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteAgentResponse>>;
-    /**
-     *
-     * @summary Deletes multiple agents
-     * @param {string} id Agent IDs to delete multiple agents
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    deleteAgents(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteAgentsResponse>>;
-    /**
-     *
-     * @summary Deletes a schedule
-     * @param {string} id Context ID to delete context
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    deleteContext(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteContextResponse>>;
-    /**
-     *
-     * @summary Deletes multiple contexts
-     * @param {string} id Context IDs to delete multiple context
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    deleteContexts(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteContextsResponse>>;
-    /**
-     *
-     * @summary Deletes a schedule
-     * @param {string} id Schedule ID to delete schedule
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    deleteConversation(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ConversationRemoveResponse>>;
-    /**
-     *
-     * @summary Deletes a customer
-     * @param {string} id Customer ID to delete customer
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    deleteCustomer(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteCustomerResponse>>;
-    /**
-     *
-     * @summary Deletes multiple customers
-     * @param {string} id Customer IDs to delete multiple customer
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    deleteCustomers(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteCustomersResponse>>;
-    /**
-     *
-     * @summary Deletes a schedule
-     * @param {string} id Schedule ID to delete schedule
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    deleteSchedule(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleRemoveResponse>>;
-    /**
-     *
-     * @summary Deletes a schedule group
-     * @param {string} id Schedule group ID to delete schedule group
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    deleteScheduleGroup(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleGroupRemoveResponse>>;
-    /**
-     *
-     * @summary Deletes a workflow
-     * @param {string} id workflow ID to delete workflow
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    deleteWorkflow(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteWorkflowResponse>>;
-    /**
-     *
-     * @summary Deletes multiple workflows
-     * @param {string} id Workflow IDs to delete multiple workflow
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    deleteWorkflows(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteWorkflowsResponse>>;
-    /**
-     *
-     * @summary Generate a message from conversation
-     * @param {GenerateRequest} generateRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    generate(generateRequest: GenerateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GenerateResponse>>;
-    /**
-     *
-     * @summary Gets a agent
-     * @param {string} id Agent ID to get agent
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getAgent(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetAgentResponse>>;
-    /**
-     *
-     * @summary Gets all or specific set of agents
-     * @param {string} [id] Optional get specific agents
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getAgents(id?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Agent>>>;
-    /**
-     *
-     * @summary Gets a context
-     * @param {string} id Context ID to get context
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getContext(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetContextResponse>>;
-    /**
-     *
-     * @summary Gets all or specific set of contexts
-     * @param {string} [id] Optional get specific contexts
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getContexts(id?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Context>>>;
-    /**
-     *
-     * @summary Gets a conversation
-     * @param {string} id Conversation ID to get conversation
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getConversation(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ConversationGetResponse>>;
-    /**
-     *
-     * @summary Gets a customer
-     * @param {string} id Customer ID to get customer
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getCustomer(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateCustomerRequest>>;
-    /**
-     *
-     * @summary Gets all or specific set of customers
-     * @param {string} [id] Optional get specific customers
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getCustomers(id?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Customer>>>;
-    /**
-     *
-     * @summary Get all messages from a conversation
-     * @param {string} id Conversation ID to get messages
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getMessage(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<MessageGetResponseInner>>>;
-    /**
-     *
-     * @summary Gets a schedule
-     * @param {string} id Schedule ID to get schedule
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getSchedule(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleCreateResponse>>;
-    /**
-     *
-     * @summary Gets a schedule group
-     * @param {string} id Schedule group ID to get schedule group
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getScheduleGroup(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleGroupGetResponse>>;
-    /**
-     *
-     * @summary Gets a workflow
-     * @param {string} id Workflow ID to get workflow
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getWorkflow(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetWorkflowResponse>>;
-    /**
-     *
-     * @summary Gets all or specific set of workflows
-     * @param {string} [id] Optional get specific workflows
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getWorkflows(id?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Workflow>>>;
+    agentDelete(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteAgentResponse>>;
     /**
      *
      * @summary Update a agent
@@ -4421,7 +5281,32 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateAgent(updateAgentRequest: UpdateAgentRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateAgentResponse>>;
+    agentUpdate(updateAgentRequest: UpdateAgentRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateAgentResponse>>;
+    /**
+     *
+     * @summary Gets all or specific set of agents
+     * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    agents(q?: string, id?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ListAgentsResponseInner>>>;
+    /**
+     *
+     * @summary Creates new agents
+     * @param {CreateAgentsRequest} createAgentsRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    agentsCreate(createAgentsRequest: CreateAgentsRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateAgentsResponse>>;
+    /**
+     *
+     * @summary Deletes multiple agents
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    agentsDelete(id?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteAgentsResponse>>;
     /**
      *
      * @summary Updates multiple agents
@@ -4429,7 +5314,31 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateAgents(updateAgentsRequest: UpdateAgentsRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateAgentsResponse>>;
+    agentsUpdate(updateAgentsRequest: UpdateAgentsRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateAgentsResponse>>;
+    /**
+     *
+     * @summary Gets a context
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    context(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetContextResponse>>;
+    /**
+     *
+     * @summary Create a new context
+     * @param {CreateContextRequest} createContextRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contextCreate(createContextRequest: CreateContextRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateContextResponse>>;
+    /**
+     *
+     * @summary Deletes a schedule
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contextDelete(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteContextResponse>>;
     /**
      *
      * @summary Update a context
@@ -4437,7 +5346,32 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateContext(updateContextRequest: UpdateContextRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateContextResponse>>;
+    contextUpdate(updateContextRequest: UpdateContextRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateContextResponse>>;
+    /**
+     *
+     * @summary Gets all or specific set of contexts
+     * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contexts(q?: string, id?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ListContextsResponseInner>>>;
+    /**
+     *
+     * @summary Creates new contexts
+     * @param {CreateContextsRequest} createContextsRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contextsCreate(createContextsRequest: CreateContextsRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateContextsResponse>>;
+    /**
+     *
+     * @summary Deletes multiple contexts
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contextsDelete(id?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteContextsResponse>>;
     /**
      *
      * @summary Updates multiple contexts
@@ -4445,7 +5379,31 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateContexts(updateContextRequest: UpdateContextRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateContextsResponse>>;
+    contextsUpdate(updateContextRequest: UpdateContextRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateContextsResponse>>;
+    /**
+     *
+     * @summary Gets a conversation
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    conversation(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ConversationGetResponse>>;
+    /**
+     *
+     * @summary Create a new conversation
+     * @param {ConversationCreateRequest} conversationCreateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    conversationCreate(conversationCreateRequest: ConversationCreateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ConversationCreateResponse>>;
+    /**
+     *
+     * @summary Deletes a schedule
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    conversationDelete(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ConversationRemoveResponse>>;
     /**
      *
      * @summary Update a conversation
@@ -4453,7 +5411,31 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateConversation(conversationUpdateRequest: ConversationUpdateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ConversationUpdateResponse>>;
+    conversationUpdate(conversationUpdateRequest: ConversationUpdateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ConversationUpdateResponse>>;
+    /**
+     *
+     * @summary Gets a customer
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    customer(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetCustomerResponse>>;
+    /**
+     *
+     * @summary Creates a new customer
+     * @param {CreateCustomerRequest} createCustomerRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    customerCreate(createCustomerRequest: CreateCustomerRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateCustomerResponse>>;
+    /**
+     *
+     * @summary Deletes a customer
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    customerDelete(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteCustomerResponse>>;
     /**
      *
      * @summary Updates a customer
@@ -4461,7 +5443,32 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateCustomer(updateCustomerRequest: UpdateCustomerRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateCustomerResponse>>;
+    customerUpdate(updateCustomerRequest: UpdateCustomerRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateCustomerResponse>>;
+    /**
+     *
+     * @summary Gets all or specific set of customers
+     * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    customers(q?: string, id?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ListCustomersResponseInner>>>;
+    /**
+     *
+     * @summary Creates new customers
+     * @param {CreateCustomersRequest} createCustomersRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    customersCreate(createCustomersRequest: CreateCustomersRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateCustomersResponse>>;
+    /**
+     *
+     * @summary Deletes multiple customers
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    customersDelete(id?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteCustomersResponse>>;
     /**
      *
      * @summary Updates multiple customers
@@ -4469,15 +5476,89 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateCustomers(updateCustomerRequest: UpdateCustomerRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateCustomersResponse>>;
+    customersUpdate(updateCustomerRequest: UpdateCustomerRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateCustomersResponse>>;
     /**
-     *
-     * @summary Updates a schedule
-     * @param {ScheduleUpdateRequest} scheduleUpdateRequest
+     * Generates a message in the agent\'s voice based on the state of the given conversation. This is useful for testing and debugging. The message will not be sent to the conversation, you must run .message() with the body of the generated message to send it to the conversation.
+     * @summary Generate a message from conversation
+     * @param {GenerateRequest} generateRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateSchedule(scheduleUpdateRequest: ScheduleUpdateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleUpdateResponse>>;
+    generate(generateRequest: GenerateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GenerateResponse>>;
+    /**
+     * Creates a new message and sends it to the conversation. If the conversation is scheduled, the message will be scheduled as well. @TODO does not support the ability to mute or delay send
+     * @summary Create and send message
+     * @param {MessageCreateRequest} messageCreateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    message(messageCreateRequest: MessageCreateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<MessageCreateResponse>>;
+    /**
+     *
+     * @summary Get all messages from a conversation
+     * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    messages(q?: string, id?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<MessageGetResponseInner>>>;
+    /**
+     *
+     * @summary Get the results of a bulk API operation
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    operation(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetApiOperationResponse>>;
+    /**
+     *
+     * @summary Gets all or specific set of bulk API operations
+     * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    operations(q?: string, id?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ListApiOperationsResponseInner>>>;
+    /**
+     *
+     * @summary Creates a new scheduled conversation
+     * @param {ScheduleCreateRequest} scheduleCreateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    scheduleCreate(scheduleCreateRequest: ScheduleCreateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleCreateResponse>>;
+    /**
+     *
+     * @summary Deletes a schedule
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    scheduleDelete(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleRemoveResponse>>;
+    /**
+     *
+     * @summary Creates a new schedule group
+     * @param {ScheduleGroupCreateRequest} scheduleGroupCreateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    scheduleGroupCreate(scheduleGroupCreateRequest: ScheduleGroupCreateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleGroupCreateResponse>>;
+    /**
+     *
+     * @summary Deletes and cancels a schedule group
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    scheduleGroupDelete(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleGroupRemoveResponse>>;
+    /**
+     *
+     * @summary Gets a schedule group
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    scheduleGroupRetrieve(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleGroupGetResponse>>;
     /**
      *
      * @summary Updates a schedule group
@@ -4485,7 +5566,47 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateScheduleGroup(scheduleGroupUpdateRequest: ScheduleGroupUpdateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleGroupUpdateResponse>>;
+    scheduleGroupUpdate(scheduleGroupUpdateRequest: ScheduleGroupUpdateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleGroupUpdateResponse>>;
+    /**
+     *
+     * @summary Gets a schedule
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    scheduleRetrieve(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleCreateResponse>>;
+    /**
+     *
+     * @summary Updates a schedule
+     * @param {ScheduleUpdateRequest} scheduleUpdateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    scheduleUpdate(scheduleUpdateRequest: ScheduleUpdateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleUpdateResponse>>;
+    /**
+     *
+     * @summary Gets a workflow
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    workflow(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetWorkflowResponse>>;
+    /**
+     *
+     * @summary Create a new workflow
+     * @param {CreateWorkflowRequest} createWorkflowRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    workflowCreate(createWorkflowRequest: CreateWorkflowRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateWorkflowResponse>>;
+    /**
+     *
+     * @summary Deletes a workflow
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    workflowDelete(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteWorkflowResponse>>;
     /**
      *
      * @summary Update a workflow
@@ -4493,7 +5614,32 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateWorkflow(updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateWorkflowResponse>>;
+    workflowUpdate(updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateWorkflowResponse>>;
+    /**
+     *
+     * @summary Gets all or specific set of workflows
+     * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    workflows(q?: string, id?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ListWorkflowsResponseInner>>>;
+    /**
+     *
+     * @summary Creates new workflows
+     * @param {CreateWorkflowsRequest} createWorkflowsRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    workflowsCreate(createWorkflowsRequest: CreateWorkflowsRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateWorkflowsResponse>>;
+    /**
+     *
+     * @summary Deletes multiple workflows
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    workflowsDelete(id?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteWorkflowsResponse>>;
     /**
      *
      * @summary Updates multiple workflows
@@ -4501,7 +5647,7 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateWorkflows(updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateWorkflowsResponse>>;
+    workflowsUpdate(updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateWorkflowsResponse>>;
 };
 /**
  * Scout9Api - factory interface
@@ -4510,292 +5656,28 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
 export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) => {
     /**
      *
+     * @summary Gets a agent
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    agent(id: string, options?: any): AxiosPromise<GetAgentResponse>;
+    /**
+     *
      * @summary Create a new agent
      * @param {CreateAgentRequest} createAgentRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    createAgent(createAgentRequest: CreateAgentRequest, options?: any): AxiosPromise<CreateAgentResponse>;
-    /**
-     *
-     * @summary Creates new agents
-     * @param {CreateAgentsRequest} createAgentsRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    createAgents(createAgentsRequest: CreateAgentsRequest, options?: any): AxiosPromise<CreateAgentsResponse>;
-    /**
-     *
-     * @summary Create a new context
-     * @param {CreateContextRequest} createContextRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    createContext(createContextRequest: CreateContextRequest, options?: any): AxiosPromise<CreateContextResponse>;
-    /**
-     *
-     * @summary Creates new contexts
-     * @param {CreateContextsRequest} createContextsRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    createContexts(createContextsRequest: CreateContextsRequest, options?: any): AxiosPromise<CreateContextsResponse>;
-    /**
-     *
-     * @summary Create a new conversation
-     * @param {ConversationCreateRequest} conversationCreateRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    createConversation(conversationCreateRequest: ConversationCreateRequest, options?: any): AxiosPromise<ConversationCreateResponse>;
-    /**
-     *
-     * @summary Creates a new customer
-     * @param {CreateCustomerRequest} createCustomerRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    createCustomer(createCustomerRequest: CreateCustomerRequest, options?: any): AxiosPromise<CreateCustomerResponse>;
-    /**
-     *
-     * @summary Creates new customers
-     * @param {CreateCustomersRequest} createCustomersRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    createCustomers(createCustomersRequest: CreateCustomersRequest, options?: any): AxiosPromise<CreateCustomersResponse>;
-    /**
-     *
-     * @summary Create and send message
-     * @param {MessageCreateRequest} messageCreateRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    createMessage(messageCreateRequest: MessageCreateRequest, options?: any): AxiosPromise<MessageCreateResponse>;
-    /**
-     *
-     * @summary Creates a new scheduled conversation
-     * @param {ScheduleCreateRequest} scheduleCreateRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    createSchedule(scheduleCreateRequest: ScheduleCreateRequest, options?: any): AxiosPromise<ScheduleCreateResponse>;
-    /**
-     *
-     * @summary Creates a new schedule group
-     * @param {ScheduleGroupCreateRequest} scheduleGroupCreateRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    createScheduleGroup(scheduleGroupCreateRequest: ScheduleGroupCreateRequest, options?: any): AxiosPromise<ScheduleGroupCreateResponse>;
-    /**
-     *
-     * @summary Create a new workflow
-     * @param {CreateWorkflowRequest} createWorkflowRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    createWorkflow(createWorkflowRequest: CreateWorkflowRequest, options?: any): AxiosPromise<CreateWorkflowResponse>;
-    /**
-     *
-     * @summary Creates new workflows
-     * @param {CreateWorkflowsRequest} createWorkflowsRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    createWorkflows(createWorkflowsRequest: CreateWorkflowsRequest, options?: any): AxiosPromise<CreateWorkflowsResponse>;
+    agentCreate(createAgentRequest: CreateAgentRequest, options?: any): AxiosPromise<CreateAgentResponse>;
     /**
      *
      * @summary Deletes a agent
-     * @param {string} id Agent ID to delete agent
+     * @param {string} id
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    deleteAgent(id: string, options?: any): AxiosPromise<DeleteAgentResponse>;
-    /**
-     *
-     * @summary Deletes multiple agents
-     * @param {string} id Agent IDs to delete multiple agents
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    deleteAgents(id: string, options?: any): AxiosPromise<DeleteAgentsResponse>;
-    /**
-     *
-     * @summary Deletes a schedule
-     * @param {string} id Context ID to delete context
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    deleteContext(id: string, options?: any): AxiosPromise<DeleteContextResponse>;
-    /**
-     *
-     * @summary Deletes multiple contexts
-     * @param {string} id Context IDs to delete multiple context
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    deleteContexts(id: string, options?: any): AxiosPromise<DeleteContextsResponse>;
-    /**
-     *
-     * @summary Deletes a schedule
-     * @param {string} id Schedule ID to delete schedule
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    deleteConversation(id: string, options?: any): AxiosPromise<ConversationRemoveResponse>;
-    /**
-     *
-     * @summary Deletes a customer
-     * @param {string} id Customer ID to delete customer
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    deleteCustomer(id: string, options?: any): AxiosPromise<DeleteCustomerResponse>;
-    /**
-     *
-     * @summary Deletes multiple customers
-     * @param {string} id Customer IDs to delete multiple customer
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    deleteCustomers(id: string, options?: any): AxiosPromise<DeleteCustomersResponse>;
-    /**
-     *
-     * @summary Deletes a schedule
-     * @param {string} id Schedule ID to delete schedule
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    deleteSchedule(id: string, options?: any): AxiosPromise<ScheduleRemoveResponse>;
-    /**
-     *
-     * @summary Deletes a schedule group
-     * @param {string} id Schedule group ID to delete schedule group
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    deleteScheduleGroup(id: string, options?: any): AxiosPromise<ScheduleGroupRemoveResponse>;
-    /**
-     *
-     * @summary Deletes a workflow
-     * @param {string} id workflow ID to delete workflow
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    deleteWorkflow(id: string, options?: any): AxiosPromise<DeleteWorkflowResponse>;
-    /**
-     *
-     * @summary Deletes multiple workflows
-     * @param {string} id Workflow IDs to delete multiple workflow
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    deleteWorkflows(id: string, options?: any): AxiosPromise<DeleteWorkflowsResponse>;
-    /**
-     *
-     * @summary Generate a message from conversation
-     * @param {GenerateRequest} generateRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    generate(generateRequest: GenerateRequest, options?: any): AxiosPromise<GenerateResponse>;
-    /**
-     *
-     * @summary Gets a agent
-     * @param {string} id Agent ID to get agent
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getAgent(id: string, options?: any): AxiosPromise<GetAgentResponse>;
-    /**
-     *
-     * @summary Gets all or specific set of agents
-     * @param {string} [id] Optional get specific agents
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getAgents(id?: string, options?: any): AxiosPromise<Array<Agent>>;
-    /**
-     *
-     * @summary Gets a context
-     * @param {string} id Context ID to get context
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getContext(id: string, options?: any): AxiosPromise<GetContextResponse>;
-    /**
-     *
-     * @summary Gets all or specific set of contexts
-     * @param {string} [id] Optional get specific contexts
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getContexts(id?: string, options?: any): AxiosPromise<Array<Context>>;
-    /**
-     *
-     * @summary Gets a conversation
-     * @param {string} id Conversation ID to get conversation
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getConversation(id: string, options?: any): AxiosPromise<ConversationGetResponse>;
-    /**
-     *
-     * @summary Gets a customer
-     * @param {string} id Customer ID to get customer
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getCustomer(id: string, options?: any): AxiosPromise<CreateCustomerRequest>;
-    /**
-     *
-     * @summary Gets all or specific set of customers
-     * @param {string} [id] Optional get specific customers
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getCustomers(id?: string, options?: any): AxiosPromise<Array<Customer>>;
-    /**
-     *
-     * @summary Get all messages from a conversation
-     * @param {string} id Conversation ID to get messages
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getMessage(id: string, options?: any): AxiosPromise<Array<MessageGetResponseInner>>;
-    /**
-     *
-     * @summary Gets a schedule
-     * @param {string} id Schedule ID to get schedule
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getSchedule(id: string, options?: any): AxiosPromise<ScheduleCreateResponse>;
-    /**
-     *
-     * @summary Gets a schedule group
-     * @param {string} id Schedule group ID to get schedule group
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getScheduleGroup(id: string, options?: any): AxiosPromise<ScheduleGroupGetResponse>;
-    /**
-     *
-     * @summary Gets a workflow
-     * @param {string} id Workflow ID to get workflow
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getWorkflow(id: string, options?: any): AxiosPromise<GetWorkflowResponse>;
-    /**
-     *
-     * @summary Gets all or specific set of workflows
-     * @param {string} [id] Optional get specific workflows
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    getWorkflows(id?: string, options?: any): AxiosPromise<Array<Workflow>>;
+    agentDelete(id: string, options?: any): AxiosPromise<DeleteAgentResponse>;
     /**
      *
      * @summary Update a agent
@@ -4803,7 +5685,32 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateAgent(updateAgentRequest: UpdateAgentRequest, options?: any): AxiosPromise<UpdateAgentResponse>;
+    agentUpdate(updateAgentRequest: UpdateAgentRequest, options?: any): AxiosPromise<UpdateAgentResponse>;
+    /**
+     *
+     * @summary Gets all or specific set of agents
+     * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    agents(q?: string, id?: Array<string>, options?: any): AxiosPromise<Array<ListAgentsResponseInner>>;
+    /**
+     *
+     * @summary Creates new agents
+     * @param {CreateAgentsRequest} createAgentsRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    agentsCreate(createAgentsRequest: CreateAgentsRequest, options?: any): AxiosPromise<CreateAgentsResponse>;
+    /**
+     *
+     * @summary Deletes multiple agents
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    agentsDelete(id?: Array<string>, options?: any): AxiosPromise<DeleteAgentsResponse>;
     /**
      *
      * @summary Updates multiple agents
@@ -4811,7 +5718,31 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateAgents(updateAgentsRequest: UpdateAgentsRequest, options?: any): AxiosPromise<UpdateAgentsResponse>;
+    agentsUpdate(updateAgentsRequest: UpdateAgentsRequest, options?: any): AxiosPromise<UpdateAgentsResponse>;
+    /**
+     *
+     * @summary Gets a context
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    context(id: string, options?: any): AxiosPromise<GetContextResponse>;
+    /**
+     *
+     * @summary Create a new context
+     * @param {CreateContextRequest} createContextRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contextCreate(createContextRequest: CreateContextRequest, options?: any): AxiosPromise<CreateContextResponse>;
+    /**
+     *
+     * @summary Deletes a schedule
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contextDelete(id: string, options?: any): AxiosPromise<DeleteContextResponse>;
     /**
      *
      * @summary Update a context
@@ -4819,7 +5750,32 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateContext(updateContextRequest: UpdateContextRequest, options?: any): AxiosPromise<UpdateContextResponse>;
+    contextUpdate(updateContextRequest: UpdateContextRequest, options?: any): AxiosPromise<UpdateContextResponse>;
+    /**
+     *
+     * @summary Gets all or specific set of contexts
+     * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contexts(q?: string, id?: Array<string>, options?: any): AxiosPromise<Array<ListContextsResponseInner>>;
+    /**
+     *
+     * @summary Creates new contexts
+     * @param {CreateContextsRequest} createContextsRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contextsCreate(createContextsRequest: CreateContextsRequest, options?: any): AxiosPromise<CreateContextsResponse>;
+    /**
+     *
+     * @summary Deletes multiple contexts
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contextsDelete(id?: Array<string>, options?: any): AxiosPromise<DeleteContextsResponse>;
     /**
      *
      * @summary Updates multiple contexts
@@ -4827,7 +5783,31 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateContexts(updateContextRequest: UpdateContextRequest, options?: any): AxiosPromise<UpdateContextsResponse>;
+    contextsUpdate(updateContextRequest: UpdateContextRequest, options?: any): AxiosPromise<UpdateContextsResponse>;
+    /**
+     *
+     * @summary Gets a conversation
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    conversation(id: string, options?: any): AxiosPromise<ConversationGetResponse>;
+    /**
+     *
+     * @summary Create a new conversation
+     * @param {ConversationCreateRequest} conversationCreateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    conversationCreate(conversationCreateRequest: ConversationCreateRequest, options?: any): AxiosPromise<ConversationCreateResponse>;
+    /**
+     *
+     * @summary Deletes a schedule
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    conversationDelete(id: string, options?: any): AxiosPromise<ConversationRemoveResponse>;
     /**
      *
      * @summary Update a conversation
@@ -4835,7 +5815,31 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateConversation(conversationUpdateRequest: ConversationUpdateRequest, options?: any): AxiosPromise<ConversationUpdateResponse>;
+    conversationUpdate(conversationUpdateRequest: ConversationUpdateRequest, options?: any): AxiosPromise<ConversationUpdateResponse>;
+    /**
+     *
+     * @summary Gets a customer
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    customer(id: string, options?: any): AxiosPromise<GetCustomerResponse>;
+    /**
+     *
+     * @summary Creates a new customer
+     * @param {CreateCustomerRequest} createCustomerRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    customerCreate(createCustomerRequest: CreateCustomerRequest, options?: any): AxiosPromise<CreateCustomerResponse>;
+    /**
+     *
+     * @summary Deletes a customer
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    customerDelete(id: string, options?: any): AxiosPromise<DeleteCustomerResponse>;
     /**
      *
      * @summary Updates a customer
@@ -4843,7 +5847,32 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateCustomer(updateCustomerRequest: UpdateCustomerRequest, options?: any): AxiosPromise<UpdateCustomerResponse>;
+    customerUpdate(updateCustomerRequest: UpdateCustomerRequest, options?: any): AxiosPromise<UpdateCustomerResponse>;
+    /**
+     *
+     * @summary Gets all or specific set of customers
+     * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    customers(q?: string, id?: Array<string>, options?: any): AxiosPromise<Array<ListCustomersResponseInner>>;
+    /**
+     *
+     * @summary Creates new customers
+     * @param {CreateCustomersRequest} createCustomersRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    customersCreate(createCustomersRequest: CreateCustomersRequest, options?: any): AxiosPromise<CreateCustomersResponse>;
+    /**
+     *
+     * @summary Deletes multiple customers
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    customersDelete(id?: Array<string>, options?: any): AxiosPromise<DeleteCustomersResponse>;
     /**
      *
      * @summary Updates multiple customers
@@ -4851,15 +5880,89 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateCustomers(updateCustomerRequest: UpdateCustomerRequest, options?: any): AxiosPromise<UpdateCustomersResponse>;
+    customersUpdate(updateCustomerRequest: UpdateCustomerRequest, options?: any): AxiosPromise<UpdateCustomersResponse>;
     /**
-     *
-     * @summary Updates a schedule
-     * @param {ScheduleUpdateRequest} scheduleUpdateRequest
+     * Generates a message in the agent\'s voice based on the state of the given conversation. This is useful for testing and debugging. The message will not be sent to the conversation, you must run .message() with the body of the generated message to send it to the conversation.
+     * @summary Generate a message from conversation
+     * @param {GenerateRequest} generateRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateSchedule(scheduleUpdateRequest: ScheduleUpdateRequest, options?: any): AxiosPromise<ScheduleUpdateResponse>;
+    generate(generateRequest: GenerateRequest, options?: any): AxiosPromise<GenerateResponse>;
+    /**
+     * Creates a new message and sends it to the conversation. If the conversation is scheduled, the message will be scheduled as well. @TODO does not support the ability to mute or delay send
+     * @summary Create and send message
+     * @param {MessageCreateRequest} messageCreateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    message(messageCreateRequest: MessageCreateRequest, options?: any): AxiosPromise<MessageCreateResponse>;
+    /**
+     *
+     * @summary Get all messages from a conversation
+     * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    messages(q?: string, id?: Array<string>, options?: any): AxiosPromise<Array<MessageGetResponseInner>>;
+    /**
+     *
+     * @summary Get the results of a bulk API operation
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    operation(id: string, options?: any): AxiosPromise<GetApiOperationResponse>;
+    /**
+     *
+     * @summary Gets all or specific set of bulk API operations
+     * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    operations(q?: string, id?: Array<string>, options?: any): AxiosPromise<Array<ListApiOperationsResponseInner>>;
+    /**
+     *
+     * @summary Creates a new scheduled conversation
+     * @param {ScheduleCreateRequest} scheduleCreateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    scheduleCreate(scheduleCreateRequest: ScheduleCreateRequest, options?: any): AxiosPromise<ScheduleCreateResponse>;
+    /**
+     *
+     * @summary Deletes a schedule
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    scheduleDelete(id: string, options?: any): AxiosPromise<ScheduleRemoveResponse>;
+    /**
+     *
+     * @summary Creates a new schedule group
+     * @param {ScheduleGroupCreateRequest} scheduleGroupCreateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    scheduleGroupCreate(scheduleGroupCreateRequest: ScheduleGroupCreateRequest, options?: any): AxiosPromise<ScheduleGroupCreateResponse>;
+    /**
+     *
+     * @summary Deletes and cancels a schedule group
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    scheduleGroupDelete(id: string, options?: any): AxiosPromise<ScheduleGroupRemoveResponse>;
+    /**
+     *
+     * @summary Gets a schedule group
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    scheduleGroupRetrieve(id: string, options?: any): AxiosPromise<ScheduleGroupGetResponse>;
     /**
      *
      * @summary Updates a schedule group
@@ -4867,7 +5970,47 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateScheduleGroup(scheduleGroupUpdateRequest: ScheduleGroupUpdateRequest, options?: any): AxiosPromise<ScheduleGroupUpdateResponse>;
+    scheduleGroupUpdate(scheduleGroupUpdateRequest: ScheduleGroupUpdateRequest, options?: any): AxiosPromise<ScheduleGroupUpdateResponse>;
+    /**
+     *
+     * @summary Gets a schedule
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    scheduleRetrieve(id: string, options?: any): AxiosPromise<ScheduleCreateResponse>;
+    /**
+     *
+     * @summary Updates a schedule
+     * @param {ScheduleUpdateRequest} scheduleUpdateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    scheduleUpdate(scheduleUpdateRequest: ScheduleUpdateRequest, options?: any): AxiosPromise<ScheduleUpdateResponse>;
+    /**
+     *
+     * @summary Gets a workflow
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    workflow(id: string, options?: any): AxiosPromise<GetWorkflowResponse>;
+    /**
+     *
+     * @summary Create a new workflow
+     * @param {CreateWorkflowRequest} createWorkflowRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    workflowCreate(createWorkflowRequest: CreateWorkflowRequest, options?: any): AxiosPromise<CreateWorkflowResponse>;
+    /**
+     *
+     * @summary Deletes a workflow
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    workflowDelete(id: string, options?: any): AxiosPromise<DeleteWorkflowResponse>;
     /**
      *
      * @summary Update a workflow
@@ -4875,7 +6018,32 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateWorkflow(updateWorkflowRequest: UpdateWorkflowRequest, options?: any): AxiosPromise<UpdateWorkflowResponse>;
+    workflowUpdate(updateWorkflowRequest: UpdateWorkflowRequest, options?: any): AxiosPromise<UpdateWorkflowResponse>;
+    /**
+     *
+     * @summary Gets all or specific set of workflows
+     * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    workflows(q?: string, id?: Array<string>, options?: any): AxiosPromise<Array<ListWorkflowsResponseInner>>;
+    /**
+     *
+     * @summary Creates new workflows
+     * @param {CreateWorkflowsRequest} createWorkflowsRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    workflowsCreate(createWorkflowsRequest: CreateWorkflowsRequest, options?: any): AxiosPromise<CreateWorkflowsResponse>;
+    /**
+     *
+     * @summary Deletes multiple workflows
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    workflowsDelete(id?: Array<string>, options?: any): AxiosPromise<DeleteWorkflowsResponse>;
     /**
      *
      * @summary Updates multiple workflows
@@ -4883,7 +6051,7 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateWorkflows(updateWorkflowRequest: UpdateWorkflowRequest, options?: any): AxiosPromise<UpdateWorkflowsResponse>;
+    workflowsUpdate(updateWorkflowRequest: UpdateWorkflowRequest, options?: any): AxiosPromise<UpdateWorkflowsResponse>;
 };
 /**
  * Scout9Api - object-oriented interface
@@ -4894,328 +6062,31 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
 export declare class Scout9Api extends BaseAPI {
     /**
      *
+     * @summary Gets a agent
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    agent(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<GetAgentResponse, any>>;
+    /**
+     *
      * @summary Create a new agent
      * @param {CreateAgentRequest} createAgentRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
-    createAgent(createAgentRequest: CreateAgentRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateAgentResponse, any>>;
-    /**
-     *
-     * @summary Creates new agents
-     * @param {CreateAgentsRequest} createAgentsRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    createAgents(createAgentsRequest: CreateAgentsRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateAgentsResponse, any>>;
-    /**
-     *
-     * @summary Create a new context
-     * @param {CreateContextRequest} createContextRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    createContext(createContextRequest: CreateContextRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateContextResponse, any>>;
-    /**
-     *
-     * @summary Creates new contexts
-     * @param {CreateContextsRequest} createContextsRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    createContexts(createContextsRequest: CreateContextsRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateContextsResponse, any>>;
-    /**
-     *
-     * @summary Create a new conversation
-     * @param {ConversationCreateRequest} conversationCreateRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    createConversation(conversationCreateRequest: ConversationCreateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ConversationCreateResponse, any>>;
-    /**
-     *
-     * @summary Creates a new customer
-     * @param {CreateCustomerRequest} createCustomerRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    createCustomer(createCustomerRequest: CreateCustomerRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateCustomerResponse, any>>;
-    /**
-     *
-     * @summary Creates new customers
-     * @param {CreateCustomersRequest} createCustomersRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    createCustomers(createCustomersRequest: CreateCustomersRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateCustomersResponse, any>>;
-    /**
-     *
-     * @summary Create and send message
-     * @param {MessageCreateRequest} messageCreateRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    createMessage(messageCreateRequest: MessageCreateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<MessageCreateResponse, any>>;
-    /**
-     *
-     * @summary Creates a new scheduled conversation
-     * @param {ScheduleCreateRequest} scheduleCreateRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    createSchedule(scheduleCreateRequest: ScheduleCreateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleCreateResponse, any>>;
-    /**
-     *
-     * @summary Creates a new schedule group
-     * @param {ScheduleGroupCreateRequest} scheduleGroupCreateRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    createScheduleGroup(scheduleGroupCreateRequest: ScheduleGroupCreateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleGroupCreateResponse, any>>;
-    /**
-     *
-     * @summary Create a new workflow
-     * @param {CreateWorkflowRequest} createWorkflowRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    createWorkflow(createWorkflowRequest: CreateWorkflowRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateWorkflowResponse, any>>;
-    /**
-     *
-     * @summary Creates new workflows
-     * @param {CreateWorkflowsRequest} createWorkflowsRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    createWorkflows(createWorkflowsRequest: CreateWorkflowsRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateWorkflowsResponse, any>>;
+    agentCreate(createAgentRequest: CreateAgentRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateAgentResponse, any>>;
     /**
      *
      * @summary Deletes a agent
-     * @param {string} id Agent ID to delete agent
+     * @param {string} id
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
-    deleteAgent(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteAgentResponse, any>>;
-    /**
-     *
-     * @summary Deletes multiple agents
-     * @param {string} id Agent IDs to delete multiple agents
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    deleteAgents(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteAgentsResponse, any>>;
-    /**
-     *
-     * @summary Deletes a schedule
-     * @param {string} id Context ID to delete context
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    deleteContext(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteContextResponse, any>>;
-    /**
-     *
-     * @summary Deletes multiple contexts
-     * @param {string} id Context IDs to delete multiple context
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    deleteContexts(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteContextsResponse, any>>;
-    /**
-     *
-     * @summary Deletes a schedule
-     * @param {string} id Schedule ID to delete schedule
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    deleteConversation(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ConversationRemoveResponse, any>>;
-    /**
-     *
-     * @summary Deletes a customer
-     * @param {string} id Customer ID to delete customer
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    deleteCustomer(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteCustomerResponse, any>>;
-    /**
-     *
-     * @summary Deletes multiple customers
-     * @param {string} id Customer IDs to delete multiple customer
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    deleteCustomers(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteCustomersResponse, any>>;
-    /**
-     *
-     * @summary Deletes a schedule
-     * @param {string} id Schedule ID to delete schedule
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    deleteSchedule(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleRemoveResponse, any>>;
-    /**
-     *
-     * @summary Deletes a schedule group
-     * @param {string} id Schedule group ID to delete schedule group
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    deleteScheduleGroup(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleGroupRemoveResponse, any>>;
-    /**
-     *
-     * @summary Deletes a workflow
-     * @param {string} id workflow ID to delete workflow
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    deleteWorkflow(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteWorkflowResponse, any>>;
-    /**
-     *
-     * @summary Deletes multiple workflows
-     * @param {string} id Workflow IDs to delete multiple workflow
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    deleteWorkflows(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteWorkflowsResponse, any>>;
-    /**
-     *
-     * @summary Generate a message from conversation
-     * @param {GenerateRequest} generateRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    generate(generateRequest: GenerateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<GenerateResponse, any>>;
-    /**
-     *
-     * @summary Gets a agent
-     * @param {string} id Agent ID to get agent
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    getAgent(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<GetAgentResponse, any>>;
-    /**
-     *
-     * @summary Gets all or specific set of agents
-     * @param {string} [id] Optional get specific agents
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    getAgents(id?: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<Agent[], any>>;
-    /**
-     *
-     * @summary Gets a context
-     * @param {string} id Context ID to get context
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    getContext(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<GetContextResponse, any>>;
-    /**
-     *
-     * @summary Gets all or specific set of contexts
-     * @param {string} [id] Optional get specific contexts
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    getContexts(id?: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<Context[], any>>;
-    /**
-     *
-     * @summary Gets a conversation
-     * @param {string} id Conversation ID to get conversation
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    getConversation(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ConversationGetResponse, any>>;
-    /**
-     *
-     * @summary Gets a customer
-     * @param {string} id Customer ID to get customer
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    getCustomer(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateCustomerRequest, any>>;
-    /**
-     *
-     * @summary Gets all or specific set of customers
-     * @param {string} [id] Optional get specific customers
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    getCustomers(id?: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<Customer[], any>>;
-    /**
-     *
-     * @summary Get all messages from a conversation
-     * @param {string} id Conversation ID to get messages
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    getMessage(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<MessageGetResponseInner[], any>>;
-    /**
-     *
-     * @summary Gets a schedule
-     * @param {string} id Schedule ID to get schedule
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    getSchedule(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleCreateResponse, any>>;
-    /**
-     *
-     * @summary Gets a schedule group
-     * @param {string} id Schedule group ID to get schedule group
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    getScheduleGroup(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleGroupGetResponse, any>>;
-    /**
-     *
-     * @summary Gets a workflow
-     * @param {string} id Workflow ID to get workflow
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    getWorkflow(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<GetWorkflowResponse, any>>;
-    /**
-     *
-     * @summary Gets all or specific set of workflows
-     * @param {string} [id] Optional get specific workflows
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    getWorkflows(id?: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<Workflow[], any>>;
+    agentDelete(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteAgentResponse, any>>;
     /**
      *
      * @summary Update a agent
@@ -5224,7 +6095,35 @@ export declare class Scout9Api extends BaseAPI {
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
-    updateAgent(updateAgentRequest: UpdateAgentRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateAgentResponse, any>>;
+    agentUpdate(updateAgentRequest: UpdateAgentRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateAgentResponse, any>>;
+    /**
+     *
+     * @summary Gets all or specific set of agents
+     * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    agents(q?: string, id?: Array<string>, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ListAgentsResponseInner[], any>>;
+    /**
+     *
+     * @summary Creates new agents
+     * @param {CreateAgentsRequest} createAgentsRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    agentsCreate(createAgentsRequest: CreateAgentsRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateAgentsResponse, any>>;
+    /**
+     *
+     * @summary Deletes multiple agents
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    agentsDelete(id?: Array<string>, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteAgentsResponse, any>>;
     /**
      *
      * @summary Updates multiple agents
@@ -5233,7 +6132,34 @@ export declare class Scout9Api extends BaseAPI {
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
-    updateAgents(updateAgentsRequest: UpdateAgentsRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateAgentsResponse, any>>;
+    agentsUpdate(updateAgentsRequest: UpdateAgentsRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateAgentsResponse, any>>;
+    /**
+     *
+     * @summary Gets a context
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    context(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<GetContextResponse, any>>;
+    /**
+     *
+     * @summary Create a new context
+     * @param {CreateContextRequest} createContextRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    contextCreate(createContextRequest: CreateContextRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateContextResponse, any>>;
+    /**
+     *
+     * @summary Deletes a schedule
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    contextDelete(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteContextResponse, any>>;
     /**
      *
      * @summary Update a context
@@ -5242,7 +6168,35 @@ export declare class Scout9Api extends BaseAPI {
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
-    updateContext(updateContextRequest: UpdateContextRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateContextResponse, any>>;
+    contextUpdate(updateContextRequest: UpdateContextRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateContextResponse, any>>;
+    /**
+     *
+     * @summary Gets all or specific set of contexts
+     * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    contexts(q?: string, id?: Array<string>, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ListContextsResponseInner[], any>>;
+    /**
+     *
+     * @summary Creates new contexts
+     * @param {CreateContextsRequest} createContextsRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    contextsCreate(createContextsRequest: CreateContextsRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateContextsResponse, any>>;
+    /**
+     *
+     * @summary Deletes multiple contexts
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    contextsDelete(id?: Array<string>, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteContextsResponse, any>>;
     /**
      *
      * @summary Updates multiple contexts
@@ -5251,7 +6205,34 @@ export declare class Scout9Api extends BaseAPI {
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
-    updateContexts(updateContextRequest: UpdateContextRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateContextsResponse, any>>;
+    contextsUpdate(updateContextRequest: UpdateContextRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateContextsResponse, any>>;
+    /**
+     *
+     * @summary Gets a conversation
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    conversation(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ConversationGetResponse, any>>;
+    /**
+     *
+     * @summary Create a new conversation
+     * @param {ConversationCreateRequest} conversationCreateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    conversationCreate(conversationCreateRequest: ConversationCreateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ConversationCreateResponse, any>>;
+    /**
+     *
+     * @summary Deletes a schedule
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    conversationDelete(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ConversationRemoveResponse, any>>;
     /**
      *
      * @summary Update a conversation
@@ -5260,7 +6241,34 @@ export declare class Scout9Api extends BaseAPI {
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
-    updateConversation(conversationUpdateRequest: ConversationUpdateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ConversationUpdateResponse, any>>;
+    conversationUpdate(conversationUpdateRequest: ConversationUpdateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ConversationUpdateResponse, any>>;
+    /**
+     *
+     * @summary Gets a customer
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    customer(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<GetCustomerResponse, any>>;
+    /**
+     *
+     * @summary Creates a new customer
+     * @param {CreateCustomerRequest} createCustomerRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    customerCreate(createCustomerRequest: CreateCustomerRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateCustomerResponse, any>>;
+    /**
+     *
+     * @summary Deletes a customer
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    customerDelete(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteCustomerResponse, any>>;
     /**
      *
      * @summary Updates a customer
@@ -5269,7 +6277,35 @@ export declare class Scout9Api extends BaseAPI {
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
-    updateCustomer(updateCustomerRequest: UpdateCustomerRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateCustomerResponse, any>>;
+    customerUpdate(updateCustomerRequest: UpdateCustomerRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateCustomerResponse, any>>;
+    /**
+     *
+     * @summary Gets all or specific set of customers
+     * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    customers(q?: string, id?: Array<string>, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ListCustomersResponseInner[], any>>;
+    /**
+     *
+     * @summary Creates new customers
+     * @param {CreateCustomersRequest} createCustomersRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    customersCreate(createCustomersRequest: CreateCustomersRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateCustomersResponse, any>>;
+    /**
+     *
+     * @summary Deletes multiple customers
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    customersDelete(id?: Array<string>, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteCustomersResponse, any>>;
     /**
      *
      * @summary Updates multiple customers
@@ -5278,16 +6314,99 @@ export declare class Scout9Api extends BaseAPI {
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
-    updateCustomers(updateCustomerRequest: UpdateCustomerRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateCustomersResponse, any>>;
+    customersUpdate(updateCustomerRequest: UpdateCustomerRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateCustomersResponse, any>>;
     /**
-     *
-     * @summary Updates a schedule
-     * @param {ScheduleUpdateRequest} scheduleUpdateRequest
+     * Generates a message in the agent\'s voice based on the state of the given conversation. This is useful for testing and debugging. The message will not be sent to the conversation, you must run .message() with the body of the generated message to send it to the conversation.
+     * @summary Generate a message from conversation
+     * @param {GenerateRequest} generateRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
-    updateSchedule(scheduleUpdateRequest: ScheduleUpdateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleUpdateResponse, any>>;
+    generate(generateRequest: GenerateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<GenerateResponse, any>>;
+    /**
+     * Creates a new message and sends it to the conversation. If the conversation is scheduled, the message will be scheduled as well. @TODO does not support the ability to mute or delay send
+     * @summary Create and send message
+     * @param {MessageCreateRequest} messageCreateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    message(messageCreateRequest: MessageCreateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<MessageCreateResponse, any>>;
+    /**
+     *
+     * @summary Get all messages from a conversation
+     * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    messages(q?: string, id?: Array<string>, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<MessageGetResponseInner[], any>>;
+    /**
+     *
+     * @summary Get the results of a bulk API operation
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    operation(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<GetApiOperationResponse, any>>;
+    /**
+     *
+     * @summary Gets all or specific set of bulk API operations
+     * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    operations(q?: string, id?: Array<string>, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ListApiOperationsResponseInner[], any>>;
+    /**
+     *
+     * @summary Creates a new scheduled conversation
+     * @param {ScheduleCreateRequest} scheduleCreateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    scheduleCreate(scheduleCreateRequest: ScheduleCreateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleCreateResponse, any>>;
+    /**
+     *
+     * @summary Deletes a schedule
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    scheduleDelete(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleRemoveResponse, any>>;
+    /**
+     *
+     * @summary Creates a new schedule group
+     * @param {ScheduleGroupCreateRequest} scheduleGroupCreateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    scheduleGroupCreate(scheduleGroupCreateRequest: ScheduleGroupCreateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleGroupCreateResponse, any>>;
+    /**
+     *
+     * @summary Deletes and cancels a schedule group
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    scheduleGroupDelete(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleGroupRemoveResponse, any>>;
+    /**
+     *
+     * @summary Gets a schedule group
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    scheduleGroupRetrieve(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleGroupGetResponse, any>>;
     /**
      *
      * @summary Updates a schedule group
@@ -5296,7 +6415,52 @@ export declare class Scout9Api extends BaseAPI {
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
-    updateScheduleGroup(scheduleGroupUpdateRequest: ScheduleGroupUpdateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleGroupUpdateResponse, any>>;
+    scheduleGroupUpdate(scheduleGroupUpdateRequest: ScheduleGroupUpdateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleGroupUpdateResponse, any>>;
+    /**
+     *
+     * @summary Gets a schedule
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    scheduleRetrieve(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleCreateResponse, any>>;
+    /**
+     *
+     * @summary Updates a schedule
+     * @param {ScheduleUpdateRequest} scheduleUpdateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    scheduleUpdate(scheduleUpdateRequest: ScheduleUpdateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleUpdateResponse, any>>;
+    /**
+     *
+     * @summary Gets a workflow
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    workflow(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<GetWorkflowResponse, any>>;
+    /**
+     *
+     * @summary Create a new workflow
+     * @param {CreateWorkflowRequest} createWorkflowRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    workflowCreate(createWorkflowRequest: CreateWorkflowRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateWorkflowResponse, any>>;
+    /**
+     *
+     * @summary Deletes a workflow
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    workflowDelete(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteWorkflowResponse, any>>;
     /**
      *
      * @summary Update a workflow
@@ -5305,7 +6469,35 @@ export declare class Scout9Api extends BaseAPI {
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
-    updateWorkflow(updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateWorkflowResponse, any>>;
+    workflowUpdate(updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateWorkflowResponse, any>>;
+    /**
+     *
+     * @summary Gets all or specific set of workflows
+     * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    workflows(q?: string, id?: Array<string>, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ListWorkflowsResponseInner[], any>>;
+    /**
+     *
+     * @summary Creates new workflows
+     * @param {CreateWorkflowsRequest} createWorkflowsRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    workflowsCreate(createWorkflowsRequest: CreateWorkflowsRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateWorkflowsResponse, any>>;
+    /**
+     *
+     * @summary Deletes multiple workflows
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    workflowsDelete(id?: Array<string>, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteWorkflowsResponse, any>>;
     /**
      *
      * @summary Updates multiple workflows
@@ -5314,5 +6506,5 @@ export declare class Scout9Api extends BaseAPI {
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
-    updateWorkflows(updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateWorkflowsResponse, any>>;
+    workflowsUpdate(updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateWorkflowsResponse, any>>;
 }

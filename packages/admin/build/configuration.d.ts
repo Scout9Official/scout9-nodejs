@@ -11,6 +11,7 @@
  */
 export interface ConfigurationParameters {
     apiKey?: string | Promise<string> | ((name: string) => string) | ((name: string) => Promise<string>);
+    business?: string;
     username?: string;
     password?: string;
     accessToken?: string | Promise<string> | ((name?: string, scopes?: string[]) => string) | ((name?: string, scopes?: string[]) => Promise<string>);
@@ -25,6 +26,13 @@ export declare class Configuration {
      * @memberof Configuration
      */
     apiKey?: string | Promise<string> | ((name: string) => string) | ((name: string) => Promise<string>);
+    /**
+     * Scout9 business id
+     *
+     * @type {string}
+     * @memberof Configuration
+     */
+    business?: string;
     /**
      * parameter for basic security
      *
