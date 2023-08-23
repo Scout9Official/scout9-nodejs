@@ -349,12 +349,6 @@ export interface Conversation {
    */
   '$agent': string;
   /**
-   * Thread this conversation is in - this determines what context to pull when loading the conversation
-   * @type {string}
-   * @memberof Conversation
-   */
-  '$thread'?: string;
-  /**
    * Initial contexts to load when starting the conversation
    * @type {Array<string>}
    * @memberof Conversation
@@ -414,12 +408,6 @@ export interface ConversationBase {
    * @memberof ConversationBase
    */
   '$agent': string;
-  /**
-   * Thread this conversation is in - this determines what context to pull when loading the conversation
-   * @type {string}
-   * @memberof ConversationBase
-   */
-  '$thread'?: string;
   /**
    * Initial contexts to load when starting the conversation
    * @type {Array<string>}
@@ -560,12 +548,6 @@ export interface ConversationCreateRequest {
    */
   '$agent': string;
   /**
-   * Thread this conversation is in - this determines what context to pull when loading the conversation
-   * @type {string}
-   * @memberof ConversationCreateRequest
-   */
-  '$thread'?: string;
-  /**
    * Initial contexts to load when starting the conversation
    * @type {Array<string>}
    * @memberof ConversationCreateRequest
@@ -589,9 +571,28 @@ export interface ConversationCreateRequest {
    * @memberof ConversationCreateRequest
    */
   'environment': ConversationEnvironment;
+  /**
+   *
+   * @type {ConversationUpdateRequestBaseWorkflow}
+   * @memberof ConversationCreateRequest
+   */
+  '$workflow': ConversationUpdateRequestBaseWorkflow;
 }
 
 
+/**
+ *
+ * @export
+ * @interface ConversationCreateRequestBase
+ */
+export interface ConversationCreateRequestBase {
+  /**
+   *
+   * @type {ConversationUpdateRequestBaseWorkflow}
+   * @memberof ConversationCreateRequestBase
+   */
+  '$workflow': ConversationUpdateRequestBaseWorkflow;
+}
 /**
  *
  * @export
@@ -694,12 +695,6 @@ export interface ConversationGetResponse {
    */
   '$agent': string;
   /**
-   * Thread this conversation is in - this determines what context to pull when loading the conversation
-   * @type {string}
-   * @memberof ConversationGetResponse
-   */
-  '$thread'?: string;
-  /**
    * Initial contexts to load when starting the conversation
    * @type {Array<string>}
    * @memberof ConversationGetResponse
@@ -742,6 +737,12 @@ export interface ConversationGetResponse {
    */
   'agentTestWebUrl'?: string;
   /**
+   * The ID of the workflow used for this conversation
+   * @type {string}
+   * @memberof ConversationGetResponse
+   */
+  '$workflow': string;
+  /**
    * ISO 8601 date string of when the conversation was initiated
    * @type {string}
    * @memberof ConversationGetResponse
@@ -774,6 +775,19 @@ export interface ConversationGetResponseAllOf {
    * @memberof ConversationGetResponseAllOf
    */
   '$id': string;
+}
+/**
+ *
+ * @export
+ * @interface ConversationGetResponseBase
+ */
+export interface ConversationGetResponseBase {
+  /**
+   * The ID of the workflow used for this conversation
+   * @type {string}
+   * @memberof ConversationGetResponseBase
+   */
+  '$workflow': string;
 }
 /**
  *
@@ -838,12 +852,6 @@ export interface ConversationUpdateRequest {
    */
   '$agent': string;
   /**
-   * Thread this conversation is in - this determines what context to pull when loading the conversation
-   * @type {string}
-   * @memberof ConversationUpdateRequest
-   */
-  '$thread'?: string;
-  /**
    * Initial contexts to load when starting the conversation
    * @type {Array<string>}
    * @memberof ConversationUpdateRequest
@@ -868,6 +876,12 @@ export interface ConversationUpdateRequest {
    */
   'environment': ConversationEnvironment;
   /**
+   *
+   * @type {ConversationUpdateRequestAllOfWorkflow}
+   * @memberof ConversationUpdateRequest
+   */
+  '$workflow'?: ConversationUpdateRequestAllOfWorkflow;
+  /**
    * The ID of the conversation to update
    * @type {string}
    * @memberof ConversationUpdateRequest
@@ -888,7 +902,38 @@ export interface ConversationUpdateRequestAllOf {
    * @memberof ConversationUpdateRequestAllOf
    */
   '$id': string;
+  /**
+   *
+   * @type {ConversationUpdateRequestAllOfWorkflow}
+   * @memberof ConversationUpdateRequestAllOf
+   */
+  '$workflow'?: ConversationUpdateRequestAllOfWorkflow;
 }
+/**
+ * @type ConversationUpdateRequestAllOfWorkflow
+ * @export
+ */
+export type ConversationUpdateRequestAllOfWorkflow = Workflow | string;
+
+/**
+ *
+ * @export
+ * @interface ConversationUpdateRequestBase
+ */
+export interface ConversationUpdateRequestBase {
+  /**
+   *
+   * @type {ConversationUpdateRequestBaseWorkflow}
+   * @memberof ConversationUpdateRequestBase
+   */
+  '$workflow'?: ConversationUpdateRequestBaseWorkflow;
+}
+/**
+ * @type ConversationUpdateRequestBaseWorkflow
+ * @export
+ */
+export type ConversationUpdateRequestBaseWorkflow = Workflow | string;
+
 /**
  *
  * @export
@@ -1057,93 +1102,93 @@ export interface CreateAgentResponse {
 export interface CreateAgentsRequest {
   /**
    *
-   * @type {Array<CreateAgentsRequestCustomersInner>}
+   * @type {Array<CreateAgentsRequestAgentsInner>}
    * @memberof CreateAgentsRequest
    */
-  'customers'?: Array<CreateAgentsRequestCustomersInner>;
+  'agents'?: Array<CreateAgentsRequestAgentsInner>;
 }
 /**
  *
  * @export
- * @interface CreateAgentsRequestCustomersInner
+ * @interface CreateAgentsRequestAgentsInner
  */
-export interface CreateAgentsRequestCustomersInner {
+export interface CreateAgentsRequestAgentsInner {
   /**
    * Agent first name
    * @type {string}
-   * @memberof CreateAgentsRequestCustomersInner
+   * @memberof CreateAgentsRequestAgentsInner
    */
   'firstName': string;
   /**
    * Agent last name
    * @type {string}
-   * @memberof CreateAgentsRequestCustomersInner
+   * @memberof CreateAgentsRequestAgentsInner
    */
   'lastName': string;
   /**
    * Agent is inactive
    * @type {boolean}
-   * @memberof CreateAgentsRequestCustomersInner
+   * @memberof CreateAgentsRequestAgentsInner
    */
   'inactive'?: boolean;
   /**
    * Programmable phone number
    * @type {string}
-   * @memberof CreateAgentsRequestCustomersInner
+   * @memberof CreateAgentsRequestAgentsInner
    */
   'programmablePhoneNumber'?: string;
   /**
    * Programmable phone number SID
    * @type {string}
-   * @memberof CreateAgentsRequestCustomersInner
+   * @memberof CreateAgentsRequestAgentsInner
    */
   'programmablePhoneNumberSid'?: string;
   /**
    * Email address from Scout9 gmail subdomain
    * @type {string}
-   * @memberof CreateAgentsRequestCustomersInner
+   * @memberof CreateAgentsRequestAgentsInner
    */
   'programmableEmail'?: string;
   /**
    * Forward email
    * @type {string}
-   * @memberof CreateAgentsRequestCustomersInner
+   * @memberof CreateAgentsRequestAgentsInner
    */
   'forwardEmail'?: string;
   /**
    * Forward phone
    * @type {string}
-   * @memberof CreateAgentsRequestCustomersInner
+   * @memberof CreateAgentsRequestAgentsInner
    */
   'forwardPhone': string;
   /**
    * Title of the agent, defaults to \"Agent\"
    * @type {string}
-   * @memberof CreateAgentsRequestCustomersInner
+   * @memberof CreateAgentsRequestAgentsInner
    */
   'title'?: string;
   /**
    * Context of the agent, defaults to \"Agent\"
    * @type {string}
-   * @memberof CreateAgentsRequestCustomersInner
+   * @memberof CreateAgentsRequestAgentsInner
    */
   'context'?: string;
   /**
    * Locations ids the agent is included in
    * @type {Array<string>}
-   * @memberof CreateAgentsRequestCustomersInner
+   * @memberof CreateAgentsRequestAgentsInner
    */
   'includedLocations'?: Array<string>;
   /**
    * Locations id the agent is excluded from
    * @type {Array<string>}
-   * @memberof CreateAgentsRequestCustomersInner
+   * @memberof CreateAgentsRequestAgentsInner
    */
   'excludedLocations'?: Array<string>;
   /**
    * Transcript of the agent
    * @type {string}
-   * @memberof CreateAgentsRequestCustomersInner
+   * @memberof CreateAgentsRequestAgentsInner
    */
   'transcript'?: string;
 }
@@ -1248,57 +1293,57 @@ export interface CreateContextResponse {
 export interface CreateContextsRequest {
   /**
    *
-   * @type {Array<CreateContextsRequestCustomersInner>}
+   * @type {Array<CreateContextsRequestContextsInner>}
    * @memberof CreateContextsRequest
    */
-  'customers'?: Array<CreateContextsRequestCustomersInner>;
+  'contexts'?: Array<CreateContextsRequestContextsInner>;
 }
 /**
  *
  * @export
- * @interface CreateContextsRequestCustomersInner
+ * @interface CreateContextsRequestContextsInner
  */
-export interface CreateContextsRequestCustomersInner {
+export interface CreateContextsRequestContextsInner {
   /**
    * The name of the context
    * @type {string}
-   * @memberof CreateContextsRequestCustomersInner
+   * @memberof CreateContextsRequestContextsInner
    */
   'name': string;
   /**
    * Whether or not the context is modifiable
    * @type {boolean}
-   * @memberof CreateContextsRequestCustomersInner
+   * @memberof CreateContextsRequestContextsInner
    */
   'modifiable': boolean;
   /**
    * The description of the context
    * @type {string}
-   * @memberof CreateContextsRequestCustomersInner
+   * @memberof CreateContextsRequestContextsInner
    */
   'description'?: string;
   /**
    *
    * @type {ContextDetectionParams}
-   * @memberof CreateContextsRequestCustomersInner
+   * @memberof CreateContextsRequestContextsInner
    */
   'detection'?: ContextDetectionParams;
   /**
    * The ID column of the context
    * @type {string}
-   * @memberof CreateContextsRequestCustomersInner
+   * @memberof CreateContextsRequestContextsInner
    */
   'idColumn': string;
   /**
    * The columns of the context
    * @type {Array<string>}
-   * @memberof CreateContextsRequestCustomersInner
+   * @memberof CreateContextsRequestContextsInner
    */
   'columns': Array<string>;
   /**
    * The required columns of the context
    * @type {Array<string>}
-   * @memberof CreateContextsRequestCustomersInner
+   * @memberof CreateContextsRequestContextsInner
    */
   'requiredColumns'?: Array<string>;
 }
@@ -1593,63 +1638,63 @@ export interface CreateWorkflowResponse {
 export interface CreateWorkflowsRequest {
   /**
    *
-   * @type {Array<CreateWorkflowsRequestCustomersInner>}
+   * @type {Array<CreateWorkflowsRequestWorkflowsInner>}
    * @memberof CreateWorkflowsRequest
    */
-  'customers'?: Array<CreateWorkflowsRequestCustomersInner>;
+  'workflows'?: Array<CreateWorkflowsRequestWorkflowsInner>;
 }
 /**
  *
  * @export
- * @interface CreateWorkflowsRequestCustomersInner
+ * @interface CreateWorkflowsRequestWorkflowsInner
  */
-export interface CreateWorkflowsRequestCustomersInner {
+export interface CreateWorkflowsRequestWorkflowsInner {
   /**
    * The name of the workflow
    * @type {string}
-   * @memberof CreateWorkflowsRequestCustomersInner
+   * @memberof CreateWorkflowsRequestWorkflowsInner
    */
   'name': string;
   /**
    *
    * @type {ContextDetectionParams}
-   * @memberof CreateWorkflowsRequestCustomersInner
+   * @memberof CreateWorkflowsRequestWorkflowsInner
    */
   'initiators': ContextDetectionParams;
   /**
    * The fields of the workflow
    * @type {Array<ConversationContextField>}
-   * @memberof CreateWorkflowsRequestCustomersInner
+   * @memberof CreateWorkflowsRequestWorkflowsInner
    */
   'fields': Array<ConversationContextField>;
   /**
    * About this conversation - used as initial context
    * @type {string}
-   * @memberof CreateWorkflowsRequestCustomersInner
+   * @memberof CreateWorkflowsRequestWorkflowsInner
    */
   'context': string;
   /**
    * The webhook to call when a workflow is created
    * @type {string}
-   * @memberof CreateWorkflowsRequestCustomersInner
+   * @memberof CreateWorkflowsRequestWorkflowsInner
    */
   'onCreated'?: string;
   /**
    * The webhook to call when a workflow is updated
    * @type {string}
-   * @memberof CreateWorkflowsRequestCustomersInner
+   * @memberof CreateWorkflowsRequestWorkflowsInner
    */
   'onUpdated'?: string;
   /**
    * The webhook to call when a workflow is deleted
    * @type {string}
-   * @memberof CreateWorkflowsRequestCustomersInner
+   * @memberof CreateWorkflowsRequestWorkflowsInner
    */
   'onDeleted'?: string;
   /**
    * The webhook to call when a workflow has an error
    * @type {string}
-   * @memberof CreateWorkflowsRequestCustomersInner
+   * @memberof CreateWorkflowsRequestWorkflowsInner
    */
   'onError'?: string;
 }
@@ -1801,6 +1846,64 @@ export interface Customer {
    */
   'stripeDev'?: string | null;
 }
+/**
+ * A way for a business to group customers to use in scheduling batch conversations
+ * @export
+ * @interface CustomerGroup
+ */
+export interface CustomerGroup {
+  /**
+   * The name of the customer group
+   * @type {string}
+   * @memberof CustomerGroup
+   */
+  'name': string;
+  /**
+   * The description of the customer group
+   * @type {string}
+   * @memberof CustomerGroup
+   */
+  'description'?: string;
+  /**
+   *
+   * @type {{ [key: string]: any; }}
+   * @memberof CustomerGroup
+   */
+  'metadata'?: { [key: string]: any; };
+  /**
+   *
+   * @type {Array<CustomerGroupRecord>}
+   * @memberof CustomerGroup
+   */
+  'customers': Array<CustomerGroupRecord>;
+}
+/**
+ * A way for a business to group customers to use in scheduling batch conversations
+ * @export
+ * @interface CustomerGroupRecord
+ */
+export interface CustomerGroupRecord {
+  /**
+   * Customer this conversation is with
+   * @type {string}
+   * @memberof CustomerGroupRecord
+   */
+  'id': string;
+  /**
+   *
+   * @type {ConversationEnvironment}
+   * @memberof CustomerGroupRecord
+   */
+  'environment': ConversationEnvironment;
+  /**
+   * Overrides the default $agent for this customer
+   * @type {string}
+   * @memberof CustomerGroupRecord
+   */
+  '$agent'?: string;
+}
+
+
 /**
  * @type CustomerValue
  * @export
@@ -3319,12 +3422,6 @@ export interface ScheduleCreateRequest {
    */
   '$agent': string;
   /**
-   * Thread this conversation is in - this determines what context to pull when loading the conversation
-   * @type {string}
-   * @memberof ScheduleCreateRequest
-   */
-  '$thread'?: string;
-  /**
    * Initial contexts to load when starting the conversation
    * @type {Array<string>}
    * @memberof ScheduleCreateRequest
@@ -3372,6 +3469,12 @@ export interface ScheduleCreateRequest {
    * @memberof ScheduleCreateRequest
    */
   '$group'?: string;
+  /**
+   *
+   * @type {ConversationUpdateRequestBaseWorkflow}
+   * @memberof ScheduleCreateRequest
+   */
+  '$workflow': ConversationUpdateRequestBaseWorkflow;
 }
 
 
@@ -3432,12 +3535,6 @@ export interface ScheduleGetResponse {
    */
   '$agent': string;
   /**
-   * Thread this conversation is in - this determines what context to pull when loading the conversation
-   * @type {string}
-   * @memberof ScheduleGetResponse
-   */
-  '$thread'?: string;
-  /**
    * Initial contexts to load when starting the conversation
    * @type {Array<string>}
    * @memberof ScheduleGetResponse
@@ -3485,6 +3582,12 @@ export interface ScheduleGetResponse {
    * @memberof ScheduleGetResponse
    */
   '$group'?: string;
+  /**
+   * The ID of the workflow used for this conversation
+   * @type {string}
+   * @memberof ScheduleGetResponse
+   */
+  '$workflow': string;
 }
 
 
@@ -3495,17 +3598,17 @@ export interface ScheduleGetResponse {
  */
 export interface ScheduleGroupCreateRequest {
   /**
+   *
+   * @type {ConversationUpdateRequestBaseWorkflow}
+   * @memberof ScheduleGroupCreateRequest
+   */
+  '$workflow': ConversationUpdateRequestBaseWorkflow;
+  /**
    * Default agent assigned to the conversation(s)
    * @type {string}
    * @memberof ScheduleGroupCreateRequest
    */
   '$agent': string;
-  /**
-   * Thread this conversation is in - this determines what context to pull when loading the conversation
-   * @type {string}
-   * @memberof ScheduleGroupCreateRequest
-   */
-  '$thread'?: string;
   /**
    * Initial contexts to load when starting the conversation
    * @type {Array<string>}
@@ -3543,12 +3646,31 @@ export interface ScheduleGroupCreateRequest {
    */
   'delay'?: number;
   /**
-   * Customers in this group
-   * @type {Array<ScheduledConversationGroupAllOfCustomers>}
+   *
+   * @type {ScheduleGroupCreateRequestAllOfCGroup}
    * @memberof ScheduleGroupCreateRequest
    */
-  'customers': Array<ScheduledConversationGroupAllOfCustomers>;
+  '$cGroup': ScheduleGroupCreateRequestAllOfCGroup;
 }
+/**
+ *
+ * @export
+ * @interface ScheduleGroupCreateRequestAllOf
+ */
+export interface ScheduleGroupCreateRequestAllOf {
+  /**
+   *
+   * @type {ScheduleGroupCreateRequestAllOfCGroup}
+   * @memberof ScheduleGroupCreateRequestAllOf
+   */
+  '$cGroup': ScheduleGroupCreateRequestAllOfCGroup;
+}
+/**
+ * @type ScheduleGroupCreateRequestAllOfCGroup
+ * @export
+ */
+export type ScheduleGroupCreateRequestAllOfCGroup = CustomerGroup | string;
+
 /**
  *
  * @export
@@ -3587,12 +3709,6 @@ export interface ScheduleGroupGetResponse {
    */
   '$agent': string;
   /**
-   * Thread this conversation is in - this determines what context to pull when loading the conversation
-   * @type {string}
-   * @memberof ScheduleGroupGetResponse
-   */
-  '$thread'?: string;
-  /**
    * Initial contexts to load when starting the conversation
    * @type {Array<string>}
    * @memberof ScheduleGroupGetResponse
@@ -3629,11 +3745,11 @@ export interface ScheduleGroupGetResponse {
    */
   'delay'?: number;
   /**
-   * Customers in this group
-   * @type {Array<ScheduledConversationGroupAllOfCustomers>}
+   * The ID of the workflow used for this conversation
+   * @type {string}
    * @memberof ScheduleGroupGetResponse
    */
-  'customers': Array<ScheduledConversationGroupAllOfCustomers>;
+  '$workflow': string;
   /**
    * The ID of the scheduled conversation group
    * @type {string}
@@ -3646,6 +3762,12 @@ export interface ScheduleGroupGetResponse {
    * @memberof ScheduleGroupGetResponse
    */
   'sent'?: boolean;
+  /**
+   * The ID of the group the customers belong to
+   * @type {string}
+   * @memberof ScheduleGroupGetResponse
+   */
+  '$cGroup'?: string;
 }
 /**
  *
@@ -3665,6 +3787,12 @@ export interface ScheduleGroupGetResponseAllOf {
    * @memberof ScheduleGroupGetResponseAllOf
    */
   'sent'?: boolean;
+  /**
+   * The ID of the group the customers belong to
+   * @type {string}
+   * @memberof ScheduleGroupGetResponseAllOf
+   */
+  '$cGroup'?: string;
 }
 /**
  *
@@ -3704,12 +3832,6 @@ export interface ScheduleGroupUpdateRequest {
    */
   '$agent': string;
   /**
-   * Thread this conversation is in - this determines what context to pull when loading the conversation
-   * @type {string}
-   * @memberof ScheduleGroupUpdateRequest
-   */
-  '$thread'?: string;
-  /**
    * Initial contexts to load when starting the conversation
    * @type {Array<string>}
    * @memberof ScheduleGroupUpdateRequest
@@ -3746,11 +3868,17 @@ export interface ScheduleGroupUpdateRequest {
    */
   'delay'?: number;
   /**
-   * Customers in this group
-   * @type {Array<ScheduledConversationGroupAllOfCustomers>}
+   *
+   * @type {ConversationUpdateRequestBaseWorkflow}
    * @memberof ScheduleGroupUpdateRequest
    */
-  'customers': Array<ScheduledConversationGroupAllOfCustomers>;
+  '$workflow'?: ConversationUpdateRequestBaseWorkflow;
+  /**
+   *
+   * @type {ScheduleGroupCreateRequestAllOfCGroup}
+   * @memberof ScheduleGroupUpdateRequest
+   */
+  '$cGroup'?: ScheduleGroupCreateRequestAllOfCGroup;
   /**
    * The ID of the scheduled conversation group to update
    * @type {string}
@@ -3764,6 +3892,12 @@ export interface ScheduleGroupUpdateRequest {
  * @interface ScheduleGroupUpdateRequestAllOf
  */
 export interface ScheduleGroupUpdateRequestAllOf {
+  /**
+   *
+   * @type {ScheduleGroupCreateRequestAllOfCGroup}
+   * @memberof ScheduleGroupUpdateRequestAllOf
+   */
+  '$cGroup'?: ScheduleGroupCreateRequestAllOfCGroup;
   /**
    * The ID of the scheduled conversation group to update
    * @type {string}
@@ -3834,12 +3968,6 @@ export interface ScheduleUpdateRequest {
    */
   '$agent': string;
   /**
-   * Thread this conversation is in - this determines what context to pull when loading the conversation
-   * @type {string}
-   * @memberof ScheduleUpdateRequest
-   */
-  '$thread'?: string;
-  /**
    * Initial contexts to load when starting the conversation
    * @type {Array<string>}
    * @memberof ScheduleUpdateRequest
@@ -3887,6 +4015,12 @@ export interface ScheduleUpdateRequest {
    * @memberof ScheduleUpdateRequest
    */
   '$group'?: string;
+  /**
+   *
+   * @type {ConversationUpdateRequestBaseWorkflow}
+   * @memberof ScheduleUpdateRequest
+   */
+  '$workflow'?: ConversationUpdateRequestBaseWorkflow;
   /**
    * The ID of the scheduled conversation to update
    * @type {string}
@@ -3946,12 +4080,6 @@ export interface ScheduledConversation {
    * @memberof ScheduledConversation
    */
   '$agent': string;
-  /**
-   * Thread this conversation is in - this determines what context to pull when loading the conversation
-   * @type {string}
-   * @memberof ScheduledConversation
-   */
-  '$thread'?: string;
   /**
    * Initial contexts to load when starting the conversation
    * @type {Array<string>}
@@ -4029,12 +4157,6 @@ export interface ScheduledConversationGroup {
    */
   '$agent': string;
   /**
-   * Thread this conversation is in - this determines what context to pull when loading the conversation
-   * @type {string}
-   * @memberof ScheduledConversationGroup
-   */
-  '$thread'?: string;
-  /**
    * Initial contexts to load when starting the conversation
    * @type {Array<string>}
    * @memberof ScheduledConversationGroup
@@ -4070,12 +4192,6 @@ export interface ScheduledConversationGroup {
    * @memberof ScheduledConversationGroup
    */
   'delay'?: number;
-  /**
-   * Customers in this group
-   * @type {Array<ScheduledConversationGroupAllOfCustomers>}
-   * @memberof ScheduledConversationGroup
-   */
-  'customers': Array<ScheduledConversationGroupAllOfCustomers>;
 }
 /**
  *
@@ -4089,40 +4205,7 @@ export interface ScheduledConversationGroupAllOf {
    * @memberof ScheduledConversationGroupAllOf
    */
   'delay'?: number;
-  /**
-   * Customers in this group
-   * @type {Array<ScheduledConversationGroupAllOfCustomers>}
-   * @memberof ScheduledConversationGroupAllOf
-   */
-  'customers': Array<ScheduledConversationGroupAllOfCustomers>;
 }
-/**
- *
- * @export
- * @interface ScheduledConversationGroupAllOfCustomers
- */
-export interface ScheduledConversationGroupAllOfCustomers {
-  /**
-   *
-   * @type {ConversationEnvironment}
-   * @memberof ScheduledConversationGroupAllOfCustomers
-   */
-  'environment': ConversationEnvironment;
-  /**
-   * Customer ID
-   * @type {string}
-   * @memberof ScheduledConversationGroupAllOfCustomers
-   */
-  'id': string;
-  /**
-   * Overrides default $agent for this customer
-   * @type {string}
-   * @memberof ScheduledConversationGroupAllOfCustomers
-   */
-  '$agent'?: string;
-}
-
-
 /**
  *
  * @export
@@ -4260,112 +4343,112 @@ export interface UpdateAgentResponse {
 export interface UpdateAgentsRequest {
   /**
    *
-   * @type {Array<UpdateAgentsRequestCustomersInner>}
+   * @type {Array<UpdateAgentsRequestAgentsInner>}
    * @memberof UpdateAgentsRequest
    */
-  'customers'?: Array<UpdateAgentsRequestCustomersInner>;
+  'agents'?: Array<UpdateAgentsRequestAgentsInner>;
 }
 /**
  *
  * @export
- * @interface UpdateAgentsRequestCustomersInner
+ * @interface UpdateAgentsRequestAgentsInner
  */
-export interface UpdateAgentsRequestCustomersInner {
+export interface UpdateAgentsRequestAgentsInner {
   /**
    * Agent first name
    * @type {string}
-   * @memberof UpdateAgentsRequestCustomersInner
+   * @memberof UpdateAgentsRequestAgentsInner
    */
   'firstName': string;
   /**
    * Agent last name
    * @type {string}
-   * @memberof UpdateAgentsRequestCustomersInner
+   * @memberof UpdateAgentsRequestAgentsInner
    */
   'lastName': string;
   /**
    * Agent is inactive
    * @type {boolean}
-   * @memberof UpdateAgentsRequestCustomersInner
+   * @memberof UpdateAgentsRequestAgentsInner
    */
   'inactive'?: boolean;
   /**
    * Programmable phone number
    * @type {string}
-   * @memberof UpdateAgentsRequestCustomersInner
+   * @memberof UpdateAgentsRequestAgentsInner
    */
   'programmablePhoneNumber'?: string;
   /**
    * Programmable phone number SID
    * @type {string}
-   * @memberof UpdateAgentsRequestCustomersInner
+   * @memberof UpdateAgentsRequestAgentsInner
    */
   'programmablePhoneNumberSid'?: string;
   /**
    * Email address from Scout9 gmail subdomain
    * @type {string}
-   * @memberof UpdateAgentsRequestCustomersInner
+   * @memberof UpdateAgentsRequestAgentsInner
    */
   'programmableEmail'?: string;
   /**
    * Forward email
    * @type {string}
-   * @memberof UpdateAgentsRequestCustomersInner
+   * @memberof UpdateAgentsRequestAgentsInner
    */
   'forwardEmail'?: string;
   /**
    * Forward phone
    * @type {string}
-   * @memberof UpdateAgentsRequestCustomersInner
+   * @memberof UpdateAgentsRequestAgentsInner
    */
   'forwardPhone': string;
   /**
    * Title of the agent, defaults to \"Agent\"
    * @type {string}
-   * @memberof UpdateAgentsRequestCustomersInner
+   * @memberof UpdateAgentsRequestAgentsInner
    */
   'title'?: string;
   /**
    * Context of the agent, defaults to \"Agent\"
    * @type {string}
-   * @memberof UpdateAgentsRequestCustomersInner
+   * @memberof UpdateAgentsRequestAgentsInner
    */
   'context'?: string;
   /**
    * Locations ids the agent is included in
    * @type {Array<string>}
-   * @memberof UpdateAgentsRequestCustomersInner
+   * @memberof UpdateAgentsRequestAgentsInner
    */
   'includedLocations'?: Array<string>;
   /**
    * Locations id the agent is excluded from
    * @type {Array<string>}
-   * @memberof UpdateAgentsRequestCustomersInner
+   * @memberof UpdateAgentsRequestAgentsInner
    */
   'excludedLocations'?: Array<string>;
   /**
    * Transcript of the agent
    * @type {string}
-   * @memberof UpdateAgentsRequestCustomersInner
+   * @memberof UpdateAgentsRequestAgentsInner
    */
   'transcript'?: string;
   /**
    * The ID of the agent
    * @type {string}
-   * @memberof UpdateAgentsRequestCustomersInner
+   * @memberof UpdateAgentsRequestAgentsInner
    */
   '$id': string;
 }
 /**
  *
  * @export
- * @interface UpdateAgentsRequestCustomersInnerAllOf
+ * @interface UpdateAgentsRequestAgentsInnerAllOf
  */
-export interface UpdateAgentsRequestCustomersInnerAllOf {
+export interface UpdateAgentsRequestAgentsInnerAllOf {
   /**
    * The ID of the agent
    * @type {string}
-   * @memberof UpdateAgentsRequestCustomersInnerAllOf
+   * @memberof UpdateAgentsRequestAgentsInnerAllOf
    */
   '$id': string;
 }
@@ -4492,7 +4575,7 @@ export interface UpdateContextsRequest {
    * @type {Array<ListContextsResponseInner>}
    * @memberof UpdateContextsRequest
    */
-  'customers'?: Array<ListContextsResponseInner>;
+  'contexts'?: Array<ListContextsResponseInner>;
 }
 /**
  *
@@ -4826,7 +4909,7 @@ export interface UpdateWorkflowsRequest {
    * @type {Array<ListWorkflowsResponseInner>}
    * @memberof UpdateWorkflowsRequest
    */
-  'customers'?: Array<ListWorkflowsResponseInner>;
+  'workflows'?: Array<ListWorkflowsResponseInner>;
 }
 /**
  *
