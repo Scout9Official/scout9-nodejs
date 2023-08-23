@@ -1369,6 +1369,94 @@ export interface CreateContextsResponse {
 /**
  *
  * @export
+ * @interface CreateCustomerGroupRequest
+ */
+export interface CreateCustomerGroupRequest {
+  /**
+   * The name of the customer group
+   * @type {string}
+   * @memberof CreateCustomerGroupRequest
+   */
+  'name': string;
+  /**
+   * The description of the customer group
+   * @type {string}
+   * @memberof CreateCustomerGroupRequest
+   */
+  'description'?: string;
+  /**
+   *
+   * @type {{ [key: string]: any; }}
+   * @memberof CreateCustomerGroupRequest
+   */
+  'metadata'?: { [key: string]: any; };
+  /**
+   *
+   * @type {Array<CustomerGroupRecord>}
+   * @memberof CreateCustomerGroupRequest
+   */
+  'customers': Array<CustomerGroupRecord>;
+}
+/**
+ *
+ * @export
+ * @interface CreateCustomerGroupResponse
+ */
+export interface CreateCustomerGroupResponse {
+  /**
+   *
+   * @type {boolean}
+   * @memberof CreateCustomerGroupResponse
+   */
+  'success': boolean;
+  /**
+   *
+   * @type {Error}
+   * @memberof CreateCustomerGroupResponse
+   */
+  'error'?: Error;
+  /**
+   * The id of the document that was created, updated, or deleted
+   * @type {string}
+   * @memberof CreateCustomerGroupResponse
+   */
+  'id': string;
+}
+/**
+ *
+ * @export
+ * @interface CreateCustomerGroupsRequest
+ */
+export interface CreateCustomerGroupsRequest {
+  /**
+   *
+   * @type {Array<CustomerGroup>}
+   * @memberof CreateCustomerGroupsRequest
+   */
+  'CustomerGroups': Array<CustomerGroup>;
+}
+/**
+ *
+ * @export
+ * @interface CreateCustomerGroupsResponse
+ */
+export interface CreateCustomerGroupsResponse {
+  /**
+   * ISO 8601 datetime string of when the operation was queued
+   * @type {string}
+   * @memberof CreateCustomerGroupsResponse
+   */
+  'queued': string;
+  /**
+   * The operation id to view the operation end results
+   * @type {string}
+   * @memberof CreateCustomerGroupsResponse
+   */
+  '$operation': string;
+}
+/**
+ *
+ * @export
  * @interface CreateCustomerRequest
  */
 export interface CreateCustomerRequest {
@@ -2001,6 +2089,50 @@ export interface DeleteContextsResponse {
 /**
  *
  * @export
+ * @interface DeleteCustomerGroupResponse
+ */
+export interface DeleteCustomerGroupResponse {
+  /**
+   *
+   * @type {boolean}
+   * @memberof DeleteCustomerGroupResponse
+   */
+  'success': boolean;
+  /**
+   *
+   * @type {Error}
+   * @memberof DeleteCustomerGroupResponse
+   */
+  'error'?: Error;
+  /**
+   * The id of the document that was created, updated, or deleted
+   * @type {string}
+   * @memberof DeleteCustomerGroupResponse
+   */
+  'id': string;
+}
+/**
+ *
+ * @export
+ * @interface DeleteCustomerGroupsResponse
+ */
+export interface DeleteCustomerGroupsResponse {
+  /**
+   * ISO 8601 datetime string of when the operation was queued
+   * @type {string}
+   * @memberof DeleteCustomerGroupsResponse
+   */
+  'queued': string;
+  /**
+   * The operation id to view the operation end results
+   * @type {string}
+   * @memberof DeleteCustomerGroupsResponse
+   */
+  '$operation': string;
+}
+/**
+ *
+ * @export
  * @interface DeleteCustomerResponse
  */
 export interface DeleteCustomerResponse {
@@ -2384,6 +2516,56 @@ export interface GetContextResponseAllOf {
    * @memberof GetContextResponseAllOf
    */
   '$id': string;
+}
+/**
+ *
+ * @export
+ * @interface GetCustomerGroupResponse
+ */
+export interface GetCustomerGroupResponse {
+  /**
+   * The name of the customer group
+   * @type {string}
+   * @memberof GetCustomerGroupResponse
+   */
+  'name': string;
+  /**
+   * The description of the customer group
+   * @type {string}
+   * @memberof GetCustomerGroupResponse
+   */
+  'description'?: string;
+  /**
+   *
+   * @type {{ [key: string]: any; }}
+   * @memberof GetCustomerGroupResponse
+   */
+  'metadata'?: { [key: string]: any; };
+  /**
+   *
+   * @type {Array<CustomerGroupRecord>}
+   * @memberof GetCustomerGroupResponse
+   */
+  'customers': Array<CustomerGroupRecord>;
+  /**
+   * The ID of the CustomerGroup
+   * @type {string}
+   * @memberof GetCustomerGroupResponse
+   */
+  '$id'?: string;
+}
+/**
+ *
+ * @export
+ * @interface GetCustomerGroupResponseAllOf
+ */
+export interface GetCustomerGroupResponseAllOf {
+  /**
+   * The ID of the CustomerGroup
+   * @type {string}
+   * @memberof GetCustomerGroupResponseAllOf
+   */
+  '$id'?: string;
 }
 /**
  *
@@ -2835,6 +3017,56 @@ export interface ListContextsResponseInnerAllOf {
    * The ID of the context
    * @type {string}
    * @memberof ListContextsResponseInnerAllOf
+   */
+  '$id': string;
+}
+/**
+ *
+ * @export
+ * @interface ListCustomerGroupsResponseInner
+ */
+export interface ListCustomerGroupsResponseInner {
+  /**
+   * The name of the customer group
+   * @type {string}
+   * @memberof ListCustomerGroupsResponseInner
+   */
+  'name': string;
+  /**
+   * The description of the customer group
+   * @type {string}
+   * @memberof ListCustomerGroupsResponseInner
+   */
+  'description'?: string;
+  /**
+   *
+   * @type {{ [key: string]: any; }}
+   * @memberof ListCustomerGroupsResponseInner
+   */
+  'metadata'?: { [key: string]: any; };
+  /**
+   *
+   * @type {Array<CustomerGroupRecord>}
+   * @memberof ListCustomerGroupsResponseInner
+   */
+  'customers': Array<CustomerGroupRecord>;
+  /**
+   * The ID of the CustomerGroup
+   * @type {string}
+   * @memberof ListCustomerGroupsResponseInner
+   */
+  '$id': string;
+}
+/**
+ *
+ * @export
+ * @interface ListCustomerGroupsResponseInnerAllOf
+ */
+export interface ListCustomerGroupsResponseInnerAllOf {
+  /**
+   * The ID of the CustomerGroup
+   * @type {string}
+   * @memberof ListCustomerGroupsResponseInnerAllOf
    */
   '$id': string;
 }
@@ -4599,6 +4831,113 @@ export interface UpdateContextsResponse {
 /**
  *
  * @export
+ * @interface UpdateCustomerGroupRequest
+ */
+export interface UpdateCustomerGroupRequest {
+  /**
+   * The name of the customer group
+   * @type {string}
+   * @memberof UpdateCustomerGroupRequest
+   */
+  'name': string;
+  /**
+   * The description of the customer group
+   * @type {string}
+   * @memberof UpdateCustomerGroupRequest
+   */
+  'description'?: string;
+  /**
+   *
+   * @type {{ [key: string]: any; }}
+   * @memberof UpdateCustomerGroupRequest
+   */
+  'metadata'?: { [key: string]: any; };
+  /**
+   *
+   * @type {Array<CustomerGroupRecord>}
+   * @memberof UpdateCustomerGroupRequest
+   */
+  'customers': Array<CustomerGroupRecord>;
+  /**
+   * The ID of the CustomerGroup
+   * @type {string}
+   * @memberof UpdateCustomerGroupRequest
+   */
+  '$id': string;
+}
+/**
+ *
+ * @export
+ * @interface UpdateCustomerGroupRequestAllOf
+ */
+export interface UpdateCustomerGroupRequestAllOf {
+  /**
+   * The ID of the CustomerGroup
+   * @type {string}
+   * @memberof UpdateCustomerGroupRequestAllOf
+   */
+  '$id': string;
+}
+/**
+ *
+ * @export
+ * @interface UpdateCustomerGroupResponse
+ */
+export interface UpdateCustomerGroupResponse {
+  /**
+   *
+   * @type {boolean}
+   * @memberof UpdateCustomerGroupResponse
+   */
+  'success': boolean;
+  /**
+   *
+   * @type {Error}
+   * @memberof UpdateCustomerGroupResponse
+   */
+  'error'?: Error;
+  /**
+   * The id of the document that was created, updated, or deleted
+   * @type {string}
+   * @memberof UpdateCustomerGroupResponse
+   */
+  'id': string;
+}
+/**
+ *
+ * @export
+ * @interface UpdateCustomerGroupsRequest
+ */
+export interface UpdateCustomerGroupsRequest {
+  /**
+   *
+   * @type {Array<ListCustomerGroupsResponseInner>}
+   * @memberof UpdateCustomerGroupsRequest
+   */
+  'CustomerGroups'?: Array<ListCustomerGroupsResponseInner>;
+}
+/**
+ *
+ * @export
+ * @interface UpdateCustomerGroupsResponse
+ */
+export interface UpdateCustomerGroupsResponse {
+  /**
+   * ISO 8601 datetime string of when the operation was queued
+   * @type {string}
+   * @memberof UpdateCustomerGroupsResponse
+   */
+  'queued': string;
+  /**
+   * The operation id to view the operation end results
+   * @type {string}
+   * @memberof UpdateCustomerGroupsResponse
+   */
+  '$operation': string;
+}
+/**
+ *
+ * @export
  * @interface UpdateCustomerRequest
  */
 export interface UpdateCustomerRequest {
@@ -5836,6 +6175,299 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
     },
     /**
      *
+     * @summary Gets a customer group
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    customerGroup: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'id' is not null or undefined
+      assertParamExists('customerGroup', 'id', id)
+      const localVarPath = `/v1-customerGroup`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      if (id !== undefined) {
+        localVarQueryParameter['id'] = id;
+      }
+
+
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @summary Creates a new customer group
+     * @param {CreateCustomerGroupRequest} createCustomerGroupRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    customerGroupCreate: async (createCustomerGroupRequest: CreateCustomerGroupRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'createCustomerGroupRequest' is not null or undefined
+      assertParamExists('customerGroupCreate', 'createCustomerGroupRequest', createCustomerGroupRequest)
+      const localVarPath = `/v1-customerGroup`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+      localVarRequestOptions.data = serializeDataIfNeeded(createCustomerGroupRequest, localVarRequestOptions, configuration)
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @summary Deletes a customer group
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    customerGroupDelete: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'id' is not null or undefined
+      assertParamExists('customerGroupDelete', 'id', id)
+      const localVarPath = `/v1-customerGroup`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      if (id !== undefined) {
+        localVarQueryParameter['id'] = id;
+      }
+
+
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @summary Updates a customer group
+     * @param {UpdateCustomerGroupRequest} updateCustomerGroupRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    customerGroupUpdate: async (updateCustomerGroupRequest: UpdateCustomerGroupRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'updateCustomerGroupRequest' is not null or undefined
+      assertParamExists('customerGroupUpdate', 'updateCustomerGroupRequest', updateCustomerGroupRequest)
+      const localVarPath = `/v1-customerGroup`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+      localVarRequestOptions.data = serializeDataIfNeeded(updateCustomerGroupRequest, localVarRequestOptions, configuration)
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @summary Gets all or specific set of customer groups
+     * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    customerGroups: async (q?: string, id?: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      const localVarPath = `/v1-customerGroups`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      if (q !== undefined) {
+        localVarQueryParameter['q'] = q;
+      }
+
+      if (id) {
+        localVarQueryParameter['id'] = id;
+      }
+
+
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @summary Creates new customer groups
+     * @param {CreateCustomerGroupsRequest} createCustomerGroupsRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    customerGroupsCreate: async (createCustomerGroupsRequest: CreateCustomerGroupsRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'createCustomerGroupsRequest' is not null or undefined
+      assertParamExists('customerGroupsCreate', 'createCustomerGroupsRequest', createCustomerGroupsRequest)
+      const localVarPath = `/v1-customerGroups`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+      localVarRequestOptions.data = serializeDataIfNeeded(createCustomerGroupsRequest, localVarRequestOptions, configuration)
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @summary Deletes multiple customer groups
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    customerGroupsDelete: async (id?: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      const localVarPath = `/v1-customerGroups`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      if (id) {
+        localVarQueryParameter['id'] = id;
+      }
+
+
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @summary Updates multiple customer groups
+     * @param {UpdateCustomerGroupsRequest} updateCustomerGroupsRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    customerGroupsUpdate: async (updateCustomerGroupsRequest: UpdateCustomerGroupsRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'updateCustomerGroupsRequest' is not null or undefined
+      assertParamExists('customerGroupsUpdate', 'updateCustomerGroupsRequest', updateCustomerGroupsRequest)
+      const localVarPath = `/v1-customerGroups`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+      localVarRequestOptions.data = serializeDataIfNeeded(updateCustomerGroupsRequest, localVarRequestOptions, configuration)
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
      * @summary Updates a customer
      * @param {UpdateCustomerRequest} updateCustomerRequest
      * @param {*} [options] Override http request option.
@@ -7058,6 +7690,95 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
     },
     /**
      *
+     * @summary Gets a customer group
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async customerGroup(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetCustomerGroupResponse>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.customerGroup(id, options);
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+    },
+    /**
+     *
+     * @summary Creates a new customer group
+     * @param {CreateCustomerGroupRequest} createCustomerGroupRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async customerGroupCreate(createCustomerGroupRequest: CreateCustomerGroupRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateCustomerGroupResponse>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.customerGroupCreate(createCustomerGroupRequest, options);
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+    },
+    /**
+     *
+     * @summary Deletes a customer group
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async customerGroupDelete(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteCustomerGroupResponse>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.customerGroupDelete(id, options);
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+    },
+    /**
+     *
+     * @summary Updates a customer group
+     * @param {UpdateCustomerGroupRequest} updateCustomerGroupRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async customerGroupUpdate(updateCustomerGroupRequest: UpdateCustomerGroupRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateCustomerGroupResponse>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.customerGroupUpdate(updateCustomerGroupRequest, options);
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+    },
+    /**
+     *
+     * @summary Gets all or specific set of customer groups
+     * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async customerGroups(q?: string, id?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ListCustomerGroupsResponseInner>>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.customerGroups(q, id, options);
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+    },
+    /**
+     *
+     * @summary Creates new customer groups
+     * @param {CreateCustomerGroupsRequest} createCustomerGroupsRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async customerGroupsCreate(createCustomerGroupsRequest: CreateCustomerGroupsRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateCustomerGroupsResponse>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.customerGroupsCreate(createCustomerGroupsRequest, options);
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+    },
+    /**
+     *
+     * @summary Deletes multiple customer groups
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async customerGroupsDelete(id?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteCustomerGroupsResponse>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.customerGroupsDelete(id, options);
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+    },
+    /**
+     *
+     * @summary Updates multiple customer groups
+     * @param {UpdateCustomerGroupsRequest} updateCustomerGroupsRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async customerGroupsUpdate(updateCustomerGroupsRequest: UpdateCustomerGroupsRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateCustomerGroupsResponse>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.customerGroupsUpdate(updateCustomerGroupsRequest, options);
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+    },
+    /**
+     *
      * @summary Updates a customer
      * @param {UpdateCustomerRequest} updateCustomerRequest
      * @param {*} [options] Override http request option.
@@ -7587,6 +8308,87 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
      */
     customerDelete(id: string, options?: any): AxiosPromise<DeleteCustomerResponse> {
       return localVarFp.customerDelete(id, options).then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @summary Gets a customer group
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    customerGroup(id: string, options?: any): AxiosPromise<GetCustomerGroupResponse> {
+      return localVarFp.customerGroup(id, options).then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @summary Creates a new customer group
+     * @param {CreateCustomerGroupRequest} createCustomerGroupRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    customerGroupCreate(createCustomerGroupRequest: CreateCustomerGroupRequest, options?: any): AxiosPromise<CreateCustomerGroupResponse> {
+      return localVarFp.customerGroupCreate(createCustomerGroupRequest, options).then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @summary Deletes a customer group
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    customerGroupDelete(id: string, options?: any): AxiosPromise<DeleteCustomerGroupResponse> {
+      return localVarFp.customerGroupDelete(id, options).then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @summary Updates a customer group
+     * @param {UpdateCustomerGroupRequest} updateCustomerGroupRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    customerGroupUpdate(updateCustomerGroupRequest: UpdateCustomerGroupRequest, options?: any): AxiosPromise<UpdateCustomerGroupResponse> {
+      return localVarFp.customerGroupUpdate(updateCustomerGroupRequest, options).then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @summary Gets all or specific set of customer groups
+     * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    customerGroups(q?: string, id?: Array<string>, options?: any): AxiosPromise<Array<ListCustomerGroupsResponseInner>> {
+      return localVarFp.customerGroups(q, id, options).then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @summary Creates new customer groups
+     * @param {CreateCustomerGroupsRequest} createCustomerGroupsRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    customerGroupsCreate(createCustomerGroupsRequest: CreateCustomerGroupsRequest, options?: any): AxiosPromise<CreateCustomerGroupsResponse> {
+      return localVarFp.customerGroupsCreate(createCustomerGroupsRequest, options).then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @summary Deletes multiple customer groups
+     * @param {Array<string>} [id]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    customerGroupsDelete(id?: Array<string>, options?: any): AxiosPromise<DeleteCustomerGroupsResponse> {
+      return localVarFp.customerGroupsDelete(id, options).then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @summary Updates multiple customer groups
+     * @param {UpdateCustomerGroupsRequest} updateCustomerGroupsRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    customerGroupsUpdate(updateCustomerGroupsRequest: UpdateCustomerGroupsRequest, options?: any): AxiosPromise<UpdateCustomerGroupsResponse> {
+      return localVarFp.customerGroupsUpdate(updateCustomerGroupsRequest, options).then((request) => request(axios, basePath));
     },
     /**
      *
@@ -8138,6 +8940,103 @@ export class Scout9Api extends BaseAPI {
    */
   public customerDelete(id: string, options?: AxiosRequestConfig) {
     return Scout9ApiFp(this.configuration).customerDelete(id, options).then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @summary Gets a customer group
+   * @param {string} id
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof Scout9Api
+   */
+  public customerGroup(id: string, options?: AxiosRequestConfig) {
+    return Scout9ApiFp(this.configuration).customerGroup(id, options).then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @summary Creates a new customer group
+   * @param {CreateCustomerGroupRequest} createCustomerGroupRequest
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof Scout9Api
+   */
+  public customerGroupCreate(createCustomerGroupRequest: CreateCustomerGroupRequest, options?: AxiosRequestConfig) {
+    return Scout9ApiFp(this.configuration).customerGroupCreate(createCustomerGroupRequest, options).then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @summary Deletes a customer group
+   * @param {string} id
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof Scout9Api
+   */
+  public customerGroupDelete(id: string, options?: AxiosRequestConfig) {
+    return Scout9ApiFp(this.configuration).customerGroupDelete(id, options).then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @summary Updates a customer group
+   * @param {UpdateCustomerGroupRequest} updateCustomerGroupRequest
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof Scout9Api
+   */
+  public customerGroupUpdate(updateCustomerGroupRequest: UpdateCustomerGroupRequest, options?: AxiosRequestConfig) {
+    return Scout9ApiFp(this.configuration).customerGroupUpdate(updateCustomerGroupRequest, options).then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @summary Gets all or specific set of customer groups
+   * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
+   * @param {Array<string>} [id]
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof Scout9Api
+   */
+  public customerGroups(q?: string, id?: Array<string>, options?: AxiosRequestConfig) {
+    return Scout9ApiFp(this.configuration).customerGroups(q, id, options).then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @summary Creates new customer groups
+   * @param {CreateCustomerGroupsRequest} createCustomerGroupsRequest
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof Scout9Api
+   */
+  public customerGroupsCreate(createCustomerGroupsRequest: CreateCustomerGroupsRequest, options?: AxiosRequestConfig) {
+    return Scout9ApiFp(this.configuration).customerGroupsCreate(createCustomerGroupsRequest, options).then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @summary Deletes multiple customer groups
+   * @param {Array<string>} [id]
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof Scout9Api
+   */
+  public customerGroupsDelete(id?: Array<string>, options?: AxiosRequestConfig) {
+    return Scout9ApiFp(this.configuration).customerGroupsDelete(id, options).then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @summary Updates multiple customer groups
+   * @param {UpdateCustomerGroupsRequest} updateCustomerGroupsRequest
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof Scout9Api
+   */
+  public customerGroupsUpdate(updateCustomerGroupsRequest: UpdateCustomerGroupsRequest, options?: AxiosRequestConfig) {
+    return Scout9ApiFp(this.configuration).customerGroupsUpdate(updateCustomerGroupsRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
