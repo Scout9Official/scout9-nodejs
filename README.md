@@ -1,6 +1,6 @@
 # Scout9 API
 
-Node.js API for [Scout9](https://www.scout9.com)
+Node.js API for [Scout9](https://pocket-guide.vercel.app/)
 
 ```bash
 npm install @scout9/admin --save
