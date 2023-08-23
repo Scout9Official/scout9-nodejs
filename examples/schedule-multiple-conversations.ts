@@ -30,7 +30,7 @@ async function scheduleMultipleConversations(cache: ILocalCache) {
   console.log(`Scheduling conversation group`);
   const group = await scout9.scheduleGroupCreate({
     $agent: agentId, // This will come from the agent's profile
-    $thread: workflow,
+    $workflow: workflow,
     initialContexts: [
       'If the user replies "1", "2", or "3" tell them we will check with the team for an open slot for gutter cleaning tomorrow and then close the conversation, DO NOT ASK FOR THEIR AVAILABILITY. If the user replies "4" ask them if they prefer a morning time or afternoon time for two weeks out and then close the conversation, DO NOT ASK FOR DATE. If the user replies with "5" then they are not interested, close the conversation.'
     ],
@@ -97,17 +97,21 @@ async function scheduleMultipleConversations(cache: ILocalCache) {
     delay: 15000, // in milliseconds, waits 15 seconds between each customer message
 
     // We can schedule the conversation to be sent to multiple customers in different environments
-    customers: [
-      {
-        environment: 'phone',
-        id: customerIdWithPhone
-      },
-      {
-        environment: 'email',
-        id: customerIdWithEmail,
-        $agent: process.env.MY_TEST_AGENT2 || '' // Use another agent for this customer
-      }
-    ]
+    $cGroup: {
+      name: 'Test Group',
+      description: 'Test Group from my home town',
+      customers: [
+        {
+          environment: 'phone',
+          id: customerIdWithPhone
+        },
+        {
+          environment: 'email',
+          id: customerIdWithEmail,
+          $agent: process.env.MY_TEST_AGENT2 || '' // Use another agent for this customer
+        },
+      ]
+    },
   });
   console.log(`\n\tgroup: conversation: "${group.data.id}"\n`);
 
