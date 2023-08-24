@@ -1,31 +1,34 @@
-# Scout9's Pocket Scout API
+# Scout9's Pocket Scout API  🦴
 Pocket Scout Node.js API for [Scout9](https://pocket-guide.vercel.app/)
 #### ⚠️ *API is not fully released, caution using this API, ping Patrick for questions*
 
 ___
 
 
-## Pocket Scout When Away
+## Pocket Scout When You're Away 🏝🍻😎
 
-Mimic's your response to repetitive email and phone interactions with programmable conversations and workflows, designed for native customer engagement.
+####Personal email or phone auto responses that are **100% your voice**
 
-Interject into conversations whenever.
+👉 Programmable conversations
 
-Things Pocket Scout can do for while you're asleep 🌙
-- Fulfill Orders
-- Respond to homework questions
-- Politely rejecting dates
-- Answer dynamic questions
-- Schedule meetings
-- Schedule appointments
-- Promotions
-- Customer Support
-- Survey Campaigns
-- Lead Generation
-- Event Registration
-- Event Reminders
-- Event Follow-ups
-- Feedback Collection
+👉 Interject into conversations whenever
+
+
+###Things to Pocket Scout while you're asleep 🌙🤗
+- 📦 [Fulfilling a customer Orders](examples/)
+- 📝 [Responding to homework questions](examples/)
+- 💔 [Politely rejecting dates](examples/)
+- 📆 [Scheduling meetings or appointments](examples/)
+- 🔊 [Promoting an event](examples/)
+- 🙋‍ [Handling customer support](/examples)
+- 📋 [Surveying customers](/examples)
+- 💸 [Generating sales leads](/examples)
+- ✍️ [Registering customers](/examples)
+- ⏰ [Handling event reminders](/examples)
+- 📧 [Handling event Follow-ups](/examples)
+- 🗣️ [Gathering user feedback](/examples)
+- 📊 [Gathering poll data](/examples)
+- 🎂 [Saying happy birthday](/examples)
 - ...and more!
 
 All 100% from your voice and personal email or phone number!
