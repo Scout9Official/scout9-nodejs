@@ -1,13 +1,36 @@
 # Scout9's Pocket Scout API
-
-
-
+Pocket Scout Node.js API for [Scout9](https://pocket-guide.vercel.app/)
 #### ⚠️ *API is not fully released, caution using this API, ping Patrick for questions*
+
 ___
 
 
-Pocket Scout Node.js API for [Scout9](https://pocket-guide.vercel.app/) - mimics you over your personal phone and email
-for common tasks like scheduling meetings, answering questions, and more.
+## Pocket Scout When Away
+
+Mimic's your response to repetitive email and phone interactions with programmable conversations and workflows, designed for native customer engagement.
+
+Interject into conversations whenever.
+
+Things Pocket Scout can do for while you're asleep 🌙
+- Fulfill Orders
+- Respond to homework questions
+- Politely rejecting dates
+- Answer dynamic questions
+- Schedule meetings
+- Schedule appointments
+- Promotions
+- Customer Support
+- Survey Campaigns
+- Lead Generation
+- Event Registration
+- Event Reminders
+- Event Follow-ups
+- Feedback Collection
+- ...and more!
+
+All 100% from your voice and personal email or phone number!
+___
+
 
 
 ## Setup
@@ -28,7 +51,9 @@ const configuration = new Configuration({
 
 const pocketScout = new PocketScoutApi(configuration);
 ```
+___
 
+# Full Example
 ## Step 1: Register yourself as an agent
 
 ```typescript
@@ -363,19 +388,23 @@ await pocketScout.message({convo: conversationId, message: 'Hey there, would you
 
 Customers can interact with you (and your Pocket Scout) on any of the connected platforms
 
-| Platforms    | Supported    |                                                                                                                                                    |
-|--------------|--------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
-| Android      | ⚠️ (pending) | (free) An android app is in development to enable your Pocket Scout to respond to SMS text                                                         |
-| iOS          | ⚠️ (pending) | (free) An ios app is in development to enable your Pocket Scout to respond to iMessages                                                            |
-| Web          | ✅            | (free) We generate conversation links for you and your customers to quickly connect, conversations expire in 1 day                                 |
-| Gmail        | ✅            | (free) Provide Scout9 authorization access to your gmail account for read/write capabilities so your Pocket Scout can respond to emails            |
-| Outlook      | ⚠️ (pending) | (free) Provide Scout9 authorization access to your outlook account for read/write capabilities so your Pocket Scout can respond to emails          |
-| Native Email | ❌            | For security and privacy concerns we currently cannot support native email systems at this time                                                    |
-| Discord      | ⚠️ (pending) | (free) Download the Pocket Scout Discord bot and configure workflows to respond to messages accordingly                                            |
-| Slack        | ⚠️ (pending) | (free) Download the Pocket Scout Slack agent and configure workflows to respond to messages accordingly                                            |
-| Teams        | ⚠️ (pending) | (free) Download the Pocket Scout Teams add-on                                                                                                      |
-| Scout9 Phone | ✅            | $5/month we provide a generated phone number you can use for your Pocket Scout to text, messages will be relayed back to your personal phone number |
-| Scout9 Email | ✅            | $5/month We provide a generated email with your name (e.g. patrick.opie@scout9.com) you can use for your Pocket Scout                              |
+| Platforms    | Supported            |                                                                                                                                                     |
+|--------------|----------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
+| Android      | ⚠️ (pending)         | (free) An android app is in development to enable your Pocket Scout to respond to SMS text                                                          |
+| iOS          | ⚠️ (pending)         | (free) An ios app is in development to enable your Pocket Scout to respond to iMessages                                                             |
+| Web          | ✅                    | (free) We generate conversation links for you and your customers to quickly connect, conversations expire in 1 day                                  |
+| Gmail        | ✅                    | (free) Provide Scout9 authorization access to your gmail account for read/write capabilities so your Pocket Scout can respond to emails             |
+| Outlook      | ⚠️ (pending)         | (free) Provide Scout9 authorization access to your outlook account for read/write capabilities so your Pocket Scout can respond to emails           |
+| Native Email | ❌                    | For security and privacy concerns we currently cannot support native email systems at this time                                                     |
+| Discord      | ⚠️ (pending)         | (free) Download the Pocket Scout Discord bot and configure workflows to respond to messages accordingly                                             |
+| Slack        | ⚠️ (pending)         | (free) Download the Pocket Scout Slack agent and configure workflows to respond to messages accordingly                                             |
+| Teams        | ⚠️ (pending)         | (free) Download the Pocket Scout Teams add-on                                                                                                       |
+| Scout9 Phone | ✅                    | $5/month we provide a generated phone number you can use for your Pocket Scout to text, messages will be relayed back to your personal phone number |
+| Scout9 Email | ✅                    | $5/month We provide a generated email with your name (e.g. patrick.opie@scout9.com) you can use for your Pocket Scout                               |
+| Instagram    | ⚠️ (pending/limited) | (free) The Pocket Scout desktop or mobile app will auto generate responses but requires manual insertion                                            |
+| Tiktok       | ⚠️ (pending/limited) | (free) The Pocket Scout desktop or mobile app will auto generate responses but requires manual insertion                   |
+| Facebook     | ⚠️ (pending/limited) | (free) The Pocket Scout desktop or mobile app will auto generate responses but requires manual insertion                                            |
+
 
 
 **⚠️ Warning**: Avoid using a Pocket Scout to autopilot your job and personal relationships, this tool is designed for
