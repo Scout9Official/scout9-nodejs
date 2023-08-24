@@ -1,10 +1,12 @@
 # Scout9's Pocket Scout API
 
+⚠️ API is not fully released, caution using this API and reach out to Patrick for info
+___
+
+
 Pocket Scout Node.js API for [Scout9](https://pocket-guide.vercel.app/) - mimics you over your personal phone and email
 for common tasks like scheduling meetings, answering questions, and more.
 
-**⚠️ Danger**: Avoid using a Pocket Scout to autopilot your job and personal relationships, this tool is designed for
-workplace productivity and not a substitute for human interaction.
 
 ## Setup
 
@@ -372,3 +374,7 @@ Customers can interact with you (and your Pocket Scout) on any of the connected 
 | Teams        | ⚠️ (pending) | (free) Download the Pocket Scout Teams add-on                                                                                                      |
 | Scout9 Phone | ✅            | $5/month we provide a generated phone number you can use for your Pocket Scout to text, messages will be relayed back to your personal phone number |
 | Scout9 Email | ✅            | $5/month We provide a generated email with your name (e.g. patrick.opie@scout9.com) you can use for your Pocket Scout                              |
+
+
+**⚠️ Warning**: Avoid using a Pocket Scout to autopilot your job and personal relationships, this tool is designed for
+workplace productivity and not a substitute for human interaction.
