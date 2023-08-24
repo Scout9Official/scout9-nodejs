@@ -1,11 +1,11 @@
 import 'dotenv/config';
-import { Scout9Api, Configuration, Customer } from '@scout9/admin/src';
+import { PocketScoutApi, Configuration, Customer } from '@scout9/admin/src';
 import { ILocalCache, loadCache, reset, saveCache } from './_utils';
 
 const configuration = new Configuration({
   apiKey: process.env.MY_S9_API_KEY, // Replace with your API key
 });
-const scout9 = new Scout9Api(configuration);
+const pocketScout = new PocketScoutApi(configuration);
 
 
 /**
@@ -49,7 +49,7 @@ async function addCustomers(cache: ILocalCache) {
       lastSeason: 'season 1'
     }
   ]
-  const res = await scout9.customersCreate({
+  const res = await pocketScout.customersCreate({
     customers
   });
   console.log(`Added customers using a bulk operation, operation id: ${res.data.$operation}`);
@@ -58,13 +58,13 @@ async function addCustomers(cache: ILocalCache) {
 
   // Check the status of the bulk operation
 
-  const operation = await scout9.operation(res.data.$operation);
+  const operation = await pocketScout.operation(res.data.$operation);
 
   console.log(`Operation status:\n${JSON.stringify(operation.data, null, 2)}`);
 }
 
 loadCache()
-  .then((cache) => reset(cache, scout9))
+  .then((cache) => reset(cache, pocketScout))
   .then(addCustomers)
   .then(() => console.log('Done! 🎉'))
   .catch((err) => {

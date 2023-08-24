@@ -1,7 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
- * Scout9 Pocket Scout API
+ * Scout9\'s Pocket Scout API
  * Pocket Scout APIs for managing Scout9 users and conversations with your Pocket Scout agents
  *
  * The version of the OpenAPI document: 1.0.0
@@ -34,13 +34,13 @@ export interface Agent {
    * @type {string}
    * @memberof Agent
    */
-  'firstName': string;
+  'firstName'?: string;
   /**
    * Agent last name
    * @type {string}
    * @memberof Agent
    */
-  'lastName': string;
+  'lastName'?: string;
   /**
    * Agent is inactive
    * @type {boolean}
@@ -76,7 +76,7 @@ export interface Agent {
    * @type {string}
    * @memberof Agent
    */
-  'forwardPhone': string;
+  'forwardPhone'?: string;
   /**
    * Title of the agent, defaults to \"Agent\"
    * @type {string}
@@ -96,18 +96,27 @@ export interface Agent {
    */
   'includedLocations'?: Array<string>;
   /**
+   * AI Model
+   * @type {string}
+   * @memberof Agent
+   */
+  'model'?: AgentModelEnum;
+  /**
    * Locations id the agent is excluded from
    * @type {Array<string>}
    * @memberof Agent
    */
   'excludedLocations'?: Array<string>;
-  /**
-   * Transcript of the agent
-   * @type {string}
-   * @memberof Agent
-   */
-  'transcript'?: string;
 }
+
+export const AgentModelEnum = {
+  PocketScout: 'Pocket Scout',
+  Bard: 'bard',
+  Null: 'null'
+} as const;
+
+export type AgentModelEnum = typeof AgentModelEnum[keyof typeof AgentModelEnum];
+
 /**
  * @type AnyValue
  * @export
@@ -502,11 +511,11 @@ export interface ConversationContextFieldCondition {
    */
   'key': string;
   /**
-   *
-   * @type {Operator}
+   * The operator of the condition or query
+   * @type {string}
    * @memberof ConversationContextFieldCondition
    */
-  'operator': Operator;
+  'operator': ConversationContextFieldConditionOperatorEnum;
   /**
    * The regex of the condition
    * @type {string}
@@ -521,6 +530,32 @@ export interface ConversationContextFieldCondition {
   'value': AnyValue;
 }
 
+export const ConversationContextFieldConditionOperatorEnum = {
+  Eq: 'eq',
+  Equal: 'equal',
+  Ne: 'ne',
+  NotEquals: 'not-equals',
+  Gt: 'gt',
+  GreaterThan: 'greater-than',
+  Gte: 'gte',
+  GreaterThanEquals: 'greater-than-equals',
+  Lt: 'lt',
+  LessThan: 'less-than',
+  Lte: 'lte',
+  LessThanEquals: 'less-than-equals',
+  ArrayContains: 'array-contains',
+  In: 'in',
+  ArrayContainsAny: 'array-contains-any',
+  NotIn: 'not-in',
+  Exists: 'exists',
+  NotExists: 'notExists',
+  Contains: 'contains',
+  NotContains: 'notContains',
+  StartsWith: 'startsWith',
+  EndsWith: 'endsWith'
+} as const;
+
+export type ConversationContextFieldConditionOperatorEnum = typeof ConversationContextFieldConditionOperatorEnum[keyof typeof ConversationContextFieldConditionOperatorEnum];
 
 /**
  *
@@ -576,7 +611,7 @@ export interface ConversationCreateRequest {
    * @type {ConversationUpdateRequestBaseWorkflow}
    * @memberof ConversationCreateRequest
    */
-  '$workflow': ConversationUpdateRequestBaseWorkflow;
+  '$workflow'?: ConversationUpdateRequestBaseWorkflow;
 }
 
 
@@ -591,7 +626,7 @@ export interface ConversationCreateRequestBase {
    * @type {ConversationUpdateRequestBaseWorkflow}
    * @memberof ConversationCreateRequestBase
    */
-  '$workflow': ConversationUpdateRequestBaseWorkflow;
+  '$workflow'?: ConversationUpdateRequestBaseWorkflow;
 }
 /**
  *
@@ -1031,7 +1066,7 @@ export interface CreateAgentRequest {
    * @type {string}
    * @memberof CreateAgentRequest
    */
-  'forwardEmail'?: string;
+  'forwardEmail': string;
   /**
    * Forward phone
    * @type {string}
@@ -1057,17 +1092,107 @@ export interface CreateAgentRequest {
    */
   'includedLocations'?: Array<string>;
   /**
+   * AI Model
+   * @type {string}
+   * @memberof CreateAgentRequest
+   */
+  'model'?: CreateAgentRequestModelEnum;
+  /**
    * Locations id the agent is excluded from
    * @type {Array<string>}
    * @memberof CreateAgentRequest
    */
   'excludedLocations'?: Array<string>;
   /**
-   * Transcript of the agent
-   * @type {string}
+   * Sample conversations that help build out your agent to mimic your responses
+   * @type {Array<CreateAgentRequestAllOfConversationsInner>}
    * @memberof CreateAgentRequest
    */
-  'transcript'?: string;
+  'conversations'?: Array<CreateAgentRequestAllOfConversationsInner>;
+  /**
+   * Sample audio files that help build out your agent to mimic your voice
+   * @type {Array<string>}
+   * @memberof CreateAgentRequest
+   */
+  'audio'?: Array<string>;
+}
+
+export const CreateAgentRequestModelEnum = {
+  PocketScout: 'Pocket Scout',
+  Bard: 'bard',
+  Null: 'null'
+} as const;
+
+export type CreateAgentRequestModelEnum = typeof CreateAgentRequestModelEnum[keyof typeof CreateAgentRequestModelEnum];
+
+/**
+ *
+ * @export
+ * @interface CreateAgentRequestAllOf
+ */
+export interface CreateAgentRequestAllOf {
+  /**
+   * Sample conversations that help build out your agent to mimic your responses
+   * @type {Array<CreateAgentRequestAllOfConversationsInner>}
+   * @memberof CreateAgentRequestAllOf
+   */
+  'conversations'?: Array<CreateAgentRequestAllOfConversationsInner>;
+  /**
+   * Sample audio files that help build out your agent to mimic your voice
+   * @type {Array<string>}
+   * @memberof CreateAgentRequestAllOf
+   */
+  'audio'?: Array<string>;
+}
+/**
+ * @type CreateAgentRequestAllOfConversationsInner
+ * @export
+ */
+export type CreateAgentRequestAllOfConversationsInner = CreateAgentRequestAllOfConversationsInnerOneOf | string;
+
+/**
+ * Conversation sample
+ * @export
+ * @interface CreateAgentRequestAllOfConversationsInnerOneOf
+ */
+export interface CreateAgentRequestAllOfConversationsInnerOneOf {
+  /**
+   * The type or category of the conversation (this helps with associating work flows)
+   * @type {string}
+   * @memberof CreateAgentRequestAllOfConversationsInnerOneOf
+   */
+  'type': string;
+  /**
+   * The context of the conversation, this helps with associating work flows, or any caveats to the conversation
+   * @type {string}
+   * @memberof CreateAgentRequestAllOfConversationsInnerOneOf
+   */
+  'context'?: string;
+  /**
+   * Conversation
+   * @type {Array<CreateAgentRequestAllOfConversationsInnerOneOfConversationInner>}
+   * @memberof CreateAgentRequestAllOfConversationsInnerOneOf
+   */
+  'conversation': Array<CreateAgentRequestAllOfConversationsInnerOneOfConversationInner>;
+}
+/**
+ *
+ * @export
+ * @interface CreateAgentRequestAllOfConversationsInnerOneOfConversationInner
+ */
+export interface CreateAgentRequestAllOfConversationsInnerOneOfConversationInner {
+  /**
+   * The speaker of the message, if this from the agent then this must have \"agent\" or match the agent\'s first or full name
+   * @type {string}
+   * @memberof CreateAgentRequestAllOfConversationsInnerOneOfConversationInner
+   */
+  'speaker': string;
+  /**
+   * The message content
+   * @type {string}
+   * @memberof CreateAgentRequestAllOfConversationsInnerOneOfConversationInner
+   */
+  'message': string;
 }
 /**
  *
@@ -1160,7 +1285,7 @@ export interface CreateAgentsRequestAgentsInner {
    * @type {string}
    * @memberof CreateAgentsRequestAgentsInner
    */
-  'forwardPhone': string;
+  'forwardPhone'?: string;
   /**
    * Title of the agent, defaults to \"Agent\"
    * @type {string}
@@ -1180,18 +1305,27 @@ export interface CreateAgentsRequestAgentsInner {
    */
   'includedLocations'?: Array<string>;
   /**
+   * AI Model
+   * @type {string}
+   * @memberof CreateAgentsRequestAgentsInner
+   */
+  'model'?: CreateAgentsRequestAgentsInnerModelEnum;
+  /**
    * Locations id the agent is excluded from
    * @type {Array<string>}
    * @memberof CreateAgentsRequestAgentsInner
    */
   'excludedLocations'?: Array<string>;
-  /**
-   * Transcript of the agent
-   * @type {string}
-   * @memberof CreateAgentsRequestAgentsInner
-   */
-  'transcript'?: string;
 }
+
+export const CreateAgentsRequestAgentsInnerModelEnum = {
+  PocketScout: 'Pocket Scout',
+  Bard: 'bard',
+  Null: 'null'
+} as const;
+
+export type CreateAgentsRequestAgentsInnerModelEnum = typeof CreateAgentsRequestAgentsInnerModelEnum[keyof typeof CreateAgentsRequestAgentsInnerModelEnum];
+
 /**
  *
  * @export
@@ -2177,6 +2311,31 @@ export interface DeleteCustomersResponse {
 /**
  *
  * @export
+ * @interface DeleteFileResponse
+ */
+export interface DeleteFileResponse {
+  /**
+   *
+   * @type {string}
+   * @memberof DeleteFileResponse
+   */
+  'id': string;
+  /**
+   *
+   * @type {string}
+   * @memberof DeleteFileResponse
+   */
+  'object': string;
+  /**
+   *
+   * @type {boolean}
+   * @memberof DeleteFileResponse
+   */
+  'deleted': boolean;
+}
+/**
+ *
+ * @export
  * @interface DeleteWorkflowResponse
  */
 export interface DeleteWorkflowResponse {
@@ -2238,11 +2397,49 @@ export interface ErrorResponse {
  */
 export interface GenerateRequest {
   /**
-   * Conversation ID to generate message from
-   * @type {string}
+   *
+   * @type {GenerateRequestConvo}
    * @memberof GenerateRequest
    */
-  'convo': string;
+  'convo': GenerateRequestConvo;
+  /**
+   *
+   * @type {GenerateRequestMocks}
+   * @memberof GenerateRequest
+   */
+  'mocks'?: GenerateRequestMocks;
+}
+/**
+ * @type GenerateRequestConvo
+ * The conversation to generate a message from
+ * @export
+ */
+export type GenerateRequestConvo = ConversationCreateRequest | string;
+
+/**
+ * If any mocks are provided, the response will be mocked and conversation will not be created. Requires .convo to be a Conversation object
+ * @export
+ * @interface GenerateRequestMocks
+ */
+export interface GenerateRequestMocks {
+  /**
+   * Any key,value information about the conversation, customr, or offer goes here
+   * @type {{ [key: string]: any; }}
+   * @memberof GenerateRequestMocks
+   */
+  'info'?: { [key: string]: any; };
+  /**
+   * Conversation Context fields to mock, use this to test out conversation logic
+   * @type {Array<ConversationContextField>}
+   * @memberof GenerateRequestMocks
+   */
+  'context'?: Array<ConversationContextField>;
+  /**
+   * Conversation Messages to mock, use this to test out anticipated responses
+   * @type {Array<MessageBase>}
+   * @memberof GenerateRequestMocks
+   */
+  'messages'?: Array<MessageBase>;
 }
 /**
  *
@@ -2274,16 +2471,47 @@ export interface GenerateResponse {
    * @memberof GenerateResponse
    */
   'time': string;
+  /**
+   * Any key,value information about the conversation, customr, or offer goes here
+   * @type {{ [key: string]: any; }}
+   * @memberof GenerateResponse
+   */
+  'info': { [key: string]: any; };
+  /**
+   * Conversation Context fields to mock, use this to test out conversation logic
+   * @type {Array<ConversationContextField>}
+   * @memberof GenerateResponse
+   */
+  'included': Array<ConversationContextField>;
 }
 
 export const GenerateResponseRoleEnum = {
-  User: 'user',
-  Assistant: 'assistant',
-  System: 'system'
+  Customer: 'customer',
+  Agent: 'agent',
+  Context: 'context'
 } as const;
 
 export type GenerateResponseRoleEnum = typeof GenerateResponseRoleEnum[keyof typeof GenerateResponseRoleEnum];
 
+/**
+ *
+ * @export
+ * @interface GenerateResponseAllOf
+ */
+export interface GenerateResponseAllOf {
+  /**
+   * Any key,value information about the conversation, customr, or offer goes here
+   * @type {{ [key: string]: any; }}
+   * @memberof GenerateResponseAllOf
+   */
+  'info': { [key: string]: any; };
+  /**
+   * Conversation Context fields to mock, use this to test out conversation logic
+   * @type {Array<ConversationContextField>}
+   * @memberof GenerateResponseAllOf
+   */
+  'included': Array<ConversationContextField>;
+}
 /**
  *
  * @export
@@ -2337,7 +2565,7 @@ export interface GetAgentResponse {
    * @type {string}
    * @memberof GetAgentResponse
    */
-  'forwardPhone': string;
+  'forwardPhone'?: string;
   /**
    * Title of the agent, defaults to \"Agent\"
    * @type {string}
@@ -2357,17 +2585,17 @@ export interface GetAgentResponse {
    */
   'includedLocations'?: Array<string>;
   /**
+   * AI Model
+   * @type {string}
+   * @memberof GetAgentResponse
+   */
+  'model'?: GetAgentResponseModelEnum;
+  /**
    * Locations id the agent is excluded from
    * @type {Array<string>}
    * @memberof GetAgentResponse
    */
   'excludedLocations'?: Array<string>;
-  /**
-   * Transcript of the agent
-   * @type {string}
-   * @memberof GetAgentResponse
-   */
-  'transcript'?: string;
   /**
    * The ID of the agent
    * @type {string}
@@ -2375,6 +2603,15 @@ export interface GetAgentResponse {
    */
   '$id': string;
 }
+
+export const GetAgentResponseModelEnum = {
+  PocketScout: 'Pocket Scout',
+  Bard: 'bard',
+  Null: 'null'
+} as const;
+
+export type GetAgentResponseModelEnum = typeof GetAgentResponseModelEnum[keyof typeof GetAgentResponseModelEnum];
+
 /**
  *
  * @export
@@ -2798,13 +3035,13 @@ export interface ListAgentsResponseInner {
    * @type {string}
    * @memberof ListAgentsResponseInner
    */
-  'firstName': string;
+  'firstName'?: string;
   /**
    * Agent last name
    * @type {string}
    * @memberof ListAgentsResponseInner
    */
-  'lastName': string;
+  'lastName'?: string;
   /**
    * Agent is inactive
    * @type {boolean}
@@ -2840,7 +3077,7 @@ export interface ListAgentsResponseInner {
    * @type {string}
    * @memberof ListAgentsResponseInner
    */
-  'forwardPhone': string;
+  'forwardPhone'?: string;
   /**
    * Title of the agent, defaults to \"Agent\"
    * @type {string}
@@ -2860,17 +3097,17 @@ export interface ListAgentsResponseInner {
    */
   'includedLocations'?: Array<string>;
   /**
+   * AI Model
+   * @type {string}
+   * @memberof ListAgentsResponseInner
+   */
+  'model'?: ListAgentsResponseInnerModelEnum;
+  /**
    * Locations id the agent is excluded from
    * @type {Array<string>}
    * @memberof ListAgentsResponseInner
    */
   'excludedLocations'?: Array<string>;
-  /**
-   * Transcript of the agent
-   * @type {string}
-   * @memberof ListAgentsResponseInner
-   */
-  'transcript'?: string;
   /**
    * The ID of the agent
    * @type {string}
@@ -2878,6 +3115,15 @@ export interface ListAgentsResponseInner {
    */
   '$id': string;
 }
+
+export const ListAgentsResponseInnerModelEnum = {
+  PocketScout: 'Pocket Scout',
+  Bard: 'bard',
+  Null: 'null'
+} as const;
+
+export type ListAgentsResponseInnerModelEnum = typeof ListAgentsResponseInnerModelEnum[keyof typeof ListAgentsResponseInnerModelEnum];
+
 /**
  *
  * @export
@@ -3219,6 +3465,25 @@ export interface ListCustomersResponseInnerAllOf {
 /**
  *
  * @export
+ * @interface ListFilesResponse
+ */
+export interface ListFilesResponse {
+  /**
+   *
+   * @type {string}
+   * @memberof ListFilesResponse
+   */
+  'object': string;
+  /**
+   *
+   * @type {Array<Scout9File>}
+   * @memberof ListFilesResponse
+   */
+  'data': Array<Scout9File>;
+}
+/**
+ *
+ * @export
  * @interface ListQuery
  */
 export interface ListQuery {
@@ -3375,12 +3640,59 @@ export interface Message {
 }
 
 export const MessageRoleEnum = {
-  User: 'user',
-  Assistant: 'assistant',
-  System: 'system'
+  Customer: 'customer',
+  Agent: 'agent',
+  Context: 'context'
 } as const;
 
 export type MessageRoleEnum = typeof MessageRoleEnum[keyof typeof MessageRoleEnum];
+
+/**
+ *
+ * @export
+ * @interface MessageAllOf
+ */
+export interface MessageAllOf {
+  /**
+   * The time the message was sent
+   * @type {string}
+   * @memberof MessageAllOf
+   */
+  'time': string;
+}
+/**
+ *
+ * @export
+ * @interface MessageBase
+ */
+export interface MessageBase {
+  /**
+   * The role of the message (customer, agent, or business)
+   * @type {string}
+   * @memberof MessageBase
+   */
+  'role': MessageBaseRoleEnum;
+  /**
+   * The content of the message
+   * @type {string}
+   * @memberof MessageBase
+   */
+  'content': string;
+  /**
+   * The name of the sender
+   * @type {string}
+   * @memberof MessageBase
+   */
+  'name'?: string;
+}
+
+export const MessageBaseRoleEnum = {
+  Customer: 'customer',
+  Agent: 'agent',
+  Context: 'context'
+} as const;
+
+export type MessageBaseRoleEnum = typeof MessageBaseRoleEnum[keyof typeof MessageBaseRoleEnum];
 
 /**
  *
@@ -3486,9 +3798,9 @@ export interface MessageGetResponseInner {
 }
 
 export const MessageGetResponseInnerRoleEnum = {
-  User: 'user',
-  Assistant: 'assistant',
-  System: 'system'
+  Customer: 'customer',
+  Agent: 'agent',
+  Context: 'context'
 } as const;
 
 export type MessageGetResponseInnerRoleEnum = typeof MessageGetResponseInnerRoleEnum[keyof typeof MessageGetResponseInnerRoleEnum];
@@ -3706,7 +4018,7 @@ export interface ScheduleCreateRequest {
    * @type {ConversationUpdateRequestBaseWorkflow}
    * @memberof ScheduleCreateRequest
    */
-  '$workflow': ConversationUpdateRequestBaseWorkflow;
+  '$workflow'?: ConversationUpdateRequestBaseWorkflow;
 }
 
 
@@ -3820,6 +4132,24 @@ export interface ScheduleGetResponse {
    * @memberof ScheduleGetResponse
    */
   '$workflow': string;
+  /**
+   * The client web url of the conversation
+   * @type {string}
+   * @memberof ScheduleGetResponse
+   */
+  'clientWebUrl'?: string;
+  /**
+   * The agent web url of the conversation (requires phone two-factor authentication)
+   * @type {string}
+   * @memberof ScheduleGetResponse
+   */
+  'agentWebUrl'?: string;
+  /**
+   * The agent test web url of the conversation, used for testing the conversation without notifying the customer
+   * @type {string}
+   * @memberof ScheduleGetResponse
+   */
+  'agentTestWebUrl'?: string;
 }
 
 
@@ -3834,7 +4164,7 @@ export interface ScheduleGroupCreateRequest {
    * @type {ConversationUpdateRequestBaseWorkflow}
    * @memberof ScheduleGroupCreateRequest
    */
-  '$workflow': ConversationUpdateRequestBaseWorkflow;
+  '$workflow'?: ConversationUpdateRequestBaseWorkflow;
   /**
    * Default agent assigned to the conversation(s)
    * @type {string}
@@ -4439,23 +4769,96 @@ export interface ScheduledConversationGroupAllOf {
   'delay'?: number;
 }
 /**
+ * The `File` object represents a document that has been uploaded to Scout9.
+ * @export
+ * @interface Scout9File
+ */
+export interface Scout9File {
+  /**
+   * The file identifier, which can be referenced in the API endpoints.
+   * @type {string}
+   * @memberof Scout9File
+   */
+  'id': string;
+  /**
+   * The object type, which is always \"file\".
+   * @type {string}
+   * @memberof Scout9File
+   */
+  'object': string;
+  /**
+   * The size of the file in bytes.
+   * @type {number}
+   * @memberof Scout9File
+   */
+  'bytes': number;
+  /**
+   * The unix timestamp for when the file was created.
+   * @type {number}
+   * @memberof Scout9File
+   */
+  'created_at': number;
+  /**
+   * The name of the file.
+   * @type {string}
+   * @memberof Scout9File
+   */
+  'filename': string;
+  /**
+   * The intended purpose of the file. Currently, only \"fine-tune\" is supported.
+   * @type {string}
+   * @memberof Scout9File
+   */
+  'purpose': string;
+  /**
+   * The current status of the file, which can be either `uploaded`, `processed`, `pending`, `error`, `deleting` or `deleted`.
+   * @type {string}
+   * @memberof Scout9File
+   */
+  'status'?: string;
+  /**
+   * Additional details about the status of the file. If the file is in the `error` state, this will include a message describing the error.
+   * @type {string}
+   * @memberof Scout9File
+   */
+  'status_details'?: string | null;
+}
+/**
  *
  * @export
  * @interface UpdateAgentRequest
  */
 export interface UpdateAgentRequest {
   /**
+   * The ID of the agent to update
+   * @type {string}
+   * @memberof UpdateAgentRequest
+   */
+  '$id': string;
+  /**
+   * Sample conversations that help build out your agent to mimic your responses
+   * @type {Array<CreateAgentRequestAllOfConversationsInner>}
+   * @memberof UpdateAgentRequest
+   */
+  'conversations'?: Array<CreateAgentRequestAllOfConversationsInner>;
+  /**
+   * Sample audio files that help build out your agent to mimic your voice
+   * @type {Array<string>}
+   * @memberof UpdateAgentRequest
+   */
+  'audio'?: Array<string>;
+  /**
    * Agent first name
    * @type {string}
    * @memberof UpdateAgentRequest
    */
-  'firstName': string;
+  'firstName'?: string;
   /**
    * Agent last name
    * @type {string}
    * @memberof UpdateAgentRequest
    */
-  'lastName': string;
+  'lastName'?: string;
   /**
    * Agent is inactive
    * @type {boolean}
@@ -4491,7 +4894,7 @@ export interface UpdateAgentRequest {
    * @type {string}
    * @memberof UpdateAgentRequest
    */
-  'forwardPhone': string;
+  'forwardPhone'?: string;
   /**
    * Title of the agent, defaults to \"Agent\"
    * @type {string}
@@ -4511,24 +4914,27 @@ export interface UpdateAgentRequest {
    */
   'includedLocations'?: Array<string>;
   /**
+   * AI Model
+   * @type {string}
+   * @memberof UpdateAgentRequest
+   */
+  'model'?: UpdateAgentRequestModelEnum;
+  /**
    * Locations id the agent is excluded from
    * @type {Array<string>}
    * @memberof UpdateAgentRequest
    */
   'excludedLocations'?: Array<string>;
-  /**
-   * Transcript of the agent
-   * @type {string}
-   * @memberof UpdateAgentRequest
-   */
-  'transcript'?: string;
-  /**
-   * The ID of the agent to update
-   * @type {string}
-   * @memberof UpdateAgentRequest
-   */
-  '$id': string;
 }
+
+export const UpdateAgentRequestModelEnum = {
+  PocketScout: 'Pocket Scout',
+  Bard: 'bard',
+  Null: 'null'
+} as const;
+
+export type UpdateAgentRequestModelEnum = typeof UpdateAgentRequestModelEnum[keyof typeof UpdateAgentRequestModelEnum];
+
 /**
  *
  * @export
@@ -4541,6 +4947,18 @@ export interface UpdateAgentRequestAllOf {
    * @memberof UpdateAgentRequestAllOf
    */
   '$id': string;
+  /**
+   * Sample conversations that help build out your agent to mimic your responses
+   * @type {Array<CreateAgentRequestAllOfConversationsInner>}
+   * @memberof UpdateAgentRequestAllOf
+   */
+  'conversations'?: Array<CreateAgentRequestAllOfConversationsInner>;
+  /**
+   * Sample audio files that help build out your agent to mimic your voice
+   * @type {Array<string>}
+   * @memberof UpdateAgentRequestAllOf
+   */
+  'audio'?: Array<string>;
 }
 /**
  *
@@ -4633,7 +5051,7 @@ export interface UpdateAgentsRequestAgentsInner {
    * @type {string}
    * @memberof UpdateAgentsRequestAgentsInner
    */
-  'forwardPhone': string;
+  'forwardPhone'?: string;
   /**
    * Title of the agent, defaults to \"Agent\"
    * @type {string}
@@ -4653,17 +5071,17 @@ export interface UpdateAgentsRequestAgentsInner {
    */
   'includedLocations'?: Array<string>;
   /**
+   * AI Model
+   * @type {string}
+   * @memberof UpdateAgentsRequestAgentsInner
+   */
+  'model'?: UpdateAgentsRequestAgentsInnerModelEnum;
+  /**
    * Locations id the agent is excluded from
    * @type {Array<string>}
    * @memberof UpdateAgentsRequestAgentsInner
    */
   'excludedLocations'?: Array<string>;
-  /**
-   * Transcript of the agent
-   * @type {string}
-   * @memberof UpdateAgentsRequestAgentsInner
-   */
-  'transcript'?: string;
   /**
    * The ID of the agent
    * @type {string}
@@ -4671,6 +5089,15 @@ export interface UpdateAgentsRequestAgentsInner {
    */
   '$id': string;
 }
+
+export const UpdateAgentsRequestAgentsInnerModelEnum = {
+  PocketScout: 'Pocket Scout',
+  Bard: 'bard',
+  Null: 'null'
+} as const;
+
+export type UpdateAgentsRequestAgentsInnerModelEnum = typeof UpdateAgentsRequestAgentsInnerModelEnum[keyof typeof UpdateAgentsRequestAgentsInnerModelEnum];
+
 /**
  *
  * @export
@@ -5326,15 +5753,15 @@ export interface Workflow {
 }
 
 /**
- * Scout9Api - axios parameter creator
+ * PocketScoutApi - axios parameter creator
  * @export
  */
-export const Scout9ApiAxiosParamCreator = function (configuration?: Configuration) {
+export const PocketScoutApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
     /**
      *
      * @summary Gets a agent
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -5370,44 +5797,8 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
     },
     /**
      *
-     * @summary Create a new agent
-     * @param {CreateAgentRequest} createAgentRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    agentCreate: async (createAgentRequest: CreateAgentRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-      // verify required parameter 'createAgentRequest' is not null or undefined
-      assertParamExists('agentCreate', 'createAgentRequest', createAgentRequest)
-      const localVarPath = `/v1-agent`;
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-      let baseOptions;
-      if (configuration) {
-        baseOptions = configuration.baseOptions;
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
-
-
-
-      localVarHeaderParameter['Content-Type'] = 'application/json';
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter);
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-      localVarRequestOptions.data = serializeDataIfNeeded(createAgentRequest, localVarRequestOptions, configuration)
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      };
-    },
-    /**
-     *
      * @summary Deletes a agent
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -5435,6 +5826,42 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @summary Registers a new agent
+     * @param {CreateAgentRequest} createAgentRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    agentRegister: async (createAgentRequest: CreateAgentRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'createAgentRequest' is not null or undefined
+      assertParamExists('agentRegister', 'createAgentRequest', createAgentRequest)
+      const localVarPath = `/v1-agent`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+      localVarRequestOptions.data = serializeDataIfNeeded(createAgentRequest, localVarRequestOptions, configuration)
 
       return {
         url: toPathString(localVarUrlObj),
@@ -5481,7 +5908,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
      *
      * @summary Gets all or specific set of agents
      * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
-     * @param {Array<string>} [id]
+     * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -5556,7 +5983,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
     /**
      *
      * @summary Deletes multiple agents
-     * @param {Array<string>} [id]
+     * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -5627,7 +6054,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
     /**
      *
      * @summary Gets a context
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -5700,7 +6127,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
     /**
      *
      * @summary Deletes a schedule
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -5774,7 +6201,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
      *
      * @summary Gets all or specific set of contexts
      * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
-     * @param {Array<string>} [id]
+     * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -5849,7 +6276,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
     /**
      *
      * @summary Deletes multiple contexts
-     * @param {Array<string>} [id]
+     * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -5920,7 +6347,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
     /**
      *
      * @summary Gets a conversation
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -5993,7 +6420,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
     /**
      *
      * @summary Deletes a schedule
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -6066,7 +6493,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
     /**
      *
      * @summary Gets a customer
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -6139,7 +6566,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
     /**
      *
      * @summary Deletes a customer
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -6176,7 +6603,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
     /**
      *
      * @summary Gets a customer group
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -6249,7 +6676,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
     /**
      *
      * @summary Deletes a customer group
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -6323,7 +6750,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
      *
      * @summary Gets all or specific set of customer groups
      * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
-     * @param {Array<string>} [id]
+     * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -6398,7 +6825,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
     /**
      *
      * @summary Deletes multiple customer groups
-     * @param {Array<string>} [id]
+     * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -6506,7 +6933,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
      *
      * @summary Gets all or specific set of customers
      * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
-     * @param {Array<string>} [id]
+     * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -6581,7 +7008,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
     /**
      *
      * @summary Deletes multiple customers
-     * @param {Array<string>} [id]
+     * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -6643,6 +7070,184 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
       localVarRequestOptions.data = serializeDataIfNeeded(updateCustomerRequest, localVarRequestOptions, configuration)
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @summary Returns information about a specific file.
+     * @param {string} fileId The ID of the file to use for this request
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    file: async (fileId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'fileId' is not null or undefined
+      assertParamExists('file', 'fileId', fileId)
+      const localVarPath = `/files/{file_id}`
+        .replace(`{${"file_id"}}`, encodeURIComponent(String(fileId)));
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @summary Upload a file that contains document(s) to be used across various endpoints/features. Currently, the size of all the files uploaded by one organization can be up to 1 GB. Please contact us if you need to increase the storage limit.
+     * @param {File} file
+     * @param {string} [purpose] The intended purpose of the uploaded documents.  This allows us to validate the format of the uploaded file.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    fileCreate: async (file: File | Buffer | Blob, purpose?: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'file' is not null or undefined
+      assertParamExists('fileCreate', 'file', file)
+      const localVarPath = `/v1-utils-files`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+      const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
+
+
+      if (file !== undefined) {
+        localVarFormParams.append('file', file as any);
+      }
+
+      if (purpose !== undefined) {
+        localVarFormParams.append('purpose', purpose as any);
+      }
+
+
+      localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+      localVarRequestOptions.data = localVarFormParams;
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @summary Delete a file.
+     * @param {string} fileId The ID of the file to use for this request
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    fileDelete: async (fileId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'fileId' is not null or undefined
+      assertParamExists('fileDelete', 'fileId', fileId)
+      const localVarPath = `/files/{file_id}`
+        .replace(`{${"file_id"}}`, encodeURIComponent(String(fileId)));
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @summary Returns the contents of the specified file
+     * @param {string} fileId The ID of the file to use for this request
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    fileDownload: async (fileId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'fileId' is not null or undefined
+      assertParamExists('fileDownload', 'fileId', fileId)
+      const localVarPath = `/files/{file_id}/content`
+        .replace(`{${"file_id"}}`, encodeURIComponent(String(fileId)));
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @summary Returns a list of files that belong to the user\'s organization.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    files: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      const localVarPath = `/v1-utils-files`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
 
       return {
         url: toPathString(localVarUrlObj),
@@ -6724,12 +7329,14 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
     /**
      *
      * @summary Get all messages from a conversation
+     * @param {string} id id of entity to query
      * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
-     * @param {Array<string>} [id]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    messages: async (q?: string, id?: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+    messages: async (id: string, q?: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'id' is not null or undefined
+      assertParamExists('messages', 'id', id)
       const localVarPath = `/v1-messages`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -6742,12 +7349,12 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      if (q !== undefined) {
-        localVarQueryParameter['q'] = q;
+      if (id !== undefined) {
+        localVarQueryParameter['id'] = id;
       }
 
-      if (id) {
-        localVarQueryParameter['id'] = id;
+      if (q !== undefined) {
+        localVarQueryParameter['q'] = q;
       }
 
 
@@ -6764,7 +7371,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
     /**
      *
      * @summary Get the results of a bulk API operation
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -6802,7 +7409,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
      *
      * @summary Gets all or specific set of bulk API operations
      * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
-     * @param {Array<string>} [id]
+     * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -6845,9 +7452,9 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    scheduleCreate: async (scheduleCreateRequest: ScheduleCreateRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+    scheduleConversation: async (scheduleCreateRequest: ScheduleCreateRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
       // verify required parameter 'scheduleCreateRequest' is not null or undefined
-      assertParamExists('scheduleCreate', 'scheduleCreateRequest', scheduleCreateRequest)
+      assertParamExists('scheduleConversation', 'scheduleCreateRequest', scheduleCreateRequest)
       const localVarPath = `/v1-schedule`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -6877,7 +7484,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
     /**
      *
      * @summary Deletes a schedule
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -6950,7 +7557,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
     /**
      *
      * @summary Deletes and cancels a schedule group
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -6987,7 +7594,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
     /**
      *
      * @summary Gets a schedule group
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -7060,7 +7667,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
     /**
      *
      * @summary Gets a schedule
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -7133,7 +7740,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
     /**
      *
      * @summary Gets a workflow
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -7206,7 +7813,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
     /**
      *
      * @summary Deletes a workflow
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -7280,7 +7887,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
      *
      * @summary Gets all or specific set of workflows
      * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
-     * @param {Array<string>} [id]
+     * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -7355,7 +7962,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
     /**
      *
      * @summary Deletes multiple workflows
-     * @param {Array<string>} [id]
+     * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -7427,16 +8034,16 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
 };
 
 /**
- * Scout9Api - functional programming interface
+ * PocketScoutApi - functional programming interface
  * @export
  */
-export const Scout9ApiFp = function(configuration?: Configuration) {
-  const localVarAxiosParamCreator = Scout9ApiAxiosParamCreator(configuration)
+export const PocketScoutApiFp = function(configuration?: Configuration) {
+  const localVarAxiosParamCreator = PocketScoutApiAxiosParamCreator(configuration)
   return {
     /**
      *
      * @summary Gets a agent
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -7446,24 +8053,24 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
     },
     /**
      *
-     * @summary Create a new agent
-     * @param {CreateAgentRequest} createAgentRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async agentCreate(createAgentRequest: CreateAgentRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateAgentResponse>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.agentCreate(createAgentRequest, options);
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-    },
-    /**
-     *
      * @summary Deletes a agent
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async agentDelete(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteAgentResponse>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.agentDelete(id, options);
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+    },
+    /**
+     *
+     * @summary Registers a new agent
+     * @param {CreateAgentRequest} createAgentRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async agentRegister(createAgentRequest: CreateAgentRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateAgentResponse>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.agentRegister(createAgentRequest, options);
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
     },
     /**
@@ -7481,7 +8088,7 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
      *
      * @summary Gets all or specific set of agents
      * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
-     * @param {Array<string>} [id]
+     * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -7503,7 +8110,7 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
     /**
      *
      * @summary Deletes multiple agents
-     * @param {Array<string>} [id]
+     * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -7525,7 +8132,7 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
     /**
      *
      * @summary Gets a context
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -7547,7 +8154,7 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
     /**
      *
      * @summary Deletes a schedule
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -7570,7 +8177,7 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
      *
      * @summary Gets all or specific set of contexts
      * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
-     * @param {Array<string>} [id]
+     * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -7592,7 +8199,7 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
     /**
      *
      * @summary Deletes multiple contexts
-     * @param {Array<string>} [id]
+     * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -7614,7 +8221,7 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
     /**
      *
      * @summary Gets a conversation
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -7636,7 +8243,7 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
     /**
      *
      * @summary Deletes a schedule
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -7658,7 +8265,7 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
     /**
      *
      * @summary Gets a customer
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -7680,7 +8287,7 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
     /**
      *
      * @summary Deletes a customer
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -7691,7 +8298,7 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
     /**
      *
      * @summary Gets a customer group
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -7713,7 +8320,7 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
     /**
      *
      * @summary Deletes a customer group
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -7736,7 +8343,7 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
      *
      * @summary Gets all or specific set of customer groups
      * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
-     * @param {Array<string>} [id]
+     * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -7758,7 +8365,7 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
     /**
      *
      * @summary Deletes multiple customer groups
-     * @param {Array<string>} [id]
+     * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -7792,7 +8399,7 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
      *
      * @summary Gets all or specific set of customers
      * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
-     * @param {Array<string>} [id]
+     * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -7814,7 +8421,7 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
     /**
      *
      * @summary Deletes multiple customers
-     * @param {Array<string>} [id]
+     * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -7831,6 +8438,61 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
      */
     async customersUpdate(updateCustomerRequest: UpdateCustomerRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateCustomersResponse>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.customersUpdate(updateCustomerRequest, options);
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+    },
+    /**
+     *
+     * @summary Returns information about a specific file.
+     * @param {string} fileId The ID of the file to use for this request
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async file(fileId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Scout9File>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.file(fileId, options);
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+    },
+    /**
+     *
+     * @summary Upload a file that contains document(s) to be used across various endpoints/features. Currently, the size of all the files uploaded by one organization can be up to 1 GB. Please contact us if you need to increase the storage limit.
+     * @param {File} file
+     * @param {string} [purpose] The intended purpose of the uploaded documents.  This allows us to validate the format of the uploaded file.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async fileCreate(file: File | Buffer | Blob, purpose?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Scout9File>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.fileCreate(file, purpose, options);
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+    },
+    /**
+     *
+     * @summary Delete a file.
+     * @param {string} fileId The ID of the file to use for this request
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async fileDelete(fileId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteFileResponse>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.fileDelete(fileId, options);
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+    },
+    /**
+     *
+     * @summary Returns the contents of the specified file
+     * @param {string} fileId The ID of the file to use for this request
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async fileDownload(fileId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.fileDownload(fileId, options);
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+    },
+    /**
+     *
+     * @summary Returns a list of files that belong to the user\'s organization.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async files(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ListFilesResponse>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.files(options);
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
     },
     /**
@@ -7858,19 +8520,19 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
     /**
      *
      * @summary Get all messages from a conversation
+     * @param {string} id id of entity to query
      * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
-     * @param {Array<string>} [id]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async messages(q?: string, id?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<MessageGetResponseInner>>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.messages(q, id, options);
+    async messages(id: string, q?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<MessageGetResponseInner>>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.messages(id, q, options);
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
     },
     /**
      *
      * @summary Get the results of a bulk API operation
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -7882,7 +8544,7 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
      *
      * @summary Gets all or specific set of bulk API operations
      * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
-     * @param {Array<string>} [id]
+     * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -7897,14 +8559,14 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async scheduleCreate(scheduleCreateRequest: ScheduleCreateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleCreateResponse>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.scheduleCreate(scheduleCreateRequest, options);
+    async scheduleConversation(scheduleCreateRequest: ScheduleCreateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleCreateResponse>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.scheduleConversation(scheduleCreateRequest, options);
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
     },
     /**
      *
      * @summary Deletes a schedule
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -7926,7 +8588,7 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
     /**
      *
      * @summary Deletes and cancels a schedule group
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -7937,7 +8599,7 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
     /**
      *
      * @summary Gets a schedule group
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -7959,7 +8621,7 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
     /**
      *
      * @summary Gets a schedule
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -7981,7 +8643,7 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
     /**
      *
      * @summary Gets a workflow
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8003,7 +8665,7 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
     /**
      *
      * @summary Deletes a workflow
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8026,7 +8688,7 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
      *
      * @summary Gets all or specific set of workflows
      * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
-     * @param {Array<string>} [id]
+     * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8048,7 +8710,7 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
     /**
      *
      * @summary Deletes multiple workflows
-     * @param {Array<string>} [id]
+     * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8071,16 +8733,16 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
 };
 
 /**
- * Scout9Api - factory interface
+ * PocketScoutApi - factory interface
  * @export
  */
-export const Scout9ApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-  const localVarFp = Scout9ApiFp(configuration)
+export const PocketScoutApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+  const localVarFp = PocketScoutApiFp(configuration)
   return {
     /**
      *
      * @summary Gets a agent
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8089,23 +8751,23 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
     },
     /**
      *
-     * @summary Create a new agent
-     * @param {CreateAgentRequest} createAgentRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    agentCreate(createAgentRequest: CreateAgentRequest, options?: any): AxiosPromise<CreateAgentResponse> {
-      return localVarFp.agentCreate(createAgentRequest, options).then((request) => request(axios, basePath));
-    },
-    /**
-     *
      * @summary Deletes a agent
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     agentDelete(id: string, options?: any): AxiosPromise<DeleteAgentResponse> {
       return localVarFp.agentDelete(id, options).then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @summary Registers a new agent
+     * @param {CreateAgentRequest} createAgentRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    agentRegister(createAgentRequest: CreateAgentRequest, options?: any): AxiosPromise<CreateAgentResponse> {
+      return localVarFp.agentRegister(createAgentRequest, options).then((request) => request(axios, basePath));
     },
     /**
      *
@@ -8121,7 +8783,7 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
      *
      * @summary Gets all or specific set of agents
      * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
-     * @param {Array<string>} [id]
+     * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8141,7 +8803,7 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
     /**
      *
      * @summary Deletes multiple agents
-     * @param {Array<string>} [id]
+     * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8161,7 +8823,7 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
     /**
      *
      * @summary Gets a context
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8181,7 +8843,7 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
     /**
      *
      * @summary Deletes a schedule
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8202,7 +8864,7 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
      *
      * @summary Gets all or specific set of contexts
      * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
-     * @param {Array<string>} [id]
+     * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8222,7 +8884,7 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
     /**
      *
      * @summary Deletes multiple contexts
-     * @param {Array<string>} [id]
+     * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8242,7 +8904,7 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
     /**
      *
      * @summary Gets a conversation
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8262,7 +8924,7 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
     /**
      *
      * @summary Deletes a schedule
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8282,7 +8944,7 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
     /**
      *
      * @summary Gets a customer
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8302,7 +8964,7 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
     /**
      *
      * @summary Deletes a customer
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8312,7 +8974,7 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
     /**
      *
      * @summary Gets a customer group
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8332,7 +8994,7 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
     /**
      *
      * @summary Deletes a customer group
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8353,7 +9015,7 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
      *
      * @summary Gets all or specific set of customer groups
      * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
-     * @param {Array<string>} [id]
+     * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8373,7 +9035,7 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
     /**
      *
      * @summary Deletes multiple customer groups
-     * @param {Array<string>} [id]
+     * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8404,7 +9066,7 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
      *
      * @summary Gets all or specific set of customers
      * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
-     * @param {Array<string>} [id]
+     * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8424,7 +9086,7 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
     /**
      *
      * @summary Deletes multiple customers
-     * @param {Array<string>} [id]
+     * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8440,6 +9102,56 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
      */
     customersUpdate(updateCustomerRequest: UpdateCustomerRequest, options?: any): AxiosPromise<UpdateCustomersResponse> {
       return localVarFp.customersUpdate(updateCustomerRequest, options).then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @summary Returns information about a specific file.
+     * @param {string} fileId The ID of the file to use for this request
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    file(fileId: string, options?: any): AxiosPromise<Scout9File> {
+      return localVarFp.file(fileId, options).then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @summary Upload a file that contains document(s) to be used across various endpoints/features. Currently, the size of all the files uploaded by one organization can be up to 1 GB. Please contact us if you need to increase the storage limit.
+     * @param {File} file
+     * @param {string} [purpose] The intended purpose of the uploaded documents.  This allows us to validate the format of the uploaded file.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    fileCreate(file: File | Buffer | Blob, purpose?: string, options?: any): AxiosPromise<Scout9File> {
+      return localVarFp.fileCreate(file, purpose, options).then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @summary Delete a file.
+     * @param {string} fileId The ID of the file to use for this request
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    fileDelete(fileId: string, options?: any): AxiosPromise<DeleteFileResponse> {
+      return localVarFp.fileDelete(fileId, options).then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @summary Returns the contents of the specified file
+     * @param {string} fileId The ID of the file to use for this request
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    fileDownload(fileId: string, options?: any): AxiosPromise<string> {
+      return localVarFp.fileDownload(fileId, options).then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @summary Returns a list of files that belong to the user\'s organization.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    files(options?: any): AxiosPromise<ListFilesResponse> {
+      return localVarFp.files(options).then((request) => request(axios, basePath));
     },
     /**
      * Generates a message in the agent\'s voice based on the state of the given conversation. This is useful for testing and debugging. The message will not be sent to the conversation, you must run .message() with the body of the generated message to send it to the conversation.
@@ -8464,18 +9176,18 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
     /**
      *
      * @summary Get all messages from a conversation
+     * @param {string} id id of entity to query
      * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
-     * @param {Array<string>} [id]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    messages(q?: string, id?: Array<string>, options?: any): AxiosPromise<Array<MessageGetResponseInner>> {
-      return localVarFp.messages(q, id, options).then((request) => request(axios, basePath));
+    messages(id: string, q?: string, options?: any): AxiosPromise<Array<MessageGetResponseInner>> {
+      return localVarFp.messages(id, q, options).then((request) => request(axios, basePath));
     },
     /**
      *
      * @summary Get the results of a bulk API operation
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8486,7 +9198,7 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
      *
      * @summary Gets all or specific set of bulk API operations
      * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
-     * @param {Array<string>} [id]
+     * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8500,13 +9212,13 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    scheduleCreate(scheduleCreateRequest: ScheduleCreateRequest, options?: any): AxiosPromise<ScheduleCreateResponse> {
-      return localVarFp.scheduleCreate(scheduleCreateRequest, options).then((request) => request(axios, basePath));
+    scheduleConversation(scheduleCreateRequest: ScheduleCreateRequest, options?: any): AxiosPromise<ScheduleCreateResponse> {
+      return localVarFp.scheduleConversation(scheduleCreateRequest, options).then((request) => request(axios, basePath));
     },
     /**
      *
      * @summary Deletes a schedule
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8526,7 +9238,7 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
     /**
      *
      * @summary Deletes and cancels a schedule group
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8536,7 +9248,7 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
     /**
      *
      * @summary Gets a schedule group
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8556,7 +9268,7 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
     /**
      *
      * @summary Gets a schedule
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8576,7 +9288,7 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
     /**
      *
      * @summary Gets a workflow
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8596,7 +9308,7 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
     /**
      *
      * @summary Deletes a workflow
-     * @param {string} id
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8617,7 +9329,7 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
      *
      * @summary Gets all or specific set of workflows
      * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
-     * @param {Array<string>} [id]
+     * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8637,7 +9349,7 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
     /**
      *
      * @summary Deletes multiple workflows
-     * @param {Array<string>} [id]
+     * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -8658,46 +9370,46 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
 };
 
 /**
- * Scout9Api - object-oriented interface
+ * PocketScoutApi - object-oriented interface
  * @export
- * @class Scout9Api
+ * @class PocketScoutApi
  * @extends {BaseAPI}
  */
-export class Scout9Api extends BaseAPI {
+export class PocketScoutApi extends BaseAPI {
   /**
    *
    * @summary Gets a agent
-   * @param {string} id
+   * @param {string} id id of entity to query
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public agent(id: string, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).agent(id, options).then((request) => request(this.axios, this.basePath));
-  }
-
-  /**
-   *
-   * @summary Create a new agent
-   * @param {CreateAgentRequest} createAgentRequest
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof Scout9Api
-   */
-  public agentCreate(createAgentRequest: CreateAgentRequest, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).agentCreate(createAgentRequest, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).agent(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
    * @summary Deletes a agent
-   * @param {string} id
+   * @param {string} id id of entity to query
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public agentDelete(id: string, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).agentDelete(id, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).agentDelete(id, options).then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @summary Registers a new agent
+   * @param {CreateAgentRequest} createAgentRequest
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof PocketScoutApi
+   */
+  public agentRegister(createAgentRequest: CreateAgentRequest, options?: AxiosRequestConfig) {
+    return PocketScoutApiFp(this.configuration).agentRegister(createAgentRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -8706,23 +9418,23 @@ export class Scout9Api extends BaseAPI {
    * @param {UpdateAgentRequest} updateAgentRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public agentUpdate(updateAgentRequest: UpdateAgentRequest, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).agentUpdate(updateAgentRequest, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).agentUpdate(updateAgentRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
    * @summary Gets all or specific set of agents
    * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
-   * @param {Array<string>} [id]
+   * @param {Array<string>} [id] ids for the entities this id belongs to
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public agents(q?: string, id?: Array<string>, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).agents(q, id, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).agents(q, id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -8731,22 +9443,22 @@ export class Scout9Api extends BaseAPI {
    * @param {CreateAgentsRequest} createAgentsRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public agentsCreate(createAgentsRequest: CreateAgentsRequest, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).agentsCreate(createAgentsRequest, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).agentsCreate(createAgentsRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
    * @summary Deletes multiple agents
-   * @param {Array<string>} [id]
+   * @param {Array<string>} [id] ids for the entities this id belongs to
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public agentsDelete(id?: Array<string>, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).agentsDelete(id, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).agentsDelete(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -8755,22 +9467,22 @@ export class Scout9Api extends BaseAPI {
    * @param {UpdateAgentsRequest} updateAgentsRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public agentsUpdate(updateAgentsRequest: UpdateAgentsRequest, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).agentsUpdate(updateAgentsRequest, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).agentsUpdate(updateAgentsRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
    * @summary Gets a context
-   * @param {string} id
+   * @param {string} id id of entity to query
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public context(id: string, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).context(id, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).context(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -8779,22 +9491,22 @@ export class Scout9Api extends BaseAPI {
    * @param {CreateContextRequest} createContextRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public contextCreate(createContextRequest: CreateContextRequest, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).contextCreate(createContextRequest, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).contextCreate(createContextRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
    * @summary Deletes a schedule
-   * @param {string} id
+   * @param {string} id id of entity to query
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public contextDelete(id: string, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).contextDelete(id, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).contextDelete(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -8803,23 +9515,23 @@ export class Scout9Api extends BaseAPI {
    * @param {UpdateContextRequest} updateContextRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public contextUpdate(updateContextRequest: UpdateContextRequest, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).contextUpdate(updateContextRequest, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).contextUpdate(updateContextRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
    * @summary Gets all or specific set of contexts
    * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
-   * @param {Array<string>} [id]
+   * @param {Array<string>} [id] ids for the entities this id belongs to
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public contexts(q?: string, id?: Array<string>, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).contexts(q, id, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).contexts(q, id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -8828,22 +9540,22 @@ export class Scout9Api extends BaseAPI {
    * @param {CreateContextsRequest} createContextsRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public contextsCreate(createContextsRequest: CreateContextsRequest, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).contextsCreate(createContextsRequest, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).contextsCreate(createContextsRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
    * @summary Deletes multiple contexts
-   * @param {Array<string>} [id]
+   * @param {Array<string>} [id] ids for the entities this id belongs to
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public contextsDelete(id?: Array<string>, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).contextsDelete(id, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).contextsDelete(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -8852,22 +9564,22 @@ export class Scout9Api extends BaseAPI {
    * @param {UpdateContextRequest} updateContextRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public contextsUpdate(updateContextRequest: UpdateContextRequest, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).contextsUpdate(updateContextRequest, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).contextsUpdate(updateContextRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
    * @summary Gets a conversation
-   * @param {string} id
+   * @param {string} id id of entity to query
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public conversation(id: string, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).conversation(id, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).conversation(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -8876,22 +9588,22 @@ export class Scout9Api extends BaseAPI {
    * @param {ConversationCreateRequest} conversationCreateRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public conversationCreate(conversationCreateRequest: ConversationCreateRequest, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).conversationCreate(conversationCreateRequest, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).conversationCreate(conversationCreateRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
    * @summary Deletes a schedule
-   * @param {string} id
+   * @param {string} id id of entity to query
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public conversationDelete(id: string, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).conversationDelete(id, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).conversationDelete(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -8900,22 +9612,22 @@ export class Scout9Api extends BaseAPI {
    * @param {ConversationUpdateRequest} conversationUpdateRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public conversationUpdate(conversationUpdateRequest: ConversationUpdateRequest, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).conversationUpdate(conversationUpdateRequest, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).conversationUpdate(conversationUpdateRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
    * @summary Gets a customer
-   * @param {string} id
+   * @param {string} id id of entity to query
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public customer(id: string, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).customer(id, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).customer(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -8924,34 +9636,34 @@ export class Scout9Api extends BaseAPI {
    * @param {CreateCustomerRequest} createCustomerRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public customerCreate(createCustomerRequest: CreateCustomerRequest, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).customerCreate(createCustomerRequest, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).customerCreate(createCustomerRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
    * @summary Deletes a customer
-   * @param {string} id
+   * @param {string} id id of entity to query
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public customerDelete(id: string, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).customerDelete(id, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).customerDelete(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
    * @summary Gets a customer group
-   * @param {string} id
+   * @param {string} id id of entity to query
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public customerGroup(id: string, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).customerGroup(id, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).customerGroup(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -8960,22 +9672,22 @@ export class Scout9Api extends BaseAPI {
    * @param {CreateCustomerGroupRequest} createCustomerGroupRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public customerGroupCreate(createCustomerGroupRequest: CreateCustomerGroupRequest, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).customerGroupCreate(createCustomerGroupRequest, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).customerGroupCreate(createCustomerGroupRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
    * @summary Deletes a customer group
-   * @param {string} id
+   * @param {string} id id of entity to query
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public customerGroupDelete(id: string, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).customerGroupDelete(id, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).customerGroupDelete(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -8984,23 +9696,23 @@ export class Scout9Api extends BaseAPI {
    * @param {UpdateCustomerGroupRequest} updateCustomerGroupRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public customerGroupUpdate(updateCustomerGroupRequest: UpdateCustomerGroupRequest, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).customerGroupUpdate(updateCustomerGroupRequest, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).customerGroupUpdate(updateCustomerGroupRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
    * @summary Gets all or specific set of customer groups
    * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
-   * @param {Array<string>} [id]
+   * @param {Array<string>} [id] ids for the entities this id belongs to
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public customerGroups(q?: string, id?: Array<string>, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).customerGroups(q, id, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).customerGroups(q, id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9009,22 +9721,22 @@ export class Scout9Api extends BaseAPI {
    * @param {CreateCustomerGroupsRequest} createCustomerGroupsRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public customerGroupsCreate(createCustomerGroupsRequest: CreateCustomerGroupsRequest, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).customerGroupsCreate(createCustomerGroupsRequest, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).customerGroupsCreate(createCustomerGroupsRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
    * @summary Deletes multiple customer groups
-   * @param {Array<string>} [id]
+   * @param {Array<string>} [id] ids for the entities this id belongs to
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public customerGroupsDelete(id?: Array<string>, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).customerGroupsDelete(id, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).customerGroupsDelete(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9033,10 +9745,10 @@ export class Scout9Api extends BaseAPI {
    * @param {UpdateCustomerGroupsRequest} updateCustomerGroupsRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public customerGroupsUpdate(updateCustomerGroupsRequest: UpdateCustomerGroupsRequest, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).customerGroupsUpdate(updateCustomerGroupsRequest, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).customerGroupsUpdate(updateCustomerGroupsRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9045,23 +9757,23 @@ export class Scout9Api extends BaseAPI {
    * @param {UpdateCustomerRequest} updateCustomerRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public customerUpdate(updateCustomerRequest: UpdateCustomerRequest, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).customerUpdate(updateCustomerRequest, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).customerUpdate(updateCustomerRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
    * @summary Gets all or specific set of customers
    * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
-   * @param {Array<string>} [id]
+   * @param {Array<string>} [id] ids for the entities this id belongs to
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public customers(q?: string, id?: Array<string>, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).customers(q, id, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).customers(q, id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9070,22 +9782,22 @@ export class Scout9Api extends BaseAPI {
    * @param {CreateCustomersRequest} createCustomersRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public customersCreate(createCustomersRequest: CreateCustomersRequest, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).customersCreate(createCustomersRequest, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).customersCreate(createCustomersRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
    * @summary Deletes multiple customers
-   * @param {Array<string>} [id]
+   * @param {Array<string>} [id] ids for the entities this id belongs to
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public customersDelete(id?: Array<string>, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).customersDelete(id, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).customersDelete(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9094,10 +9806,70 @@ export class Scout9Api extends BaseAPI {
    * @param {UpdateCustomerRequest} updateCustomerRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public customersUpdate(updateCustomerRequest: UpdateCustomerRequest, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).customersUpdate(updateCustomerRequest, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).customersUpdate(updateCustomerRequest, options).then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @summary Returns information about a specific file.
+   * @param {string} fileId The ID of the file to use for this request
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof PocketScoutApi
+   */
+  public file(fileId: string, options?: AxiosRequestConfig) {
+    return PocketScoutApiFp(this.configuration).file(fileId, options).then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @summary Upload a file that contains document(s) to be used across various endpoints/features. Currently, the size of all the files uploaded by one organization can be up to 1 GB. Please contact us if you need to increase the storage limit.
+   * @param {File} file
+   * @param {string} [purpose] The intended purpose of the uploaded documents.  This allows us to validate the format of the uploaded file.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof PocketScoutApi
+   */
+  public fileCreate(file: File | Buffer | Blob, purpose?: string, options?: AxiosRequestConfig) {
+    return PocketScoutApiFp(this.configuration).fileCreate(file, purpose, options).then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @summary Delete a file.
+   * @param {string} fileId The ID of the file to use for this request
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof PocketScoutApi
+   */
+  public fileDelete(fileId: string, options?: AxiosRequestConfig) {
+    return PocketScoutApiFp(this.configuration).fileDelete(fileId, options).then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @summary Returns the contents of the specified file
+   * @param {string} fileId The ID of the file to use for this request
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof PocketScoutApi
+   */
+  public fileDownload(fileId: string, options?: AxiosRequestConfig) {
+    return PocketScoutApiFp(this.configuration).fileDownload(fileId, options).then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @summary Returns a list of files that belong to the user\'s organization.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof PocketScoutApi
+   */
+  public files(options?: AxiosRequestConfig) {
+    return PocketScoutApiFp(this.configuration).files(options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9106,10 +9878,10 @@ export class Scout9Api extends BaseAPI {
    * @param {GenerateRequest} generateRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public generate(generateRequest: GenerateRequest, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).generate(generateRequest, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).generate(generateRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9118,48 +9890,48 @@ export class Scout9Api extends BaseAPI {
    * @param {MessageCreateRequest} messageCreateRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public message(messageCreateRequest: MessageCreateRequest, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).message(messageCreateRequest, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).message(messageCreateRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
    * @summary Get all messages from a conversation
+   * @param {string} id id of entity to query
    * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
-   * @param {Array<string>} [id]
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
-  public messages(q?: string, id?: Array<string>, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).messages(q, id, options).then((request) => request(this.axios, this.basePath));
+  public messages(id: string, q?: string, options?: AxiosRequestConfig) {
+    return PocketScoutApiFp(this.configuration).messages(id, q, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
    * @summary Get the results of a bulk API operation
-   * @param {string} id
+   * @param {string} id id of entity to query
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public operation(id: string, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).operation(id, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).operation(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
    * @summary Gets all or specific set of bulk API operations
    * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
-   * @param {Array<string>} [id]
+   * @param {Array<string>} [id] ids for the entities this id belongs to
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public operations(q?: string, id?: Array<string>, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).operations(q, id, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).operations(q, id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9168,22 +9940,22 @@ export class Scout9Api extends BaseAPI {
    * @param {ScheduleCreateRequest} scheduleCreateRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
-  public scheduleCreate(scheduleCreateRequest: ScheduleCreateRequest, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).scheduleCreate(scheduleCreateRequest, options).then((request) => request(this.axios, this.basePath));
+  public scheduleConversation(scheduleCreateRequest: ScheduleCreateRequest, options?: AxiosRequestConfig) {
+    return PocketScoutApiFp(this.configuration).scheduleConversation(scheduleCreateRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
    * @summary Deletes a schedule
-   * @param {string} id
+   * @param {string} id id of entity to query
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public scheduleDelete(id: string, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).scheduleDelete(id, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).scheduleDelete(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9192,34 +9964,34 @@ export class Scout9Api extends BaseAPI {
    * @param {ScheduleGroupCreateRequest} scheduleGroupCreateRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public scheduleGroupCreate(scheduleGroupCreateRequest: ScheduleGroupCreateRequest, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).scheduleGroupCreate(scheduleGroupCreateRequest, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).scheduleGroupCreate(scheduleGroupCreateRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
    * @summary Deletes and cancels a schedule group
-   * @param {string} id
+   * @param {string} id id of entity to query
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public scheduleGroupDelete(id: string, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).scheduleGroupDelete(id, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).scheduleGroupDelete(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
    * @summary Gets a schedule group
-   * @param {string} id
+   * @param {string} id id of entity to query
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public scheduleGroupRetrieve(id: string, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).scheduleGroupRetrieve(id, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).scheduleGroupRetrieve(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9228,22 +10000,22 @@ export class Scout9Api extends BaseAPI {
    * @param {ScheduleGroupUpdateRequest} scheduleGroupUpdateRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public scheduleGroupUpdate(scheduleGroupUpdateRequest: ScheduleGroupUpdateRequest, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).scheduleGroupUpdate(scheduleGroupUpdateRequest, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).scheduleGroupUpdate(scheduleGroupUpdateRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
    * @summary Gets a schedule
-   * @param {string} id
+   * @param {string} id id of entity to query
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public scheduleRetrieve(id: string, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).scheduleRetrieve(id, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).scheduleRetrieve(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9252,22 +10024,22 @@ export class Scout9Api extends BaseAPI {
    * @param {ScheduleUpdateRequest} scheduleUpdateRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public scheduleUpdate(scheduleUpdateRequest: ScheduleUpdateRequest, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).scheduleUpdate(scheduleUpdateRequest, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).scheduleUpdate(scheduleUpdateRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
    * @summary Gets a workflow
-   * @param {string} id
+   * @param {string} id id of entity to query
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public workflow(id: string, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).workflow(id, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).workflow(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9276,22 +10048,22 @@ export class Scout9Api extends BaseAPI {
    * @param {CreateWorkflowRequest} createWorkflowRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public workflowCreate(createWorkflowRequest: CreateWorkflowRequest, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).workflowCreate(createWorkflowRequest, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).workflowCreate(createWorkflowRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
    * @summary Deletes a workflow
-   * @param {string} id
+   * @param {string} id id of entity to query
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public workflowDelete(id: string, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).workflowDelete(id, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).workflowDelete(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9300,23 +10072,23 @@ export class Scout9Api extends BaseAPI {
    * @param {UpdateWorkflowRequest} updateWorkflowRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public workflowUpdate(updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).workflowUpdate(updateWorkflowRequest, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).workflowUpdate(updateWorkflowRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
    * @summary Gets all or specific set of workflows
    * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
-   * @param {Array<string>} [id]
+   * @param {Array<string>} [id] ids for the entities this id belongs to
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public workflows(q?: string, id?: Array<string>, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).workflows(q, id, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).workflows(q, id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9325,22 +10097,22 @@ export class Scout9Api extends BaseAPI {
    * @param {CreateWorkflowsRequest} createWorkflowsRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public workflowsCreate(createWorkflowsRequest: CreateWorkflowsRequest, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).workflowsCreate(createWorkflowsRequest, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).workflowsCreate(createWorkflowsRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
    * @summary Deletes multiple workflows
-   * @param {Array<string>} [id]
+   * @param {Array<string>} [id] ids for the entities this id belongs to
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public workflowsDelete(id?: Array<string>, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).workflowsDelete(id, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).workflowsDelete(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9349,10 +10121,10 @@ export class Scout9Api extends BaseAPI {
    * @param {UpdateWorkflowRequest} updateWorkflowRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof Scout9Api
+   * @memberof PocketScoutApi
    */
   public workflowsUpdate(updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).workflowsUpdate(updateWorkflowRequest, options).then((request) => request(this.axios, this.basePath));
+    return PocketScoutApiFp(this.configuration).workflowsUpdate(updateWorkflowRequest, options).then((request) => request(this.axios, this.basePath));
   }
 }
 

@@ -1,34 +1,45 @@
-import { Scout9Api, GetApiOperationResponse } from '@scout9/admin/src';
+import { PocketScoutApi } from '@scout9/admin/src';
 
 const fs = require('fs').promises;
 const path = require('path');
 
 export interface ILocalCache {
+  agent?: string;
   customers?: string[];
   convo?: string;
   group?: string;
   operation?: string;
+  files?: string[];
+  workflows?: string[];
 }
 
 const cachePath = path.resolve(__dirname, './cache.json');
 
-export const reset = async (cache: ILocalCache, scout9: Scout9Api) => {
-  const {convo, group, customers, operation: operationId} = cache;
+export const reset = async (cache: ILocalCache, pocketScout: PocketScoutApi) => {
+  const {convo, group, customers, workflows, operation: operationId, files} = cache;
   if (convo) {
     console.log(`Deleting previous conversation...`);
-    await scout9.conversationDelete(convo);
+    await pocketScout.conversationDelete(convo);
     console.log(`Previous conversation deleted\n`);
   }
   if (group) {
     console.log(`Deleting previous group...`);
-    await scout9.scheduleGroupDelete(group);
+    await pocketScout.scheduleGroupDelete(group);
     console.log(`Previous group deleted\n`);
   }
   if (customers) {
-    await scout9.customersDelete(customers);
+    await pocketScout.customersDelete(customers);
+  }
+  if (workflows) {
+    await pocketScout.workflowsDelete(workflows);
+  }
+  if (files) {
+    for (const file of files) {
+      await pocketScout.fileDelete(file);
+    }
   }
   if (operationId) {
-    const operation = await scout9.operation(operationId)
+    const operation = await pocketScout.operation(operationId)
       .catch((err) => {
         console.error('Operation Error:', err);
         throw err;
@@ -40,12 +51,12 @@ export const reset = async (cache: ILocalCache, scout9: Scout9Api) => {
           const resultTotal = Object.keys(operation.data.results).length;
           if (resultTotal > 20) {
             console.log(`Deleting ${resultTotal} customers...`);
-            await scout9.customersDelete(Object.keys(operation.data.results).map((name) => operation.data.results[name].id));
+            await pocketScout.customersDelete(Object.keys(operation.data.results).map((name) => operation.data.results[name].id));
           } else {
             for (const name in operation.data.results) {
               console.log(`Deleting customer ${name}...`)
               const {id} = operation.data.results[name];
-              await scout9.customerDelete(id);
+              await pocketScout.customerDelete(id);
             }
           }
           break;

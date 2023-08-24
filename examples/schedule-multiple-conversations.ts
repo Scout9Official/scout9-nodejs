@@ -1,4 +1,4 @@
-import { Configuration, Scout9Api } from '@scout9/admin/src';
+import { Configuration, PocketScoutApi } from '@scout9/admin/src';
 import 'dotenv/config';
 import { ILocalCache, loadCache, reset, saveCache } from './_utils';
 
@@ -15,7 +15,7 @@ const agentId = process.env.MY_TEST_AGENT || '';
 const configuration = new Configuration({
   apiKey: process.env.MY_S9_API_KEY, // Replace with your API key
 });
-const scout9 = new Scout9Api(configuration);
+const pocketScout = new PocketScoutApi(configuration);
 
 /**
  * Simple conversation between a customer and agent
@@ -28,7 +28,7 @@ async function scheduleMultipleConversations(cache: ILocalCache) {
   const oneMinuteLater = new Date(now.getTime() + 60 * 1000); // Adding 60,000 milliseconds (1 minute)
 
   console.log(`Scheduling conversation group`);
-  const group = await scout9.scheduleGroupCreate({
+  const group = await pocketScout.scheduleGroupCreate({
     $agent: agentId, // This will come from the agent's profile
     $workflow: workflow,
     initialContexts: [
@@ -123,7 +123,7 @@ async function scheduleMultipleConversations(cache: ILocalCache) {
 }
 
 loadCache()
-  .then((cache) => reset(cache, scout9))
+  .then((cache) => reset(cache, pocketScout))
   .then(scheduleMultipleConversations)
   .then(() => console.log('Done! 🎉'))
   .catch((err) => {

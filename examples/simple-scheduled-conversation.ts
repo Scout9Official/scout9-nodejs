@@ -1,5 +1,5 @@
+import { Configuration, GenerateRequestConvo, PocketScoutApi, ScheduleCreateRequest } from '@scout9/admin/src';
 import 'dotenv/config';
-import { PocketScoutApi, Configuration } from '@scout9/admin/src';
 import { ILocalCache, loadCache, reset, saveCache } from './_utils';
 
 
@@ -19,15 +19,21 @@ const pocketScout = new PocketScoutApi(configuration);
 
 
 /**
- * Simple conversation between a customer and agent
+ * Simple scheduled conversation between a customer and agent
  */
-async function simpleConversation(cache: ILocalCache) {
+async function simpleScheduledConversation(cache: ILocalCache) {
   console.log(`Creating default conversation:\n\tcustomer: "${customerIdWithPhone}"\n\tagent: "${agentId}"`);
-  const conversation = await pocketScout.conversationCreate({
+
+  const now = new Date();
+  const oneMinuteLater = new Date(now.getTime() + 60 * 1000); // Adding 60,000 milliseconds (1 minute)
+  const initialMessage = `Hey there, would you like a free pizza?`;
+
+  const request: ScheduleCreateRequest = {
     $customer: customerIdWithPhone,
     $agent: agentId,
     environment: 'phone', // web, phone, or email
-
+    scheduled: oneMinuteLater.toISOString(),
+    initialMessage,
     // Add some initial contexts to the conversation to help the agent get started
     initialContexts: [
       'We are offering free pizzas to the first 100 hundred customers for today only',
@@ -37,18 +43,13 @@ async function simpleConversation(cache: ILocalCache) {
       'You must pick up the free pizza at 255 W Alameda St, Tucson, AZ 85701',
       'We close at 10pm tonight',
       'If the customer is not interested or serious in receiving a free pizza, disengage and direct them to our website (https://azpizzatime.com) for future orders'
-    ]
-  });
-  console.log(`\n\tconversation: "${conversation.data.id}"\n\tclient portal: ${conversation.data.clientWebUrl}\n\tagent portal: ${conversation.data.agentWebUrl}\n\tagent test portal: ${conversation.data.agentTestWebUrl}\n`);
+    ],
+  }
+  const scheduleConversationRes = await pocketScout.scheduleConversation(request);
+  console.log(`\n\tscheduled conversation: "${scheduleConversationRes.data.id}"\n`);
 
   // Cache the conversation id for later use
-  await saveCache({convo: conversation.data.id});
-
-
-
-  const initialMessage = `Hey there, would you like a free pizza?`;
-  console.log(`Sending initial message to customer: "${initialMessage}"`);
-  await pocketScout.message({convo: conversation.data.id, message: initialMessage});
+  await saveCache({convo: scheduleConversationRes.data.id});
 
 
   console.log(`Testing out a few anticipated responses...`);
@@ -60,11 +61,23 @@ async function simpleConversation(cache: ILocalCache) {
     'I hate you, stop texting me',
     'I love you, keep texting me',
   ];
+  // We have to input the conversation object since it's a scheduled conversation and not yet created
+  const conversation: GenerateRequestConvo = {
+    $agent: request.$agent,
+    $customer: request.$customer,
+    environment: request.environment,
+    initialContexts: request.initialContexts,
+  }
+
   for (const customerResponse of anticipatedCustomerResponses) {
     const generatedResponse = await pocketScout.generate({
-      convo: conversation.data.id,
+      convo: conversation,
       mocks: {
         messages: [
+          {
+            role: 'agent',
+            content: initialMessage // We have to add the initial message to the conversation because the conversation has not yet been created
+          },
           {
             role: 'customer',
             content: customerResponse
@@ -76,19 +89,11 @@ async function simpleConversation(cache: ILocalCache) {
     console.log(`\n\tCustomer: "${customerResponse}"\n\tAgent: "${generatedResponse}"\n`);
   }
 
-
-  // Retrieve messages from the conversation
-  // const messages = await pocketScout.messages(conversation.data.id)
-  // console.log(`Retrieved ${messages.data.length} messages from the conversation`);
-  // for (const message of messages.data) {
-  //   console.log(`\t${message.role}: ${message.content} (${message.time})`);
-  // }
-
 }
 
 loadCache()
   .then((cache) => reset(cache, pocketScout))
-  .then(simpleConversation)
+  .then(simpleScheduledConversation)
   .then(() => console.log('Done! 🎉'))
   .catch((err) => {
     console.error(err);
