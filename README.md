@@ -1,6 +1,8 @@
 # Scout9's Pocket Scout API
 
-⚠️ API is not fully released, caution using this API and reach out to Patrick for info
+
+
+#### ⚠️ *API is not fully released, caution using this API, ping Patrick for questions*
 ___
 
 
