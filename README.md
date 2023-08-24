@@ -7,14 +7,14 @@ ___
 
 ## Pocket Scout When You're Away 🏝🍻😎
 
-####Personal email or phone auto responses that are **100% your voice**
+#### Personal email or phone auto responses that are **100% your voice**
 
 👉 Programmable conversations
 
 👉 Interject into conversations whenever
 
 
-###Things to Pocket Scout while you're asleep 🌙🤗
+### Things to Pocket Scout while you're asleep 🌙🤗
 - 📦 [Fulfilling a customer Orders](examples/)
 - 📝 [Responding to homework questions](examples/)
 - 💔 [Politely rejecting dates](examples/)
