@@ -1,25 +1,28 @@
-# Scout9's Pocket Scout API  🦴
-Pocket Scout Node.js API for [Scout9](https://pocket-guide.vercel.app/)
+# Scout9 Customer Relationship Management API  🦴
+[Scout9](https://pocket-guide.vercel.app/) Node.js API 
 #### ⚠️ *API is not fully released, caution when using*
 
 ___
 
 
-## Pocket Scout When You're Away 🏝🍻😎
+## Customer conversations while your away 🏝🍻😎
 
-#### Personal email or phone auto responses that are **100% your voice**
+#### Auto responses that are 100% you from your phone, email, and [more](#Available Platforms)
 
-👉 Programmable conversations
+✅ [Programmable conversations](###Define workflows)
 
-👉 Interject into conversations whenever
+🖐 Interject into conversations whenever
+
+🚫🤖 Not a bot, 100% you
 
 
-### Things to Pocket Scout while you're asleep 🌙🤗
+### Things to Pocket Scout while asleep 🌙🤗
 - 📦 [Fulfilling a customer Orders](examples/)
 - 📝 [Responding to homework questions](examples/)
 - 💔 [Politely rejecting dates](examples/)
 - 📆 [Scheduling meetings or appointments](examples/)
 - 🔊 [Promoting an event](examples/)
+- 🏝 [Vacation responder](examples/)
 - 🙋‍ [Handling customer support](/examples)
 - 📋 [Surveying customers](/examples)
 - 💸 [Generating sales leads](/examples)
@@ -28,7 +31,8 @@ ___
 - 📧 [Handling event Follow-ups](/examples)
 - 🗣️ [Gathering user feedback](/examples)
 - 📊 [Gathering poll data](/examples)
-- 🎂 [Saying happy birthday](/examples)
+- 🎂 [Scheduling happy birthday messages](/examples)
+- 👏 [Motivate a coworker](/examples)
 - ...[and more](/examples)!
 
 All 100% from your voice and personal email or phone number!
