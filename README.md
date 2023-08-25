@@ -1,6 +1,6 @@
 # Scout9's Pocket Scout API  🦴
 Pocket Scout Node.js API for [Scout9](https://pocket-guide.vercel.app/)
-#### ⚠️ *API is not fully released, caution using this API, ping Patrick for questions*
+#### ⚠️ *API is not fully released, caution using this API*
 
 ___
 
