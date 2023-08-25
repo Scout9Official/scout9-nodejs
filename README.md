@@ -29,7 +29,7 @@ ___
 - 🗣️ [Gathering user feedback](/examples)
 - 📊 [Gathering poll data](/examples)
 - 🎂 [Saying happy birthday](/examples)
-- ...and more!
+- ...[and more](/examples)!
 
 All 100% from your voice and personal email or phone number!
 ___
