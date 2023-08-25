@@ -7,9 +7,9 @@ ___
 
 ## Customer conversations while your away 🏝🍻😎
 
-#### Auto responses that are 100% you from your phone, email, and [more](#Available Platforms)
+#### Auto responses that are 100% you from your phone, email, and [more](#available-platforms)
 
-✅ [Programmable conversations](###Define workflows)
+✅ [Programmable conversations](#define-workflows)
 
 🖐 Interject into conversations whenever
 
