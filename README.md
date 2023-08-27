@@ -7,16 +7,16 @@ ___
 
 ## Customer conversations while your away 🏝🍻😎
 
-#### Auto responses that are 100% you from your phone, email, and [more](#available-platforms)
+#### Auto responses that are 100% you from any native channel such as your [phone](#available-platforms), [email](#available-platforms), and [more](#available-platforms)
 
 ✅ [Programmable conversations](#define-workflows)
 
-🖐 Interject into conversations whenever
+🖐 [Interject and pause auto responses when you type]('#Respond to a customer')
 
 🚫🤖 Not a bot, 100% you
 
 
-### Things to Pocket Scout while asleep 🌙🤗
+### Scout9 Use Cases
 - 📦 [Fulfilling a customer Orders](examples/)
 - 📝 [Responding to homework questions](examples/)
 - 💔 [Politely rejecting dates](examples/)
@@ -50,13 +50,13 @@ npm install @scout9/admin --save
 ```
 
 ```typescript
-import { Configuration, PocketScoutApi } from '@scout9/admin';
+import { Configuration, Scout9Api } from '@scout9/admin';
 
 const configuration = new Configuration({
   apiKey: '', // Your API key
 });
 
-const pocketScout = new PocketScoutApi(configuration);
+const scout9 = new Scout9Api(configuration);
 ```
 ___
 
@@ -67,8 +67,8 @@ ___
 import fs from 'fs/promises';
 import path from 'path';
 
-// Registered your self as an agent within the Pocket Scout context
-const agentId = await pocketScout
+// Registered your self as an agent within the Scout9 context
+const agentId = await scout9
   .agentRegister({
     firstName: 'Tony',
     lastName: 'Sopranos',
@@ -84,34 +84,34 @@ const agentId = await pocketScout
 
     /**
      * (optional) either a provided Scout9 phone number or your personal
-     * ⚠️ Note: If a personal number, you'll be asked to download the Pocket Scout app to enable Pocket Scout auto responses
+     * ⚠️ Note: If a personal number, you'll be asked to download the Scout9 app to enable Scout9 auto responses
      */
     programmablePhoneNumber: '+15555555555',
 
     /**
      * (optional) either a provided Scout9 email or your personal
-     * ⚠️ Note: If a personal email, you'll be asked to authenticate your Pocket Scout onto your email account
+     * ⚠️ Note: If a personal email, you'll be asked to authenticate your Scout9 onto your email account
      */
     programmableEmail: `tonyboss@gmail.com`,
 
 
     /**
-     * Optional conversation data to help your Pocket Scout capture your tone
+     * Optional conversation data to help your Scout9 capture your tone
      * See ./examples/samples to see coversation text format or enter JSON manually
      */
     conversations: [
-      await pocketScout.fileCreate(await fs.readFile('./conversation1.txt'), 'conversation with Chris')
+      await scout9.fileCreate(await fs.readFile('./conversation1.txt'), 'conversation with Chris')
         .then(res => res.data.id),
-      await pocketScout.fileCreate(await fs.readFile('./conversation2.txt'), 'conversation with Paulie')
+      await scout9.fileCreate(await fs.readFile('./conversation2.txt'), 'conversation with Paulie')
         .then(res => res.data.id),
     ],
 
     /**
-     * (optional) audio data to help your Pocket Scout capture your tone
-     * (Eventually your Pocket Scout can use this to generate voice responses, but for now its more of a way to capture your tone/character)
+     * (optional) audio data to help your Scout9 capture your tone
+     * (Eventually your Scout9 can use this to generate voice responses, but for now its more of a way to capture your tone/character)
      */
     audio: [
-      await pocketScout.fileCreate(await fs.readFile('./audio.mp3'),
+      await scout9.fileCreate(await fs.readFile('./audio.mp3'),
         'Secret Audio of me talking to Dr. Melfi (no one can know about this)').then(res => res.data.id),
     ]
   })
@@ -127,7 +127,7 @@ initiate conversations with you.
 
 ```typescript
 // Create 1 customer
-const customerId = await pocketScout.createCustomer({
+const customerId = await scout9.createCustomer({
   firstName: 'Hi',
   lastName: 'Jack',
   email: 'hi@example.com',
@@ -171,7 +171,7 @@ const customers: Customer[] = [
     lastSeason: 'season 1'
   }
 ];
-await pocketScout.customersCreate({customers});
+await scout9.customersCreate({customers});
 ```
 
 ## Step 3: Initiate a conversation
@@ -182,7 +182,7 @@ guidance.
 ```typescript
 const initialMessage = `Hey there, would you like a free pizza?`;
 
-const conversation = await pocketScout.conversationCreate({
+const conversation = await scout9.conversationCreate({
   customer: customerId,
   agent: agentId,
   environment: 'phone', // This will attempt to contact via SMS
@@ -199,7 +199,7 @@ const conversation = await pocketScout.conversationCreate({
 });
 
 // Send a message
-await pocketScout.message({convo: conversation.data.id, message: initialMessage});
+await scout9.message({convo: conversation.data.id, message: initialMessage});
 ```
 
 ## Step 4: Test your conversation
@@ -209,7 +209,7 @@ Test your conversation before you send a message.
 ```typescript
 const initialMessage = `Hey there, would you like a free pizza?`;
 
-const conversationId = await pocketScout.conversationCreate({
+const conversationId = await scout9.conversationCreate({
   customer: customerId,
   agent: agentId,
   environment: 'phone', // This will attempt to contact via SMS
@@ -234,7 +234,7 @@ const anticipatedCustomerResponses = [
   'I love you, keep texting me',
 ];
 for (const customerResponse of anticipatedCustomerResponses) {
-  const generatedResponse = await pocketScout.generate({
+  const generatedResponse = await scout9.generate({
     convo: conversationId,
     mocks: {
       messages: [
@@ -251,7 +251,7 @@ for (const customerResponse of anticipatedCustomerResponses) {
 }
 
 console.log(`Looks good 👍 - sending messing to customer`);
-await pocketScout.message({convo: conversation.data.id, message: initialMessage});
+await scout9.message({convo: conversation.data.id, message: initialMessage});
 ```
 
 ## Step 5: View your conversation
@@ -260,7 +260,7 @@ Messages and customer responses can be viewed in the [Scout9 UI](https://pocket-
 configure webhooks in the account portal to listen to incoming messages on your own server.
 
 ```typescript
-const messages = await pocketScout.messages(conversationId);
+const messages = await scout9.messages(conversationId);
 console.log(`Retrieved ${messages.data.length} messages from the conversation`);
 
 for (const message of messages.data) {
@@ -278,7 +278,7 @@ created.
 ```typescript
 const initialMessage = `Hey there, would you like a free pizza?`;
 
-const conversation = await pocketScout.scheduleConversation({
+const conversation = await scout9.scheduleConversation({
   customer: customerId,
   agent: agentId,
   environment: 'phone', // This will attempt to contact via SMS
@@ -297,7 +297,7 @@ const conversation = await pocketScout.scheduleConversation({
 
 ### Define workflows
 
-Conversations by default use a generic **workflow** procedure that has a stated goal to guide your Pocket Scout in a
+Conversations by default use a generic **workflow** procedure that has a stated goal to guide your Scout9 in a
 conversation. Initiate a conversation with a clear specific objective using the **workflow** api.
 
 See [full workflow example](examples/create-workflow.ts)
@@ -321,7 +321,7 @@ const workflow: CreateWorkflowRequest = {
   },
 };
 
-const workflowId = await pocketScout.workflowCreate(workflow).then(res => res.data.id);
+const workflowId = await scout9.workflowCreate(workflow).then(res => res.data.id);
 
 console.log(`Created workflow with id: ${workflowId}`);
 ```
@@ -350,7 +350,7 @@ const contextFields: ConversationContextField[] = [
 ]
 ```
 
-In the `.initiators.entities` we can define custom fields that the Pocket Scout can search for and store in the
+In the `.initiators.entities` we can define custom fields that the Scout9 can search for and store in the
 conversation
 
 In this example we include a custom entity field `pizzaSize` which can be described as a small or personal pizza.
@@ -384,35 +384,35 @@ Then we need some statements that can trigger the workflow and context fields th
 
 ### Respond to a customer
 
-If a customer triggers one of your active **workflows**, then by default your Pocket Scout will respond to the customer.
-If you respond manually, then the Pocket Scout will stop responding to the customer for the entire conversation.
+If a customer triggers one of your active **workflows**, then by default your Scout9 will respond to the customer.
+If you respond manually, then the Scout9 will stop responding to the customer for the entire conversation.
 
 ```typescript
-await pocketScout.message({convo: conversationId, message: 'Hey there, would you like a free pizza?'});
+await scout9.message({convo: conversationId, message: 'Hey there, would you like a free pizza?'});
 ```
 
 ## Available Platforms
 
-Customers can interact with you (and your Pocket Scout) on any of the connected platforms
+Customers can interact with you (and your Scout9) on any of the connected platforms
 
 | Platforms    | Supported            |                                                                                                                                                     |
 |--------------|----------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
-| Android      | ⚠️ (pending)         | (free) An android app is in development to enable your Pocket Scout to respond to SMS text                                                          |
-| iOS          | ⚠️ (pending)         | (free) An ios app is in development to enable your Pocket Scout to respond to iMessages                                                             |
+| Android      | ⚠️ (pending)         | (free) An android app is in development to enable your Scout9 to respond to SMS text                                                          |
+| iOS          | ⚠️ (pending)         | (free) An ios app is in development to enable your Scout9 to respond to iMessages                                                             |
 | Web          | ✅                    | (free) We generate conversation links for you and your customers to quickly connect, conversations expire in 1 day                                  |
-| Gmail        | ✅                    | (free) Provide Scout9 authorization access to your gmail account for read/write capabilities so your Pocket Scout can respond to emails             |
-| Outlook      | ⚠️ (pending)         | (free) Provide Scout9 authorization access to your outlook account for read/write capabilities so your Pocket Scout can respond to emails           |
+| Gmail        | ✅                    | (free) Provide Scout9 authorization access to your gmail account for read/write capabilities so your Scout9 can respond to emails             |
+| Outlook      | ⚠️ (pending)         | (free) Provide Scout9 authorization access to your outlook account for read/write capabilities so your Scout9 can respond to emails           |
 | Native Email | ❌                    | For security and privacy concerns we currently cannot support native email systems at this time                                                     |
-| Discord      | ⚠️ (pending)         | (free) Download the Pocket Scout Discord bot and configure workflows to respond to messages accordingly                                             |
-| Slack        | ⚠️ (pending)         | (free) Download the Pocket Scout Slack agent and configure workflows to respond to messages accordingly                                             |
-| Teams        | ⚠️ (pending)         | (free) Download the Pocket Scout Teams add-on                                                                                                       |
-| Scout9 Phone | ✅                    | $5/month we provide a generated phone number you can use for your Pocket Scout to text, messages will be relayed back to your personal phone number |
-| Scout9 Email | ✅                    | $5/month We provide a generated email with your name (e.g. patrick.opie@scout9.com) you can use for your Pocket Scout                               |
-| Instagram    | ⚠️ (pending/limited) | (free) The Pocket Scout desktop or mobile app will auto generate responses but requires manual insertion                                            |
-| Tiktok       | ⚠️ (pending/limited) | (free) The Pocket Scout desktop or mobile app will auto generate responses but requires manual insertion                   |
-| Facebook     | ⚠️ (pending/limited) | (free) The Pocket Scout desktop or mobile app will auto generate responses but requires manual insertion                                            |
+| Discord      | ⚠️ (pending)         | (free) Download the Scout9 Discord bot and configure workflows to respond to messages accordingly                                             |
+| Slack        | ⚠️ (pending)         | (free) Download the Scout9 Slack agent and configure workflows to respond to messages accordingly                                             |
+| Teams        | ⚠️ (pending)         | (free) Download the Scout9 Teams add-on                                                                                                       |
+| Scout9 Phone | ✅                    | $5/month we provide a generated phone number you can use for your Scout9 to text, messages will be relayed back to your personal phone number |
+| Scout9 Email | ✅                    | $5/month We provide a generated email with your name (e.g. patrick.opie@scout9.com) you can use for your Scout9                               |
+| Instagram    | ⚠️ (pending/limited) | (free) The Scout9 desktop or mobile app will auto generate responses but requires manual insertion                                            |
+| Tiktok       | ⚠️ (pending/limited) | (free) The Scout9 desktop or mobile app will auto generate responses but requires manual insertion                   |
+| Facebook     | ⚠️ (pending/limited) | (free) The Scout9 desktop or mobile app will auto generate responses but requires manual insertion                                            |
 
 
 
-**⚠️ Warning**: Avoid using a Pocket Scout to autopilot your job and personal relationships, this tool is designed for
+**⚠️ Warning**: Avoid using a Scout9 to autopilot your job and personal relationships, this tool is designed for
 workplace productivity and not a substitute for human interaction.

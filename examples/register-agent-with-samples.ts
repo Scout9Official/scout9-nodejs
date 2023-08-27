@@ -1,5 +1,5 @@
 import { Scout9File } from '@scout9/admin';
-import { Configuration, PocketScoutApi } from '@scout9/admin/src';
+import { Configuration, Scout9Api } from '@scout9/admin/src';
 import 'dotenv/config';
 import fs from 'fs/promises';
 import path from 'path';
@@ -8,7 +8,7 @@ import { ILocalCache, loadCache, reset, saveCache } from './_utils';
 const configuration = new Configuration({
   apiKey: process.env.MY_S9_API_KEY, // Replace with your API key
 });
-const pocketScout = new PocketScoutApi(configuration);
+const scout9 = new Scout9Api(configuration);
 
 
 /**
@@ -19,7 +19,7 @@ async function registerAgentWithSamples(cache: ILocalCache) {
   console.log(`Register agent with samples...`);
 
 
-  const {id: agentId} = await pocketScout.agentRegister({
+  const {id: agentId} = await scout9.agentRegister({
     firstName: 'Tony',
     lastName: 'Sopranos',
 
@@ -72,16 +72,16 @@ Tony: "Trust your instincts, but also know that fear's part of the game. Overcom
 
   const conversationFiles: Scout9File[] = [];
   for (const [localFile, purpose] of localConversationFiles) {
-    conversationFiles.push(await pocketScout.fileCreate(localFile, purpose).then(res => res.data));
+    conversationFiles.push(await scout9.fileCreate(localFile, purpose).then(res => res.data));
   }
 
   const audioFiles: Scout9File[] = [];
   for (const [localFile, purpose] of localAudioFiles) {
-    audioFiles.push(await pocketScout.fileCreate(localFile, purpose).then(res => res.data));
+    audioFiles.push(await scout9.fileCreate(localFile, purpose).then(res => res.data));
   }
 
   // Save the conversation and audio files to the agent
-  await pocketScout.agentUpdate({
+  await scout9.agentUpdate({
     $id: agentId,
     conversations: conversationFiles.map(({id}) => id),
     audio: audioFiles.map(({id}) => id),
@@ -93,7 +93,7 @@ Tony: "Trust your instincts, but also know that fear's part of the game. Overcom
 
 // Load cache for demo purposes (not required)
 loadCache()
-  .then((cache) => reset(cache, pocketScout))
+  .then((cache) => reset(cache, scout9))
   .then(registerAgentWithSamples)
   .then(() => console.log('Done! 🎉'))
   .catch((err) => {

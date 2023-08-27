@@ -1,11 +1,11 @@
 import 'dotenv/config';
-import { PocketScoutApi, Configuration, Customer } from '@scout9/admin/src';
+import { Scout9Api, Configuration, Customer } from '@scout9/admin/src';
 import { ILocalCache, loadCache, reset, saveCache } from './_utils';
 
 const configuration = new Configuration({
   apiKey: process.env.MY_S9_API_KEY, // Replace with your API key
 });
-const pocketScout = new PocketScoutApi(configuration);
+const scout9 = new Scout9Api(configuration);
 
 
 /**
@@ -16,7 +16,7 @@ async function registerAgent(cache: ILocalCache) {
   console.log(`Register agent`);
 
 
-  const res = await pocketScout.agentRegister({
+  const res = await scout9.agentRegister({
     firstName: 'Tony',
     lastName: 'Sopranos',
 
@@ -145,7 +145,7 @@ async function registerAgent(cache: ILocalCache) {
 }
 
 loadCache()
-  .then((cache) => reset(cache, pocketScout))
+  .then((cache) => reset(cache, scout9))
   .then(registerAgent)
   .then(() => console.log('Done! 🎉'))
   .catch((err) => {

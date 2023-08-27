@@ -1,4 +1,4 @@
-import { Configuration, ConversationContextField, CreateWorkflowRequest, PocketScoutApi } from '@scout9/admin/src';
+import { Configuration, ConversationContextField, CreateWorkflowRequest, Scout9Api } from '@scout9/admin/src';
 import 'dotenv/config';
 import { ILocalCache, loadCache, reset, saveCache } from './_utils';
 
@@ -15,7 +15,7 @@ const agentId = process.env.MY_TEST_AGENT || '';
 const configuration = new Configuration({
   apiKey: process.env.MY_S9_API_KEY, // Replace with your API key
 });
-const pocketScout = new PocketScoutApi(configuration);
+const scout9 = new Scout9Api(configuration);
 
 
 /**
@@ -245,26 +245,26 @@ async function createWorkflow(cache: ILocalCache) {
 
   // Option 1: Save a workflow from scratch, and use in a conversation later
   if (option === 'option1') {
-    const workflowId = await pocketScout.workflowCreate(workflow).then(res => res.data.id);
-    const conversationId = await pocketScout.conversationCreate({
+    const workflowId = await scout9.workflowCreate(workflow).then(res => res.data.id);
+    const conversationId = await scout9.conversationCreate({
       $workflow: workflowId,
       $customer: customerIdWithPhone,
       $agent: agentId,
       environment: 'phone'
     }).then(res => res.data.id);
-    await pocketScout.message({convo: conversationId, message: 'Hey got your text, what pizza were you looking for?'});
+    await scout9.message({convo: conversationId, message: 'Hey got your text, what pizza were you looking for?'});
 
     await saveCache({workflows: [...(cache.workflows || []), workflowId]});
   }
   // Option 2: Inline the workflow in a conversation, this will create the workflow automatically
   if (option === 'option2') {
-    const res = await pocketScout.conversationCreate({
+    const res = await scout9.conversationCreate({
       $workflow: workflow, // <-- This will create the workflow and use it in the conversation
       $customer: customerIdWithPhone,
       $agent: agentId,
       environment: 'phone'
     });
-    await pocketScout.message({convo: res.data.id, message: 'Hey got your text, what pizza were you looking for?'});
+    await scout9.message({convo: res.data.id, message: 'Hey got your text, what pizza were you looking for?'});
 
     // @TODO get created workflow ID and cache
     await saveCache({convo: res.data.id});
@@ -275,7 +275,7 @@ async function createWorkflow(cache: ILocalCache) {
   if (option === 'option3') {
 
     // Test the workflow without saving by using the generate API
-    const test1 = await pocketScout.generate({
+    const test1 = await scout9.generate({
       convo: {
         $customer: 'test', // <-- We can use the built in 'test' ID to test workflows
         $agent: agentId,
@@ -302,7 +302,7 @@ async function createWorkflow(cache: ILocalCache) {
       console.log(`Successfully got pizzaType: "${test1.info['pizzaType']}"`);
     }
 
-    const test2 = await pocketScout.generate({
+    const test2 = await scout9.generate({
       convo: {
         $customer: 'test', // <-- We can use the built in 'test' ID to test workflows
         $agent: agentId,
@@ -340,7 +340,7 @@ async function createWorkflow(cache: ILocalCache) {
 }
 
 loadCache()
-  .then((cache) => reset(cache, pocketScout))
+  .then((cache) => reset(cache, scout9))
   .then(createWorkflow)
   .then(() => console.log('Done! 🎉'))
   .catch((err) => {

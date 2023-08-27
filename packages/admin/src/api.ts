@@ -1,8 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
- * Scout9\'s Pocket Scout API
- * Pocket Scout APIs for managing Scout9 users and conversations with your Pocket Scout agents
+ * Scout9\'s Scout9 API
+ * Scout9 APIs for managing Scout9 users and conversations with your Scout9 agents
  *
  * The version of the OpenAPI document: 1.0.0
  *
@@ -110,7 +110,7 @@ export interface Agent {
 }
 
 export const AgentModelEnum = {
-  PocketScout: 'Pocket Scout',
+  Scout9: 'Scout9',
   Bard: 'bard',
   Null: 'null'
 } as const;
@@ -1118,7 +1118,7 @@ export interface CreateAgentRequest {
 }
 
 export const CreateAgentRequestModelEnum = {
-  PocketScout: 'Pocket Scout',
+  Scout9: 'Scout9',
   Bard: 'bard',
   Null: 'null'
 } as const;
@@ -1319,7 +1319,7 @@ export interface CreateAgentsRequestAgentsInner {
 }
 
 export const CreateAgentsRequestAgentsInnerModelEnum = {
-  PocketScout: 'Pocket Scout',
+  Scout9: 'Scout9',
   Bard: 'bard',
   Null: 'null'
 } as const;
@@ -1940,7 +1940,7 @@ export interface CreateWorkflowsResponse {
   '$operation': string;
 }
 /**
- * Customers that your agents can communicate with their pocket scouts
+ * Represents a customer for your business or organization
  * @export
  * @interface Customer
  */
@@ -2605,7 +2605,7 @@ export interface GetAgentResponse {
 }
 
 export const GetAgentResponseModelEnum = {
-  PocketScout: 'Pocket Scout',
+  Scout9: 'Scout9',
   Bard: 'bard',
   Null: 'null'
 } as const;
@@ -3117,7 +3117,7 @@ export interface ListAgentsResponseInner {
 }
 
 export const ListAgentsResponseInnerModelEnum = {
-  PocketScout: 'Pocket Scout',
+  Scout9: 'Scout9',
   Bard: 'bard',
   Null: 'null'
 } as const;
@@ -4928,7 +4928,7 @@ export interface UpdateAgentRequest {
 }
 
 export const UpdateAgentRequestModelEnum = {
-  PocketScout: 'Pocket Scout',
+  Scout9: 'Scout9',
   Bard: 'bard',
   Null: 'null'
 } as const;
@@ -5091,7 +5091,7 @@ export interface UpdateAgentsRequestAgentsInner {
 }
 
 export const UpdateAgentsRequestAgentsInnerModelEnum = {
-  PocketScout: 'Pocket Scout',
+  Scout9: 'Scout9',
   Bard: 'bard',
   Null: 'null'
 } as const;
@@ -5753,10 +5753,10 @@ export interface Workflow {
 }
 
 /**
- * PocketScoutApi - axios parameter creator
+ * Scout9Api - axios parameter creator
  * @export
  */
-export const PocketScoutApiAxiosParamCreator = function (configuration?: Configuration) {
+export const Scout9ApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
     /**
      *
@@ -8034,11 +8034,11 @@ export const PocketScoutApiAxiosParamCreator = function (configuration?: Configu
 };
 
 /**
- * PocketScoutApi - functional programming interface
+ * Scout9Api - functional programming interface
  * @export
  */
-export const PocketScoutApiFp = function(configuration?: Configuration) {
-  const localVarAxiosParamCreator = PocketScoutApiAxiosParamCreator(configuration)
+export const Scout9ApiFp = function(configuration?: Configuration) {
+  const localVarAxiosParamCreator = Scout9ApiAxiosParamCreator(configuration)
   return {
     /**
      *
@@ -8733,11 +8733,11 @@ export const PocketScoutApiFp = function(configuration?: Configuration) {
 };
 
 /**
- * PocketScoutApi - factory interface
+ * Scout9Api - factory interface
  * @export
  */
-export const PocketScoutApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-  const localVarFp = PocketScoutApiFp(configuration)
+export const Scout9ApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+  const localVarFp = Scout9ApiFp(configuration)
   return {
     /**
      *
@@ -9370,22 +9370,22 @@ export const PocketScoutApiFactory = function (configuration?: Configuration, ba
 };
 
 /**
- * PocketScoutApi - object-oriented interface
+ * Scout9Api - object-oriented interface
  * @export
- * @class PocketScoutApi
+ * @class Scout9Api
  * @extends {BaseAPI}
  */
-export class PocketScoutApi extends BaseAPI {
+export class Scout9Api extends BaseAPI {
   /**
    *
    * @summary Gets a agent
    * @param {string} id id of entity to query
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public agent(id: string, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).agent(id, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).agent(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9394,10 +9394,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {string} id id of entity to query
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public agentDelete(id: string, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).agentDelete(id, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).agentDelete(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9406,10 +9406,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {CreateAgentRequest} createAgentRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public agentRegister(createAgentRequest: CreateAgentRequest, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).agentRegister(createAgentRequest, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).agentRegister(createAgentRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9418,10 +9418,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {UpdateAgentRequest} updateAgentRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public agentUpdate(updateAgentRequest: UpdateAgentRequest, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).agentUpdate(updateAgentRequest, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).agentUpdate(updateAgentRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9431,10 +9431,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {Array<string>} [id] ids for the entities this id belongs to
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public agents(q?: string, id?: Array<string>, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).agents(q, id, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).agents(q, id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9443,10 +9443,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {CreateAgentsRequest} createAgentsRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public agentsCreate(createAgentsRequest: CreateAgentsRequest, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).agentsCreate(createAgentsRequest, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).agentsCreate(createAgentsRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9455,10 +9455,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {Array<string>} [id] ids for the entities this id belongs to
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public agentsDelete(id?: Array<string>, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).agentsDelete(id, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).agentsDelete(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9467,10 +9467,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {UpdateAgentsRequest} updateAgentsRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public agentsUpdate(updateAgentsRequest: UpdateAgentsRequest, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).agentsUpdate(updateAgentsRequest, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).agentsUpdate(updateAgentsRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9479,10 +9479,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {string} id id of entity to query
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public context(id: string, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).context(id, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).context(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9491,10 +9491,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {CreateContextRequest} createContextRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public contextCreate(createContextRequest: CreateContextRequest, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).contextCreate(createContextRequest, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).contextCreate(createContextRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9503,10 +9503,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {string} id id of entity to query
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public contextDelete(id: string, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).contextDelete(id, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).contextDelete(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9515,10 +9515,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {UpdateContextRequest} updateContextRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public contextUpdate(updateContextRequest: UpdateContextRequest, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).contextUpdate(updateContextRequest, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).contextUpdate(updateContextRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9528,10 +9528,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {Array<string>} [id] ids for the entities this id belongs to
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public contexts(q?: string, id?: Array<string>, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).contexts(q, id, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).contexts(q, id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9540,10 +9540,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {CreateContextsRequest} createContextsRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public contextsCreate(createContextsRequest: CreateContextsRequest, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).contextsCreate(createContextsRequest, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).contextsCreate(createContextsRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9552,10 +9552,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {Array<string>} [id] ids for the entities this id belongs to
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public contextsDelete(id?: Array<string>, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).contextsDelete(id, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).contextsDelete(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9564,10 +9564,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {UpdateContextRequest} updateContextRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public contextsUpdate(updateContextRequest: UpdateContextRequest, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).contextsUpdate(updateContextRequest, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).contextsUpdate(updateContextRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9576,10 +9576,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {string} id id of entity to query
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public conversation(id: string, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).conversation(id, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).conversation(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9588,10 +9588,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {ConversationCreateRequest} conversationCreateRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public conversationCreate(conversationCreateRequest: ConversationCreateRequest, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).conversationCreate(conversationCreateRequest, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).conversationCreate(conversationCreateRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9600,10 +9600,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {string} id id of entity to query
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public conversationDelete(id: string, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).conversationDelete(id, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).conversationDelete(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9612,10 +9612,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {ConversationUpdateRequest} conversationUpdateRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public conversationUpdate(conversationUpdateRequest: ConversationUpdateRequest, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).conversationUpdate(conversationUpdateRequest, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).conversationUpdate(conversationUpdateRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9624,10 +9624,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {string} id id of entity to query
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public customer(id: string, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).customer(id, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).customer(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9636,10 +9636,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {CreateCustomerRequest} createCustomerRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public customerCreate(createCustomerRequest: CreateCustomerRequest, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).customerCreate(createCustomerRequest, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).customerCreate(createCustomerRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9648,10 +9648,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {string} id id of entity to query
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public customerDelete(id: string, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).customerDelete(id, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).customerDelete(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9660,10 +9660,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {string} id id of entity to query
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public customerGroup(id: string, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).customerGroup(id, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).customerGroup(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9672,10 +9672,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {CreateCustomerGroupRequest} createCustomerGroupRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public customerGroupCreate(createCustomerGroupRequest: CreateCustomerGroupRequest, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).customerGroupCreate(createCustomerGroupRequest, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).customerGroupCreate(createCustomerGroupRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9684,10 +9684,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {string} id id of entity to query
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public customerGroupDelete(id: string, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).customerGroupDelete(id, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).customerGroupDelete(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9696,10 +9696,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {UpdateCustomerGroupRequest} updateCustomerGroupRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public customerGroupUpdate(updateCustomerGroupRequest: UpdateCustomerGroupRequest, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).customerGroupUpdate(updateCustomerGroupRequest, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).customerGroupUpdate(updateCustomerGroupRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9709,10 +9709,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {Array<string>} [id] ids for the entities this id belongs to
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public customerGroups(q?: string, id?: Array<string>, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).customerGroups(q, id, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).customerGroups(q, id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9721,10 +9721,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {CreateCustomerGroupsRequest} createCustomerGroupsRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public customerGroupsCreate(createCustomerGroupsRequest: CreateCustomerGroupsRequest, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).customerGroupsCreate(createCustomerGroupsRequest, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).customerGroupsCreate(createCustomerGroupsRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9733,10 +9733,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {Array<string>} [id] ids for the entities this id belongs to
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public customerGroupsDelete(id?: Array<string>, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).customerGroupsDelete(id, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).customerGroupsDelete(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9745,10 +9745,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {UpdateCustomerGroupsRequest} updateCustomerGroupsRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public customerGroupsUpdate(updateCustomerGroupsRequest: UpdateCustomerGroupsRequest, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).customerGroupsUpdate(updateCustomerGroupsRequest, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).customerGroupsUpdate(updateCustomerGroupsRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9757,10 +9757,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {UpdateCustomerRequest} updateCustomerRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public customerUpdate(updateCustomerRequest: UpdateCustomerRequest, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).customerUpdate(updateCustomerRequest, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).customerUpdate(updateCustomerRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9770,10 +9770,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {Array<string>} [id] ids for the entities this id belongs to
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public customers(q?: string, id?: Array<string>, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).customers(q, id, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).customers(q, id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9782,10 +9782,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {CreateCustomersRequest} createCustomersRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public customersCreate(createCustomersRequest: CreateCustomersRequest, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).customersCreate(createCustomersRequest, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).customersCreate(createCustomersRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9794,10 +9794,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {Array<string>} [id] ids for the entities this id belongs to
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public customersDelete(id?: Array<string>, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).customersDelete(id, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).customersDelete(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9806,10 +9806,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {UpdateCustomerRequest} updateCustomerRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public customersUpdate(updateCustomerRequest: UpdateCustomerRequest, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).customersUpdate(updateCustomerRequest, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).customersUpdate(updateCustomerRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9818,10 +9818,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {string} fileId The ID of the file to use for this request
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public file(fileId: string, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).file(fileId, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).file(fileId, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9831,10 +9831,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {string} [purpose] The intended purpose of the uploaded documents.  This allows us to validate the format of the uploaded file.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public fileCreate(file: File | Buffer | Blob, purpose?: string, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).fileCreate(file, purpose, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).fileCreate(file, purpose, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9843,10 +9843,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {string} fileId The ID of the file to use for this request
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public fileDelete(fileId: string, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).fileDelete(fileId, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).fileDelete(fileId, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9855,10 +9855,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {string} fileId The ID of the file to use for this request
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public fileDownload(fileId: string, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).fileDownload(fileId, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).fileDownload(fileId, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9866,10 +9866,10 @@ export class PocketScoutApi extends BaseAPI {
    * @summary Returns a list of files that belong to the user\'s organization.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public files(options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).files(options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).files(options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9878,10 +9878,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {GenerateRequest} generateRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public generate(generateRequest: GenerateRequest, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).generate(generateRequest, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).generate(generateRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9890,10 +9890,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {MessageCreateRequest} messageCreateRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public message(messageCreateRequest: MessageCreateRequest, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).message(messageCreateRequest, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).message(messageCreateRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9903,10 +9903,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public messages(id: string, q?: string, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).messages(id, q, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).messages(id, q, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9915,10 +9915,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {string} id id of entity to query
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public operation(id: string, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).operation(id, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).operation(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9928,10 +9928,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {Array<string>} [id] ids for the entities this id belongs to
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public operations(q?: string, id?: Array<string>, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).operations(q, id, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).operations(q, id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9940,10 +9940,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {ScheduleCreateRequest} scheduleCreateRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public scheduleConversation(scheduleCreateRequest: ScheduleCreateRequest, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).scheduleConversation(scheduleCreateRequest, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).scheduleConversation(scheduleCreateRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9952,10 +9952,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {string} id id of entity to query
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public scheduleDelete(id: string, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).scheduleDelete(id, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).scheduleDelete(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9964,10 +9964,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {ScheduleGroupCreateRequest} scheduleGroupCreateRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public scheduleGroupCreate(scheduleGroupCreateRequest: ScheduleGroupCreateRequest, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).scheduleGroupCreate(scheduleGroupCreateRequest, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).scheduleGroupCreate(scheduleGroupCreateRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9976,10 +9976,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {string} id id of entity to query
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public scheduleGroupDelete(id: string, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).scheduleGroupDelete(id, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).scheduleGroupDelete(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -9988,10 +9988,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {string} id id of entity to query
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public scheduleGroupRetrieve(id: string, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).scheduleGroupRetrieve(id, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).scheduleGroupRetrieve(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -10000,10 +10000,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {ScheduleGroupUpdateRequest} scheduleGroupUpdateRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public scheduleGroupUpdate(scheduleGroupUpdateRequest: ScheduleGroupUpdateRequest, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).scheduleGroupUpdate(scheduleGroupUpdateRequest, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).scheduleGroupUpdate(scheduleGroupUpdateRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -10012,10 +10012,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {string} id id of entity to query
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public scheduleRetrieve(id: string, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).scheduleRetrieve(id, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).scheduleRetrieve(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -10024,10 +10024,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {ScheduleUpdateRequest} scheduleUpdateRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public scheduleUpdate(scheduleUpdateRequest: ScheduleUpdateRequest, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).scheduleUpdate(scheduleUpdateRequest, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).scheduleUpdate(scheduleUpdateRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -10036,10 +10036,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {string} id id of entity to query
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public workflow(id: string, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).workflow(id, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).workflow(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -10048,10 +10048,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {CreateWorkflowRequest} createWorkflowRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public workflowCreate(createWorkflowRequest: CreateWorkflowRequest, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).workflowCreate(createWorkflowRequest, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).workflowCreate(createWorkflowRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -10060,10 +10060,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {string} id id of entity to query
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public workflowDelete(id: string, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).workflowDelete(id, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).workflowDelete(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -10072,10 +10072,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {UpdateWorkflowRequest} updateWorkflowRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public workflowUpdate(updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).workflowUpdate(updateWorkflowRequest, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).workflowUpdate(updateWorkflowRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -10085,10 +10085,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {Array<string>} [id] ids for the entities this id belongs to
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public workflows(q?: string, id?: Array<string>, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).workflows(q, id, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).workflows(q, id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -10097,10 +10097,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {CreateWorkflowsRequest} createWorkflowsRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public workflowsCreate(createWorkflowsRequest: CreateWorkflowsRequest, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).workflowsCreate(createWorkflowsRequest, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).workflowsCreate(createWorkflowsRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -10109,10 +10109,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {Array<string>} [id] ids for the entities this id belongs to
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public workflowsDelete(id?: Array<string>, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).workflowsDelete(id, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).workflowsDelete(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -10121,10 +10121,10 @@ export class PocketScoutApi extends BaseAPI {
    * @param {UpdateWorkflowRequest} updateWorkflowRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof PocketScoutApi
+   * @memberof Scout9Api
    */
   public workflowsUpdate(updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig) {
-    return PocketScoutApiFp(this.configuration).workflowsUpdate(updateWorkflowRequest, options).then((request) => request(this.axios, this.basePath));
+    return Scout9ApiFp(this.configuration).workflowsUpdate(updateWorkflowRequest, options).then((request) => request(this.axios, this.basePath));
   }
 }
 

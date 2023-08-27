@@ -1,4 +1,4 @@
-import { Configuration, GenerateRequestConvo, PocketScoutApi, ScheduleCreateRequest } from '@scout9/admin/src';
+import { Configuration, GenerateRequestConvo, Scout9Api, ScheduleCreateRequest } from '@scout9/admin/src';
 import 'dotenv/config';
 import { ILocalCache, loadCache, reset, saveCache } from './_utils';
 
@@ -15,7 +15,7 @@ const agentId = process.env.MY_TEST_AGENT || '';
 const configuration = new Configuration({
   apiKey: process.env.MY_S9_API_KEY, // Replace with your API key
 });
-const pocketScout = new PocketScoutApi(configuration);
+const scout9 = new Scout9Api(configuration);
 
 
 /**
@@ -45,7 +45,7 @@ async function simpleScheduledConversation(cache: ILocalCache) {
       'If the customer is not interested or serious in receiving a free pizza, disengage and direct them to our website (https://azpizzatime.com) for future orders'
     ],
   }
-  const scheduleConversationRes = await pocketScout.scheduleConversation(request);
+  const scheduleConversationRes = await scout9.scheduleConversation(request);
   console.log(`\n\tscheduled conversation: "${scheduleConversationRes.data.id}"\n`);
 
   // Cache the conversation id for later use
@@ -70,7 +70,7 @@ async function simpleScheduledConversation(cache: ILocalCache) {
   }
 
   for (const customerResponse of anticipatedCustomerResponses) {
-    const generatedResponse = await pocketScout.generate({
+    const generatedResponse = await scout9.generate({
       convo: conversation,
       mocks: {
         messages: [
@@ -92,7 +92,7 @@ async function simpleScheduledConversation(cache: ILocalCache) {
 }
 
 loadCache()
-  .then((cache) => reset(cache, pocketScout))
+  .then((cache) => reset(cache, scout9))
   .then(simpleScheduledConversation)
   .then(() => console.log('Done! 🎉'))
   .catch((err) => {

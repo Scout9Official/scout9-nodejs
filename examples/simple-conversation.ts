@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { PocketScoutApi, Configuration } from '@scout9/admin/src';
+import { Scout9Api, Configuration } from '@scout9/admin/src';
 import { ILocalCache, loadCache, reset, saveCache } from './_utils';
 
 
@@ -15,7 +15,7 @@ const agentId = process.env.MY_TEST_AGENT || '';
 const configuration = new Configuration({
   apiKey: process.env.MY_S9_API_KEY, // Replace with your API key
 });
-const pocketScout = new PocketScoutApi(configuration);
+const scout9 = new Scout9Api(configuration);
 
 
 /**
@@ -23,7 +23,7 @@ const pocketScout = new PocketScoutApi(configuration);
  */
 async function simpleConversation(cache: ILocalCache) {
   console.log(`Creating default conversation:\n\tcustomer: "${customerIdWithPhone}"\n\tagent: "${agentId}"`);
-  const conversation = await pocketScout.conversationCreate({
+  const conversation = await scout9.conversationCreate({
     $customer: customerIdWithPhone,
     $agent: agentId,
     environment: 'phone', // web, phone, or email
@@ -48,7 +48,7 @@ async function simpleConversation(cache: ILocalCache) {
 
   const initialMessage = `Hey there, would you like a free pizza?`;
   console.log(`Sending initial message to customer: "${initialMessage}"`);
-  await pocketScout.message({convo: conversation.data.id, message: initialMessage});
+  await scout9.message({convo: conversation.data.id, message: initialMessage});
 
 
   console.log(`Testing out a few anticipated responses...`);
@@ -61,7 +61,7 @@ async function simpleConversation(cache: ILocalCache) {
     'I love you, keep texting me',
   ];
   for (const customerResponse of anticipatedCustomerResponses) {
-    const generatedResponse = await pocketScout.generate({
+    const generatedResponse = await scout9.generate({
       convo: conversation.data.id,
       mocks: {
         messages: [
@@ -78,7 +78,7 @@ async function simpleConversation(cache: ILocalCache) {
 
 
   // Retrieve messages from the conversation
-  // const messages = await pocketScout.messages(conversation.data.id)
+  // const messages = await scout9.messages(conversation.data.id)
   // console.log(`Retrieved ${messages.data.length} messages from the conversation`);
   // for (const message of messages.data) {
   //   console.log(`\t${message.role}: ${message.content} (${message.time})`);
@@ -87,7 +87,7 @@ async function simpleConversation(cache: ILocalCache) {
 }
 
 loadCache()
-  .then((cache) => reset(cache, pocketScout))
+  .then((cache) => reset(cache, scout9))
   .then(simpleConversation)
   .then(() => console.log('Done! 🎉'))
   .catch((err) => {
