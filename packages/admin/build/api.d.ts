@@ -1,6 +1,6 @@
 /**
- * Scout9\'s Pocket Scout API
- * Pocket Scout APIs for managing Scout9 users and conversations with your Pocket Scout agents
+ * Scout9 API
+ * Scout9 APIs for managing Scout9 users and conversations with your Scout9 agents
  *
  * The version of the OpenAPI document: 1.0.0
  *
@@ -100,7 +100,7 @@ export interface Agent {
     'excludedLocations'?: Array<string>;
 }
 export declare const AgentModelEnum: {
-    readonly PocketScout: "Pocket Scout";
+    readonly Scout9: "Scout9";
     readonly Bard: "bard";
     readonly Null: "null";
 };
@@ -648,12 +648,6 @@ export interface ConversationCreateResponse {
      */
     'agentTestWebUrl'?: string;
     /**
-     * The ID of the conversation
-     * @type {string}
-     * @memberof ConversationCreateResponse
-     */
-    '$id': string;
-    /**
      * ISO 8601 date string of when the conversation was initiated
      * @type {string}
      * @memberof ConversationCreateResponse
@@ -666,12 +660,6 @@ export interface ConversationCreateResponse {
  * @interface ConversationCreateResponseAllOf
  */
 export interface ConversationCreateResponseAllOf {
-    /**
-     * The ID of the conversation
-     * @type {string}
-     * @memberof ConversationCreateResponseAllOf
-     */
-    '$id': string;
     /**
      * ISO 8601 date string of when the conversation was initiated
      * @type {string}
@@ -1084,7 +1072,7 @@ export interface CreateAgentRequest {
     'audio'?: Array<string>;
 }
 export declare const CreateAgentRequestModelEnum: {
-    readonly PocketScout: "Pocket Scout";
+    readonly Scout9: "Scout9";
     readonly Bard: "bard";
     readonly Null: "null";
 };
@@ -1281,7 +1269,7 @@ export interface CreateAgentsRequestAgentsInner {
     'excludedLocations'?: Array<string>;
 }
 export declare const CreateAgentsRequestAgentsInnerModelEnum: {
-    readonly PocketScout: "Pocket Scout";
+    readonly Scout9: "Scout9";
     readonly Bard: "bard";
     readonly Null: "null";
 };
@@ -1902,7 +1890,7 @@ export interface CreateWorkflowsResponse {
     '$operation': string;
 }
 /**
- * Customers that your agents can communicate with their pocket scouts
+ * Represents a customer for your business or organization
  * @export
  * @interface Customer
  */
@@ -2566,7 +2554,7 @@ export interface GetAgentResponse {
     '$id': string;
 }
 export declare const GetAgentResponseModelEnum: {
-    readonly PocketScout: "Pocket Scout";
+    readonly Scout9: "Scout9";
     readonly Bard: "bard";
     readonly Null: "null";
 };
@@ -3076,7 +3064,7 @@ export interface ListAgentsResponseInner {
     '$id': string;
 }
 export declare const ListAgentsResponseInnerModelEnum: {
-    readonly PocketScout: "Pocket Scout";
+    readonly Scout9: "Scout9";
     readonly Bard: "bard";
     readonly Null: "null";
 };
@@ -4857,7 +4845,7 @@ export interface UpdateAgentRequest {
     'excludedLocations'?: Array<string>;
 }
 export declare const UpdateAgentRequestModelEnum: {
-    readonly PocketScout: "Pocket Scout";
+    readonly Scout9: "Scout9";
     readonly Bard: "bard";
     readonly Null: "null";
 };
@@ -5017,7 +5005,7 @@ export interface UpdateAgentsRequestAgentsInner {
     '$id': string;
 }
 export declare const UpdateAgentsRequestAgentsInnerModelEnum: {
-    readonly PocketScout: "Pocket Scout";
+    readonly Scout9: "Scout9";
     readonly Bard: "bard";
     readonly Null: "null";
 };
@@ -5678,10 +5666,10 @@ export interface Workflow {
     'onError'?: string;
 }
 /**
- * PocketScoutApi - axios parameter creator
+ * Scout9Api - axios parameter creator
  * @export
  */
-export declare const PocketScoutApiAxiosParamCreator: (configuration?: Configuration) => {
+export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration) => {
     /**
      *
      * @summary Gets a agent
@@ -5847,11 +5835,11 @@ export declare const PocketScoutApiAxiosParamCreator: (configuration?: Configura
     /**
      *
      * @summary Gets a customer
-     * @param {string} id id of entity to query
+     * @param {string} idOrEmailOrPhone id of customer or their registered phone or registered email
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    customer: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    customer: (idOrEmailOrPhone: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
      * @summary Creates a new customer
@@ -6187,10 +6175,10 @@ export declare const PocketScoutApiAxiosParamCreator: (configuration?: Configura
     workflowsUpdate: (updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
 };
 /**
- * PocketScoutApi - functional programming interface
+ * Scout9Api - functional programming interface
  * @export
  */
-export declare const PocketScoutApiFp: (configuration?: Configuration) => {
+export declare const Scout9ApiFp: (configuration?: Configuration) => {
     /**
      *
      * @summary Gets a agent
@@ -6356,11 +6344,11 @@ export declare const PocketScoutApiFp: (configuration?: Configuration) => {
     /**
      *
      * @summary Gets a customer
-     * @param {string} id id of entity to query
+     * @param {string} idOrEmailOrPhone id of customer or their registered phone or registered email
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    customer(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetCustomerResponse>>;
+    customer(idOrEmailOrPhone: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetCustomerResponse>>;
     /**
      *
      * @summary Creates a new customer
@@ -6696,10 +6684,10 @@ export declare const PocketScoutApiFp: (configuration?: Configuration) => {
     workflowsUpdate(updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateWorkflowsResponse>>;
 };
 /**
- * PocketScoutApi - factory interface
+ * Scout9Api - factory interface
  * @export
  */
-export declare const PocketScoutApiFactory: (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) => {
+export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) => {
     /**
      *
      * @summary Gets a agent
@@ -6865,11 +6853,11 @@ export declare const PocketScoutApiFactory: (configuration?: Configuration, base
     /**
      *
      * @summary Gets a customer
-     * @param {string} id id of entity to query
+     * @param {string} idOrEmailOrPhone id of customer or their registered phone or registered email
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    customer(id: string, options?: any): AxiosPromise<GetCustomerResponse>;
+    customer(idOrEmailOrPhone: string, options?: any): AxiosPromise<GetCustomerResponse>;
     /**
      *
      * @summary Creates a new customer
@@ -7205,19 +7193,19 @@ export declare const PocketScoutApiFactory: (configuration?: Configuration, base
     workflowsUpdate(updateWorkflowRequest: UpdateWorkflowRequest, options?: any): AxiosPromise<UpdateWorkflowsResponse>;
 };
 /**
- * PocketScoutApi - object-oriented interface
+ * Scout9Api - object-oriented interface
  * @export
- * @class PocketScoutApi
+ * @class Scout9Api
  * @extends {BaseAPI}
  */
-export declare class PocketScoutApi extends BaseAPI {
+export declare class Scout9Api extends BaseAPI {
     /**
      *
      * @summary Gets a agent
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     agent(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<GetAgentResponse, any>>;
     /**
@@ -7226,7 +7214,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     agentDelete(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteAgentResponse, any>>;
     /**
@@ -7235,7 +7223,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {CreateAgentRequest} createAgentRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     agentRegister(createAgentRequest: CreateAgentRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateAgentResponse, any>>;
     /**
@@ -7244,7 +7232,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {UpdateAgentRequest} updateAgentRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     agentUpdate(updateAgentRequest: UpdateAgentRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateAgentResponse, any>>;
     /**
@@ -7254,7 +7242,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     agents(q?: string, id?: Array<string>, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ListAgentsResponseInner[], any>>;
     /**
@@ -7263,7 +7251,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {CreateAgentsRequest} createAgentsRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     agentsCreate(createAgentsRequest: CreateAgentsRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateAgentsResponse, any>>;
     /**
@@ -7272,7 +7260,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     agentsDelete(id?: Array<string>, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteAgentsResponse, any>>;
     /**
@@ -7281,7 +7269,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {UpdateAgentsRequest} updateAgentsRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     agentsUpdate(updateAgentsRequest: UpdateAgentsRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateAgentsResponse, any>>;
     /**
@@ -7290,7 +7278,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     context(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<GetContextResponse, any>>;
     /**
@@ -7299,7 +7287,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {CreateContextRequest} createContextRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     contextCreate(createContextRequest: CreateContextRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateContextResponse, any>>;
     /**
@@ -7308,7 +7296,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     contextDelete(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteContextResponse, any>>;
     /**
@@ -7317,7 +7305,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {UpdateContextRequest} updateContextRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     contextUpdate(updateContextRequest: UpdateContextRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateContextResponse, any>>;
     /**
@@ -7327,7 +7315,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     contexts(q?: string, id?: Array<string>, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ListContextsResponseInner[], any>>;
     /**
@@ -7336,7 +7324,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {CreateContextsRequest} createContextsRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     contextsCreate(createContextsRequest: CreateContextsRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateContextsResponse, any>>;
     /**
@@ -7345,7 +7333,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     contextsDelete(id?: Array<string>, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteContextsResponse, any>>;
     /**
@@ -7354,7 +7342,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {UpdateContextRequest} updateContextRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     contextsUpdate(updateContextRequest: UpdateContextRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateContextsResponse, any>>;
     /**
@@ -7363,7 +7351,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     conversation(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ConversationGetResponse, any>>;
     /**
@@ -7372,7 +7360,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {ConversationCreateRequest} conversationCreateRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     conversationCreate(conversationCreateRequest: ConversationCreateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ConversationCreateResponse, any>>;
     /**
@@ -7381,7 +7369,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     conversationDelete(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ConversationRemoveResponse, any>>;
     /**
@@ -7390,25 +7378,25 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {ConversationUpdateRequest} conversationUpdateRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     conversationUpdate(conversationUpdateRequest: ConversationUpdateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ConversationUpdateResponse, any>>;
     /**
      *
      * @summary Gets a customer
-     * @param {string} id id of entity to query
+     * @param {string} idOrEmailOrPhone id of customer or their registered phone or registered email
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
-    customer(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<GetCustomerResponse, any>>;
+    customer(idOrEmailOrPhone: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<GetCustomerResponse, any>>;
     /**
      *
      * @summary Creates a new customer
      * @param {CreateCustomerRequest} createCustomerRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     customerCreate(createCustomerRequest: CreateCustomerRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateCustomerResponse, any>>;
     /**
@@ -7417,7 +7405,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     customerDelete(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteCustomerResponse, any>>;
     /**
@@ -7426,7 +7414,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     customerGroup(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<GetCustomerGroupResponse, any>>;
     /**
@@ -7435,7 +7423,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {CreateCustomerGroupRequest} createCustomerGroupRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     customerGroupCreate(createCustomerGroupRequest: CreateCustomerGroupRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateCustomerGroupResponse, any>>;
     /**
@@ -7444,7 +7432,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     customerGroupDelete(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteCustomerGroupResponse, any>>;
     /**
@@ -7453,7 +7441,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {UpdateCustomerGroupRequest} updateCustomerGroupRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     customerGroupUpdate(updateCustomerGroupRequest: UpdateCustomerGroupRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateCustomerGroupResponse, any>>;
     /**
@@ -7463,7 +7451,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     customerGroups(q?: string, id?: Array<string>, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ListCustomerGroupsResponseInner[], any>>;
     /**
@@ -7472,7 +7460,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {CreateCustomerGroupsRequest} createCustomerGroupsRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     customerGroupsCreate(createCustomerGroupsRequest: CreateCustomerGroupsRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateCustomerGroupsResponse, any>>;
     /**
@@ -7481,7 +7469,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     customerGroupsDelete(id?: Array<string>, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteCustomerGroupsResponse, any>>;
     /**
@@ -7490,7 +7478,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {UpdateCustomerGroupsRequest} updateCustomerGroupsRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     customerGroupsUpdate(updateCustomerGroupsRequest: UpdateCustomerGroupsRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateCustomerGroupsResponse, any>>;
     /**
@@ -7499,7 +7487,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {UpdateCustomerRequest} updateCustomerRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     customerUpdate(updateCustomerRequest: UpdateCustomerRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateCustomerResponse, any>>;
     /**
@@ -7509,7 +7497,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     customers(q?: string, id?: Array<string>, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ListCustomersResponseInner[], any>>;
     /**
@@ -7518,7 +7506,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {CreateCustomersRequest} createCustomersRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     customersCreate(createCustomersRequest: CreateCustomersRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateCustomersResponse, any>>;
     /**
@@ -7527,7 +7515,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     customersDelete(id?: Array<string>, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteCustomersResponse, any>>;
     /**
@@ -7536,7 +7524,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {UpdateCustomerRequest} updateCustomerRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     customersUpdate(updateCustomerRequest: UpdateCustomerRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateCustomersResponse, any>>;
     /**
@@ -7545,7 +7533,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {string} fileId The ID of the file to use for this request
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     file(fileId: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<Scout9File, any>>;
     /**
@@ -7555,7 +7543,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {string} [purpose] The intended purpose of the uploaded documents.  This allows us to validate the format of the uploaded file.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     fileCreate(file: File | Buffer | Blob, purpose?: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<Scout9File, any>>;
     /**
@@ -7564,7 +7552,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {string} fileId The ID of the file to use for this request
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     fileDelete(fileId: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteFileResponse, any>>;
     /**
@@ -7573,7 +7561,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {string} fileId The ID of the file to use for this request
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     fileDownload(fileId: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<string, any>>;
     /**
@@ -7581,7 +7569,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @summary Returns a list of files that belong to the user\'s organization.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     files(options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ListFilesResponse, any>>;
     /**
@@ -7590,7 +7578,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {GenerateRequest} generateRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     generate(generateRequest: GenerateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<GenerateResponse, any>>;
     /**
@@ -7599,7 +7587,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {MessageCreateRequest} messageCreateRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     message(messageCreateRequest: MessageCreateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<MessageCreateResponse, any>>;
     /**
@@ -7609,7 +7597,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     messages(id: string, q?: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<MessageGetResponseInner[], any>>;
     /**
@@ -7618,7 +7606,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     operation(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<GetApiOperationResponse, any>>;
     /**
@@ -7628,7 +7616,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     operations(q?: string, id?: Array<string>, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ListApiOperationsResponseInner[], any>>;
     /**
@@ -7637,7 +7625,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {ScheduleCreateRequest} scheduleCreateRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     scheduleConversation(scheduleCreateRequest: ScheduleCreateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleCreateResponse, any>>;
     /**
@@ -7646,7 +7634,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     scheduleDelete(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleRemoveResponse, any>>;
     /**
@@ -7655,7 +7643,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {ScheduleGroupCreateRequest} scheduleGroupCreateRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     scheduleGroupCreate(scheduleGroupCreateRequest: ScheduleGroupCreateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleGroupCreateResponse, any>>;
     /**
@@ -7664,7 +7652,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     scheduleGroupDelete(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleGroupRemoveResponse, any>>;
     /**
@@ -7673,7 +7661,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     scheduleGroupRetrieve(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleGroupGetResponse, any>>;
     /**
@@ -7682,7 +7670,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {ScheduleGroupUpdateRequest} scheduleGroupUpdateRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     scheduleGroupUpdate(scheduleGroupUpdateRequest: ScheduleGroupUpdateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleGroupUpdateResponse, any>>;
     /**
@@ -7691,7 +7679,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     scheduleRetrieve(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleCreateResponse, any>>;
     /**
@@ -7700,7 +7688,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {ScheduleUpdateRequest} scheduleUpdateRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     scheduleUpdate(scheduleUpdateRequest: ScheduleUpdateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleUpdateResponse, any>>;
     /**
@@ -7709,7 +7697,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     workflow(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<GetWorkflowResponse, any>>;
     /**
@@ -7718,7 +7706,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {CreateWorkflowRequest} createWorkflowRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     workflowCreate(createWorkflowRequest: CreateWorkflowRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateWorkflowResponse, any>>;
     /**
@@ -7727,7 +7715,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     workflowDelete(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteWorkflowResponse, any>>;
     /**
@@ -7736,7 +7724,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {UpdateWorkflowRequest} updateWorkflowRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     workflowUpdate(updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateWorkflowResponse, any>>;
     /**
@@ -7746,7 +7734,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     workflows(q?: string, id?: Array<string>, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ListWorkflowsResponseInner[], any>>;
     /**
@@ -7755,7 +7743,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {CreateWorkflowsRequest} createWorkflowsRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     workflowsCreate(createWorkflowsRequest: CreateWorkflowsRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateWorkflowsResponse, any>>;
     /**
@@ -7764,7 +7752,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     workflowsDelete(id?: Array<string>, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteWorkflowsResponse, any>>;
     /**
@@ -7773,7 +7761,7 @@ export declare class PocketScoutApi extends BaseAPI {
      * @param {UpdateWorkflowRequest} updateWorkflowRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PocketScoutApi
+     * @memberof Scout9Api
      */
     workflowsUpdate(updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateWorkflowsResponse, any>>;
 }

@@ -1,7 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
- * Scout9\'s Scout9 API
+ * Scout9 API
  * Scout9 APIs for managing Scout9 users and conversations with your Scout9 agents
  *
  * The version of the OpenAPI document: 1.0.0
@@ -671,12 +671,6 @@ export interface ConversationCreateResponse {
    */
   'agentTestWebUrl'?: string;
   /**
-   * The ID of the conversation
-   * @type {string}
-   * @memberof ConversationCreateResponse
-   */
-  '$id': string;
-  /**
    * ISO 8601 date string of when the conversation was initiated
    * @type {string}
    * @memberof ConversationCreateResponse
@@ -689,12 +683,6 @@ export interface ConversationCreateResponse {
  * @interface ConversationCreateResponseAllOf
  */
 export interface ConversationCreateResponseAllOf {
-  /**
-   * The ID of the conversation
-   * @type {string}
-   * @memberof ConversationCreateResponseAllOf
-   */
-  '$id': string;
   /**
    * ISO 8601 date string of when the conversation was initiated
    * @type {string}
@@ -6493,13 +6481,13 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
     /**
      *
      * @summary Gets a customer
-     * @param {string} id id of entity to query
+     * @param {string} idOrEmailOrPhone id of customer or their registered phone or registered email
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    customer: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-      // verify required parameter 'id' is not null or undefined
-      assertParamExists('customer', 'id', id)
+    customer: async (idOrEmailOrPhone: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'idOrEmailOrPhone' is not null or undefined
+      assertParamExists('customer', 'idOrEmailOrPhone', idOrEmailOrPhone)
       const localVarPath = `/v1-customer`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -6512,8 +6500,8 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      if (id !== undefined) {
-        localVarQueryParameter['id'] = id;
+      if (idOrEmailOrPhone !== undefined) {
+        localVarQueryParameter['idOrEmailOrPhone'] = idOrEmailOrPhone;
       }
 
 
@@ -8265,12 +8253,12 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
     /**
      *
      * @summary Gets a customer
-     * @param {string} id id of entity to query
+     * @param {string} idOrEmailOrPhone id of customer or their registered phone or registered email
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async customer(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetCustomerResponse>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.customer(id, options);
+    async customer(idOrEmailOrPhone: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetCustomerResponse>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.customer(idOrEmailOrPhone, options);
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
     },
     /**
@@ -8944,12 +8932,12 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
     /**
      *
      * @summary Gets a customer
-     * @param {string} id id of entity to query
+     * @param {string} idOrEmailOrPhone id of customer or their registered phone or registered email
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    customer(id: string, options?: any): AxiosPromise<GetCustomerResponse> {
-      return localVarFp.customer(id, options).then((request) => request(axios, basePath));
+    customer(idOrEmailOrPhone: string, options?: any): AxiosPromise<GetCustomerResponse> {
+      return localVarFp.customer(idOrEmailOrPhone, options).then((request) => request(axios, basePath));
     },
     /**
      *
@@ -9621,13 +9609,13 @@ export class Scout9Api extends BaseAPI {
   /**
    *
    * @summary Gets a customer
-   * @param {string} id id of entity to query
+   * @param {string} idOrEmailOrPhone id of customer or their registered phone or registered email
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof Scout9Api
    */
-  public customer(id: string, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).customer(id, options).then((request) => request(this.axios, this.basePath));
+  public customer(idOrEmailOrPhone: string, options?: AxiosRequestConfig) {
+    return Scout9ApiFp(this.configuration).customer(idOrEmailOrPhone, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
