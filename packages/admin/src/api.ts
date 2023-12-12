@@ -118,6 +118,19 @@ export const AgentModelEnum = {
 export type AgentModelEnum = typeof AgentModelEnum[keyof typeof AgentModelEnum];
 
 /**
+ *
+ * @export
+ * @interface AndLogic
+ */
+export interface AndLogic {
+  /**
+   *
+   * @type {Array<Logic>}
+   * @memberof AndLogic
+   */
+  'and': Array<Logic>;
+}
+/**
  * @type AnyValue
  * @export
  */
@@ -185,6 +198,56 @@ export interface BlockInfo {
   'time'?: string;
 }
 /**
+ * @type Condition
+ * @export
+ */
+export type Condition = EqualityCondition | ExistsCondition | RegexCondition;
+
+/**
+ *
+ * @export
+ * @interface ConditionBase
+ */
+export interface ConditionBase {
+  /**
+   *
+   * @type {string}
+   * @memberof ConditionBase
+   */
+  'path': string;
+  /**
+   *
+   * @type {Operator}
+   * @memberof ConditionBase
+   */
+  'operator': Operator;
+  /**
+   *
+   * @type {any}
+   * @memberof ConditionBase
+   */
+  'value'?: any;
+  /**
+   *
+   * @type {boolean}
+   * @memberof ConditionBase
+   */
+  'external'?: boolean;
+}
+/**
+ *
+ * @export
+ * @interface ConditionLogic
+ */
+export interface ConditionLogic {
+  /**
+   *
+   * @type {Condition}
+   * @memberof ConditionLogic
+   */
+  'condition': Condition;
+}
+/**
  *
  * @export
  * @interface Context
@@ -215,6 +278,12 @@ export interface Context {
    */
   'detection'?: ContextDetectionParams;
   /**
+   * The API to use for context detection
+   * @type {string}
+   * @memberof Context
+   */
+  'detectionApi'?: string;
+  /**
    * The ID column of the context
    * @type {string}
    * @memberof Context
@@ -232,6 +301,18 @@ export interface Context {
    * @memberof Context
    */
   'requiredColumns'?: Array<string>;
+  /**
+   * Whether or not to force NER
+   * @type {boolean}
+   * @memberof Context
+   */
+  'forceNER'?: boolean;
+  /**
+   *
+   * @type {ContextModel}
+   * @memberof Context
+   */
+  'model'?: ContextModel;
 }
 /**
  *
@@ -241,10 +322,10 @@ export interface Context {
 export interface ContextDetectionDocument {
   /**
    * The languages the entity is available in
-   * @type {Array<string>}
+   * @type {string}
    * @memberof ContextDetectionDocument
    */
-  'languages'?: Array<string>;
+  'language'?: string;
   /**
    *
    * @type {string}
@@ -308,6 +389,12 @@ export interface ContextDetectionParams {
    */
   'documents': Array<ContextDetectionDocument>;
   /**
+   * The activation intent of the context
+   * @type {string}
+   * @memberof ContextDetectionParams
+   */
+  'activationIntent'?: string;
+  /**
    *
    * @type {Array<ContextDetectionTest>}
    * @memberof ContextDetectionParams
@@ -350,13 +437,32 @@ export interface ContextDetectionTestExpected {
    * @type {string}
    * @memberof ContextDetectionTestExpected
    */
-  'intent'?: string;
+  'intent': string;
   /**
    *
    * @type {Array<ParsedContextEntity>}
    * @memberof ContextDetectionTestExpected
    */
-  'entities'?: Array<ParsedContextEntity>;
+  'entities': Array<ParsedContextEntity>;
+}
+/**
+ * The model to use for context detection
+ * @export
+ * @interface ContextModel
+ */
+export interface ContextModel {
+  /**
+   * The last time the model was updated
+   * @type {string}
+   * @memberof ContextModel
+   */
+  'lastUpdate': string;
+  /**
+   * The reference to the model
+   * @type {string}
+   * @memberof ContextModel
+   */
+  'ref': string;
 }
 /**
  * @type ContextRowValue
@@ -549,9 +655,16 @@ export interface ConversationContextField {
    */
   'metadata'?: object;
   /**
+   *
+   * @type {Logic}
+   * @memberof ConversationContextField
+   */
+  'logic'?: Logic;
+  /**
    * The conditions of the conversation
    * @type {Array<ConversationContextGroup>}
    * @memberof ConversationContextField
+   * @deprecated
    */
   'conditions'?: Array<ConversationContextGroup>;
   /**
@@ -1471,6 +1584,12 @@ export interface CreateContextRequest {
    */
   'detection'?: ContextDetectionParams;
   /**
+   * The API to use for context detection
+   * @type {string}
+   * @memberof CreateContextRequest
+   */
+  'detectionApi'?: string;
+  /**
    * The ID column of the context
    * @type {string}
    * @memberof CreateContextRequest
@@ -1488,6 +1607,18 @@ export interface CreateContextRequest {
    * @memberof CreateContextRequest
    */
   'requiredColumns'?: Array<string>;
+  /**
+   * Whether or not to force NER
+   * @type {boolean}
+   * @memberof CreateContextRequest
+   */
+  'forceNER'?: boolean;
+  /**
+   *
+   * @type {ContextModel}
+   * @memberof CreateContextRequest
+   */
+  'model'?: ContextModel;
 }
 /**
  *
@@ -1558,6 +1689,12 @@ export interface CreateContextsRequestContextsInner {
    */
   'detection'?: ContextDetectionParams;
   /**
+   * The API to use for context detection
+   * @type {string}
+   * @memberof CreateContextsRequestContextsInner
+   */
+  'detectionApi'?: string;
+  /**
    * The ID column of the context
    * @type {string}
    * @memberof CreateContextsRequestContextsInner
@@ -1575,6 +1712,18 @@ export interface CreateContextsRequestContextsInner {
    * @memberof CreateContextsRequestContextsInner
    */
   'requiredColumns'?: Array<string>;
+  /**
+   * Whether or not to force NER
+   * @type {boolean}
+   * @memberof CreateContextsRequestContextsInner
+   */
+  'forceNER'?: boolean;
+  /**
+   *
+   * @type {ContextModel}
+   * @memberof CreateContextsRequestContextsInner
+   */
+  'model'?: ContextModel;
 }
 /**
  *
@@ -1921,6 +2070,12 @@ export interface CreateWorkflowRequest {
    * @memberof CreateWorkflowRequest
    */
   'onError'?: string;
+  /**
+   * The priority of the workflow in relation to other workflows (determines activation order)
+   * @type {number}
+   * @memberof CreateWorkflowRequest
+   */
+  'priority': number;
 }
 /**
  *
@@ -2014,6 +2169,12 @@ export interface CreateWorkflowsRequestWorkflowsInner {
    * @memberof CreateWorkflowsRequestWorkflowsInner
    */
   'onError'?: string;
+  /**
+   * The priority of the workflow in relation to other workflows (determines activation order)
+   * @type {number}
+   * @memberof CreateWorkflowsRequestWorkflowsInner
+   */
+  'priority': number;
 }
 /**
  *
@@ -2500,6 +2661,86 @@ export interface DeleteWorkflowsResponse {
 /**
  *
  * @export
+ * @interface EqualityCondition
+ */
+export interface EqualityCondition {
+  /**
+   *
+   * @type {string}
+   * @memberof EqualityCondition
+   */
+  'path': string;
+  /**
+   *
+   * @type {EqualityOperator}
+   * @memberof EqualityCondition
+   */
+  'operator': EqualityOperator;
+  /**
+   *
+   * @type {any}
+   * @memberof EqualityCondition
+   */
+  'value': any;
+  /**
+   *
+   * @type {boolean}
+   * @memberof EqualityCondition
+   */
+  'external'?: boolean;
+}
+
+
+/**
+ *
+ * @export
+ * @interface EqualityConditionAllOf
+ */
+export interface EqualityConditionAllOf {
+  /**
+   *
+   * @type {EqualityOperator}
+   * @memberof EqualityConditionAllOf
+   */
+  'operator': EqualityOperator;
+  /**
+   *
+   * @type {any}
+   * @memberof EqualityConditionAllOf
+   */
+  'value': any;
+}
+
+
+/**
+ *
+ * @export
+ * @enum {string}
+ */
+
+export const EqualityOperator = {
+  Eq: 'eq',
+  Neq: 'neq',
+  Gt: 'gt',
+  Gte: 'gte',
+  Lt: 'lt',
+  Lte: 'lte',
+  In: 'in',
+  Nin: 'nin',
+  Contains: 'contains',
+  NotContains: 'notContains',
+  StartsWith: 'startsWith',
+  EndsWith: 'endsWith',
+  ArrayContainsAny: 'arrayContainsAny',
+  ArrayContains: 'arrayContains'
+} as const;
+
+export type EqualityOperator = typeof EqualityOperator[keyof typeof EqualityOperator];
+
+
+/**
+ *
+ * @export
  * @interface ErrorResponse
  */
 export interface ErrorResponse {
@@ -2510,6 +2751,68 @@ export interface ErrorResponse {
    */
   'error': Error;
 }
+/**
+ *
+ * @export
+ * @enum {string}
+ */
+
+export const ExistenceOperator = {
+  Exists: 'exists',
+  NotExists: 'notExists'
+} as const;
+
+export type ExistenceOperator = typeof ExistenceOperator[keyof typeof ExistenceOperator];
+
+
+/**
+ *
+ * @export
+ * @interface ExistsCondition
+ */
+export interface ExistsCondition {
+  /**
+   *
+   * @type {string}
+   * @memberof ExistsCondition
+   */
+  'path': string;
+  /**
+   *
+   * @type {ExistenceOperator}
+   * @memberof ExistsCondition
+   */
+  'operator': ExistenceOperator;
+  /**
+   *
+   * @type {any}
+   * @memberof ExistsCondition
+   */
+  'value'?: any;
+  /**
+   *
+   * @type {boolean}
+   * @memberof ExistsCondition
+   */
+  'external'?: boolean;
+}
+
+
+/**
+ *
+ * @export
+ * @interface ExistsConditionAllOf
+ */
+export interface ExistsConditionAllOf {
+  /**
+   *
+   * @type {ExistenceOperator}
+   * @memberof ExistsConditionAllOf
+   */
+  'operator': ExistenceOperator;
+}
+
+
 /**
  *
  * @export
@@ -2850,6 +3153,12 @@ export interface GetContextResponse {
    */
   'detection'?: ContextDetectionParams;
   /**
+   * The API to use for context detection
+   * @type {string}
+   * @memberof GetContextResponse
+   */
+  'detectionApi'?: string;
+  /**
    * The ID column of the context
    * @type {string}
    * @memberof GetContextResponse
@@ -2867,6 +3176,18 @@ export interface GetContextResponse {
    * @memberof GetContextResponse
    */
   'requiredColumns'?: Array<string>;
+  /**
+   * Whether or not to force NER
+   * @type {boolean}
+   * @memberof GetContextResponse
+   */
+  'forceNER'?: boolean;
+  /**
+   *
+   * @type {ContextModel}
+   * @memberof GetContextResponse
+   */
+  'model'?: ContextModel;
   /**
    * The ID of the context
    * @type {string}
@@ -3138,6 +3459,12 @@ export interface GetWorkflowResponse {
    */
   'onError'?: string;
   /**
+   * The priority of the workflow in relation to other workflows (determines activation order)
+   * @type {number}
+   * @memberof GetWorkflowResponse
+   */
+  'priority': number;
+  /**
    * The ID of the workflow
    * @type {string}
    * @memberof GetWorkflowResponse
@@ -3362,6 +3689,12 @@ export interface ListContextsResponseInner {
    */
   'detection'?: ContextDetectionParams;
   /**
+   * The API to use for context detection
+   * @type {string}
+   * @memberof ListContextsResponseInner
+   */
+  'detectionApi'?: string;
+  /**
    * The ID column of the context
    * @type {string}
    * @memberof ListContextsResponseInner
@@ -3379,6 +3712,18 @@ export interface ListContextsResponseInner {
    * @memberof ListContextsResponseInner
    */
   'requiredColumns'?: Array<string>;
+  /**
+   * Whether or not to force NER
+   * @type {boolean}
+   * @memberof ListContextsResponseInner
+   */
+  'forceNER'?: boolean;
+  /**
+   *
+   * @type {ContextModel}
+   * @memberof ListContextsResponseInner
+   */
+  'model'?: ContextModel;
   /**
    * The ID of the context
    * @type {string}
@@ -3664,8 +4009,6 @@ export interface ListQueryOperationsInner {
    */
   'value': AnyValue;
 }
-
-
 /**
  *
  * @export
@@ -3721,6 +4064,12 @@ export interface ListWorkflowsResponseInner {
    */
   'onError'?: string;
   /**
+   * The priority of the workflow in relation to other workflows (determines activation order)
+   * @type {number}
+   * @memberof ListWorkflowsResponseInner
+   */
+  'priority': number;
+  /**
    * The ID of the workflow
    * @type {string}
    * @memberof ListWorkflowsResponseInner
@@ -3740,6 +4089,12 @@ export interface ListWorkflowsResponseInnerAllOf {
    */
   '$id': string;
 }
+/**
+ * @type Logic
+ * @export
+ */
+export type Logic = AndLogic | ConditionLogic | NotLogic | OrLogic;
+
 /**
  *
  * @export
@@ -3985,6 +4340,19 @@ export interface ModelError {
 /**
  *
  * @export
+ * @interface NotLogic
+ */
+export interface NotLogic {
+  /**
+   *
+   * @type {Logic}
+   * @memberof NotLogic
+   */
+  'not': Logic;
+}
+/**
+ *
+ * @export
  * @interface OperationBulkResponse
  */
 export interface OperationBulkResponse {
@@ -4059,39 +4427,55 @@ export interface OperationResponse {
   'error'?: Error;
 }
 /**
- * The operator of the condition or query
+ * @type Operator
  * @export
- * @enum {string}
  */
+export type Operator = EqualityOperator | ExistenceOperator;
 
-export const Operator = {
-  Eq: 'eq',
-  Equal: 'equal',
-  Ne: 'ne',
-  NotEquals: 'not-equals',
-  Gt: 'gt',
-  GreaterThan: 'greater-than',
-  Gte: 'gte',
-  GreaterThanEquals: 'greater-than-equals',
-  Lt: 'lt',
-  LessThan: 'less-than',
-  Lte: 'lte',
-  LessThanEquals: 'less-than-equals',
-  ArrayContains: 'array-contains',
-  In: 'in',
-  ArrayContainsAny: 'array-contains-any',
-  NotIn: 'not-in'
-} as const;
-
-export type Operator = typeof Operator[keyof typeof Operator];
-
-
+/**
+ *
+ * @export
+ * @interface OrLogic
+ */
+export interface OrLogic {
+  /**
+   *
+   * @type {Array<Logic>}
+   * @memberof OrLogic
+   */
+  'or': Array<Logic>;
+}
 /**
  * @type ParsedContextEntity
  * @export
  */
 export type ParsedContextEntity = string | { [key: string]: any; };
 
+/**
+ *
+ * @export
+ * @interface RegexCondition
+ */
+export interface RegexCondition {
+  /**
+   *
+   * @type {string}
+   * @memberof RegexCondition
+   */
+  'path': string;
+  /**
+   *
+   * @type {string}
+   * @memberof RegexCondition
+   */
+  'regex': string;
+  /**
+   *
+   * @type {boolean}
+   * @memberof RegexCondition
+   */
+  'external'?: boolean;
+}
 /**
  *
  * @export
@@ -5344,6 +5728,12 @@ export interface UpdateContextRequest {
    */
   'detection'?: ContextDetectionParams;
   /**
+   * The API to use for context detection
+   * @type {string}
+   * @memberof UpdateContextRequest
+   */
+  'detectionApi'?: string;
+  /**
    * The ID column of the context
    * @type {string}
    * @memberof UpdateContextRequest
@@ -5361,6 +5751,18 @@ export interface UpdateContextRequest {
    * @memberof UpdateContextRequest
    */
   'requiredColumns'?: Array<string>;
+  /**
+   * Whether or not to force NER
+   * @type {boolean}
+   * @memberof UpdateContextRequest
+   */
+  'forceNER'?: boolean;
+  /**
+   *
+   * @type {ContextModel}
+   * @memberof UpdateContextRequest
+   */
+  'model'?: ContextModel;
   /**
    * The ID of the context to update
    * @type {string}
@@ -5803,6 +6205,12 @@ export interface UpdateWorkflowRequest {
    */
   'onError'?: string;
   /**
+   * The priority of the workflow in relation to other workflows (determines activation order)
+   * @type {number}
+   * @memberof UpdateWorkflowRequest
+   */
+  'priority': number;
+  /**
    * The ID of the workflow to update
    * @type {string}
    * @memberof UpdateWorkflowRequest
@@ -5933,6 +6341,12 @@ export interface Workflow {
    * @memberof Workflow
    */
   'onError'?: string;
+  /**
+   * The priority of the workflow in relation to other workflows (determines activation order)
+   * @type {number}
+   * @memberof Workflow
+   */
+  'priority': number;
 }
 
 /**

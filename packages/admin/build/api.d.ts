@@ -106,6 +106,19 @@ export declare const AgentModelEnum: {
 };
 export type AgentModelEnum = typeof AgentModelEnum[keyof typeof AgentModelEnum];
 /**
+ *
+ * @export
+ * @interface AndLogic
+ */
+export interface AndLogic {
+    /**
+     *
+     * @type {Array<Logic>}
+     * @memberof AndLogic
+     */
+    'and': Array<Logic>;
+}
+/**
  * @type AnyValue
  * @export
  */
@@ -171,6 +184,55 @@ export interface BlockInfo {
     'time'?: string;
 }
 /**
+ * @type Condition
+ * @export
+ */
+export type Condition = EqualityCondition | ExistsCondition | RegexCondition;
+/**
+ *
+ * @export
+ * @interface ConditionBase
+ */
+export interface ConditionBase {
+    /**
+     *
+     * @type {string}
+     * @memberof ConditionBase
+     */
+    'path': string;
+    /**
+     *
+     * @type {Operator}
+     * @memberof ConditionBase
+     */
+    'operator': Operator;
+    /**
+     *
+     * @type {any}
+     * @memberof ConditionBase
+     */
+    'value'?: any;
+    /**
+     *
+     * @type {boolean}
+     * @memberof ConditionBase
+     */
+    'external'?: boolean;
+}
+/**
+ *
+ * @export
+ * @interface ConditionLogic
+ */
+export interface ConditionLogic {
+    /**
+     *
+     * @type {Condition}
+     * @memberof ConditionLogic
+     */
+    'condition': Condition;
+}
+/**
  *
  * @export
  * @interface Context
@@ -187,7 +249,7 @@ export interface Context {
      * @type {boolean}
      * @memberof Context
      */
-    'modifiable': boolean;
+    'modifiable'?: boolean;
     /**
      * The description of the context
      * @type {string}
@@ -201,23 +263,41 @@ export interface Context {
      */
     'detection'?: ContextDetectionParams;
     /**
+     * The API to use for context detection
+     * @type {string}
+     * @memberof Context
+     */
+    'detectionApi'?: string;
+    /**
      * The ID column of the context
      * @type {string}
      * @memberof Context
      */
-    'idColumn': string;
+    'idColumn'?: string;
     /**
      * The columns of the context
      * @type {Array<string>}
      * @memberof Context
      */
-    'columns': Array<string>;
+    'columns'?: Array<string>;
     /**
      * The required columns of the context
      * @type {Array<string>}
      * @memberof Context
      */
     'requiredColumns'?: Array<string>;
+    /**
+     * Whether or not to force NER
+     * @type {boolean}
+     * @memberof Context
+     */
+    'forceNER'?: boolean;
+    /**
+     *
+     * @type {ContextModel}
+     * @memberof Context
+     */
+    'model'?: ContextModel;
 }
 /**
  *
@@ -227,10 +307,10 @@ export interface Context {
 export interface ContextDetectionDocument {
     /**
      * The languages the entity is available in
-     * @type {Array<string>}
+     * @type {string}
      * @memberof ContextDetectionDocument
      */
-    'languages'?: Array<string>;
+    'language'?: string;
     /**
      *
      * @type {string}
@@ -294,6 +374,12 @@ export interface ContextDetectionParams {
      */
     'documents': Array<ContextDetectionDocument>;
     /**
+     * The activation intent of the context
+     * @type {string}
+     * @memberof ContextDetectionParams
+     */
+    'activationIntent'?: string;
+    /**
      *
      * @type {Array<ContextDetectionTest>}
      * @memberof ContextDetectionParams
@@ -336,14 +422,38 @@ export interface ContextDetectionTestExpected {
      * @type {string}
      * @memberof ContextDetectionTestExpected
      */
-    'intent'?: string;
+    'intent': string;
     /**
      *
      * @type {Array<ParsedContextEntity>}
      * @memberof ContextDetectionTestExpected
      */
-    'entities'?: Array<ParsedContextEntity>;
+    'entities': Array<ParsedContextEntity>;
 }
+/**
+ * The model to use for context detection
+ * @export
+ * @interface ContextModel
+ */
+export interface ContextModel {
+    /**
+     * The last time the model was updated
+     * @type {string}
+     * @memberof ContextModel
+     */
+    'lastUpdate': string;
+    /**
+     * The reference to the model
+     * @type {string}
+     * @memberof ContextModel
+     */
+    'ref': string;
+}
+/**
+ * @type ContextRowValue
+ * @export
+ */
+export type ContextRowValue = number | string;
 /**
  *
  * @export
@@ -525,9 +635,16 @@ export interface ConversationContextField {
      */
     'metadata'?: object;
     /**
+     *
+     * @type {Logic}
+     * @memberof ConversationContextField
+     */
+    'logic'?: Logic;
+    /**
      * The conditions of the conversation
      * @type {Array<ConversationContextGroup>}
      * @memberof ConversationContextField
+     * @deprecated
      */
     'conditions'?: Array<ConversationContextGroup>;
     /**
@@ -1353,6 +1470,52 @@ export interface CreateAgentsResponse {
 /**
  *
  * @export
+ * @interface CreateContextDataRequest
+ */
+export interface CreateContextDataRequest {
+    /**
+     * The context id to create data for
+     * @type {string}
+     * @memberof CreateContextDataRequest
+     */
+    'context': string;
+    /**
+     *
+     * @type {Array<{ [key: string]: ContextRowValue; }>}
+     * @memberof CreateContextDataRequest
+     */
+    'data': Array<{
+        [key: string]: ContextRowValue;
+    }>;
+}
+/**
+ *
+ * @export
+ * @interface CreateContextDataResponse
+ */
+export interface CreateContextDataResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof CreateContextDataResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof CreateContextDataResponse
+     */
+    'error'?: Error;
+    /**
+     * The id of the document that was created, updated, or deleted
+     * @type {string}
+     * @memberof CreateContextDataResponse
+     */
+    'id': string;
+}
+/**
+ *
+ * @export
  * @interface CreateContextRequest
  */
 export interface CreateContextRequest {
@@ -1367,7 +1530,7 @@ export interface CreateContextRequest {
      * @type {boolean}
      * @memberof CreateContextRequest
      */
-    'modifiable': boolean;
+    'modifiable'?: boolean;
     /**
      * The description of the context
      * @type {string}
@@ -1381,23 +1544,41 @@ export interface CreateContextRequest {
      */
     'detection'?: ContextDetectionParams;
     /**
+     * The API to use for context detection
+     * @type {string}
+     * @memberof CreateContextRequest
+     */
+    'detectionApi'?: string;
+    /**
      * The ID column of the context
      * @type {string}
      * @memberof CreateContextRequest
      */
-    'idColumn': string;
+    'idColumn'?: string;
     /**
      * The columns of the context
      * @type {Array<string>}
      * @memberof CreateContextRequest
      */
-    'columns': Array<string>;
+    'columns'?: Array<string>;
     /**
      * The required columns of the context
      * @type {Array<string>}
      * @memberof CreateContextRequest
      */
     'requiredColumns'?: Array<string>;
+    /**
+     * Whether or not to force NER
+     * @type {boolean}
+     * @memberof CreateContextRequest
+     */
+    'forceNER'?: boolean;
+    /**
+     *
+     * @type {ContextModel}
+     * @memberof CreateContextRequest
+     */
+    'model'?: ContextModel;
 }
 /**
  *
@@ -1454,7 +1635,7 @@ export interface CreateContextsRequestContextsInner {
      * @type {boolean}
      * @memberof CreateContextsRequestContextsInner
      */
-    'modifiable': boolean;
+    'modifiable'?: boolean;
     /**
      * The description of the context
      * @type {string}
@@ -1468,23 +1649,41 @@ export interface CreateContextsRequestContextsInner {
      */
     'detection'?: ContextDetectionParams;
     /**
+     * The API to use for context detection
+     * @type {string}
+     * @memberof CreateContextsRequestContextsInner
+     */
+    'detectionApi'?: string;
+    /**
      * The ID column of the context
      * @type {string}
      * @memberof CreateContextsRequestContextsInner
      */
-    'idColumn': string;
+    'idColumn'?: string;
     /**
      * The columns of the context
      * @type {Array<string>}
      * @memberof CreateContextsRequestContextsInner
      */
-    'columns': Array<string>;
+    'columns'?: Array<string>;
     /**
      * The required columns of the context
      * @type {Array<string>}
      * @memberof CreateContextsRequestContextsInner
      */
     'requiredColumns'?: Array<string>;
+    /**
+     * Whether or not to force NER
+     * @type {boolean}
+     * @memberof CreateContextsRequestContextsInner
+     */
+    'forceNER'?: boolean;
+    /**
+     *
+     * @type {ContextModel}
+     * @memberof CreateContextsRequestContextsInner
+     */
+    'model'?: ContextModel;
 }
 /**
  *
@@ -1833,6 +2032,12 @@ export interface CreateWorkflowRequest {
      * @memberof CreateWorkflowRequest
      */
     'onError'?: string;
+    /**
+     * The priority of the workflow in relation to other workflows (determines activation order)
+     * @type {number}
+     * @memberof CreateWorkflowRequest
+     */
+    'priority': number;
 }
 /**
  *
@@ -1926,6 +2131,12 @@ export interface CreateWorkflowsRequestWorkflowsInner {
      * @memberof CreateWorkflowsRequestWorkflowsInner
      */
     'onError'?: string;
+    /**
+     * The priority of the workflow in relation to other workflows (determines activation order)
+     * @type {number}
+     * @memberof CreateWorkflowsRequestWorkflowsInner
+     */
+    'priority': number;
 }
 /**
  *
@@ -2184,6 +2395,31 @@ export interface DeleteAgentsResponse {
 /**
  *
  * @export
+ * @interface DeleteContextDataResponse
+ */
+export interface DeleteContextDataResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof DeleteContextDataResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof DeleteContextDataResponse
+     */
+    'error'?: Error;
+    /**
+     * The id of the document that was created, updated, or deleted
+     * @type {string}
+     * @memberof DeleteContextDataResponse
+     */
+    'id': string;
+}
+/**
+ *
+ * @export
  * @interface DeleteContextResponse
  */
 export interface DeleteContextResponse {
@@ -2385,6 +2621,78 @@ export interface DeleteWorkflowsResponse {
 /**
  *
  * @export
+ * @interface EqualityCondition
+ */
+export interface EqualityCondition {
+    /**
+     *
+     * @type {string}
+     * @memberof EqualityCondition
+     */
+    'path': string;
+    /**
+     *
+     * @type {EqualityOperator}
+     * @memberof EqualityCondition
+     */
+    'operator': EqualityOperator;
+    /**
+     *
+     * @type {any}
+     * @memberof EqualityCondition
+     */
+    'value': any;
+    /**
+     *
+     * @type {boolean}
+     * @memberof EqualityCondition
+     */
+    'external'?: boolean;
+}
+/**
+ *
+ * @export
+ * @interface EqualityConditionAllOf
+ */
+export interface EqualityConditionAllOf {
+    /**
+     *
+     * @type {EqualityOperator}
+     * @memberof EqualityConditionAllOf
+     */
+    'operator': EqualityOperator;
+    /**
+     *
+     * @type {any}
+     * @memberof EqualityConditionAllOf
+     */
+    'value': any;
+}
+/**
+ *
+ * @export
+ * @enum {string}
+ */
+export declare const EqualityOperator: {
+    readonly Eq: "eq";
+    readonly Neq: "neq";
+    readonly Gt: "gt";
+    readonly Gte: "gte";
+    readonly Lt: "lt";
+    readonly Lte: "lte";
+    readonly In: "in";
+    readonly Nin: "nin";
+    readonly Contains: "contains";
+    readonly NotContains: "notContains";
+    readonly StartsWith: "startsWith";
+    readonly EndsWith: "endsWith";
+    readonly ArrayContainsAny: "arrayContainsAny";
+    readonly ArrayContains: "arrayContains";
+};
+export type EqualityOperator = typeof EqualityOperator[keyof typeof EqualityOperator];
+/**
+ *
+ * @export
  * @interface ErrorResponse
  */
 export interface ErrorResponse {
@@ -2394,6 +2702,60 @@ export interface ErrorResponse {
      * @memberof ErrorResponse
      */
     'error': Error;
+}
+/**
+ *
+ * @export
+ * @enum {string}
+ */
+export declare const ExistenceOperator: {
+    readonly Exists: "exists";
+    readonly NotExists: "notExists";
+};
+export type ExistenceOperator = typeof ExistenceOperator[keyof typeof ExistenceOperator];
+/**
+ *
+ * @export
+ * @interface ExistsCondition
+ */
+export interface ExistsCondition {
+    /**
+     *
+     * @type {string}
+     * @memberof ExistsCondition
+     */
+    'path': string;
+    /**
+     *
+     * @type {ExistenceOperator}
+     * @memberof ExistsCondition
+     */
+    'operator': ExistenceOperator;
+    /**
+     *
+     * @type {any}
+     * @memberof ExistsCondition
+     */
+    'value'?: any;
+    /**
+     *
+     * @type {boolean}
+     * @memberof ExistsCondition
+     */
+    'external'?: boolean;
+}
+/**
+ *
+ * @export
+ * @interface ExistsConditionAllOf
+ */
+export interface ExistsConditionAllOf {
+    /**
+     *
+     * @type {ExistenceOperator}
+     * @memberof ExistsConditionAllOf
+     */
+    'operator': ExistenceOperator;
 }
 /**
  *
@@ -2692,6 +3054,19 @@ export interface GetApiOperationResponseAllOf {
 /**
  *
  * @export
+ * @interface GetContextDataResponse
+ */
+export interface GetContextDataResponse {
+    /**
+     * The ID of the context
+     * @type {string}
+     * @memberof GetContextDataResponse
+     */
+    '$id': string;
+}
+/**
+ *
+ * @export
  * @interface GetContextResponse
  */
 export interface GetContextResponse {
@@ -2706,7 +3081,7 @@ export interface GetContextResponse {
      * @type {boolean}
      * @memberof GetContextResponse
      */
-    'modifiable': boolean;
+    'modifiable'?: boolean;
     /**
      * The description of the context
      * @type {string}
@@ -2720,23 +3095,41 @@ export interface GetContextResponse {
      */
     'detection'?: ContextDetectionParams;
     /**
+     * The API to use for context detection
+     * @type {string}
+     * @memberof GetContextResponse
+     */
+    'detectionApi'?: string;
+    /**
      * The ID column of the context
      * @type {string}
      * @memberof GetContextResponse
      */
-    'idColumn': string;
+    'idColumn'?: string;
     /**
      * The columns of the context
      * @type {Array<string>}
      * @memberof GetContextResponse
      */
-    'columns': Array<string>;
+    'columns'?: Array<string>;
     /**
      * The required columns of the context
      * @type {Array<string>}
      * @memberof GetContextResponse
      */
     'requiredColumns'?: Array<string>;
+    /**
+     * Whether or not to force NER
+     * @type {boolean}
+     * @memberof GetContextResponse
+     */
+    'forceNER'?: boolean;
+    /**
+     *
+     * @type {ContextModel}
+     * @memberof GetContextResponse
+     */
+    'model'?: ContextModel;
     /**
      * The ID of the context
      * @type {string}
@@ -3010,6 +3403,12 @@ export interface GetWorkflowResponse {
      */
     'onError'?: string;
     /**
+     * The priority of the workflow in relation to other workflows (determines activation order)
+     * @type {number}
+     * @memberof GetWorkflowResponse
+     */
+    'priority': number;
+    /**
      * The ID of the workflow
      * @type {string}
      * @memberof GetWorkflowResponse
@@ -3216,7 +3615,7 @@ export interface ListContextsResponseInner {
      * @type {boolean}
      * @memberof ListContextsResponseInner
      */
-    'modifiable': boolean;
+    'modifiable'?: boolean;
     /**
      * The description of the context
      * @type {string}
@@ -3230,23 +3629,41 @@ export interface ListContextsResponseInner {
      */
     'detection'?: ContextDetectionParams;
     /**
+     * The API to use for context detection
+     * @type {string}
+     * @memberof ListContextsResponseInner
+     */
+    'detectionApi'?: string;
+    /**
      * The ID column of the context
      * @type {string}
      * @memberof ListContextsResponseInner
      */
-    'idColumn': string;
+    'idColumn'?: string;
     /**
      * The columns of the context
      * @type {Array<string>}
      * @memberof ListContextsResponseInner
      */
-    'columns': Array<string>;
+    'columns'?: Array<string>;
     /**
      * The required columns of the context
      * @type {Array<string>}
      * @memberof ListContextsResponseInner
      */
     'requiredColumns'?: Array<string>;
+    /**
+     * Whether or not to force NER
+     * @type {boolean}
+     * @memberof ListContextsResponseInner
+     */
+    'forceNER'?: boolean;
+    /**
+     *
+     * @type {ContextModel}
+     * @memberof ListContextsResponseInner
+     */
+    'model'?: ContextModel;
     /**
      * The ID of the context
      * @type {string}
@@ -3588,6 +4005,12 @@ export interface ListWorkflowsResponseInner {
      */
     'onError'?: string;
     /**
+     * The priority of the workflow in relation to other workflows (determines activation order)
+     * @type {number}
+     * @memberof ListWorkflowsResponseInner
+     */
+    'priority': number;
+    /**
      * The ID of the workflow
      * @type {string}
      * @memberof ListWorkflowsResponseInner
@@ -3607,6 +4030,11 @@ export interface ListWorkflowsResponseInnerAllOf {
      */
     '$id': string;
 }
+/**
+ * @type Logic
+ * @export
+ */
+export type Logic = AndLogic | ConditionLogic | NotLogic | OrLogic;
 /**
  *
  * @export
@@ -3840,6 +4268,19 @@ export interface ModelError {
 /**
  *
  * @export
+ * @interface NotLogic
+ */
+export interface NotLogic {
+    /**
+     *
+     * @type {Logic}
+     * @memberof NotLogic
+     */
+    'not': Logic;
+}
+/**
+ *
+ * @export
  * @interface OperationBulkResponse
  */
 export interface OperationBulkResponse {
@@ -3914,29 +4355,23 @@ export interface OperationResponse {
     'error'?: Error;
 }
 /**
- * The operator of the condition or query
+ * @type Operator
  * @export
- * @enum {string}
  */
-export declare const Operator: {
-    readonly Eq: "eq";
-    readonly Equal: "equal";
-    readonly Ne: "ne";
-    readonly NotEquals: "not-equals";
-    readonly Gt: "gt";
-    readonly GreaterThan: "greater-than";
-    readonly Gte: "gte";
-    readonly GreaterThanEquals: "greater-than-equals";
-    readonly Lt: "lt";
-    readonly LessThan: "less-than";
-    readonly Lte: "lte";
-    readonly LessThanEquals: "less-than-equals";
-    readonly ArrayContains: "array-contains";
-    readonly In: "in";
-    readonly ArrayContainsAny: "array-contains-any";
-    readonly NotIn: "not-in";
-};
-export type Operator = typeof Operator[keyof typeof Operator];
+export type Operator = EqualityOperator | ExistenceOperator;
+/**
+ *
+ * @export
+ * @interface OrLogic
+ */
+export interface OrLogic {
+    /**
+     *
+     * @type {Array<Logic>}
+     * @memberof OrLogic
+     */
+    'or': Array<Logic>;
+}
 /**
  * @type ParsedContextEntity
  * @export
@@ -3944,6 +4379,31 @@ export type Operator = typeof Operator[keyof typeof Operator];
 export type ParsedContextEntity = string | {
     [key: string]: any;
 };
+/**
+ *
+ * @export
+ * @interface RegexCondition
+ */
+export interface RegexCondition {
+    /**
+     *
+     * @type {string}
+     * @memberof RegexCondition
+     */
+    'path': string;
+    /**
+     *
+     * @type {string}
+     * @memberof RegexCondition
+     */
+    'regex': string;
+    /**
+     *
+     * @type {boolean}
+     * @memberof RegexCondition
+     */
+    'external'?: boolean;
+}
 /**
  *
  * @export
@@ -5109,6 +5569,52 @@ export interface UpdateAgentsResponse {
 /**
  *
  * @export
+ * @interface UpdateContextDataRequest
+ */
+export interface UpdateContextDataRequest {
+    /**
+     * The context id to create data for
+     * @type {string}
+     * @memberof UpdateContextDataRequest
+     */
+    'context': string;
+    /**
+     *
+     * @type {Array<{ [key: string]: ContextRowValue; }>}
+     * @memberof UpdateContextDataRequest
+     */
+    'data': Array<{
+        [key: string]: ContextRowValue;
+    }>;
+}
+/**
+ *
+ * @export
+ * @interface UpdateContextDataResponse
+ */
+export interface UpdateContextDataResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof UpdateContextDataResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof UpdateContextDataResponse
+     */
+    'error'?: Error;
+    /**
+     * The id of the document that was created, updated, or deleted
+     * @type {string}
+     * @memberof UpdateContextDataResponse
+     */
+    'id': string;
+}
+/**
+ *
+ * @export
  * @interface UpdateContextRequest
  */
 export interface UpdateContextRequest {
@@ -5123,7 +5629,7 @@ export interface UpdateContextRequest {
      * @type {boolean}
      * @memberof UpdateContextRequest
      */
-    'modifiable': boolean;
+    'modifiable'?: boolean;
     /**
      * The description of the context
      * @type {string}
@@ -5137,23 +5643,41 @@ export interface UpdateContextRequest {
      */
     'detection'?: ContextDetectionParams;
     /**
+     * The API to use for context detection
+     * @type {string}
+     * @memberof UpdateContextRequest
+     */
+    'detectionApi'?: string;
+    /**
      * The ID column of the context
      * @type {string}
      * @memberof UpdateContextRequest
      */
-    'idColumn': string;
+    'idColumn'?: string;
     /**
      * The columns of the context
      * @type {Array<string>}
      * @memberof UpdateContextRequest
      */
-    'columns': Array<string>;
+    'columns'?: Array<string>;
     /**
      * The required columns of the context
      * @type {Array<string>}
      * @memberof UpdateContextRequest
      */
     'requiredColumns'?: Array<string>;
+    /**
+     * Whether or not to force NER
+     * @type {boolean}
+     * @memberof UpdateContextRequest
+     */
+    'forceNER'?: boolean;
+    /**
+     *
+     * @type {ContextModel}
+     * @memberof UpdateContextRequest
+     */
+    'model'?: ContextModel;
     /**
      * The ID of the context to update
      * @type {string}
@@ -5598,6 +6122,12 @@ export interface UpdateWorkflowRequest {
      */
     'onError'?: string;
     /**
+     * The priority of the workflow in relation to other workflows (determines activation order)
+     * @type {number}
+     * @memberof UpdateWorkflowRequest
+     */
+    'priority': number;
+    /**
      * The ID of the workflow to update
      * @type {string}
      * @memberof UpdateWorkflowRequest
@@ -5728,6 +6258,12 @@ export interface Workflow {
      * @memberof Workflow
      */
     'onError'?: string;
+    /**
+     * The priority of the workflow in relation to other workflows (determines activation order)
+     * @type {number}
+     * @memberof Workflow
+     */
+    'priority': number;
 }
 /**
  * CustomContextApi - axios parameter creator
@@ -5874,6 +6410,38 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
      * @throws {RequiredError}
      */
     contextCreate: (createContextRequest: CreateContextRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Gets context data
+     * @param {string} id id of entity to query
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contextData: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Create a new context data
+     * @param {CreateContextDataRequest} createContextDataRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contextDataCreate: (createContextDataRequest: CreateContextDataRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Deletes a schedule
+     * @param {string} id id of entity to query
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contextDataDelete: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Update a context data
+     * @param {UpdateContextDataRequest} updateContextDataRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contextDataUpdate: (updateContextDataRequest: UpdateContextDataRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
      * @summary Deletes a schedule
@@ -6393,6 +6961,38 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
     contextCreate(createContextRequest: CreateContextRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateContextResponse>>;
     /**
      *
+     * @summary Gets context data
+     * @param {string} id id of entity to query
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contextData(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetContextDataResponse>>;
+    /**
+     *
+     * @summary Create a new context data
+     * @param {CreateContextDataRequest} createContextDataRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contextDataCreate(createContextDataRequest: CreateContextDataRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateContextDataResponse>>;
+    /**
+     *
+     * @summary Deletes a schedule
+     * @param {string} id id of entity to query
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contextDataDelete(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteContextDataResponse>>;
+    /**
+     *
+     * @summary Update a context data
+     * @param {UpdateContextDataRequest} updateContextDataRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contextDataUpdate(updateContextDataRequest: UpdateContextDataRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateContextDataResponse>>;
+    /**
+     *
      * @summary Deletes a schedule
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
@@ -6908,6 +7508,38 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
      * @throws {RequiredError}
      */
     contextCreate(createContextRequest: CreateContextRequest, options?: any): AxiosPromise<CreateContextResponse>;
+    /**
+     *
+     * @summary Gets context data
+     * @param {string} id id of entity to query
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contextData(id: string, options?: any): AxiosPromise<GetContextDataResponse>;
+    /**
+     *
+     * @summary Create a new context data
+     * @param {CreateContextDataRequest} createContextDataRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contextDataCreate(createContextDataRequest: CreateContextDataRequest, options?: any): AxiosPromise<CreateContextDataResponse>;
+    /**
+     *
+     * @summary Deletes a schedule
+     * @param {string} id id of entity to query
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contextDataDelete(id: string, options?: any): AxiosPromise<DeleteContextDataResponse>;
+    /**
+     *
+     * @summary Update a context data
+     * @param {UpdateContextDataRequest} updateContextDataRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contextDataUpdate(updateContextDataRequest: UpdateContextDataRequest, options?: any): AxiosPromise<UpdateContextDataResponse>;
     /**
      *
      * @summary Deletes a schedule
@@ -7437,6 +8069,42 @@ export declare class Scout9Api extends BaseAPI {
      * @memberof Scout9Api
      */
     contextCreate(createContextRequest: CreateContextRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateContextResponse, any>>;
+    /**
+     *
+     * @summary Gets context data
+     * @param {string} id id of entity to query
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    contextData(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<GetContextDataResponse, any>>;
+    /**
+     *
+     * @summary Create a new context data
+     * @param {CreateContextDataRequest} createContextDataRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    contextDataCreate(createContextDataRequest: CreateContextDataRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateContextDataResponse, any>>;
+    /**
+     *
+     * @summary Deletes a schedule
+     * @param {string} id id of entity to query
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    contextDataDelete(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteContextDataResponse, any>>;
+    /**
+     *
+     * @summary Update a context data
+     * @param {UpdateContextDataRequest} updateContextDataRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    contextDataUpdate(updateContextDataRequest: UpdateContextDataRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateContextDataResponse, any>>;
     /**
      *
      * @summary Deletes a schedule
