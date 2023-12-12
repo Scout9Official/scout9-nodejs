@@ -16,7 +16,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Scout9Api = exports.Scout9ApiFactory = exports.Scout9ApiFp = exports.Scout9ApiAxiosParamCreator = exports.UpdateAgentsRequestAgentsInnerModelEnum = exports.UpdateAgentRequestModelEnum = exports.Operator = exports.MessageGetResponseInnerRoleEnum = exports.MessageCreateRequestRoleEnum = exports.MessageBaseRoleEnum = exports.MessageRoleEnum = exports.ListApiOperationsResponseInnerMethodEnum = exports.ListAgentsResponseInnerModelEnum = exports.GetApiOperationResponseMethodEnum = exports.GetAgentResponseModelEnum = exports.GenerateResponseRoleEnum = exports.CreateAgentsRequestAgentsInnerModelEnum = exports.CreateAgentRequestModelEnum = exports.ConversationEnvironment = exports.ConversationContextFieldConditionOperatorEnum = exports.ApiOperationMethodEnum = exports.AgentModelEnum = void 0;
+exports.Scout9Api = exports.Scout9ApiFactory = exports.Scout9ApiFp = exports.Scout9ApiAxiosParamCreator = exports.CustomContextApi = exports.CustomContextApiFactory = exports.CustomContextApiFp = exports.CustomContextApiAxiosParamCreator = exports.UpdateAgentsRequestAgentsInnerModelEnum = exports.UpdateAgentRequestModelEnum = exports.Operator = exports.MessageGetResponseInnerRoleEnum = exports.MessageCreateRequestRoleEnum = exports.MessageBaseRoleEnum = exports.MessageRoleEnum = exports.ListApiOperationsResponseInnerMethodEnum = exports.ListAgentsResponseInnerModelEnum = exports.GetApiOperationResponseMethodEnum = exports.GetAgentResponseModelEnum = exports.GenerateResponseRoleEnum = exports.CreateAgentsRequestAgentsInnerModelEnum = exports.CreateAgentRequestModelEnum = exports.ConversationEnvironment = exports.ConversationContextFieldConditionOperatorEnum = exports.ApiOperationMethodEnum = exports.AgentModelEnum = void 0;
 const axios_1 = __importDefault(require("axios"));
 // Some imports not used depending on template conditions
 // @ts-ignore
@@ -161,6 +161,106 @@ exports.UpdateAgentsRequestAgentsInnerModelEnum = {
     Bard: 'bard',
     Null: 'null'
 };
+/**
+ * CustomContextApi - axios parameter creator
+ * @export
+ */
+const CustomContextApiAxiosParamCreator = function (configuration) {
+    return {
+        /**
+         *
+         * @summary Test a custom context before training
+         * @param {ContextTestRequest} contextTestRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        contextTest: async (contextTestRequest, options = {}) => {
+            // verify required parameter 'contextTestRequest' is not null or undefined
+            (0, common_1.assertParamExists)('contextTest', 'contextTestRequest', contextTestRequest);
+            const localVarPath = `/v1-contextTest`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options };
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
+            localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(contextTestRequest, localVarRequestOptions, configuration);
+            return {
+                url: (0, common_1.toPathString)(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    };
+};
+exports.CustomContextApiAxiosParamCreator = CustomContextApiAxiosParamCreator;
+/**
+ * CustomContextApi - functional programming interface
+ * @export
+ */
+const CustomContextApiFp = function (configuration) {
+    const localVarAxiosParamCreator = (0, exports.CustomContextApiAxiosParamCreator)(configuration);
+    return {
+        /**
+         *
+         * @summary Test a custom context before training
+         * @param {ContextTestRequest} contextTestRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async contextTest(contextTestRequest, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.contextTest(contextTestRequest, options);
+            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+        },
+    };
+};
+exports.CustomContextApiFp = CustomContextApiFp;
+/**
+ * CustomContextApi - factory interface
+ * @export
+ */
+const CustomContextApiFactory = function (configuration, basePath, axios) {
+    const localVarFp = (0, exports.CustomContextApiFp)(configuration);
+    return {
+        /**
+         *
+         * @summary Test a custom context before training
+         * @param {ContextTestRequest} contextTestRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        contextTest(contextTestRequest, options) {
+            return localVarFp.contextTest(contextTestRequest, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+exports.CustomContextApiFactory = CustomContextApiFactory;
+/**
+ * CustomContextApi - object-oriented interface
+ * @export
+ * @class CustomContextApi
+ * @extends {BaseAPI}
+ */
+class CustomContextApi extends base_1.BaseAPI {
+    /**
+     *
+     * @summary Test a custom context before training
+     * @param {ContextTestRequest} contextTestRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CustomContextApi
+     */
+    contextTest(contextTestRequest, options) {
+        return (0, exports.CustomContextApiFp)(this.configuration).contextTest(contextTestRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+exports.CustomContextApi = CustomContextApi;
 /**
  * Scout9Api - axios parameter creator
  * @export
@@ -498,6 +598,36 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
             (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
+            return {
+                url: (0, common_1.toPathString)(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
+         * @summary Test a custom context before training
+         * @param {ContextTestRequest} contextTestRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        contextTest: async (contextTestRequest, options = {}) => {
+            // verify required parameter 'contextTestRequest' is not null or undefined
+            (0, common_1.assertParamExists)('contextTest', 'contextTestRequest', contextTestRequest);
+            const localVarPath = `/v1-contextTest`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options };
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
+            localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(contextTestRequest, localVarRequestOptions, configuration);
             return {
                 url: (0, common_1.toPathString)(localVarUrlObj),
                 options: localVarRequestOptions,
@@ -2196,6 +2326,17 @@ const Scout9ApiFp = function (configuration) {
         },
         /**
          *
+         * @summary Test a custom context before training
+         * @param {ContextTestRequest} contextTestRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async contextTest(contextTestRequest, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.contextTest(contextTestRequest, options);
+            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+        },
+        /**
+         *
          * @summary Update a context
          * @param {UpdateContextRequest} updateContextRequest
          * @param {*} [options] Override http request option.
@@ -2884,6 +3025,16 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
         },
         /**
          *
+         * @summary Test a custom context before training
+         * @param {ContextTestRequest} contextTestRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        contextTest(contextTestRequest, options) {
+            return localVarFp.contextTest(contextTestRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
          * @summary Update a context
          * @param {UpdateContextRequest} updateContextRequest
          * @param {*} [options] Override http request option.
@@ -3529,6 +3680,17 @@ class Scout9Api extends base_1.BaseAPI {
      */
     contextDelete(id, options) {
         return (0, exports.Scout9ApiFp)(this.configuration).contextDelete(id, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     *
+     * @summary Test a custom context before training
+     * @param {ContextTestRequest} contextTestRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    contextTest(contextTestRequest, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).contextTest(contextTestRequest, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      *

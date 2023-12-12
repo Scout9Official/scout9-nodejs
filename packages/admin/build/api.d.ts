@@ -242,7 +242,7 @@ export interface ContextDetectionDocument {
      * @type {string}
      * @memberof ContextDetectionDocument
      */
-    'id': string;
+    'intent'?: string;
 }
 /**
  *
@@ -255,7 +255,7 @@ export interface ContextDetectionEntity {
      * @type {string}
      * @memberof ContextDetectionEntity
      */
-    'utteranceId': string;
+    'utteranceId'?: string;
     /**
      * The classification of the given text
      * @type {string}
@@ -320,16 +320,73 @@ export interface ContextDetectionTest {
     'text': string;
     /**
      *
-     * @type {string}
+     * @type {ContextDetectionTestExpected}
      * @memberof ContextDetectionTest
      */
-    'targetUtteranceId': string;
+    'expected': ContextDetectionTestExpected;
+}
+/**
+ * The expected result of the test
+ * @export
+ * @interface ContextDetectionTestExpected
+ */
+export interface ContextDetectionTestExpected {
     /**
      *
      * @type {string}
-     * @memberof ContextDetectionTest
+     * @memberof ContextDetectionTestExpected
      */
-    'targetOption': string;
+    'intent'?: string;
+    /**
+     *
+     * @type {Array<ParsedContextEntity>}
+     * @memberof ContextDetectionTestExpected
+     */
+    'entities'?: Array<ParsedContextEntity>;
+}
+/**
+ *
+ * @export
+ * @interface ContextTestRequest
+ */
+export interface ContextTestRequest {
+    /**
+     * The context id to test
+     * @type {string}
+     * @memberof ContextTestRequest
+     */
+    'context': string;
+    /**
+     *
+     * @type {Array<ContextDetectionTest>}
+     * @memberof ContextTestRequest
+     */
+    'data'?: Array<ContextDetectionTest>;
+    /**
+     * If true, the context will be saved to the database as an update call
+     * @type {boolean}
+     * @memberof ContextTestRequest
+     */
+    'save'?: boolean;
+}
+/**
+ *
+ * @export
+ * @interface ContextTestResponse
+ */
+export interface ContextTestResponse {
+    /**
+     * The context id to test
+     * @type {string}
+     * @memberof ContextTestResponse
+     */
+    'message'?: string;
+    /**
+     * Success percentage of the context detection in decimal format
+     * @type {number}
+     * @memberof ContextTestResponse
+     */
+    'success'?: number;
 }
 /**
  *
@@ -3881,6 +3938,13 @@ export declare const Operator: {
 };
 export type Operator = typeof Operator[keyof typeof Operator];
 /**
+ * @type ParsedContextEntity
+ * @export
+ */
+export type ParsedContextEntity = string | {
+    [key: string]: any;
+};
+/**
  *
  * @export
  * @interface ScheduleCreateRequest
@@ -5666,6 +5730,65 @@ export interface Workflow {
     'onError'?: string;
 }
 /**
+ * CustomContextApi - axios parameter creator
+ * @export
+ */
+export declare const CustomContextApiAxiosParamCreator: (configuration?: Configuration) => {
+    /**
+     *
+     * @summary Test a custom context before training
+     * @param {ContextTestRequest} contextTestRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contextTest: (contextTestRequest: ContextTestRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+};
+/**
+ * CustomContextApi - functional programming interface
+ * @export
+ */
+export declare const CustomContextApiFp: (configuration?: Configuration) => {
+    /**
+     *
+     * @summary Test a custom context before training
+     * @param {ContextTestRequest} contextTestRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contextTest(contextTestRequest: ContextTestRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ContextTestResponse>>;
+};
+/**
+ * CustomContextApi - factory interface
+ * @export
+ */
+export declare const CustomContextApiFactory: (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) => {
+    /**
+     *
+     * @summary Test a custom context before training
+     * @param {ContextTestRequest} contextTestRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contextTest(contextTestRequest: ContextTestRequest, options?: any): AxiosPromise<ContextTestResponse>;
+};
+/**
+ * CustomContextApi - object-oriented interface
+ * @export
+ * @class CustomContextApi
+ * @extends {BaseAPI}
+ */
+export declare class CustomContextApi extends BaseAPI {
+    /**
+     *
+     * @summary Test a custom context before training
+     * @param {ContextTestRequest} contextTestRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CustomContextApi
+     */
+    contextTest(contextTestRequest: ContextTestRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ContextTestResponse, any>>;
+}
+/**
  * Scout9Api - axios parameter creator
  * @export
  */
@@ -5759,6 +5882,14 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
      * @throws {RequiredError}
      */
     contextDelete: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Test a custom context before training
+     * @param {ContextTestRequest} contextTestRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contextTest: (contextTestRequest: ContextTestRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
      * @summary Update a context
@@ -6270,6 +6401,14 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
     contextDelete(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteContextResponse>>;
     /**
      *
+     * @summary Test a custom context before training
+     * @param {ContextTestRequest} contextTestRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contextTest(contextTestRequest: ContextTestRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ContextTestResponse>>;
+    /**
+     *
      * @summary Update a context
      * @param {UpdateContextRequest} updateContextRequest
      * @param {*} [options] Override http request option.
@@ -6777,6 +6916,14 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
      * @throws {RequiredError}
      */
     contextDelete(id: string, options?: any): AxiosPromise<DeleteContextResponse>;
+    /**
+     *
+     * @summary Test a custom context before training
+     * @param {ContextTestRequest} contextTestRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contextTest(contextTestRequest: ContextTestRequest, options?: any): AxiosPromise<ContextTestResponse>;
     /**
      *
      * @summary Update a context
@@ -7299,6 +7446,15 @@ export declare class Scout9Api extends BaseAPI {
      * @memberof Scout9Api
      */
     contextDelete(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteContextResponse, any>>;
+    /**
+     *
+     * @summary Test a custom context before training
+     * @param {ContextTestRequest} contextTestRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    contextTest(contextTestRequest: ContextTestRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ContextTestResponse, any>>;
     /**
      *
      * @summary Update a context

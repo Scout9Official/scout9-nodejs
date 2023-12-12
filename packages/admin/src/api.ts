@@ -201,7 +201,7 @@ export interface Context {
    * @type {boolean}
    * @memberof Context
    */
-  'modifiable': boolean;
+  'modifiable'?: boolean;
   /**
    * The description of the context
    * @type {string}
@@ -219,13 +219,13 @@ export interface Context {
    * @type {string}
    * @memberof Context
    */
-  'idColumn': string;
+  'idColumn'?: string;
   /**
    * The columns of the context
    * @type {Array<string>}
    * @memberof Context
    */
-  'columns': Array<string>;
+  'columns'?: Array<string>;
   /**
    * The required columns of the context
    * @type {Array<string>}
@@ -256,7 +256,7 @@ export interface ContextDetectionDocument {
    * @type {string}
    * @memberof ContextDetectionDocument
    */
-  'id': string;
+  'intent'?: string;
 }
 /**
  *
@@ -269,7 +269,7 @@ export interface ContextDetectionEntity {
    * @type {string}
    * @memberof ContextDetectionEntity
    */
-  'utteranceId': string;
+  'utteranceId'?: string;
   /**
    * The classification of the given text
    * @type {string}
@@ -334,16 +334,79 @@ export interface ContextDetectionTest {
   'text': string;
   /**
    *
-   * @type {string}
+   * @type {ContextDetectionTestExpected}
    * @memberof ContextDetectionTest
    */
-  'targetUtteranceId': string;
+  'expected': ContextDetectionTestExpected;
+}
+/**
+ * The expected result of the test
+ * @export
+ * @interface ContextDetectionTestExpected
+ */
+export interface ContextDetectionTestExpected {
   /**
    *
    * @type {string}
-   * @memberof ContextDetectionTest
+   * @memberof ContextDetectionTestExpected
    */
-  'targetOption': string;
+  'intent'?: string;
+  /**
+   *
+   * @type {Array<ParsedContextEntity>}
+   * @memberof ContextDetectionTestExpected
+   */
+  'entities'?: Array<ParsedContextEntity>;
+}
+/**
+ * @type ContextRowValue
+ * @export
+ */
+export type ContextRowValue = number | string;
+
+/**
+ *
+ * @export
+ * @interface ContextTestRequest
+ */
+export interface ContextTestRequest {
+  /**
+   * The context id to test
+   * @type {string}
+   * @memberof ContextTestRequest
+   */
+  'context': string;
+  /**
+   *
+   * @type {Array<ContextDetectionTest>}
+   * @memberof ContextTestRequest
+   */
+  'data'?: Array<ContextDetectionTest>;
+  /**
+   * If true, the context will be saved to the database as an update call
+   * @type {boolean}
+   * @memberof ContextTestRequest
+   */
+  'save'?: boolean;
+}
+/**
+ *
+ * @export
+ * @interface ContextTestResponse
+ */
+export interface ContextTestResponse {
+  /**
+   * The context id to test
+   * @type {string}
+   * @memberof ContextTestResponse
+   */
+  'message'?: string;
+  /**
+   * Success percentage of the context detection in decimal format
+   * @type {number}
+   * @memberof ContextTestResponse
+   */
+  'success'?: number;
 }
 /**
  *
@@ -1336,6 +1399,50 @@ export interface CreateAgentsResponse {
 /**
  *
  * @export
+ * @interface CreateContextDataRequest
+ */
+export interface CreateContextDataRequest {
+  /**
+   * The context id to create data for
+   * @type {string}
+   * @memberof CreateContextDataRequest
+   */
+  'context': string;
+  /**
+   *
+   * @type {Array<{ [key: string]: ContextRowValue; }>}
+   * @memberof CreateContextDataRequest
+   */
+  'data': Array<{ [key: string]: ContextRowValue; }>;
+}
+/**
+ *
+ * @export
+ * @interface CreateContextDataResponse
+ */
+export interface CreateContextDataResponse {
+  /**
+   *
+   * @type {boolean}
+   * @memberof CreateContextDataResponse
+   */
+  'success': boolean;
+  /**
+   *
+   * @type {Error}
+   * @memberof CreateContextDataResponse
+   */
+  'error'?: Error;
+  /**
+   * The id of the document that was created, updated, or deleted
+   * @type {string}
+   * @memberof CreateContextDataResponse
+   */
+  'id': string;
+}
+/**
+ *
+ * @export
  * @interface CreateContextRequest
  */
 export interface CreateContextRequest {
@@ -1350,7 +1457,7 @@ export interface CreateContextRequest {
    * @type {boolean}
    * @memberof CreateContextRequest
    */
-  'modifiable': boolean;
+  'modifiable'?: boolean;
   /**
    * The description of the context
    * @type {string}
@@ -1368,13 +1475,13 @@ export interface CreateContextRequest {
    * @type {string}
    * @memberof CreateContextRequest
    */
-  'idColumn': string;
+  'idColumn'?: string;
   /**
    * The columns of the context
    * @type {Array<string>}
    * @memberof CreateContextRequest
    */
-  'columns': Array<string>;
+  'columns'?: Array<string>;
   /**
    * The required columns of the context
    * @type {Array<string>}
@@ -1437,7 +1544,7 @@ export interface CreateContextsRequestContextsInner {
    * @type {boolean}
    * @memberof CreateContextsRequestContextsInner
    */
-  'modifiable': boolean;
+  'modifiable'?: boolean;
   /**
    * The description of the context
    * @type {string}
@@ -1455,13 +1562,13 @@ export interface CreateContextsRequestContextsInner {
    * @type {string}
    * @memberof CreateContextsRequestContextsInner
    */
-  'idColumn': string;
+  'idColumn'?: string;
   /**
    * The columns of the context
    * @type {Array<string>}
    * @memberof CreateContextsRequestContextsInner
    */
-  'columns': Array<string>;
+  'columns'?: Array<string>;
   /**
    * The required columns of the context
    * @type {Array<string>}
@@ -2167,6 +2274,31 @@ export interface DeleteAgentsResponse {
 /**
  *
  * @export
+ * @interface DeleteContextDataResponse
+ */
+export interface DeleteContextDataResponse {
+  /**
+   *
+   * @type {boolean}
+   * @memberof DeleteContextDataResponse
+   */
+  'success': boolean;
+  /**
+   *
+   * @type {Error}
+   * @memberof DeleteContextDataResponse
+   */
+  'error'?: Error;
+  /**
+   * The id of the document that was created, updated, or deleted
+   * @type {string}
+   * @memberof DeleteContextDataResponse
+   */
+  'id': string;
+}
+/**
+ *
+ * @export
  * @interface DeleteContextResponse
  */
 export interface DeleteContextResponse {
@@ -2677,6 +2809,19 @@ export interface GetApiOperationResponseAllOf {
 /**
  *
  * @export
+ * @interface GetContextDataResponse
+ */
+export interface GetContextDataResponse {
+  /**
+   * The ID of the context
+   * @type {string}
+   * @memberof GetContextDataResponse
+   */
+  '$id': string;
+}
+/**
+ *
+ * @export
  * @interface GetContextResponse
  */
 export interface GetContextResponse {
@@ -2691,7 +2836,7 @@ export interface GetContextResponse {
    * @type {boolean}
    * @memberof GetContextResponse
    */
-  'modifiable': boolean;
+  'modifiable'?: boolean;
   /**
    * The description of the context
    * @type {string}
@@ -2709,13 +2854,13 @@ export interface GetContextResponse {
    * @type {string}
    * @memberof GetContextResponse
    */
-  'idColumn': string;
+  'idColumn'?: string;
   /**
    * The columns of the context
    * @type {Array<string>}
    * @memberof GetContextResponse
    */
-  'columns': Array<string>;
+  'columns'?: Array<string>;
   /**
    * The required columns of the context
    * @type {Array<string>}
@@ -3203,7 +3348,7 @@ export interface ListContextsResponseInner {
    * @type {boolean}
    * @memberof ListContextsResponseInner
    */
-  'modifiable': boolean;
+  'modifiable'?: boolean;
   /**
    * The description of the context
    * @type {string}
@@ -3221,13 +3366,13 @@ export interface ListContextsResponseInner {
    * @type {string}
    * @memberof ListContextsResponseInner
    */
-  'idColumn': string;
+  'idColumn'?: string;
   /**
    * The columns of the context
    * @type {Array<string>}
    * @memberof ListContextsResponseInner
    */
-  'columns': Array<string>;
+  'columns'?: Array<string>;
   /**
    * The required columns of the context
    * @type {Array<string>}
@@ -3940,6 +4085,12 @@ export const Operator = {
 
 export type Operator = typeof Operator[keyof typeof Operator];
 
+
+/**
+ * @type ParsedContextEntity
+ * @export
+ */
+export type ParsedContextEntity = string | { [key: string]: any; };
 
 /**
  *
@@ -5121,6 +5272,50 @@ export interface UpdateAgentsResponse {
 /**
  *
  * @export
+ * @interface UpdateContextDataRequest
+ */
+export interface UpdateContextDataRequest {
+  /**
+   * The context id to create data for
+   * @type {string}
+   * @memberof UpdateContextDataRequest
+   */
+  'context': string;
+  /**
+   *
+   * @type {Array<{ [key: string]: ContextRowValue; }>}
+   * @memberof UpdateContextDataRequest
+   */
+  'data': Array<{ [key: string]: ContextRowValue; }>;
+}
+/**
+ *
+ * @export
+ * @interface UpdateContextDataResponse
+ */
+export interface UpdateContextDataResponse {
+  /**
+   *
+   * @type {boolean}
+   * @memberof UpdateContextDataResponse
+   */
+  'success': boolean;
+  /**
+   *
+   * @type {Error}
+   * @memberof UpdateContextDataResponse
+   */
+  'error'?: Error;
+  /**
+   * The id of the document that was created, updated, or deleted
+   * @type {string}
+   * @memberof UpdateContextDataResponse
+   */
+  'id': string;
+}
+/**
+ *
+ * @export
  * @interface UpdateContextRequest
  */
 export interface UpdateContextRequest {
@@ -5135,7 +5330,7 @@ export interface UpdateContextRequest {
    * @type {boolean}
    * @memberof UpdateContextRequest
    */
-  'modifiable': boolean;
+  'modifiable'?: boolean;
   /**
    * The description of the context
    * @type {string}
@@ -5153,13 +5348,13 @@ export interface UpdateContextRequest {
    * @type {string}
    * @memberof UpdateContextRequest
    */
-  'idColumn': string;
+  'idColumn'?: string;
   /**
    * The columns of the context
    * @type {Array<string>}
    * @memberof UpdateContextRequest
    */
-  'columns': Array<string>;
+  'columns'?: Array<string>;
   /**
    * The required columns of the context
    * @type {Array<string>}
@@ -5741,6 +5936,113 @@ export interface Workflow {
 }
 
 /**
+ * CustomContextApi - axios parameter creator
+ * @export
+ */
+export const CustomContextApiAxiosParamCreator = function (configuration?: Configuration) {
+  return {
+    /**
+     *
+     * @summary Test a custom context before training
+     * @param {ContextTestRequest} contextTestRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contextTest: async (contextTestRequest: ContextTestRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'contextTestRequest' is not null or undefined
+      assertParamExists('contextTest', 'contextTestRequest', contextTestRequest)
+      const localVarPath = `/v1-contextTest`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+      localVarRequestOptions.data = serializeDataIfNeeded(contextTestRequest, localVarRequestOptions, configuration)
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+  }
+};
+
+/**
+ * CustomContextApi - functional programming interface
+ * @export
+ */
+export const CustomContextApiFp = function(configuration?: Configuration) {
+  const localVarAxiosParamCreator = CustomContextApiAxiosParamCreator(configuration)
+  return {
+    /**
+     *
+     * @summary Test a custom context before training
+     * @param {ContextTestRequest} contextTestRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async contextTest(contextTestRequest: ContextTestRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ContextTestResponse>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.contextTest(contextTestRequest, options);
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+    },
+  }
+};
+
+/**
+ * CustomContextApi - factory interface
+ * @export
+ */
+export const CustomContextApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+  const localVarFp = CustomContextApiFp(configuration)
+  return {
+    /**
+     *
+     * @summary Test a custom context before training
+     * @param {ContextTestRequest} contextTestRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contextTest(contextTestRequest: ContextTestRequest, options?: any): AxiosPromise<ContextTestResponse> {
+      return localVarFp.contextTest(contextTestRequest, options).then((request) => request(axios, basePath));
+    },
+  };
+};
+
+/**
+ * CustomContextApi - object-oriented interface
+ * @export
+ * @class CustomContextApi
+ * @extends {BaseAPI}
+ */
+export class CustomContextApi extends BaseAPI {
+  /**
+   *
+   * @summary Test a custom context before training
+   * @param {ContextTestRequest} contextTestRequest
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof CustomContextApi
+   */
+  public contextTest(contextTestRequest: ContextTestRequest, options?: AxiosRequestConfig) {
+    return CustomContextApiFp(this.configuration).contextTest(contextTestRequest, options).then((request) => request(this.axios, this.basePath));
+  }
+}
+
+
+/**
  * Scout9Api - axios parameter creator
  * @export
  */
@@ -6114,6 +6416,152 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
     },
     /**
      *
+     * @summary Gets context data
+     * @param {string} id id of entity to query
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contextData: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'id' is not null or undefined
+      assertParamExists('contextData', 'id', id)
+      const localVarPath = `/v1-contextDatas`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      if (id !== undefined) {
+        localVarQueryParameter['id'] = id;
+      }
+
+
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @summary Create a new context data
+     * @param {CreateContextDataRequest} createContextDataRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contextDataCreate: async (createContextDataRequest: CreateContextDataRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'createContextDataRequest' is not null or undefined
+      assertParamExists('contextDataCreate', 'createContextDataRequest', createContextDataRequest)
+      const localVarPath = `/v1-contextDatas`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+      localVarRequestOptions.data = serializeDataIfNeeded(createContextDataRequest, localVarRequestOptions, configuration)
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @summary Deletes a schedule
+     * @param {string} id id of entity to query
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contextDataDelete: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'id' is not null or undefined
+      assertParamExists('contextDataDelete', 'id', id)
+      const localVarPath = `/v1-contextDatas`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      if (id !== undefined) {
+        localVarQueryParameter['id'] = id;
+      }
+
+
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @summary Update a context data
+     * @param {UpdateContextDataRequest} updateContextDataRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contextDataUpdate: async (updateContextDataRequest: UpdateContextDataRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'updateContextDataRequest' is not null or undefined
+      assertParamExists('contextDataUpdate', 'updateContextDataRequest', updateContextDataRequest)
+      const localVarPath = `/v1-contextDatas`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+      localVarRequestOptions.data = serializeDataIfNeeded(updateContextDataRequest, localVarRequestOptions, configuration)
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
      * @summary Deletes a schedule
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
@@ -6143,6 +6591,42 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @summary Test a custom context before training
+     * @param {ContextTestRequest} contextTestRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contextTest: async (contextTestRequest: ContextTestRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'contextTestRequest' is not null or undefined
+      assertParamExists('contextTest', 'contextTestRequest', contextTestRequest)
+      const localVarPath = `/v1-contextTest`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+      localVarRequestOptions.data = serializeDataIfNeeded(contextTestRequest, localVarRequestOptions, configuration)
 
       return {
         url: toPathString(localVarUrlObj),
@@ -8141,6 +8625,50 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
     },
     /**
      *
+     * @summary Gets context data
+     * @param {string} id id of entity to query
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async contextData(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetContextDataResponse>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.contextData(id, options);
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+    },
+    /**
+     *
+     * @summary Create a new context data
+     * @param {CreateContextDataRequest} createContextDataRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async contextDataCreate(createContextDataRequest: CreateContextDataRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateContextDataResponse>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.contextDataCreate(createContextDataRequest, options);
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+    },
+    /**
+     *
+     * @summary Deletes a schedule
+     * @param {string} id id of entity to query
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async contextDataDelete(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteContextDataResponse>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.contextDataDelete(id, options);
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+    },
+    /**
+     *
+     * @summary Update a context data
+     * @param {UpdateContextDataRequest} updateContextDataRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async contextDataUpdate(updateContextDataRequest: UpdateContextDataRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateContextDataResponse>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.contextDataUpdate(updateContextDataRequest, options);
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+    },
+    /**
+     *
      * @summary Deletes a schedule
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
@@ -8148,6 +8676,17 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
      */
     async contextDelete(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteContextResponse>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.contextDelete(id, options);
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+    },
+    /**
+     *
+     * @summary Test a custom context before training
+     * @param {ContextTestRequest} contextTestRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async contextTest(contextTestRequest: ContextTestRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ContextTestResponse>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.contextTest(contextTestRequest, options);
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
     },
     /**
@@ -8830,6 +9369,46 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
     },
     /**
      *
+     * @summary Gets context data
+     * @param {string} id id of entity to query
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contextData(id: string, options?: any): AxiosPromise<GetContextDataResponse> {
+      return localVarFp.contextData(id, options).then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @summary Create a new context data
+     * @param {CreateContextDataRequest} createContextDataRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contextDataCreate(createContextDataRequest: CreateContextDataRequest, options?: any): AxiosPromise<CreateContextDataResponse> {
+      return localVarFp.contextDataCreate(createContextDataRequest, options).then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @summary Deletes a schedule
+     * @param {string} id id of entity to query
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contextDataDelete(id: string, options?: any): AxiosPromise<DeleteContextDataResponse> {
+      return localVarFp.contextDataDelete(id, options).then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @summary Update a context data
+     * @param {UpdateContextDataRequest} updateContextDataRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contextDataUpdate(updateContextDataRequest: UpdateContextDataRequest, options?: any): AxiosPromise<UpdateContextDataResponse> {
+      return localVarFp.contextDataUpdate(updateContextDataRequest, options).then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @summary Deletes a schedule
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
@@ -8837,6 +9416,16 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
      */
     contextDelete(id: string, options?: any): AxiosPromise<DeleteContextResponse> {
       return localVarFp.contextDelete(id, options).then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @summary Test a custom context before training
+     * @param {ContextTestRequest} contextTestRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    contextTest(contextTestRequest: ContextTestRequest, options?: any): AxiosPromise<ContextTestResponse> {
+      return localVarFp.contextTest(contextTestRequest, options).then((request) => request(axios, basePath));
     },
     /**
      *
@@ -9487,6 +10076,54 @@ export class Scout9Api extends BaseAPI {
 
   /**
    *
+   * @summary Gets context data
+   * @param {string} id id of entity to query
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof Scout9Api
+   */
+  public contextData(id: string, options?: AxiosRequestConfig) {
+    return Scout9ApiFp(this.configuration).contextData(id, options).then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @summary Create a new context data
+   * @param {CreateContextDataRequest} createContextDataRequest
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof Scout9Api
+   */
+  public contextDataCreate(createContextDataRequest: CreateContextDataRequest, options?: AxiosRequestConfig) {
+    return Scout9ApiFp(this.configuration).contextDataCreate(createContextDataRequest, options).then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @summary Deletes a schedule
+   * @param {string} id id of entity to query
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof Scout9Api
+   */
+  public contextDataDelete(id: string, options?: AxiosRequestConfig) {
+    return Scout9ApiFp(this.configuration).contextDataDelete(id, options).then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @summary Update a context data
+   * @param {UpdateContextDataRequest} updateContextDataRequest
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof Scout9Api
+   */
+  public contextDataUpdate(updateContextDataRequest: UpdateContextDataRequest, options?: AxiosRequestConfig) {
+    return Scout9ApiFp(this.configuration).contextDataUpdate(updateContextDataRequest, options).then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
    * @summary Deletes a schedule
    * @param {string} id id of entity to query
    * @param {*} [options] Override http request option.
@@ -9495,6 +10132,18 @@ export class Scout9Api extends BaseAPI {
    */
   public contextDelete(id: string, options?: AxiosRequestConfig) {
     return Scout9ApiFp(this.configuration).contextDelete(id, options).then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @summary Test a custom context before training
+   * @param {ContextTestRequest} contextTestRequest
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof Scout9Api
+   */
+  public contextTest(contextTestRequest: ContextTestRequest, options?: AxiosRequestConfig) {
+    return Scout9ApiFp(this.configuration).contextTest(contextTestRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
