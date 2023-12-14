@@ -331,7 +331,7 @@ export interface ContextDetectionDocument {
  */
 export interface ContextDetectionEntity {
     /**
-     * The utterance ID of the entity
+     * The utterance ID of the entity, if this is not provided then it will default to the context model id. If this is provided, the utterance of this entity wont be able to point to a context data record within the associated data table.
      * @type {string}
      * @memberof ContextDetectionEntity
      */
@@ -453,7 +453,7 @@ export interface ContextModel {
  * @type ContextRowValue
  * @export
  */
-export type ContextRowValue = number | string;
+export type ContextRowValue = boolean | number | string;
 /**
  *
  * @export
@@ -466,6 +466,18 @@ export interface ContextTestRequest {
      * @memberof ContextTestRequest
      */
     'context': string;
+    /**
+     * The text to test the context against
+     * @type {string}
+     * @memberof ContextTestRequest
+     */
+    'text'?: string;
+    /**
+     * The language to test the context against
+     * @type {string}
+     * @memberof ContextTestRequest
+     */
+    'language'?: string;
     /**
      *
      * @type {Array<ContextDetectionTest>}
@@ -490,13 +502,21 @@ export interface ContextTestResponse {
      * @type {string}
      * @memberof ContextTestResponse
      */
-    'message'?: string;
+    'message': string;
+    /**
+     * Parsed data results of the text input for the specific context model
+     * @type {{ [key: string]: any; }}
+     * @memberof ContextTestResponse
+     */
+    'parsed'?: {
+        [key: string]: any;
+    };
     /**
      * Success percentage of the context detection in decimal format
      * @type {number}
      * @memberof ContextTestResponse
      */
-    'success'?: number;
+    'success': number;
 }
 /**
  *
@@ -1484,7 +1504,7 @@ export interface CreateContextDataRequest {
      * @type {Array<{ [key: string]: ContextRowValue; }>}
      * @memberof CreateContextDataRequest
      */
-    'data': Array<{
+    'rows': Array<{
         [key: string]: ContextRowValue;
     }>;
 }
@@ -1581,7 +1601,7 @@ export interface CreateContextRequest {
     'model'?: ContextModel;
 }
 /**
- *
+ * The response from creating a context
  * @export
  * @interface CreateContextResponse
  */
@@ -1989,7 +2009,7 @@ export interface CreateFileRequestWithStringPurpose {
      * @type {File}
      * @memberof CreateFileRequestWithStringPurpose
      */
-    'file': File | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob;
+    'file': File | Buffer | Blob;
     /**
      *
      * @type {string}
@@ -6781,7 +6801,7 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    fileCreate: (file: File | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob, purpose?: PurposeEnum, entity?: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    fileCreate: (file: File | Buffer | Blob, purpose?: PurposeEnum, entity?: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
      * @summary Delete a file.
@@ -7331,7 +7351,7 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    fileCreate(file: File | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob, purpose?: PurposeEnum, entity?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Scout9File>>;
+    fileCreate(file: File | Buffer | Blob, purpose?: PurposeEnum, entity?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Scout9File>>;
     /**
      *
      * @summary Delete a file.
@@ -7881,7 +7901,7 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    fileCreate(file: File | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob, purpose?: PurposeEnum, entity?: string, options?: any): AxiosPromise<Scout9File>;
+    fileCreate(file: File | Buffer | Blob, purpose?: PurposeEnum, entity?: string, options?: any): AxiosPromise<Scout9File>;
     /**
      *
      * @summary Delete a file.
@@ -8476,7 +8496,7 @@ export declare class Scout9Api extends BaseAPI {
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
-    fileCreate(file: File | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob, purpose?: PurposeEnum, entity?: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<Scout9File, any>>;
+    fileCreate(file: File | Buffer | Blob, purpose?: PurposeEnum, entity?: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<Scout9File, any>>;
     /**
      *
      * @summary Delete a file.

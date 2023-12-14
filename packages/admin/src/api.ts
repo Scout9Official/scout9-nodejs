@@ -346,7 +346,7 @@ export interface ContextDetectionDocument {
  */
 export interface ContextDetectionEntity {
   /**
-   * The utterance ID of the entity
+   * The utterance ID of the entity, if this is not provided then it will default to the context model id. If this is provided, the utterance of this entity wont be able to point to a context data record within the associated data table.
    * @type {string}
    * @memberof ContextDetectionEntity
    */
@@ -468,7 +468,7 @@ export interface ContextModel {
  * @type ContextRowValue
  * @export
  */
-export type ContextRowValue = number | string;
+export type ContextRowValue = boolean | number | string;
 
 /**
  *
@@ -482,6 +482,18 @@ export interface ContextTestRequest {
    * @memberof ContextTestRequest
    */
   'context': string;
+  /**
+   * The text to test the context against
+   * @type {string}
+   * @memberof ContextTestRequest
+   */
+  'text'?: string;
+  /**
+   * The language to test the context against
+   * @type {string}
+   * @memberof ContextTestRequest
+   */
+  'language'?: string;
   /**
    *
    * @type {Array<ContextDetectionTest>}
@@ -506,13 +518,19 @@ export interface ContextTestResponse {
    * @type {string}
    * @memberof ContextTestResponse
    */
-  'message'?: string;
+  'message': string;
+  /**
+   * Parsed data results of the text input for the specific context model
+   * @type {{ [key: string]: any; }}
+   * @memberof ContextTestResponse
+   */
+  'parsed'?: { [key: string]: any; };
   /**
    * Success percentage of the context detection in decimal format
    * @type {number}
    * @memberof ContextTestResponse
    */
-  'success'?: number;
+  'success': number;
 }
 /**
  *
@@ -1526,7 +1544,7 @@ export interface CreateContextDataRequest {
    * @type {Array<{ [key: string]: ContextRowValue; }>}
    * @memberof CreateContextDataRequest
    */
-  'data': Array<{ [key: string]: ContextRowValue; }>;
+  'rows': Array<{ [key: string]: ContextRowValue; }>;
 }
 /**
  *
@@ -1621,7 +1639,7 @@ export interface CreateContextRequest {
   'model'?: ContextModel;
 }
 /**
- *
+ * The response from creating a context
  * @export
  * @interface CreateContextResponse
  */
@@ -2027,7 +2045,7 @@ export interface CreateFileRequestWithStringPurpose {
    * @type {File}
    * @memberof CreateFileRequestWithStringPurpose
    */
-  'file': File | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob;
+  'file': File | Buffer | Blob;
   /**
    *
    * @type {string}
@@ -8114,7 +8132,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    fileCreate: async (file: File | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob, purpose?: PurposeEnum, entity?: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+    fileCreate: async (file: File | Buffer | Blob, purpose?: PurposeEnum, entity?: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
       // verify required parameter 'file' is not null or undefined
       assertParamExists('fileCreate', 'file', file)
       const localVarPath = `/v1-utils-files`;
@@ -9515,7 +9533,7 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async fileCreate(file: File | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob, purpose?: PurposeEnum, entity?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Scout9File>> {
+    async fileCreate(file: File | Buffer | Blob, purpose?: PurposeEnum, entity?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Scout9File>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.fileCreate(file, purpose, entity, options);
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
     },
@@ -10228,7 +10246,7 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    fileCreate(file: File | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob, purpose?: PurposeEnum, entity?: string, options?: any): AxiosPromise<Scout9File> {
+    fileCreate(file: File | Buffer | Blob, purpose?: PurposeEnum, entity?: string, options?: any): AxiosPromise<Scout9File> {
       return localVarFp.fileCreate(file, purpose, entity, options).then((request) => request(axios, basePath));
     },
     /**
@@ -11001,7 +11019,7 @@ export class Scout9Api extends BaseAPI {
    * @throws {RequiredError}
    * @memberof Scout9Api
    */
-  public fileCreate(file: File | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob | Buffer | Blob, purpose?: PurposeEnum, entity?: string, options?: AxiosRequestConfig) {
+  public fileCreate(file: File | Buffer | Blob, purpose?: PurposeEnum, entity?: string, options?: AxiosRequestConfig) {
     return Scout9ApiFp(this.configuration).fileCreate(file, purpose, entity, options).then((request) => request(this.axios, this.basePath));
   }
 
