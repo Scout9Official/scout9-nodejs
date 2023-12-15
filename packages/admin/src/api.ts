@@ -1853,133 +1853,6 @@ export interface CreateCustomerGroupsResponse {
 /**
  *
  * @export
- * @interface CreateCustomerRequest
- */
-export interface CreateCustomerRequest {
-  /**
-   * The customers first name
-   * @type {string}
-   * @memberof CreateCustomerRequest
-   */
-  'firstName'?: string;
-  /**
-   * The customers last name
-   * @type {string}
-   * @memberof CreateCustomerRequest
-   */
-  'lastName'?: string;
-  /**
-   * The customers full name
-   * @type {string}
-   * @memberof CreateCustomerRequest
-   */
-  'name': string;
-  /**
-   * The customers email address
-   * @type {string}
-   * @memberof CreateCustomerRequest
-   */
-  'email'?: string | null;
-  /**
-   * The customers phone number
-   * @type {string}
-   * @memberof CreateCustomerRequest
-   */
-  'phone'?: string | null;
-  /**
-   * The customers profile image
-   * @type {string}
-   * @memberof CreateCustomerRequest
-   */
-  'img'?: string | null;
-  /**
-   * The customers neighborhood
-   * @type {string}
-   * @memberof CreateCustomerRequest
-   */
-  'neighborhood'?: string | null;
-  /**
-   * The customers city
-   * @type {string}
-   * @memberof CreateCustomerRequest
-   */
-  'city'?: string | null;
-  /**
-   * The customers 2-letter country code
-   * @type {string}
-   * @memberof CreateCustomerRequest
-   */
-  'country'?: string | null;
-  /**
-   * The customers street address
-   * @type {string}
-   * @memberof CreateCustomerRequest
-   */
-  'line1'?: string | null;
-  /**
-   * The customers street address
-   * @type {string}
-   * @memberof CreateCustomerRequest
-   */
-  'line2'?: string | null;
-  /**
-   * The customers postal code
-   * @type {string}
-   * @memberof CreateCustomerRequest
-   */
-  'postal_code'?: string | null;
-  /**
-   * The customers state, county, province, or region
-   * @type {string}
-   * @memberof CreateCustomerRequest
-   */
-  'state'?: string | null;
-  /**
-   * The customers town (only used in Japan)
-   * @type {string}
-   * @memberof CreateCustomerRequest
-   */
-  'town'?: string | null;
-  /**
-   *
-   * @type {BlockInfo}
-   * @memberof CreateCustomerRequest
-   */
-  'blocked'?: BlockInfo;
-  /**
-   *
-   * @type {BlockInfo}
-   * @memberof CreateCustomerRequest
-   */
-  'phoneBlocked'?: BlockInfo;
-  /**
-   *
-   * @type {BlockInfo}
-   * @memberof CreateCustomerRequest
-   */
-  'emailBlocked'?: BlockInfo;
-  /**
-   * The date the customer joined the business
-   * @type {string}
-   * @memberof CreateCustomerRequest
-   */
-  'joined'?: string | null;
-  /**
-   * The customers stripe ID
-   * @type {string}
-   * @memberof CreateCustomerRequest
-   */
-  'stripe'?: string | null;
-  /**
-   * The customers stripe ID in the dev environment
-   * @type {string}
-   * @memberof CreateCustomerRequest
-   */
-  'stripeDev'?: string | null;
-}
-/**
- *
- * @export
  * @interface CreateCustomerResponse
  */
 export interface CreateCustomerResponse {
@@ -3312,13 +3185,13 @@ export interface GetCustomerResponse {
    * @type {string}
    * @memberof GetCustomerResponse
    */
-  'firstName': string;
+  'firstName'?: string;
   /**
    * The customers last name
    * @type {string}
    * @memberof GetCustomerResponse
    */
-  'lastName': string;
+  'lastName'?: string;
   /**
    * The customers full name
    * @type {string}
@@ -7506,13 +7379,13 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
     /**
      *
      * @summary Gets a customer
-     * @param {string} idOrEmailOrPhone id of customer or their registered phone or registered email
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    customer: async (idOrEmailOrPhone: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-      // verify required parameter 'idOrEmailOrPhone' is not null or undefined
-      assertParamExists('customer', 'idOrEmailOrPhone', idOrEmailOrPhone)
+    customer: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'id' is not null or undefined
+      assertParamExists('customer', 'id', id)
       const localVarPath = `/v1-customer`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -7525,8 +7398,8 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      if (idOrEmailOrPhone !== undefined) {
-        localVarQueryParameter['idOrEmailOrPhone'] = idOrEmailOrPhone;
+      if (id !== undefined) {
+        localVarQueryParameter['id'] = id;
       }
 
 
@@ -7543,13 +7416,13 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
     /**
      *
      * @summary Creates a new customer
-     * @param {CreateCustomerRequest} createCustomerRequest
+     * @param {Customer} body
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    customerCreate: async (createCustomerRequest: CreateCustomerRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-      // verify required parameter 'createCustomerRequest' is not null or undefined
-      assertParamExists('customerCreate', 'createCustomerRequest', createCustomerRequest)
+    customerCreate: async (body: Customer, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'body' is not null or undefined
+      assertParamExists('customerCreate', 'body', body)
       const localVarPath = `/v1-customer`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -7569,7 +7442,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-      localVarRequestOptions.data = serializeDataIfNeeded(createCustomerRequest, localVarRequestOptions, configuration)
+      localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
 
       return {
         url: toPathString(localVarUrlObj),
@@ -9338,23 +9211,23 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
     /**
      *
      * @summary Gets a customer
-     * @param {string} idOrEmailOrPhone id of customer or their registered phone or registered email
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async customer(idOrEmailOrPhone: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetCustomerResponse>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.customer(idOrEmailOrPhone, options);
+    async customer(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetCustomerResponse>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.customer(id, options);
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
     },
     /**
      *
      * @summary Creates a new customer
-     * @param {CreateCustomerRequest} createCustomerRequest
+     * @param {Customer} body
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async customerCreate(createCustomerRequest: CreateCustomerRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateCustomerResponse>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.customerCreate(createCustomerRequest, options);
+    async customerCreate(body: Customer, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateCustomerResponse>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.customerCreate(body, options);
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
     },
     /**
@@ -10068,22 +9941,22 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
     /**
      *
      * @summary Gets a customer
-     * @param {string} idOrEmailOrPhone id of customer or their registered phone or registered email
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    customer(idOrEmailOrPhone: string, options?: any): AxiosPromise<GetCustomerResponse> {
-      return localVarFp.customer(idOrEmailOrPhone, options).then((request) => request(axios, basePath));
+    customer(id: string, options?: any): AxiosPromise<GetCustomerResponse> {
+      return localVarFp.customer(id, options).then((request) => request(axios, basePath));
     },
     /**
      *
      * @summary Creates a new customer
-     * @param {CreateCustomerRequest} createCustomerRequest
+     * @param {Customer} body
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    customerCreate(createCustomerRequest: CreateCustomerRequest, options?: any): AxiosPromise<CreateCustomerResponse> {
-      return localVarFp.customerCreate(createCustomerRequest, options).then((request) => request(axios, basePath));
+    customerCreate(body: Customer, options?: any): AxiosPromise<CreateCustomerResponse> {
+      return localVarFp.customerCreate(body, options).then((request) => request(axios, basePath));
     },
     /**
      *
@@ -10806,25 +10679,25 @@ export class Scout9Api extends BaseAPI {
   /**
    *
    * @summary Gets a customer
-   * @param {string} idOrEmailOrPhone id of customer or their registered phone or registered email
+   * @param {string} id id of entity to query
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof Scout9Api
    */
-  public customer(idOrEmailOrPhone: string, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).customer(idOrEmailOrPhone, options).then((request) => request(this.axios, this.basePath));
+  public customer(id: string, options?: AxiosRequestConfig) {
+    return Scout9ApiFp(this.configuration).customer(id, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
    * @summary Creates a new customer
-   * @param {CreateCustomerRequest} createCustomerRequest
+   * @param {Customer} body
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof Scout9Api
    */
-  public customerCreate(createCustomerRequest: CreateCustomerRequest, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).customerCreate(createCustomerRequest, options).then((request) => request(this.axios, this.basePath));
+  public customerCreate(body: Customer, options?: AxiosRequestConfig) {
+    return Scout9ApiFp(this.configuration).customerCreate(body, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
