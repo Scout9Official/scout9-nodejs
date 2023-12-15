@@ -1817,133 +1817,6 @@ export interface CreateCustomerGroupsResponse {
 /**
  *
  * @export
- * @interface CreateCustomerRequest
- */
-export interface CreateCustomerRequest {
-    /**
-     * The customers first name
-     * @type {string}
-     * @memberof CreateCustomerRequest
-     */
-    'firstName'?: string;
-    /**
-     * The customers last name
-     * @type {string}
-     * @memberof CreateCustomerRequest
-     */
-    'lastName'?: string;
-    /**
-     * The customers full name
-     * @type {string}
-     * @memberof CreateCustomerRequest
-     */
-    'name': string;
-    /**
-     * The customers email address
-     * @type {string}
-     * @memberof CreateCustomerRequest
-     */
-    'email'?: string | null;
-    /**
-     * The customers phone number
-     * @type {string}
-     * @memberof CreateCustomerRequest
-     */
-    'phone'?: string | null;
-    /**
-     * The customers profile image
-     * @type {string}
-     * @memberof CreateCustomerRequest
-     */
-    'img'?: string | null;
-    /**
-     * The customers neighborhood
-     * @type {string}
-     * @memberof CreateCustomerRequest
-     */
-    'neighborhood'?: string | null;
-    /**
-     * The customers city
-     * @type {string}
-     * @memberof CreateCustomerRequest
-     */
-    'city'?: string | null;
-    /**
-     * The customers 2-letter country code
-     * @type {string}
-     * @memberof CreateCustomerRequest
-     */
-    'country'?: string | null;
-    /**
-     * The customers street address
-     * @type {string}
-     * @memberof CreateCustomerRequest
-     */
-    'line1'?: string | null;
-    /**
-     * The customers street address
-     * @type {string}
-     * @memberof CreateCustomerRequest
-     */
-    'line2'?: string | null;
-    /**
-     * The customers postal code
-     * @type {string}
-     * @memberof CreateCustomerRequest
-     */
-    'postal_code'?: string | null;
-    /**
-     * The customers state, county, province, or region
-     * @type {string}
-     * @memberof CreateCustomerRequest
-     */
-    'state'?: string | null;
-    /**
-     * The customers town (only used in Japan)
-     * @type {string}
-     * @memberof CreateCustomerRequest
-     */
-    'town'?: string | null;
-    /**
-     *
-     * @type {BlockInfo}
-     * @memberof CreateCustomerRequest
-     */
-    'blocked'?: BlockInfo;
-    /**
-     *
-     * @type {BlockInfo}
-     * @memberof CreateCustomerRequest
-     */
-    'phoneBlocked'?: BlockInfo;
-    /**
-     *
-     * @type {BlockInfo}
-     * @memberof CreateCustomerRequest
-     */
-    'emailBlocked'?: BlockInfo;
-    /**
-     * The date the customer joined the business
-     * @type {string}
-     * @memberof CreateCustomerRequest
-     */
-    'joined'?: string | null;
-    /**
-     * The customers stripe ID
-     * @type {string}
-     * @memberof CreateCustomerRequest
-     */
-    'stripe'?: string | null;
-    /**
-     * The customers stripe ID in the dev environment
-     * @type {string}
-     * @memberof CreateCustomerRequest
-     */
-    'stripeDev'?: string | null;
-}
-/**
- *
- * @export
  * @interface CreateCustomerResponse
  */
 export interface CreateCustomerResponse {
@@ -3258,13 +3131,13 @@ export interface GetCustomerResponse {
      * @type {string}
      * @memberof GetCustomerResponse
      */
-    'firstName': string;
+    'firstName'?: string;
     /**
      * The customers last name
      * @type {string}
      * @memberof GetCustomerResponse
      */
-    'lastName': string;
+    'lastName'?: string;
     /**
      * The customers full name
      * @type {string}
@@ -6657,19 +6530,19 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
     /**
      *
      * @summary Gets a customer
-     * @param {string} idOrEmailOrPhone id of customer or their registered phone or registered email
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    customer: (idOrEmailOrPhone: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    customer: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
      * @summary Creates a new customer
-     * @param {CreateCustomerRequest} createCustomerRequest
+     * @param {Customer} body
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    customerCreate: (createCustomerRequest: CreateCustomerRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    customerCreate: (body: Customer, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
      * @summary Deletes a customer
@@ -7207,19 +7080,19 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
     /**
      *
      * @summary Gets a customer
-     * @param {string} idOrEmailOrPhone id of customer or their registered phone or registered email
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    customer(idOrEmailOrPhone: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetCustomerResponse>>;
+    customer(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetCustomerResponse>>;
     /**
      *
      * @summary Creates a new customer
-     * @param {CreateCustomerRequest} createCustomerRequest
+     * @param {Customer} body
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    customerCreate(createCustomerRequest: CreateCustomerRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateCustomerResponse>>;
+    customerCreate(body: Customer, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateCustomerResponse>>;
     /**
      *
      * @summary Deletes a customer
@@ -7757,19 +7630,19 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
     /**
      *
      * @summary Gets a customer
-     * @param {string} idOrEmailOrPhone id of customer or their registered phone or registered email
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    customer(idOrEmailOrPhone: string, options?: any): AxiosPromise<GetCustomerResponse>;
+    customer(id: string, options?: any): AxiosPromise<GetCustomerResponse>;
     /**
      *
      * @summary Creates a new customer
-     * @param {CreateCustomerRequest} createCustomerRequest
+     * @param {Customer} body
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    customerCreate(createCustomerRequest: CreateCustomerRequest, options?: any): AxiosPromise<CreateCustomerResponse>;
+    customerCreate(body: Customer, options?: any): AxiosPromise<CreateCustomerResponse>;
     /**
      *
      * @summary Deletes a customer
@@ -8334,21 +8207,21 @@ export declare class Scout9Api extends BaseAPI {
     /**
      *
      * @summary Gets a customer
-     * @param {string} idOrEmailOrPhone id of customer or their registered phone or registered email
+     * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
-    customer(idOrEmailOrPhone: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<GetCustomerResponse, any>>;
+    customer(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<GetCustomerResponse, any>>;
     /**
      *
      * @summary Creates a new customer
-     * @param {CreateCustomerRequest} createCustomerRequest
+     * @param {Customer} body
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
-    customerCreate(createCustomerRequest: CreateCustomerRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateCustomerResponse, any>>;
+    customerCreate(body: Customer, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateCustomerResponse, any>>;
     /**
      *
      * @summary Deletes a customer
