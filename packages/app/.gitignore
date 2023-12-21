@@ -1,0 +1,13 @@
+package-lock.json
+.DS_Store
+/node_modules
+/assets/*
+/dist
+/docs
+/test/**/build
+!/src/core/adapt/fixtures/*/.scout9
+!/test/node_modules
+/test/apps/basics/test/errors.json
+/types/*.map
+.custom-out-dir
+.scout9

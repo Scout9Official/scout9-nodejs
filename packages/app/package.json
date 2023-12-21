@@ -1,0 +1,42 @@
+{
+  "name": "@scout9/app",
+  "version": "1.0.0-alpha.0.0.1",
+  "description": "",
+  "scripts": {
+    "postinstall": "node postinstall.js",
+    "types": "npx -p typescript tsc src/**/*.ts --declaration --allowJs --emitDeclarationOnly --esModuleInterop --outDir dist/types"
+  },
+  "type": "module",
+  "bin": {
+    "scout9-app": "./scout9-app.js"
+  },
+  "files": [
+    "src",
+    "!src/**/*.spec.js",
+    "!src/core/**/fixtures",
+    "!src/core/**/test",
+    "types",
+    "scout9-app.js",
+    "postinstall.js"
+  ],
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/archiver": "^6.0.2",
+    "@types/jest": "^29.5.11",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "archiver": "^6.0.1",
+    "decompress": "^4.2.1",
+    "dotenv": "^16.3.1",
+    "glob": "^10.3.10",
+    "kleur": "^4.1.5",
+    "moment": "^2.29.4",
+    "node-fetch": "^3.3.2",
+    "sade": "^1.8.1",
+    "zod": "^3.22.4"
+  }
+}

@@ -3,7 +3,7 @@
   "version": "1.0.2",
   "description": "Scout9 Node.js API library",
   "scripts": {
-    "build": "tsc --build --verbose",
+    "build": "tsc --build --verbose && babel packages/app --out-dir packages/build",
     "test": "echo \\\"Error: no examples specified\\\" && exit 1",
     "temp:init": "npm init --scope @scout9 --workspace ./packages/client -y && echo \"<-- Script inits another package\""
   },
@@ -20,6 +20,10 @@
   ],
   "license": "Apache-2.0",
   "dependencies": {
+    "@babel/cli": "^7.23.4",
+    "@babel/core": "^7.23.6",
+    "@babel/preset-env": "^7.23.6",
+    "babel-minify": "^0.5.2",
     "dotenv": "^16.3.1",
     "minimist": "^1.2.8",
     "typescript": "^5.1.6"
