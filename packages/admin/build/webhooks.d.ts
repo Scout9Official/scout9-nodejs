@@ -11,6 +11,6 @@ export type IWebhookEvent<Context = Record<string, any>> = {
     }[];
     context: Context;
 };
-export declare module Scout9Webhooks {
+export declare namespace Scout9Webhooks {
     function constructEvent<Context = any>(rawBody: string | Buffer, signatureKey: string, secretKey: string): Promise<IWebhookEvent<Context>>;
 }

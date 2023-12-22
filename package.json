@@ -3,7 +3,7 @@
   "version": "1.0.2",
   "description": "Scout9 Node.js API library",
   "scripts": {
-    "build": "tsc --build --verbose && babel packages/app --out-dir packages/build",
+    "build": "bash build.sh",
     "test": "echo \\\"Error: no examples specified\\\" && exit 1",
     "temp:init": "npm init --scope @scout9 --workspace ./packages/client -y && echo \"<-- Script inits another package\""
   },
