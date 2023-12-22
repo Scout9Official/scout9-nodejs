@@ -58,22 +58,22 @@ const options = await p.group(
         })
       }),
 
-    types: () =>
-      p.select({
-        message: 'Add type checking with TypeScript?',
-        initialValue: /** @type {'checkjs' | 'typescript' | null} */ ('checkjs'),
-        options: [
-          {
-            label: 'Yes, using JavaScript with JSDoc comments',
-            value: 'checkjs'
-          },
-          {
-            label: 'Yes, using TypeScript syntax',
-            value: 'typescript'
-          },
-          { label: 'No', value: null }
-        ]
-      }),
+    // types: () =>
+    //   p.select({
+    //     message: 'Add type checking with TypeScript?',
+    //     initialValue: /** @type {'checkjs' | 'typescript' | null} */ (null),
+    //     options: [
+    //       {
+    //         label: 'Yes, using JavaScript with JSDoc comments',
+    //         value: 'checkjs'
+    //       },
+    //       {
+    //         label: 'Yes, using TypeScript syntax',
+    //         value: 'typescript'
+    //       },
+    //       { label: 'No', value: null }
+    //     ]
+    //   }),
 
     features: () =>
       p.multiselect({
@@ -89,16 +89,8 @@ const options = await p.group(
             label: 'Add Prettier for code formatting'
           },
           {
-            value: 'playwright',
-            label: 'Add Playwright for browser testing'
-          },
-          {
-            value: 'vitest',
-            label: 'Add Vitest for unit testing'
-          },
-          {
-            value: 'svelte5',
-            label: 'Try the Svelte 5 preview (unstable!)'
+            value: 'jest',
+            label: 'Add jest for unit testing'
           }
         ]
       })
@@ -109,11 +101,11 @@ const options = await p.group(
 await create(cwd, {
   name: path.basename(path.resolve(cwd)),
   template: /** @type {'default' | 'skeleton' | 'skeletonlib'} */ (options.template),
-  types: options.types,
+  // types: options.types,
+  types: null,
   prettier: options.features.includes('prettier'),
   eslint: options.features.includes('eslint'),
-  playwright: options.features.includes('playwright'),
-  vitest: options.features.includes('vitest'),
+  jest: options.features.includes('jest'),
   svelte5: options.features.includes('svelte5')
 });
 
@@ -143,14 +135,9 @@ if (options.features.includes('prettier')) {
   console.log(cyan('  https://github.com/sveltejs/prettier-plugin-svelte#options\n'));
 }
 
-if (options.features.includes('playwright')) {
-  console.log(bold('✔ Playwright'));
-  console.log(cyan('  https://playwright.dev\n'));
-}
-
-if (options.features.includes('vitest')) {
-  console.log(bold('✔ Vitest'));
-  console.log(cyan('  https://vitest.dev\n'));
+if (options.features.includes('jest')) {
+  console.log(bold('✔ jest'));
+  console.log(cyan('  https://jest.dev\n'));
 }
 
 console.log('Install community-maintained integrations:');

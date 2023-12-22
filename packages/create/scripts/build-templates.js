@@ -97,7 +97,7 @@ async function generate_templates(shared) {
       // ignore contents of .gitignore or .ignore
       if (!gitignore.accepts(name) || !ignore.accepts(name) || name === '.ignore') continue;
 
-      if (/\.(ts|svelte)$/.test(name)) {
+      if (/\.(ts|js|scout9)$/.test(name)) {
         const contents = fs.readFileSync(path.join(cwd, name), 'utf8');
 
         if (name.endsWith('.d.ts')) {
@@ -121,7 +121,7 @@ async function generate_templates(shared) {
             contents: strip_jsdoc(js)
           });
         } else {
-          // we jump through some hoops, rather than just using svelte.preprocess,
+          // we jump through some hoops, rather than just using scout9.preprocess,
           // so that the output preserves the original formatting to the extent
           // possible (e.g. preserving double line breaks). Sucrase is the best
           // tool for the job because it just removes the types; Prettier then
