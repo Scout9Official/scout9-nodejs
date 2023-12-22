@@ -3,6 +3,13 @@
   "version": "1.0.0-alpha.0.0.1",
   "bin": "./bin.js",
   "main": "./index.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Scout9Official/scout9-nodejs.git"
+  },
   "scripts": {
     "build": "node scripts/build-templates",
     "prepublishOnly": "npm run build"

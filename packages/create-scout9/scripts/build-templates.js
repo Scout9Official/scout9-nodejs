@@ -86,7 +86,7 @@ async function generate_templates(shared) {
       if (name === 'package.template.json') {
         let contents = fs.readFileSync(path.join(cwd, name), 'utf8');
         // TODO package-specific versions
-        contents = contents.replace(/workspace:\*/g, 'next');
+        contents = contents.replace(/workspace:\*/g, 'latest');
         fs.writeFileSync(`${dir}/package.json`, contents);
         continue;
       }
