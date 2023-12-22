@@ -1,7 +1,6 @@
 # create-scout9
 
-github.com/Scout9Official/scout9-nodejs.git"
-Everything you need to build a Scout9 project, powered by [`create-svelte`](https://github.com/Scout9Official/scout9-nodejs/tree/main/packages).
+Everything you need to build a Scout9 project, powered by [`create-scout9`](https://github.com/Scout9Official/scout9-nodejs/tree/main/packages).
 
 ## Creating a project
 

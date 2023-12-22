@@ -92,7 +92,7 @@
 //    * - It can be used to make credentialed requests on the server, as it inherits the `cookie` and `authorization` headers for the page request.
 //    * - It can make relative requests on the server (ordinarily, `fetch` requires a URL with an origin when used in a server context).
 //    * - Internal requests (e.g. for `+server.js` routes) go directly to the handler function when running on the server, without the overhead of an HTTP call.
-//    * - During server-side rendering, the response will be captured and inlined into the rendered HTML by hooking into the `text` and `json` methods of the `Response` object. Note that headers will _not_ be serialized, unless explicitly included via [`filterSerializedResponseHeaders`](https://kit.svelte.dev/docs/hooks#server-hooks-handle)
+//    * - During server-side rendering, the response will be captured and inlined into the rendered HTML by hooking into the `text` and `json` methods of the `Response` object. Note that headers will _not_ be serialized, unless explicitly included
 //    * - During hydration, the response will be read from the HTML, guaranteeing consistency and preventing an additional network request.
 //    *
 //    */
@@ -143,7 +143,7 @@
 //    *
 //    * Setting the same header multiple times (even in separate `load` functions) is an error — you can only set a given header once.
 //    *
-//    * You cannot add a `set-cookie` header with `setHeaders` — use the [`cookies`](https://kit.svelte.dev/docs/types#public-types-cookies) API instead.
+//    * You cannot add a `set-cookie` header with `setHeaders` API instead.
 //    */
 //   setHeaders(headers: Record<string, string>): void;
 //

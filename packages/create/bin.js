@@ -44,7 +44,7 @@ const options = await p.group(
   {
     template: () =>
       p.select({
-        message: 'Which Svelte app template?',
+        message: 'Which Scout9 app template?',
         // @ts-expect-error i have no idea what is going on here
         options: fs.readdirSync(dist('templates')).map((dir) => {
           const meta_file = dist(`templates/${dir}/meta.json`);
@@ -106,14 +106,12 @@ await create(cwd, {
   prettier: options.features.includes('prettier'),
   eslint: options.features.includes('eslint'),
   jest: options.features.includes('jest'),
-  svelte5: options.features.includes('svelte5')
 });
 
 p.outro('Your project is ready!');
 
 if (options.types === 'typescript') {
   console.log(bold('✔ Typescript'));
-  console.log('  Inside Svelte components, use <script lang="ts">\n');
 } else if (options.types === 'checkjs') {
   console.log(bold('✔ Type-checked JavaScript'));
   console.log(cyan('  https://www.typescriptlang.org/tsconfig#checkJs\n'));
@@ -126,7 +124,6 @@ if (options.types === 'typescript') {
 
 if (options.features.includes('eslint')) {
   console.log(bold('✔ ESLint'));
-  console.log(cyan('  https://github.com/sveltejs/eslint-plugin-svelte\n'));
 }
 
 if (options.features.includes('prettier')) {
@@ -140,8 +137,8 @@ if (options.features.includes('jest')) {
   console.log(cyan('  https://jest.dev\n'));
 }
 
-console.log('Install community-maintained integrations:');
-console.log(cyan('  https://github.com/svelte-add/svelte-add'));
+// @TODO
+// console.log('Install community-maintained integrations:');
 
 console.log('\nNext steps:');
 let i = 1;

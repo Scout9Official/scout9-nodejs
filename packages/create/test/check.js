@@ -14,7 +14,7 @@ import { create } from '../index.js';
 const resolve_path = (path) => fileURLToPath(new URL(path, import.meta.url));
 
 // use a directory outside of packages to ensure it isn't added to the pnpm workspace
-const test_workspace_dir = resolve_path('../../../.test-tmp/create-svelte/');
+const test_workspace_dir = resolve_path('../../../.test-tmp/create-scout9/');
 
 const existing_workspace_overrides = JSON.parse(
   fs.readFileSync(resolve_path('../../../package.json'), 'utf-8')
@@ -44,7 +44,7 @@ try {
 fs.rmSync(test_workspace_dir, { recursive: true, force: true });
 fs.mkdirSync(test_workspace_dir, { recursive: true });
 const workspace = {
-  name: 'svelte-check-test-fake-pnpm-workspace',
+  name: 'scout9-check-test-fake-pnpm-workspace',
   private: true,
   version: '0.0.0',
   pnpm: { overrides },
