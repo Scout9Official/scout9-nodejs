@@ -1,6 +1,6 @@
 {
   "name": "@scout9/app",
-  "version": "1.0.0-alpha.0.0.1",
+  "version": "1.0.0-alpha.0.0.3",
   "description": "Build and deploy your Scout9 app for SMS auto reply",
   "publishConfig": {
     "access": "public"
@@ -11,7 +11,9 @@
   },
   "scripts": {
     "postinstall": "node postinstall.js",
-    "types": "npx -p typescript tsc src/**/*.ts --declaration --allowJs --emitDeclarationOnly --esModuleInterop --outDir dist/types"
+    "prepublishOnly": "npm run generate:types",
+    "generate:types": "node scripts/generate-dts.js",
+    "build": "babel src --out-dir dist"
   },
   "type": "module",
   "bin": {
@@ -30,15 +32,20 @@
     "./package.json": "./package.json",
     ".": {
       "types": "./types/index.d.ts",
-      "import": "./src/exports/index.js"
+      "import": "./src/exports.js",
+      "require": "./dist/exports.js"
     }
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@babel/cli": "^7.23.4",
+    "@babel/core": "^7.23.6",
+    "@babel/preset-env": "^7.23.6",
     "@types/archiver": "^6.0.2",
     "@types/jest": "^29.5.11",
+    "dts-buddy": "^0.4.3",
     "ts-jest": "^29.1.1",
     "typescript": "^5.3.3"
   },
