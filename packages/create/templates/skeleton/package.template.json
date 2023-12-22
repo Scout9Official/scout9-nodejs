@@ -1,6 +1,7 @@
 {
   "name": "~TODO~",
   "version": "0.0.1",
+  "private": true,
   "scripts": {
     "deploy": "scout9 deploy",
     "build": "scout9 build",
