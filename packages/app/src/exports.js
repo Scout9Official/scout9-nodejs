@@ -7,15 +7,16 @@ export * from './testing-tools/index.js';
 
 export async function run(
   event,
-  {cwd = process.cwd()} = {},
+  {cwd = process.cwd(), folder} = {},
 ) {
-  return Scout9Platform.run(event, {cwd})
+  return Scout9Platform.run(event, {cwd, folder})
 }
+
 export async function sendEvent(
   event,
-  {cwd = process.cwd()} = {},
+  {cwd = process.cwd(), folder} = {},
 ) {
-  return Scout9Platform.run(event, {cwd})
+  return Scout9Platform.run(event, {cwd, folder})
 }
 
 /**

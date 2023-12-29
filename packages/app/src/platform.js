@@ -13,7 +13,7 @@ export const Scout9Platform = {
     try {
       const config = await loadConfig({cwd, folder: 'src'});
       await _build({cwd}, config);
-      await _deploy({cwd});
+      await _deploy({cwd}, config);
       return config;
     } catch (e) {
       this.handleError(e);
@@ -38,14 +38,14 @@ export const Scout9Platform = {
    */
   run: async function (
     event,
-    {cwd = process.cwd(), mode = 'remote'}
+    {cwd = process.cwd(), mode = 'remote', folder}
   ) {
     if (mode !== 'remote') {
       throw new Error(`Unimplemented mode "${mode}"`);
     }
     try {
       loadEnvConfig({cwd});
-      return _run(event, {cwd});
+      return _run(event, {cwd, folder});
     } catch (e) {
       this.handleError(e);
       throw e;

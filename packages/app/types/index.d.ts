@@ -44,7 +44,7 @@ declare module '@scout9/app' {
 	  entities: string[];
 	  entity: string;
 	  id: string;
-	  definitions?:  {
+	  definitions?: {
 		utterance?: string;
 		value: string;
 		text: string[];
@@ -142,7 +142,7 @@ declare module '@scout9/app' {
 	conversation: Conversation;
 	context: any;
 	message: Message;
-	agent: Agent;
+	agent: Omit<Agent, 'transcripts' | 'audioRef' | 'includedLocations' | 'excludedLocations' | 'model' | 'context'>;
 	customer: Customer;
 	intent: string;
   }
@@ -163,12 +163,18 @@ declare module '@scout9/app' {
   //     mode: z.enum(['after-reply', 'immediately']).optional(),
   //   }),
   // ]);
+  export interface Instruction {
+	id: string;
+	content: string;
+  }
+
   export interface WorkflowResponseSlot<Type = any> {
 	forward?: string | boolean | {
 	  to?: string;
 	  mode?: 'after-reply' | 'immediately';
 	};
-	instructions?: string | string[];
+	instructions?: string | string[] | Instruction | Instruction[];
+	removeInstructions?: string[];
 	message?: string;
 	secondsDelay?: number;
 	scheduled?: number;
@@ -179,8 +185,8 @@ declare module '@scout9/app' {
   export type WorkflowResponse<Type> = WorkflowResponseSlot<Type> | WorkflowResponseSlot<Type>[];
 
   export function json<Type = any>(data: Type, init?: ResponseInit): Promise<EventResponse<Type>>;
-  export function run<Type = any>(event: WorkflowEvent, options: RunOptions): Promise<WorkflowResponse<Type>>;
-  export function sendEvent<Type = any>(event: WorkflowEvent, options: RunOptions): Promise<WorkflowResponse<Type>>;
+  export function run<Type = any>(event: WorkflowEvent, options?: RunOptions): Promise<WorkflowResponse<Type>>;
+  export function sendEvent<Type = any>(event: WorkflowEvent, options?: RunOptions): Promise<WorkflowResponse<Type>>;
   export function build(options?: BuildOptions): Promise<Scout9ProjectBuildConfig>;
   export function deploy(options?: DeployOptions): Promise<Scout9ProjectBuildConfig>;
 

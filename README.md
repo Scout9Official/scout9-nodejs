@@ -1,5 +1,9 @@
 # Scout9 Auto Replies
 
+Try it out the alpha version
+
+`npm create scout9@latest my-app`
+
 * [x] SMS
 * [ ] Email (Pending)
 
@@ -10,6 +14,8 @@ Scout9 uss Persona Model Transforming (PMT) technology to craft messages in your
 Scout9 is the perfect tool to scale your business or organization with a personal touch.
 
 Scout9 aim's to be one of the lead improved automation SASS 3.0 products on the market by 2025!
+
+
 
 #### Thanks to our early backers using our SMS auto reply service:
 * [REI](https://rei.com): Supply chain procurement SMS auto replies

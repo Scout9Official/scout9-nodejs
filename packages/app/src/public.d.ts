@@ -43,7 +43,7 @@ export interface Scout9ProjectBuildConfig extends Scout9ProjectConfig {
     entities: string[];
     entity: string;
     id: string;
-    definitions?:  {
+    definitions?: {
       utterance?: string;
       value: string;
       text: string[];
@@ -141,7 +141,7 @@ export interface WorkflowEvent {
   conversation: Conversation;
   context: any;
   message: Message;
-  agent: Agent;
+  agent: Omit<Agent, 'transcripts' | 'audioRef' | 'includedLocations' | 'excludedLocations' | 'model' | 'context'>;
   customer: Customer;
   intent: string;
 }
@@ -162,12 +162,18 @@ export interface WorkflowEvent {
 //     mode: z.enum(['after-reply', 'immediately']).optional(),
 //   }),
 // ]);
+export interface Instruction {
+  id: string;
+  content: string;
+}
+
 export interface WorkflowResponseSlot<Type = any> {
   forward?: string | boolean | {
     to?: string;
     mode?: 'after-reply' | 'immediately';
   };
-  instructions?: string | string[];
+  instructions?: string | string[] | Instruction | Instruction[];
+  removeInstructions?: string[];
   message?: string;
   secondsDelay?: number;
   scheduled?: number;
@@ -178,8 +184,8 @@ export interface WorkflowResponseSlot<Type = any> {
 export type WorkflowResponse<Type> = WorkflowResponseSlot<Type> | WorkflowResponseSlot<Type>[];
 
 export declare function json<Type = any>(data: Type, init?: ResponseInit): Promise<EventResponse<Type>>;
-export declare function run<Type = any>(event: WorkflowEvent, options: RunOptions): Promise<WorkflowResponse<Type>>;
-export declare function sendEvent<Type = any>(event: WorkflowEvent, options: RunOptions): Promise<WorkflowResponse<Type>>;
+export declare function run<Type = any>(event: WorkflowEvent, options?: RunOptions): Promise<WorkflowResponse<Type>>;
+export declare function sendEvent<Type = any>(event: WorkflowEvent, options?: RunOptions): Promise<WorkflowResponse<Type>>;
 export declare function build(options?: BuildOptions): Promise<Scout9ProjectBuildConfig>;
 export declare function deploy(options?: DeployOptions): Promise<Scout9ProjectBuildConfig>;
 

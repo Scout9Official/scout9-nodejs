@@ -58,9 +58,14 @@ export const ForwardSchema = z.union([
   }),
 ]);
 
+export const InstructionSchema = z.object({
+  id: zId('Instruction ID', z.string()).description('Unique ID for the instruction, this is used to remove the instruction later'),
+  content: z.string(),
+});
 export const WorkflowResponseSlotSchema = z.object({
   forward: ForwardSchema.optional(),
-  instructions: z.union([z.string(), z.array(z.string())]).optional(),
+  instructions: z.union([z.string(), InstructionSchema, z.array(z.string()), z.array(InstructionSchema)]).optional(),
+  removeInstructions: z.array(z.string()).optional(),
   message: z.string().optional(),
   secondsDelay: z.number().optional(),
   scheduled: z.number().optional(),

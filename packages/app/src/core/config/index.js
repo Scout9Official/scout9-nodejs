@@ -8,6 +8,9 @@ import loadWorkflowsConfig from './workflow.js';
 
 
 export function loadEnvConfig({ cwd = process.cwd()} = {}) {
+  if (!!process.env.SCOUT9_API_KEY) {
+    return;
+  }
   const configFilePath = path.resolve(cwd, './.env');
   config({path: configFilePath});
   if (!process.env.SCOUT9_API_KEY) {

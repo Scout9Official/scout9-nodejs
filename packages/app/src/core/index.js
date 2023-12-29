@@ -39,13 +39,13 @@ function zipDirectory(source, out) {
   });
 }
 
-async function deployZipDirectory(zipFilePath) {
+async function deployZipDirectory(zipFilePath, config) {
 
 
   const form = new FormData();
   const blob = new Blob([await fs.readFile(zipFilePath)], {type: 'application/zip'});
   form.set("file", blob, path.basename(zipFilePath), {contentType: 'application/zip'});
-  form.set("foo", "bar");
+  form.set("config", JSON.stringify(config));
 
   // @TODO append signature secret header
   const response = await fetch(`https://pocket-guide.vercel.app/api/b/platform/upload`, {
@@ -117,14 +117,14 @@ export async function getApp({cwd = process.cwd(), folder = 'src', ignoreAppRequ
 /**
  * Runs a given project container from scout9 to given environment
  */
-export async function run(event, {cwd = process.cwd()} = {}) {
+export async function run(event, {cwd = process.cwd(), folder} = {}) {
 
   // @TODO use scout9/admin
-  await downloadAndUnpackZip(path.resolve(cwd, 'tmp'));
+  await downloadAndUnpackZip(folder ? folder : path.resolve(cwd, 'tmp'));
 
-  const {filePath, fileName} = await getApp({cwd, folder: 'tmp/build', ignoreAppRequire: true});
+  const {filePath, fileName} = await getApp({cwd, folder: folder ? path.resolve(folder, '/build') : 'tmp/build', ignoreAppRequire: true});
 
-  return runInVM(event, {folder: path.resolve(cwd, 'tmp/build'), filePath, fileName});
+  return runInVM(event, {folder: folder ? path.resolve(folder, 'build') : path.resolve(cwd, 'tmp/build'), filePath, fileName});
 }
 
 /**
@@ -156,12 +156,12 @@ export async function build({cwd = process.cwd()} = {}, config) {
 /**
  * Deploys a local project to scout9
  */
-export async function deploy({cwd = process.cwd()}) {
+export async function deploy({cwd = process.cwd()}, config) {
   const zipFilePath = path.join(cwd, 'build.zip');
   await zipDirectory(path.resolve(cwd, 'build'), zipFilePath);
 
   console.log('Project zipped successfully.');
 
-  const response = await deployZipDirectory(zipFilePath);
+  const response = await deployZipDirectory(zipFilePath, config);
   console.log('Response from Firebase Function:', response);
 }
