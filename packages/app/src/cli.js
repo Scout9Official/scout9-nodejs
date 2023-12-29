@@ -89,4 +89,21 @@ prog
     }
   });
 
+prog
+  .command('dev')
+  .describe('Run your scout9 auto reply app locally')
+  .option('--mode', 'Specify a mode for loading environment variables', 'development')
+  .action(async ({ mode }) => {
+    if (!fs.existsSync('.env')) {
+      console.warn(`Missing ${path.resolve('.env')} — skipping`);
+      return;
+    }
+    try {
+      throw new Error('Dev server not available yet');
+    } catch (e) {
+      handle_error(e);
+    }
+  })
+
+
 prog.parse(process.argv, { unknown: (arg) => `Unknown option: ${arg}` });

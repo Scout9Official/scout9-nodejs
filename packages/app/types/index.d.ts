@@ -35,31 +35,33 @@ declare module '@scout9/app' {
 	}
   }
 
+  export interface IEntityBuildConfig {
+	definitions?: {
+	  utterance?: string;
+	  value: string;
+	  text: string[];
+	}[],
+	training?: {
+	  text: string, intent: string;
+	}[];
+	tests?: {
+	  text: string;
+	  expected: {
+		intent: string;
+		context: any;
+	  }
+	}[];
+  }
+
   /**
    * Including the provided project config, this is the manifest for all entities and workflows to be managed in build
    */
   export interface Scout9ProjectBuildConfig extends Scout9ProjectConfig {
 	agents: Agent[];
-	entities: {
+	entities: ({
 	  entities: string[];
 	  entity: string;
-	  id: string;
-	  definitions?: {
-		utterance?: string;
-		value: string;
-		text: string[];
-	  }[],
-	  training?: {
-		text: string, intent: string;
-	  }[];
-	  tests?: {
-		text: string;
-		expected: {
-		  intent: string;
-		  context: any;
-		}
-	  }[];
-	}[];
+	  id: string;} & IEntityBuildConfig)[];
 	workflows: {
 	  entities: string[];
 	  entity: string;
@@ -145,24 +147,9 @@ declare module '@scout9/app' {
 	agent: Omit<Agent, 'transcripts' | 'audioRef' | 'includedLocations' | 'excludedLocations' | 'model' | 'context'>;
 	customer: Customer;
 	intent: string;
+	stagnationCount: number;
   }
 
-  // forward: ForwardSchema.optional(),
-  //   instructions: z.union([z.string(), z.array(z.string())]).optional(),
-  //   message: z.string().optional(),
-  //   secondsDelay: z.number().optional(),
-  //   scheduled: z.number().optional(),
-  //   contextUpsert: ConversationContext.optional(),
-  //   resetIntent: z.boolean().optional(),
-
-  // export const ForwardSchema = z.union([
-  //   z.boolean(),
-  //   z.string(),
-  //   z.object({
-  //     to: z.string().optional(),
-  //     mode: z.enum(['after-reply', 'immediately']).optional(),
-  //   }),
-  // ]);
   export interface Instruction {
 	id: string;
 	content: string;

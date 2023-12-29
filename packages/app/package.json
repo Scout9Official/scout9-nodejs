@@ -1,6 +1,6 @@
 {
   "name": "@scout9/app",
-  "version": "1.0.0-alpha.0.1.5",
+  "version": "1.0.0-alpha.0.1.8",
   "description": "Build and deploy your Scout9 app for SMS auto reply",
   "publishConfig": {
     "access": "public"
@@ -17,7 +17,7 @@
   },
   "type": "module",
   "bin": {
-    "scout9-app": "./scout9-app.js"
+    "scout9": "./scout9-app.js"
   },
   "files": [
     "src",

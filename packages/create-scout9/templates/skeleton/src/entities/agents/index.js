@@ -1,5 +1,6 @@
 /**
  * Required core entity type: Agents represents you and your team
+ * @returns {Array<Agent>}
  */
 export default function Agents() {
   return [

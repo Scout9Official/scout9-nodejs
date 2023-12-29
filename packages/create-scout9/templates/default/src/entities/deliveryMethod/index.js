@@ -6,6 +6,7 @@
 
 /**
  * Example entity to help us differentiate if a user wants a delivery or pickup order
+ * @returns {IEntityBuildConfig}
  */
 export default function () {
   return {

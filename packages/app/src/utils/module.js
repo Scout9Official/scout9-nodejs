@@ -60,6 +60,10 @@ export function checkVariableType(variable) {
     if (!Array.isArray(variable) && !(variable instanceof Date)) {
       return 'json object';
     }
+    if (Array.isArray(variable)) {
+      return 'array';
+    }
+    return 'object';
   }
 
   // Other types (number, string, boolean, undefined, etc.)

@@ -1,1 +1,2 @@
-import './src/cli';
+#!/usr/bin/env node
+import './src/cli.js';

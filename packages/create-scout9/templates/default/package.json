@@ -5,6 +5,8 @@
   "scripts": {
     "deploy": "scout9 deploy",
     "build": "scout9 build",
+    "sync": "scout9 sync",
+    "dev": "scout9 dev",
     "test": "scout9 test"
   },
   "devDependencies": {

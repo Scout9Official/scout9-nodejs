@@ -16,6 +16,7 @@ async function loadEntityApiConfig(cwd, filePath) {
   const x = apiFilePath.replace(cwd, '').split('/').slice(1).join('/');
 
   const mod = await requireOptionalProjectFile(x);
+
   if (mod) {
     const config = {};
     const methods = ['GET', 'UPDATE', 'QUERY', 'PUT', 'PATCH', 'DELETE'];

@@ -5,6 +5,12 @@ export { EventResponse } from './runtime/index.js';
 // export * from './types';
 export * from './testing-tools/index.js';
 
+/**
+ * @param event
+ * @param cwd
+ * @param folder
+ * @returns {Promise<*|undefined>}
+ */
 export async function run(
   event,
   {cwd = process.cwd(), folder} = {},

@@ -1,13 +1,21 @@
 import colors from 'kleur';
 import { z } from 'zod';
-import { build as _build, deploy as _deploy, run as _run } from './core/index.js';
+import { build as _build, deploy as _deploy, run as _run, sync as _sync } from './core/index.js';
 import { loadConfig, loadEnvConfig } from './core/config/index.js';
 import { coalesceToError } from './utils/index.js';
 
 export const Scout9Platform = {
   sync:  async function ({cwd = process.cwd()} = {}, mode = 'production') {
-    // @TODO implement sync
-    throw new Error('Sync not implemented yet');
+    try {
+      const config = await loadConfig({cwd, folder: 'src'});
+      const result = await _sync({cwd, folder: 'src'}, config);
+      return {
+        config,
+        sync: result
+      };
+    } catch (e) {
+      this.handleError(e);
+    }
   },
 
   /**

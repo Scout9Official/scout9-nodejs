@@ -5,6 +5,7 @@ import loadAgentConfig from './agents.js';
 import loadEntitiesConfig from './entities.js';
 import loadProjectConfig from './project.js';
 import loadWorkflowsConfig from './workflow.js';
+import { Scout9ProjectBuildConfigSchema } from '../../runtime/index.js';
 
 
 export function loadEnvConfig({ cwd = process.cwd()} = {}) {
@@ -22,13 +23,25 @@ export function loadEnvConfig({ cwd = process.cwd()} = {}) {
     }
   }
 }
+
+/**
+ *
+ * @param cwd
+ * @param folder
+ * @returns {Promise<Scout9ProjectBuildConfig>}
+ */
 export async function loadConfig({ cwd = process.cwd(), folder = 'src'} = {}) {
   // Load globals
   loadEnvConfig({cwd});
-  return {
+  const projectConfig = {
     ...await loadProjectConfig({cwd, folder}),
     entities: await loadEntitiesConfig({cwd, folder}),
     agents: await loadAgentConfig({cwd, folder}),
     workflows: await loadWorkflowsConfig({cwd, folder})
   }
+
+  // Validate the config
+  Scout9ProjectBuildConfigSchema.parse(projectConfig);
+
+  return projectConfig;
 }

@@ -4,10 +4,9 @@ import { exec } from 'node:child_process';
 import fss from 'node:fs';
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import fetch, {FormData} from 'node-fetch';
+import fetch, { FormData } from 'node-fetch';
 import { runInVM } from '../runtime/index.js';
 import { checkVariableType, requireProjectFile } from '../utils/index.js';
-
 
 
 async function runNpmRunBuild({cwd = process.cwd()} = {}) {
@@ -40,12 +39,10 @@ function zipDirectory(source, out) {
 }
 
 async function deployZipDirectory(zipFilePath, config) {
-
-
   const form = new FormData();
   const blob = new Blob([await fs.readFile(zipFilePath)], {type: 'application/zip'});
-  form.set("file", blob, path.basename(zipFilePath), {contentType: 'application/zip'});
-  form.set("config", JSON.stringify(config));
+  form.set('file', blob, path.basename(zipFilePath), {contentType: 'application/zip'});
+  form.set('config', JSON.stringify(config));
 
   // @TODO append signature secret header
   const response = await fetch(`https://pocket-guide.vercel.app/api/b/platform/upload`, {
@@ -110,7 +107,7 @@ export async function getApp({cwd = process.cwd(), folder = 'src', ignoreAppRequ
       throw new Error(`App must return a default function, received "${type}"`);
     }
   }
-  return {app, exe, filePath, fileName: `app${exe}`}
+  return {app, exe, filePath, fileName: `app${exe}`};
 }
 
 
@@ -122,9 +119,16 @@ export async function run(event, {cwd = process.cwd(), folder} = {}) {
   // @TODO use scout9/admin
   await downloadAndUnpackZip(folder ? folder : path.resolve(cwd, 'tmp'));
 
-  const {filePath, fileName} = await getApp({cwd, folder: folder ? path.resolve(folder, '/build') : 'tmp/build', ignoreAppRequire: true});
+  const {filePath, fileName} = await getApp({
+    cwd,
+    folder: folder ? path.resolve(folder, '/build') : 'tmp/build',
+    ignoreAppRequire: true
+  });
 
-  return runInVM(event, {folder: folder ? path.resolve(folder, 'build') : path.resolve(cwd, 'tmp/build'), filePath, fileName});
+  return runInVM(
+    event,
+    {folder: folder ? path.resolve(folder, 'build') : path.resolve(cwd, 'tmp/build'), filePath, fileName}
+  );
 }
 
 /**
@@ -144,7 +148,7 @@ export async function build({cwd = process.cwd()} = {}, config) {
 
 
   // 3. Remove unnecessary files
-  const files = globSync(path.resolve(cwd, 'build/**/*(*.test.*|*.spec.*)'))
+  const files = globSync(path.resolve(cwd, 'build/**/*(*.test.*|*.spec.*)'));
   for (const file of files) {
     await fs.unlink(file);
   }
@@ -164,4 +168,88 @@ export async function deploy({cwd = process.cwd()}, config) {
 
   const response = await deployZipDirectory(zipFilePath, config);
   console.log('Response from Firebase Function:', response);
+}
+
+/**
+ *
+ * @param {Object} options
+ * @param {Scout9ProjectBuildConfig} config
+ * @returns {Promise<void>}
+ */
+export async function sync({cwd = process.cwd(), folder = 'src'} = {}, config) {
+  const {entities, agents} = await fetch(`https://pocket-guide.vercel.app/api/b/platform/sync`, {
+    method: 'GET',
+    headers: {
+      'Authorization': process.env.SCOUT9_API_KEY || ''
+    }
+  }).then(res => res.json());
+
+  // Merge
+  config.agents = agents.reduce((accumulator, agent) => {
+    // Check if agent already exists
+    const existingAgentIndex = accumulator.findIndex(a => a.id === agent.id);
+    if (existingAgentIndex === -1) {
+      accumulator.push(agent);
+    } else {
+      // Merge agent
+      accumulator[existingAgentIndex] = {
+        ...accumulator[existingAgentIndex],
+        ...agent
+      };
+    }
+    return accumulator;
+  }, config.agents);
+
+  config.entities = entities.reduce((accumulator, entity) => {
+    // Check if agent already exists
+    const existingEntityIndex = accumulator.findIndex(a => a.id === entity.id);
+    if (existingEntityIndex === -1) {
+      accumulator.push(entity);
+    } else {
+      // Merge agent
+      accumulator[existingEntityIndex] = {
+        ...accumulator[existingEntityIndex],
+        ...entity
+      };
+    }
+    return accumulator;
+  }, config.entities);
+
+  // Write to src/agents
+  const paths = globSync(path.resolve(cwd, `${folder}/entities/agents/{index,config}.{ts,js}`));
+  if (paths.length === 0) {
+    throw new Error(`Missing required agents entity file, rerun "scout9 sync" to fix`);
+  }
+  if (paths.length > 1) {
+    throw new Error(`Multiple agents entity files found, rerun "scout9 sync" to fix`);
+  }
+  const [filePath] = paths;
+
+  await fs.writeFile(filePath, `
+/**
+ * Required core entity type: Agents represents you and your team
+ * @returns {Array<Agent>}
+ */
+export default function Agents() {
+  return ${JSON.stringify(config.agents, null, 2)};
+}
+`);
+
+  for (const entity of config.entities) {
+    const {entity: _entity, entities, ...rest} = entity;
+    const fileContent = `
+/**
+ * Example entity to help us differentiate if a user wants a delivery or pickup order
+ * @returns {IEntityBuildConfig}
+ */
+export default function () {
+  return {
+    ${JSON.stringify(rest, null, 2).replace(/"/g, '')}
+  }
+}
+`
+    await fs.writeFile(`${cwd}/${folder}/entities/${_entity}/index.js`, fileContent);
+  }
+
+  return {success: true}
 }

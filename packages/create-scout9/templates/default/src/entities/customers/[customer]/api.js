@@ -1,11 +1,11 @@
-import { json } from '../../../../platform/src/exports.js';
+import { json } from '@scout9/app';
 
 // @TODO replace with your CRM api
 import { customerMockDb } from '../../../lib/customer-mock-db';
 
-
 /**
  * Get customer info from your CRM
+ * @returns {Promise<EventResponse<Customer>>}
  */
 export const GET = async ({params}) => {
   return json(await customerMockDb.get(params.customer));
@@ -18,6 +18,8 @@ export const GET = async ({params}) => {
  *    A new or unrecognized customer has contacted an agent. Scout9 has captured some preliminary information
  *    about them and sent this POST request. Take the information to either add a new customer record to your CRM
  *    or return an existing customer id to map the correct customer document.
+ *
+ * @returns {Promise<EventResponse>}
  */
 export const POST = async ({params, body: newCustomer}) => {
   // Scout9 will generate random id for new customers, but whatever id you return back will be used for the new customer
@@ -31,6 +33,8 @@ export const POST = async ({params, body: newCustomer}) => {
  * Example:
  *    In a conversation, if any new data is found, Scout9 will send a PUT or PATCH request to allow for you to update
  *    your CRM accordingly.
+ *
+ * @returns {Promise<EventResponse>}
  */
 export const PUT = async ({params, body: updatedCustomer}) => {
   // const id = params.customer;
@@ -49,6 +53,8 @@ export const PUT = async ({params, body: updatedCustomer}) => {
  * Example:
  *    A customer has opt-out of text messaging, Scout9 will send a DELETE message for you to remove any data, returning
  *    back success: true will then have Scout9 delete any data on their end as well.
+ *
+ * @returns {Promise<EventResponse>}
  */
 export const DELETE = async ({params, request}) => {
   await customerMockDb.remove(params.customer);

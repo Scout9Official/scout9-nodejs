@@ -70,6 +70,9 @@ function write_common_files(cwd, options, name) {
   pkg.name = to_valid_package_name(name);
 
   fs.writeFileSync(pkg_file, JSON.stringify(pkg, null, '\t') + '\n');
+
+  const env_file = path.join(cwd, '.env');
+  fs.writeFileSync(env_file, 'SCOUT9_API_KEY=<insert-scout9-api-key>\n' );
 }
 
 /**

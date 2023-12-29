@@ -42,3 +42,4 @@ export const agentConfigurationSchema = z.object({
   transcripts: z.array(z.array(MessageSchema)).optional(),
   audioRef: z.array(z.any()).optional()
 });
+export const agentsConfigurationSchema = z.array(agentConfigurationSchema);
