@@ -4,7 +4,6 @@ import PizzaOrder from './workflows/pizzaOrder/workflow.js';
 
 export default async function Scout9App(event) {
 
-  console.log(EventResponse);
   if (event.intent === 'pizzaOrder') {
     // run pizza order workflow
     return PizzaOrder(event);

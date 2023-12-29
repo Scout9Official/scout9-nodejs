@@ -5,13 +5,17 @@ import { loadConfig, loadEnvConfig } from './core/config/index.js';
 import { coalesceToError } from './utils/index.js';
 
 export const Scout9Platform = {
+  sync:  async function ({cwd = process.cwd()} = {}, mode = 'production') {
+    // @TODO implement sync
+    throw new Error('Sync not implemented yet');
+  },
 
   /**
    * Builds & Deploys the project
    */
-  deploy:  async function ({cwd = process.cwd()} = {}) {
+  deploy:  async function ({cwd = process.cwd()} = {}, mode = 'production') {
     try {
-      const config = await loadConfig({cwd, folder: 'src'});
+      const config = await loadConfig({cwd, folder: 'src' });
       await _build({cwd}, config);
       await _deploy({cwd}, config);
       return config;
@@ -23,7 +27,7 @@ export const Scout9Platform = {
   /**
    * Builds the project
    */
-  build: async function({cwd = process.cwd(), mode = 'development'} = {}) {
+  build: async function({cwd = process.cwd(), mode = 'production'} = {}) {
     try {
       const config = await loadConfig({cwd, folder: 'src'});
       await _build({cwd}, config);
