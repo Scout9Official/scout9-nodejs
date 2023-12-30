@@ -32,10 +32,15 @@ async function loadEntityApiConfig(cwd, filePath) {
   }
 }
 
+/**
+ * @returns {Promise<EntitiesBuildConfig>}
+ */
 export default async function loadEntitiesConfig(
   {cwd = process.cwd(), folder = 'src'} = {}
 ) {
   console.log('loadEntitiesConfig', {cwd, folder});
+
+  /** @type EntitiesBuildConfig */
   const config = [];
   const paths = globSync(path.resolve(cwd, `${folder}/entities/**/{index,config,api}.{ts,js}`));
   const data = [];

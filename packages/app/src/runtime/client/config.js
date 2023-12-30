@@ -1,9 +1,7 @@
-import { Agent } from '@scout9/app';
 import { z } from 'zod';
-import { zId } from './utils.js';
 import { agentsConfigurationSchema } from './agent.js';
-import { entitiesRootConfigurationSchema, entitiesRootProjectConfigurationSchema } from './entity.js';
-import { WorkflowConfigurationSchema } from './workflow.js';
+import { entitiesRootProjectConfigurationSchema } from './entity.js';
+import { WorkflowsConfigurationSchema } from './workflow.js';
 
 const llmModelOptions = z.union([
   z.literal('gpt-4-1106-preview'),
@@ -44,13 +42,14 @@ const bardSchema = z.object({
 
 const pmtSchema = z.object({
   engine: z.literal('scout9'),
-  model: pmtModelOptions
+  // model: pmtModelOptions
+  model: z.string()
 });
 
 export const Scout9ProjectBuildConfigSchema = z.object({
   agents: agentsConfigurationSchema,
   entities: entitiesRootProjectConfigurationSchema,
-  workflows: WorkflowConfigurationSchema,
+  workflows: WorkflowsConfigurationSchema,
   llm: z.union([llmSchema, llamaSchema, bardSchema]),
   pmt: pmtSchema
 });

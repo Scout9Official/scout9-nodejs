@@ -34,7 +34,7 @@ export interface Scout9ProjectConfig {
   }
 }
 
-export interface IEntityBuildConfig {
+export interface EntityBuildConfig {
   definitions?: {
     utterance?: string;
     value: string;
@@ -52,19 +52,24 @@ export interface IEntityBuildConfig {
   }[];
 }
 
+export type EntitiesBuildConfig = ({
+  entities: string[];
+  entity: string;
+  id: string;
+} & EntityBuildConfig)[];
+
+export type WorkflowBuildConfig = {
+  entities: string[];
+  entity: string;
+}
+export type WorkflowsBuildConfig = WorkflowBuildConfig[];
 /**
  * Including the provided project config, this is the manifest for all entities and workflows to be managed in build
  */
 export interface Scout9ProjectBuildConfig extends Scout9ProjectConfig {
   agents: Agent[];
-  entities: ({
-    entities: string[];
-    entity: string;
-    id: string;} & IEntityBuildConfig)[];
-  workflows: {
-    entities: string[];
-    entity: string;
-  }
+  entities: EntitiesBuildConfig;
+  workflows: WorkflowsBuildConfig;
 }
 
 
@@ -116,6 +121,7 @@ export interface Customer {
   postal_code?: string;
   state?: string;
   town?: string;
+
   [key: string]: any;
 }
 
@@ -123,8 +129,8 @@ export interface Agent {
   id: string;
   firstName?: string;
   lastName?: string;
- inactive?: boolean;
- programmablePhoneNumber?: string;
+  inactive?: boolean;
+  programmablePhoneNumber?: string;
   programmablePhoneNumberSid?: string;
   programmableEmail?: string;
   forwardEmail?: string;
@@ -171,9 +177,13 @@ export interface WorkflowResponseSlot<Type = any> {
 export type WorkflowResponse<Type> = WorkflowResponseSlot<Type> | WorkflowResponseSlot<Type>[];
 
 export declare function json<Type = any>(data: Type, init?: ResponseInit): Promise<EventResponse<Type>>;
+
 export declare function run<Type = any>(event: WorkflowEvent, options?: RunOptions): Promise<WorkflowResponse<Type>>;
+
 export declare function sendEvent<Type = any>(event: WorkflowEvent, options?: RunOptions): Promise<WorkflowResponse<Type>>;
+
 export declare function build(options?: BuildOptions): Promise<Scout9ProjectBuildConfig>;
+
 export declare function deploy(options?: DeployOptions): Promise<Scout9ProjectBuildConfig>;
 
 export class EventResponse<Type = any> {

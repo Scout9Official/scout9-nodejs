@@ -8,7 +8,7 @@ import loadWorkflowsConfig from './workflow.js';
 import { Scout9ProjectBuildConfigSchema } from '../../runtime/index.js';
 
 
-export function loadEnvConfig({ cwd = process.cwd()} = {}) {
+export function loadEnvConfig({ cwd = process.cwd(), folder = 'src'} = {}) {
   if (!!process.env.SCOUT9_API_KEY) {
     return;
   }
@@ -32,16 +32,27 @@ export function loadEnvConfig({ cwd = process.cwd()} = {}) {
  */
 export async function loadConfig({ cwd = process.cwd(), folder = 'src'} = {}) {
   // Load globals
-  loadEnvConfig({cwd});
+  loadEnvConfig({cwd, folder});
+  const baseProjectConfig  = await loadProjectConfig({cwd, folder});
+  const entitiesConfig = await loadEntitiesConfig({cwd, folder});
+  const agentsConfig = await loadAgentConfig({cwd, folder});
+  const workflowsConfig = await loadWorkflowsConfig({cwd, folder});
+
+  /**
+   * @type {Scout9ProjectBuildConfig}
+   */
   const projectConfig = {
-    ...await loadProjectConfig({cwd, folder}),
-    entities: await loadEntitiesConfig({cwd, folder}),
-    agents: await loadAgentConfig({cwd, folder}),
-    workflows: await loadWorkflowsConfig({cwd, folder})
+    ...baseProjectConfig,
+    entities: entitiesConfig,
+    agents: agentsConfig,
+    workflows: workflowsConfig
   }
 
   // Validate the config
-  Scout9ProjectBuildConfigSchema.parse(projectConfig);
+  const result = Scout9ProjectBuildConfigSchema.safeParse(projectConfig);
+  if (!result.success) {
+    throw result.error;
+  }
 
   return projectConfig;
 }

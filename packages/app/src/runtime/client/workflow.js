@@ -59,7 +59,7 @@ export const ForwardSchema = z.union([
 ]);
 
 export const InstructionSchema = z.object({
-  id: zId('Instruction ID', z.string()).description('Unique ID for the instruction, this is used to remove the instruction later'),
+  id: zId('Instruction ID').describe('Unique ID for the instruction, this is used to remove the instruction later'),
   content: z.string(),
 });
 export const WorkflowResponseSlotSchema = z.object({

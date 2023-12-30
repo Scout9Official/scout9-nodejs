@@ -1,10 +1,9 @@
 import path from 'node:path';
-import { globSync } from 'glob/dist/esm/index.js';
+import { globSync } from 'glob';
 import { checkVariableType, requireProjectFile } from '../../utils/index.js';
 import { agentsConfigurationSchema } from '../../runtime/index.js';
 
 export default async function loadAgentConfig({cwd = process.cwd(), folder = 'src'} = {}) {
-  console.log('@TODO implement loadAgentConfig');
   const paths = globSync(path.resolve(cwd, `${folder}/entities/agents/{index,config}.{ts,js}`));
   if (paths.length === 0) {
     throw new Error(`Missing required agents entity file, rerun "scout9 sync" to fix`);

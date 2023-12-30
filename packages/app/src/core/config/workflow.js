@@ -6,6 +6,9 @@ import {
 } from '../../runtime/index.js';
 
 
+/**
+ * @returns {Promise<WorkflowsBuildConfig>}
+ */
 export default async function loadWorkflowsConfig(
   {
     cwd = process.cwd(),
@@ -30,6 +33,7 @@ export default async function loadWorkflowsConfig(
     .map(({path, parents}) => {
 
       // Validate project configuration
+      /** @type {WorkflowBuildConfig} */
       const workflowConfig = {
         entity: parents[0],
         entities: parents,

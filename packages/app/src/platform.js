@@ -5,10 +5,10 @@ import { loadConfig, loadEnvConfig } from './core/config/index.js';
 import { coalesceToError } from './utils/index.js';
 
 export const Scout9Platform = {
-  sync:  async function ({cwd = process.cwd()} = {}, mode = 'production') {
+  sync:  async function ({cwd = process.cwd(), folder = 'src', mode = 'production'} = {}) {
     try {
-      const config = await loadConfig({cwd, folder: 'src'});
-      const result = await _sync({cwd, folder: 'src'}, config);
+      const config = await loadConfig({cwd, folder});
+      const result = await _sync({cwd, folder}, config);
       return {
         config,
         sync: result
@@ -21,7 +21,7 @@ export const Scout9Platform = {
   /**
    * Builds & Deploys the project
    */
-  deploy:  async function ({cwd = process.cwd()} = {}, mode = 'production') {
+  deploy:  async function ({cwd = process.cwd(), folder = 'src', mode = 'production'} = {}) {
     try {
       const config = await loadConfig({cwd, folder: 'src' });
       await _build({cwd}, config);
@@ -35,10 +35,10 @@ export const Scout9Platform = {
   /**
    * Builds the project
    */
-  build: async function({cwd = process.cwd(), mode = 'production'} = {}) {
+  build: async function({cwd = process.cwd(), folder = 'src', mode = 'production'} = {}) {
     try {
-      const config = await loadConfig({cwd, folder: 'src'});
-      await _build({cwd}, config);
+      const config = await loadConfig({cwd, folder, mode});
+      await _build({cwd, folder}, config);
       return config;
     } catch (e) {
       this.handleError(e);

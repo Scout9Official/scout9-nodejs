@@ -134,11 +134,11 @@ export async function run(event, {cwd = process.cwd(), folder} = {}) {
 /**
  * Builds a local project
  */
-export async function build({cwd = process.cwd()} = {}, config) {
+export async function build({cwd = process.cwd(), folder = 'src'} = {}, config) {
   // 1. Lint: Run validation checks
 
   // Check if app looks good
-  await getApp({cwd, folder: 'src'});
+  await getApp({cwd, folder});
 
   // Check if workflows look good
   console.log('@TODO check if workflows are properly written');
@@ -200,6 +200,9 @@ export async function sync({cwd = process.cwd(), folder = 'src'} = {}, config) {
     return accumulator;
   }, config.agents);
 
+  // Remove agents that are not on the server
+  config.agents = config.agents.filter(agent => agents.find(a => a.id === agent.id));
+
   config.entities = entities.reduce((accumulator, entity) => {
     // Check if agent already exists
     const existingEntityIndex = accumulator.findIndex(a => a.id === entity.id);
@@ -214,6 +217,7 @@ export async function sync({cwd = process.cwd(), folder = 'src'} = {}, config) {
     }
     return accumulator;
   }, config.entities);
+
 
   // Write to src/agents
   const paths = globSync(path.resolve(cwd, `${folder}/entities/agents/{index,config}.{ts,js}`));
@@ -234,21 +238,28 @@ export default function Agents() {
   return ${JSON.stringify(config.agents, null, 2)};
 }
 `);
+  console.log(`Updated ${filePath}`);
 
   for (const entity of config.entities) {
-    const {entity: _entity, entities, ...rest} = entity;
+    const {entity: _entity, entities, api, id, ...rest} = entity;
+    if ((rest.training?.length || 0) === 0) {
+      continue;
+    }
+    if ((rest.definitions?.length || 0) === 0) {
+      continue;
+    }
     const fileContent = `
 /**
- * Example entity to help us differentiate if a user wants a delivery or pickup order
+ * ${rest.description || 'Example entity to help us differentiate if a user wants a delivery or pickup order'}
  * @returns {IEntityBuildConfig}
  */
-export default function () {
-  return {
-    ${JSON.stringify(rest, null, 2).replace(/"/g, '')}
-  }
+export default async function ${_entity}Entity() {
+  return ${JSON.stringify(rest, null, 2)};
 }
 `
-    await fs.writeFile(`${cwd}/${folder}/entities/${_entity}/index.js`, fileContent);
+    const isConfigNamed = fss.existsSync(`${cwd}/${folder}/entities/${_entity}/config.js`);
+    await fs.writeFile(`${cwd}/${folder}/entities/${_entity}/${isConfigNamed ? 'config' : 'index'}.js`, fileContent);
+    console.log(`Updated ${cwd}/${folder}/entities/${_entity}/index.js`);
   }
 
   return {success: true}

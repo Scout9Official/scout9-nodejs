@@ -41,13 +41,14 @@ prog
   .describe('Sync your project with your Scout9 account (copies any missing personas and entities into your project)')
   .example('sync')
   .option('--mode', 'Specify a mode for loading environment variables', 'production')
-  .action(async ({mode}) => {
+  .option('--folder', 'Project source code fold', 'src')
+  .action(async ({mode, folder}) => {
     if (!fs.existsSync('.env')) {
       console.warn(`Missing ${path.resolve('.env')} — skipping`);
       return;
     }
     try {
-      return Scout9Platform.sync({cwd: process.cwd(), mode: coerceMode(mode)});
+      return Scout9Platform.sync({cwd: process.cwd(), mode: coerceMode(mode), folder});
     } catch (e) {
       handle_error(e);
     }
@@ -60,13 +61,14 @@ prog
   .example('build --mode development')
   .example('build --mode production')
   .option('--mode', 'Specify a mode for loading environment variables', 'production')
-  .action(async ({ mode }) => {
+  .option('--folder', 'Project source code fold', 'src')
+  .action(async ({ mode, folder }) => {
     if (!fs.existsSync('.env')) {
       console.warn(`Missing ${path.resolve('.env')} — skipping`);
       return;
     }
     try {
-      await Scout9Platform.build({cwd: process.cwd(), mode: coerceMode(mode)});
+      await Scout9Platform.build({cwd: process.cwd(), mode: coerceMode(mode), folder});
     } catch (e) {
       handle_error(e);
     }
@@ -77,13 +79,14 @@ prog
   .command('deploy')
   .describe('Deploy your scout9 auto reply app')
   .option('--mode', 'Specify a mode for loading environment variables', 'production')
-  .action(async ({ mode }) => {
+  .option('--folder', 'Project source code fold', 'src')
+  .action(async ({ mode, folder }) => {
     if (!fs.existsSync('.env')) {
       console.warn(`Missing ${path.resolve('.env')} — skipping`);
       return;
     }
     try {
-      await Scout9Platform.deploy({cwd: process.cwd(), mode: coerceMode(mode)});
+      await Scout9Platform.deploy({cwd: process.cwd(), mode: coerceMode(mode), folder});
     } catch (e) {
       handle_error(e);
     }
