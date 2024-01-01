@@ -6,11 +6,11 @@
     "deploy": "scout9 deploy",
     "build": "scout9 build",
     "sync": "scout9 sync",
-    "dev": "scout9 dev",
-    "test": "scout9 test"
+    "dev": "scout9 dev"
   },
   "devDependencies": {
-    "@scout9/app": "workspace:*"
+    "@scout9/app": "workspace:*",
+    "@scout9/crm": "workspace:*"
   },
   "type": "module"
 }

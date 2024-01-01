@@ -9,15 +9,32 @@ import { runInVM } from '../runtime/index.js';
 import { checkVariableType, requireProjectFile } from '../utils/index.js';
 
 
-async function runNpmRunBuild({cwd = process.cwd()} = {}) {
+/**
+ * @returns {Promise<string>} - the output directory
+ */
+async function runNpmRunBuild({cwd = process.cwd(), folder = 'src'} = {}) {
+  const pkg = JSON.parse(fss.readFileSync(new URL(`${cwd}/package.json`, import.meta.url), 'utf-8'));
+  // Package.json must have a "build" script
+  const buildScript = pkg.scripts?.build;
+  if (!buildScript) {
+    // If no build script then just return folder
+    return path.resolve(cwd, folder);
+  }
+  // "build" script cannot contain "scout9 build" (otherwise we'll get stuck in a loop)
+  if (buildScript.includes('scout9 build')) {
+    throw new Error(`"build" script in ${cwd}/package.json cannot contain "scout9 build"`);
+  }
+
   return new Promise((resolve, reject) => {
+    console.log('Running "npm run build"');
     exec('npm run build', {cwd}, (error, stdout, stderr) => {
       if (error) {
         console.error(`Build failed: ${error.message}`);
         return reject(error);
       }
       console.log('Build successful');
-      return resolve(undefined);
+      // @TODO don't assume build script created a "build" directory (use a config)
+      return resolve(path.resolve(cwd, 'build'));
     });
   });
 }
@@ -44,8 +61,11 @@ async function deployZipDirectory(zipFilePath, config) {
   form.set('file', blob, path.basename(zipFilePath), {contentType: 'application/zip'});
   form.set('config', JSON.stringify(config));
 
+  console.log('Uploading auto-reply app to Scout9...');
   // @TODO append signature secret header
-  const response = await fetch(`https://pocket-guide.vercel.app/api/b/platform/upload`, {
+  // const url = 'http://localhost:3000/api/b/platform/upload';
+  const url = 'https://pocket-guide.vercel.app/api/b/platform/upload';
+  const response = await fetch(url, {
     method: 'POST',
     body: form,
     headers: {
@@ -53,7 +73,7 @@ async function deployZipDirectory(zipFilePath, config) {
     }
   });
   if (!response.ok) {
-    throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
+    throw new Error(`${url} responded with ${response.status}: ${response.statusText}`);
   }
 
   console.log('File sent successfully');
@@ -144,11 +164,17 @@ export async function build({cwd = process.cwd(), folder = 'src'} = {}, config) 
   console.log('@TODO check if workflows are properly written');
 
   // 2. Build code in user's project
-  await runNpmRunBuild({cwd});
+  const buildDir = await runNpmRunBuild({cwd, folder});
+  const buildPath = buildDir.split('/');
+
+  // Check if directory "build" exists
+  if (!fss.existsSync(buildDir)) {
+    throw new Error(`Missing required "${buildPath[buildPath.length - 1]}" directory, make sure your build script outputs to a "${buildPath[buildPath.length - 1]}" directory or modify your scout9 config`);
+  }
 
 
   // 3. Remove unnecessary files
-  const files = globSync(path.resolve(cwd, 'build/**/*(*.test.*|*.spec.*)'));
+  const files = globSync(path.resolve(cwd, `${buildDir}/**/*(*.test.*|*.spec.*)`));
   for (const file of files) {
     await fs.unlink(file);
   }
@@ -160,9 +186,9 @@ export async function build({cwd = process.cwd(), folder = 'src'} = {}, config) 
 /**
  * Deploys a local project to scout9
  */
-export async function deploy({cwd = process.cwd()}, config) {
-  const zipFilePath = path.join(cwd, 'build.zip');
-  await zipDirectory(path.resolve(cwd, 'build'), zipFilePath);
+export async function deploy({cwd = process.cwd(), folder = 'build'}, config) {
+  const zipFilePath = path.join(cwd, `${folder}.zip`);
+  await zipDirectory(path.resolve(cwd, folder), zipFilePath);
 
   console.log('Project zipped successfully.');
 
@@ -177,12 +203,25 @@ export async function deploy({cwd = process.cwd()}, config) {
  * @returns {Promise<void>}
  */
 export async function sync({cwd = process.cwd(), folder = 'src'} = {}, config) {
+  console.log('Fetching project data...');
+  if (!process.env.SCOUT9_API_KEY) {
+    throw new Error('Missing required environment variable "SCOUT9_API_KEY"');
+  }
   const {entities, agents} = await fetch(`https://pocket-guide.vercel.app/api/b/platform/sync`, {
     method: 'GET',
     headers: {
       'Authorization': process.env.SCOUT9_API_KEY || ''
     }
-  }).then(res => res.json());
+  }).then(res => {
+    if (res.status !== 200) {
+      throw new Error(`Server responded with ${res.status}: ${res.statusText}`);
+    }
+    return res.json();
+  })
+    .catch((err) => {
+      console.error('Error fetching entities and agents:', err);
+      throw err;
+    });
 
   // Merge
   config.agents = agents.reduce((accumulator, agent) => {
@@ -256,11 +295,11 @@ export default function Agents() {
 export default async function ${_entity}Entity() {
   return ${JSON.stringify(rest, null, 2)};
 }
-`
+`;
     const isConfigNamed = fss.existsSync(`${cwd}/${folder}/entities/${_entity}/config.js`);
     await fs.writeFile(`${cwd}/${folder}/entities/${_entity}/${isConfigNamed ? 'config' : 'index'}.js`, fileContent);
     console.log(`Updated ${cwd}/${folder}/entities/${_entity}/index.js`);
   }
 
-  return {success: true}
+  return {success: true};
 }

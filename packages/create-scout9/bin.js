@@ -2,7 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import * as p from '@clack/prompts';
-import { bold, cyan, grey, yellow } from 'kleur/colors';
+import { bold, cyan, grey, yellow, green, magenta } from 'kleur/colors';
 import { create } from './index.js';
 import { dist, package_manager } from './utils.js';
 
@@ -151,7 +151,10 @@ if (relative !== '') {
 console.log(`  ${i++}: ${bold(cyan(`${package_manager} install`))}`);
 // prettier-ignore
 console.log(`  ${i++}: ${bold(cyan('git init && git add -A && git commit -m "Initial commit"'))} (optional)`);
+console.log(`  ${i++}: ${bold(magenta('Add your SCOUT9_API_KEY to .env'))} (login for api key: https://scout9.com/b)`);
+// console.log(`  ${i++}: ${bold(cyan(`${package_manager} run dev`))}`);
 console.log(`  ${i++}: ${bold(cyan(`${package_manager} run dev -- --open`))}`);
 
 // console.log(`\nTo close the dev server, hit ${bold(cyan('Ctrl-C'))}`);
-console.log(`\nStuck? Visit us at ${cyan('https://scout9.dev/chat')}`);
+console.log(`\nStuck? Connect with us on ${bold('Discord')} ${cyan('https://discord.gg/kG8hZwc5sQ')}`);
+console.log(`\nYour api key is listed on your ${bold('Scout9')} account ${cyan('https://scout9.com/b')} page`);

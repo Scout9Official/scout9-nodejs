@@ -4,10 +4,12 @@
   "scripts": {
     "deploy": "scout9 deploy",
     "build": "scout9 build",
-    "test": "scout9 test"
+    "sync": "scout9 sync",
+    "dev": "scout9 dev"
   },
   "dependencies": {
-    "@scout9/app": "workspace:*"
+    "@scout9/app": "workspace:*",
+    "@scout9/crm": "workspace:*"
   },
   "type": "module"
 }

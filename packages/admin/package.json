@@ -1,12 +1,12 @@
 {
   "name": "@scout9/admin",
-  "version": "1.0.0-alpha.0.0.12",
+  "version": "1.0.0-alpha.0.0.14",
   "description": "",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "scripts": {
-    "build": "tsc --build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prepublishOnly": "npm run build",
+    "build": "tsc --build"
   },
   "repository": {
     "type": "git",

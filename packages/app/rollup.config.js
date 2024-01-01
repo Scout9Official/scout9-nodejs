@@ -6,7 +6,7 @@ import json from '@rollup/plugin-json';
 export default {
   input: 'src/index.js', // Your main JS file
   output: {
-    dir: 'dist',
+    dir: 'build',
     format: 'cjs' // Bundle format: 'iife' for browser, 'cjs' for Node, etc.
   },
   plugins: [

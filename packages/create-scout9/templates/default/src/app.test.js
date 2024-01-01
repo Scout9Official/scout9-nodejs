@@ -1,4 +1,4 @@
-import { createMockWorkflowEvent } from '../platform/src/index.js';
+import { createMockWorkflowEvent } from '@scout9/app';
 import Scout9App from './app.js';
 
 describe('Scout9App', () => {

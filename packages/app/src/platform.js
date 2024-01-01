@@ -23,9 +23,9 @@ export const Scout9Platform = {
    */
   deploy:  async function ({cwd = process.cwd(), folder = 'src', mode = 'production'} = {}) {
     try {
-      const config = await loadConfig({cwd, folder: 'src' });
-      await _build({cwd}, config);
-      await _deploy({cwd}, config);
+      const config = await loadConfig({cwd, folder });
+      await _build({cwd, folder}, config);
+      await _deploy({cwd, folder}, config);
       return config;
     } catch (e) {
       this.handleError(e);
@@ -37,7 +37,9 @@ export const Scout9Platform = {
    */
   build: async function({cwd = process.cwd(), folder = 'src', mode = 'production'} = {}) {
     try {
+      console.log('Loading config');
       const config = await loadConfig({cwd, folder, mode});
+      console.log('Building...');
       await _build({cwd, folder}, config);
       return config;
     } catch (e) {

@@ -6652,11 +6652,11 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
     /**
      *
      * @summary Updates multiple customers
-     * @param {UpdateCustomerRequest} updateCustomerRequest
+     * @param {UpdateCustomersRequest} updateCustomersRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    customersUpdate: (updateCustomerRequest: UpdateCustomerRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    customersUpdate: (updateCustomersRequest: UpdateCustomersRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
      * @summary Returns information about a specific file.
@@ -7202,11 +7202,11 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
     /**
      *
      * @summary Updates multiple customers
-     * @param {UpdateCustomerRequest} updateCustomerRequest
+     * @param {UpdateCustomersRequest} updateCustomersRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    customersUpdate(updateCustomerRequest: UpdateCustomerRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateCustomersResponse>>;
+    customersUpdate(updateCustomersRequest: UpdateCustomersRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateCustomersResponse>>;
     /**
      *
      * @summary Returns information about a specific file.
@@ -7752,11 +7752,11 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
     /**
      *
      * @summary Updates multiple customers
-     * @param {UpdateCustomerRequest} updateCustomerRequest
+     * @param {UpdateCustomersRequest} updateCustomersRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    customersUpdate(updateCustomerRequest: UpdateCustomerRequest, options?: any): AxiosPromise<UpdateCustomersResponse>;
+    customersUpdate(updateCustomersRequest: UpdateCustomersRequest, options?: any): AxiosPromise<UpdateCustomersResponse>;
     /**
      *
      * @summary Returns information about a specific file.
@@ -8344,12 +8344,12 @@ export declare class Scout9Api extends BaseAPI {
     /**
      *
      * @summary Updates multiple customers
-     * @param {UpdateCustomerRequest} updateCustomerRequest
+     * @param {UpdateCustomersRequest} updateCustomersRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
-    customersUpdate(updateCustomerRequest: UpdateCustomerRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateCustomersResponse, any>>;
+    customersUpdate(updateCustomersRequest: UpdateCustomersRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateCustomersResponse, any>>;
     /**
      *
      * @summary Returns information about a specific file.

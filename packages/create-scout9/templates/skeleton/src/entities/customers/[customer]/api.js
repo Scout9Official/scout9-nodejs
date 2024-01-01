@@ -1,14 +1,14 @@
 import { json } from '@scout9/app';
 
 // @TODO replace with your CRM api
-import { customerMockDb } from '../../../lib/customer-mock-db';
+import { customerDb } from '../../../lib/customer-db.js';
 
 /**
  * Get customer info from your CRM
  * @returns {Promise<EventResponse<Customer>>}
  */
 export const GET = async ({params}) => {
-  return json(await customerMockDb.get(params.customer));
+  return json(await customerDb.get(params.customer));
 };
 
 /**
@@ -23,7 +23,7 @@ export const GET = async ({params}) => {
  */
 export const POST = async ({params, body: newCustomer}) => {
   // Scout9 will generate random id for new customers, but whatever id you return back will be used for the new customer
-  const {id: crmId} = await customerMockDb.add(params.customer, newCustomer);
+  const {id: crmId} = await customerDb.add({$id: params.customer, newCustomer});
   return json({success: true, id: crmId}, {status: 200});
 };
 
@@ -57,6 +57,6 @@ export const PUT = async ({params, body: updatedCustomer}) => {
  * @returns {Promise<EventResponse>}
  */
 export const DELETE = async ({params, request}) => {
-  await customerMockDb.remove(params.customer);
+  await customerDb.remove(params.customer);
   return json({success: true}, {status: 200});
 };

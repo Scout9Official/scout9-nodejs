@@ -7,4 +7,7 @@ import { Scout9Platform } from './src/platform.js';
 
   const sync = await Scout9Platform.sync({cwd: process.cwd(), mode: 'development', folder: 'src-test'});
   console.log('Sync result:', sync);
+
+  const deploy = await Scout9Platform.deploy({cwd: process.cwd(), mode: 'development', folder: 'src-test'});
+  console.log('Deploy result:', deploy);
 })();

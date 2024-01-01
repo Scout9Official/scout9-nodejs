@@ -48,7 +48,8 @@ prog
       return;
     }
     try {
-      return Scout9Platform.sync({cwd: process.cwd(), mode: coerceMode(mode), folder});
+      await Scout9Platform.sync({cwd: process.cwd(), mode: coerceMode(mode), folder});
+      process.exit(0);
     } catch (e) {
       handle_error(e);
     }
@@ -69,6 +70,7 @@ prog
     }
     try {
       await Scout9Platform.build({cwd: process.cwd(), mode: coerceMode(mode), folder});
+      process.exit(0);
     } catch (e) {
       handle_error(e);
     }
@@ -87,6 +89,7 @@ prog
     }
     try {
       await Scout9Platform.deploy({cwd: process.cwd(), mode: coerceMode(mode), folder});
+      process.exit(0);
     } catch (e) {
       handle_error(e);
     }

@@ -1507,13 +1507,13 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         /**
          *
          * @summary Updates multiple customers
-         * @param {UpdateCustomerRequest} updateCustomerRequest
+         * @param {UpdateCustomersRequest} updateCustomersRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        customersUpdate: async (updateCustomerRequest, options = {}) => {
-            // verify required parameter 'updateCustomerRequest' is not null or undefined
-            (0, common_1.assertParamExists)('customersUpdate', 'updateCustomerRequest', updateCustomerRequest);
+        customersUpdate: async (updateCustomersRequest, options = {}) => {
+            // verify required parameter 'updateCustomersRequest' is not null or undefined
+            (0, common_1.assertParamExists)('customersUpdate', 'updateCustomersRequest', updateCustomersRequest);
             const localVarPath = `/v1-customers`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
@@ -1528,7 +1528,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
             (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
-            localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(updateCustomerRequest, localVarRequestOptions, configuration);
+            localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(updateCustomersRequest, localVarRequestOptions, configuration);
             return {
                 url: (0, common_1.toPathString)(localVarUrlObj),
                 options: localVarRequestOptions,
@@ -2792,12 +2792,12 @@ const Scout9ApiFp = function (configuration) {
         /**
          *
          * @summary Updates multiple customers
-         * @param {UpdateCustomerRequest} updateCustomerRequest
+         * @param {UpdateCustomersRequest} updateCustomersRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async customersUpdate(updateCustomerRequest, options) {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.customersUpdate(updateCustomerRequest, options);
+        async customersUpdate(updateCustomersRequest, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.customersUpdate(updateCustomersRequest, options);
             return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
         },
         /**
@@ -3507,12 +3507,12 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
         /**
          *
          * @summary Updates multiple customers
-         * @param {UpdateCustomerRequest} updateCustomerRequest
+         * @param {UpdateCustomersRequest} updateCustomersRequest
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        customersUpdate(updateCustomerRequest, options) {
-            return localVarFp.customersUpdate(updateCustomerRequest, options).then((request) => request(axios, basePath));
+        customersUpdate(updateCustomersRequest, options) {
+            return localVarFp.customersUpdate(updateCustomersRequest, options).then((request) => request(axios, basePath));
         },
         /**
          *
@@ -4235,13 +4235,13 @@ class Scout9Api extends base_1.BaseAPI {
     /**
      *
      * @summary Updates multiple customers
-     * @param {UpdateCustomerRequest} updateCustomerRequest
+     * @param {UpdateCustomersRequest} updateCustomersRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
-    customersUpdate(updateCustomerRequest, options) {
-        return (0, exports.Scout9ApiFp)(this.configuration).customersUpdate(updateCustomerRequest, options).then((request) => request(this.axios, this.basePath));
+    customersUpdate(updateCustomersRequest, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).customersUpdate(updateCustomersRequest, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      *

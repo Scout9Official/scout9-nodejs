@@ -1,4 +1,4 @@
-import { customerMockDb } from '../../lib/customer-mock-db.js';
+import { customerDb } from '../../lib/customer-db.js';
 import { EventResponse } from '@scout9/app';
 
 /**
@@ -9,7 +9,7 @@ import { EventResponse } from '@scout9/app';
  */
 export const QUERY = async ({searchParams}) => {
   const {page, q, orderBy, endAt, startAt, limit} = searchParams;
-  const customers = await customerMockDb.query(
+  const customers = await customerDb.query(
     q,
     page ? parseInt(page) : undefined,
     limit ? parseInt(limit) : undefined,

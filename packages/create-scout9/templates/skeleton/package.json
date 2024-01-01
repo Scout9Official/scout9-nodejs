@@ -2,8 +2,15 @@
   "name": "skeleton-template",
   "private": true,
   "version": "0.0.1-alpha.0",
+  "scripts": {
+    "deploy": "scout9 deploy",
+    "build": "scout9 build",
+    "sync": "scout9 sync",
+    "dev": "scout9 dev"
+  },
   "devDependencies": {
-    "@scout9/app": "workspace:*"
+    "@scout9/app": "workspace:*",
+    "@scout9/crm": "workspace:*"
   },
   "type": "module"
 }

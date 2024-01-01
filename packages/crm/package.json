@@ -1,0 +1,31 @@
+{
+  "name": "@scout9/crm",
+  "version": "1.0.0-alpha.0.0.1",
+  "description": "Default Customer CRM for Scout9 apps",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "lint": "prettier --check .",
+    "format": "pnpm lint --write",
+    "check": "tsc"
+  },
+  "type": "module",
+  "files": [
+    "crm.js",
+    "index.js"
+  ],
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "types": "index.d.ts",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@scout9/admin": "latest"
+  }
+}
