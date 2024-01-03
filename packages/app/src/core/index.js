@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url';
 import fetch, { FormData } from 'node-fetch';
 import { Configuration, Scout9Api } from '@scout9/admin';
 import { checkVariableType, ProgressLogger, requireProjectFile } from '../utils/index.js';
+import decompress from 'decompress';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -74,7 +75,12 @@ function zipDirectory(source, out) {
   });
   const stream = fss.createWriteStream(out);
 
+
   return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      reject(new Error('Zip timed out'));
+    }, 10 * 1000);
+
     archive
       .directory(source, false)
       .on('error', err => reject(err))
@@ -108,26 +114,26 @@ async function deployZipDirectory(zipFilePath, config) {
   return response;
 }
 
-// async function downloadAndUnpackZip(outputDir) {
-//   const downloadLocalResponse = await platformApi(`https://pocket-guide.vercel.app/api/b/platform/download`);
-//   if (!downloadLocalResponse.ok) {
-//     throw new Error(`Error downloading project file ${downloadLocalResponse.statusText}`);
-//   }
-//
-//   try {
-//     const arrayBuffer = await downloadLocalResponse.arrayBuffer();
-//     const outputPath = path.resolve(outputDir, 'build');
-//     // Convert ArrayBuffer to Buffer
-//     await decompress(Buffer.from(arrayBuffer), outputPath);
-//
-//     console.log('Files unpacked successfully at ' + outputPath);
-//
-//     return outputPath;
-//   } catch (error) {
-//     console.error('Error unpacking file:', error);
-//     throw error;
-//   }
-// }
+async function downloadAndUnpackZip(outputDir) {
+  const downloadLocalResponse = await platformApi(`https://pocket-guide.vercel.app/api/b/platform/download`);
+  if (!downloadLocalResponse.ok) {
+    throw new Error(`Error downloading project file ${downloadLocalResponse.statusText}`);
+  }
+
+  try {
+    const arrayBuffer = await downloadLocalResponse.arrayBuffer();
+    const outputPath = path.resolve(outputDir, 'build');
+    // Convert ArrayBuffer to Buffer
+    await decompress(Buffer.from(arrayBuffer), outputPath);
+
+    console.log('Files unpacked successfully at ' + outputPath);
+
+    return outputPath;
+  } catch (error) {
+    console.error('Error unpacking file:', error);
+    throw error;
+  }
+}
 
 export async function getApp({cwd = process.cwd(), folder = 'src', ignoreAppRequire = false} = {}) {
   const indexTsPath = path.resolve(cwd, folder, 'index.ts');
@@ -167,6 +173,19 @@ export async function run(event, {cwd = process.cwd(), folder, logger = new Prog
   });
   const scout9 = new Scout9Api(configuration);
   const response = await scout9.runPlatform(event)
+    .catch((err) => {
+      err.message = `Error running platform: ${err.message}`;
+      throw err;
+    })
+  return response.data;
+}
+
+export async function runConfig({cwd = process.cwd(), folder, logger = new ProgressLogger()} = {}) {
+  const configuration = new Configuration({
+    apiKey: process.env.SCOUT9_API_KEY
+  });
+  const scout9 = new Scout9Api(configuration);
+  const response = await scout9.runPlatformConfig()
     .catch((err) => {
       err.message = `Error running platform: ${err.message}`;
       throw err;
@@ -282,6 +301,7 @@ export async function deploy({cwd = process.cwd(), src = './src', dest = '/tmp/p
   } else {
     await fs.copyFile(path.resolve(__dirname, './templates/Dockerfile'), path.join(dest, 'Dockerfile'));
   }
+  logger.info(`Files copied to ${dest}`);
 
   const destPaths = dest.split('/');
   const zipFilePath = path.join(dest, `${destPaths[destPaths.length - 1]}.tar.gz`);

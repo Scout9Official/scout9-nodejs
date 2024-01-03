@@ -1,6 +1,6 @@
 import colors from 'kleur';
 import { z } from 'zod';
-import { build as _build, deploy as _deploy, run as _run, sync as _sync } from './core/index.js';
+import { build as _build, deploy as _deploy, run as _run, runConfig as _runConfig, sync as _sync } from './core/index.js';
 import { loadConfig, loadEnvConfig } from './core/config/index.js';
 import { coalesceToError, ProgressLogger } from './utils/index.js';
 
@@ -49,7 +49,6 @@ export const Scout9Platform = {
       this.handleError(e);
     }
   },
-
   /**
    * Builds the project
    * @param {{cwd: string; mode: 'development' | 'production'; folder: string}} - build options
@@ -68,6 +67,24 @@ export const Scout9Platform = {
     } catch (e) {
       logger.done();
       this.handleError(e);
+    }
+  },
+
+  runConfig: async function ({cwd = process.cwd(), folder = 'src', mode = 'production'} = {}) {
+    const logger = new ProgressLogger();
+    try {
+      logger.log(`Loading config`);
+      loadEnvConfig({cwd, logger});
+      logger.log(`Getting auto-reply workflow config`);
+      return _runConfig({cwd, folder, mode, logger})
+        .catch(e => {
+          logger.done();
+          throw e
+        });
+    } catch (e) {
+      logger.done();
+      this.handleError(e);
+      throw e;
     }
   },
 

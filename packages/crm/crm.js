@@ -23,16 +23,17 @@ export default class Scout9CRM {
 
   /**
    *
-   * @param {string} query - query string
-   * @param {number} page - page number
-   * @param {number} limit - page limit
-   * @param orderBy
-   * @param endAt
-   * @param startAt
+   * @param {{field: string; operator: string; value: any} | undefined} query - query object
+   * @param {number | undefined} page - page number
+   * @param {number | undefined} limit - page limit
+   * @param {string | undefined} orderBy - key of document to order by
+   * @param {string | number | undefined} endAt - value of key
+   * @param {string | number | undefined} startAt - value of key
    * @returns {Promise<Array<import('@scout9/admin').Customer>>}
    */
   async query(query, page, limit, orderBy, endAt, startAt) {
-    const res = await this.admin.customers(query);
+    const querystring = query ? `${query.field},${query.operator},${query.value}` : '';
+    const res = await this.admin.customers(querystring);
     return res.data;
   }
 
@@ -49,50 +50,56 @@ export default class Scout9CRM {
   /**
    * Add one or more customers
    * @param {(import('@scout9/admin').Customer | Array<import('@scout9/admin').Customer>)} customerOrCustomers
-   * @returns {Promise<void>}
+   * @returns {Promise<import('@scout9/admin').CreateCustomersResponse | import('@scout9/admin').CreateCustomerResponse>}
    */
   async add(customerOrCustomers) {
     if (Array.isArray(customerOrCustomers)) {
-      await this.admin.customersCreate({
+      const res = await this.admin.customersCreate({
         customers: customerOrCustomers
       });
+      return res.data;
       // @TODO check/listen to operation
     }  else {
-      await this.admin.customerCreate(customerOrCustomers);
+      const res = await this.admin.customerCreate(customerOrCustomers);
+      return res.data;
     }
   }
 
   /**
    * Update one or more customers
-   * @param {(Partial<import('@scout9/admin').Customer> & {$id: string}) | Array<(Partial<import('@scout9/admin').Customer> & {$id: string})>} updateOrUpdates
-   * @returns {Promise<void>}
+   * @param {(Partial<import('@scout9/admin').Customer> & {$id: string; name: string}) | Array<(Partial<import('@scout9/admin').Customer> & {$id: string; name: string})>} updateOrUpdates
+   * @returns {Promise<import('@scout9/admin').UpdateCustomersResponse | import('@scout9/admin').UpdateCustomerResponse>}
    */
   async update(updateOrUpdates) {
     if (Array.isArray(updateOrUpdates)) {
       if (!updateOrUpdates.every((u => !!u.$id))) {
         throw new Error(`Missing $id property on customer update`);
       }
-      await this.admin.customersUpdate({
+      const res = await this.admin.customersUpdate({
         customers: updateOrUpdates
       });
+      return res.data;
     } else {
       if (!updateOrUpdates.$id) {
         throw new Error(`Missing $id property on customer update`);
       }
-      return this.admin.customerUpdate(updateOrUpdates);
+      const res = await this.admin.customerUpdate(updateOrUpdates);
+      return res.data;
     }
   }
 
   /**
    * Remove one or more customers
-   * @param idOrIds
-   * @returns {Promise<import("axios").AxiosResponse<DeleteCustomerResponse, any>|import("axios").AxiosResponse<DeleteCustomersResponse, any>>}
+   * @param {string | string[]} idOrIds
+   * @returns {Promise<import('@scout9/admin').DeleteCustomersResponse | import('@scout9/admin').DeleteCustomerResponse>}
    */
   async remove(idOrIds) {
     if (Array.isArray(idOrIds)) {
-      return this.admin.customersDelete(idOrIds);
+      const res = await this.admin.customersDelete(idOrIds);
+      return res.data;
     } else {
-      return this.admin.customerDelete(idOrIds);
+      const res = await this.admin.customerDelete(idOrIds);
+      return res.data;
     }
   }
 

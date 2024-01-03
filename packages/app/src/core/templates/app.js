@@ -16,7 +16,7 @@ app.post('/', async (req, res) => {
   try {
     const response = await projectApp(req.body);
     res.writeHead(200, {'Content-Type': 'application/json'});
-    res.send(JSON.stringify(response));
+    res.end(JSON.stringify(response));
   } catch (e) {
     console.error(e);
     const code = typeof e?.code === 'number'
@@ -25,7 +25,7 @@ app.post('/', async (req, res) => {
           ? e?.status
           : 500;
     res.writeHead(code, {'Content-Type': 'application/json'});
-    res.send({
+    res.end({
       name: e?.name || 'Runtime Error',
       error: e?.message || 'Unknown error',
       code: e?.code || 500
@@ -41,5 +41,5 @@ app.get('/', (req, res) => {
 
 app.listen(process.env.PORT || 8080, err => {
   if (err) throw err;
-  console.log(`> Running on localhost:${process.env.PORT || 8080}`);
+  console.log(`> Running on port ${process.env.PORT || 8080}`);
 });
