@@ -1,5 +1,6 @@
 import polka from 'polka';
 import bodyParser from 'body-parser';
+import colors from 'kleur';
 
 /** @type (event: WorkflowEvent): Promise<WorkflowResponse> **/
 import projectApp from './src/app.js';
@@ -41,9 +42,31 @@ app.get('/', (req, res) => {
 
 app.listen(process.env.PORT || 8080, err => {
   if (err) throw err;
+  const art = `
+
+
+ ________  ________  ________  ___  ___  _________  ________     
+|\\   ____\\|\\   ____\\|\\   __  \\|\\  \\|\\  \\|\\___   ___\\\\  ___  \\    
+\\ \\  \\___|\\ \\  \\___|\\ \\  \\|\\  \\ \\  \\\\\\  \\|___ \\  \\_\\ \\____   \\   
+ \\ \\_____  \\ \\  \\    \\ \\  \\\\\\  \\ \\  \\\\\\  \\   \\ \\  \\ \\|____|\\  \\  
+  \\|____|\\  \\ \\  \\____\\ \\  \\\\\\  \\ \\  \\\\\\  \\   \\ \\  \\    __\\_\\  \\ 
+    ____\\_\\  \\ \\_______\\ \\_______\\ \\_______\\   \\ \\__\\  |\\_______\\
+   |\\_________\\|_______|\\|_______|\\|_______|    \\|__|  \\|_______|
+   \\|_________|                                                  
+`;
+  const art2 = `    ___         __           ____             __         __   
+   /   | __  __/ /_____     / __ \\___  ____  / /_  __   / /   
+  / /| |/ / / / __/ __ \\   / /_/ / _ \\/ __ \\/ / / / /  / /    
+ / ___ / /_/ / /_/ /_/ /  / _, _/  __/ /_/ / / /_/ /  /_/     
+/_/  |_\\__,_/\\__/\\____/  /_/ |_|\\___/ .___/_/\\__, /  (_)      
+                                   /_/      /____/            
+  
+`
   const protocol = process.env.PROTOCOL || 'http';
   const host = process.env.HOST || 'localhost';
   const port = process.env.PORT || 8080;
   const fullUrl = `${protocol}://${host}:${port}`;
-  console.log(`> Running Scout9 auto-reply dev server on ${fullUrl}`);
+  console.log(colors.bold(colors.green(art)));
+  console.log(colors.bold(colors.cyan(art2)));
+  console.log(`${colors.grey(`${colors.cyan('>')} Running ${colors.bold(colors.white('Scout9'))}`)} ${colors.bold(colors.red(colors.bgBlack('auto-reply')))} ${colors.grey('dev environment on')} ${fullUrl}`);
 });
