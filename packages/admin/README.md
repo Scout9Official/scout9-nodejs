@@ -236,7 +236,7 @@ for (const message of messages.data) {
 
 ### Schedule a conversation
 
-See [simple-schedule-conversation.ts](../../examples/simple-schedule-conversation.ts) on how to test a conversation before its
+See [simple-schedule-conversation.ts](../../examples-archived/simple-schedule-conversation.ts) on how to test a conversation before its
 created.
 
 ```typescript
@@ -264,7 +264,7 @@ const conversation = await scout9.scheduleConversation({
 Conversations by default use a generic **workflow** procedure that has a stated goal to guide your Pocket Scout in a
 conversation. Initiate a conversation with a clear specific objective using the **workflow** api.
 
-See [full workflow example](../../examples/create-workflow.ts)
+See [full workflow example](../../examples-archived/create-workflow.ts)
 
 ```typescript
 const workflow: CreateWorkflowRequest = {

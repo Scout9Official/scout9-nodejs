@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "build": "bash build.sh",
-    "test": "echo \\\"Error: no examples specified\\\" && exit 1",
+    "test": "echo \\\\\\\"Error: no examples-archived specified\\\\\\\" && exit 1",
     "temp:init": "npm init --scope @scout9 --workspace ./packages/client -y && echo \"<-- Script inits another package\""
   },
   "engines": {
