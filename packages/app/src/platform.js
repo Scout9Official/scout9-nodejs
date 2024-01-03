@@ -6,16 +6,16 @@ import { coalesceToError, ProgressLogger } from './utils/index.js';
 
 export const Scout9Platform = {
   /**
-   * @param {{cwd: string; mode: 'development' | 'production'; folder: string}} - build options
+   * @param {{cwd: string; mode: 'development' | 'production'; src: string}} - build options
    */
-  sync: async function ({cwd = process.cwd(), folder = 'src', mode = 'production'} = {}) {
+  sync: async function ({cwd = process.cwd(), src = 'src', mode = 'production'} = {}) {
     const logger = new ProgressLogger();
     try {
       logger.log(`Loading config...`);
-      const config = await loadConfig({cwd, folder, logger});
+      const config = await loadConfig({cwd, src, logger});
       logger.success('Config Loaded');
       logger.log(`Syncing project...`);
-      const result = await _sync({cwd, folder, logger}, config);
+      const result = await _sync({cwd, src, logger}, config);
       logger.success('Sync Complete');
       logger.done();
       return {
@@ -36,7 +36,7 @@ export const Scout9Platform = {
     const logger = new ProgressLogger();
     try {
       logger.log(`Loading config...`);
-      const config = await loadConfig({cwd, folder: src, logger});
+      const config = await loadConfig({cwd, src, logger});
       logger.success('Config Loaded');
       // await _build({cwd, folder}, config);
       logger.log(`Deploying project...`);
@@ -51,16 +51,16 @@ export const Scout9Platform = {
   },
   /**
    * Builds the project
-   * @param {{cwd: string; mode: 'development' | 'production'; folder: string}} - build options
+   * @param {{cwd: string; mode: 'development' | 'production'; src: string; dest: string;}} - build options
    */
-  build: async function ({cwd = process.cwd(), folder = 'src', mode = 'production'} = {}) {
+  build: async function ({cwd = process.cwd(), src = './src', dest = '/tmp/project', mode = 'production'} = {}) {
     const logger = new ProgressLogger();
     try {
       logger.log(`Loading config...`);
-      const config = await loadConfig({cwd, folder, mode, logger});
+      const config = await loadConfig({cwd, src, mode, logger});
       logger.success('Config Loaded');
       logger.log(`Building project...`);
-      await _build({cwd, folder, mode, logger}, config);
+      await _build({cwd, src, dest, mode, logger}, config);
       logger.success('Build Complete');
       logger.done();
       return config;
@@ -70,13 +70,13 @@ export const Scout9Platform = {
     }
   },
 
-  runConfig: async function ({cwd = process.cwd(), folder = 'src', mode = 'production'} = {}) {
+  runConfig: async function ({cwd = process.cwd(), src  = './src', mode = 'production'} = {}) {
     const logger = new ProgressLogger();
     try {
       logger.log(`Loading config`);
       loadEnvConfig({cwd, logger});
       logger.log(`Getting auto-reply workflow config`);
-      return _runConfig({cwd, folder, mode, logger})
+      return _runConfig({cwd, src, mode, logger})
         .catch(e => {
           logger.done();
           throw e
@@ -91,18 +91,19 @@ export const Scout9Platform = {
   /**
    * Runs the project in a container
    * @param {WorkflowEvent} event - every workflow receives an event object
-   * @param {{cwd: string; mode: 'development' | 'production'; folder: string}} - build options
+   * @param {{cwd: string; mode: 'development' | 'production'; src: string}} - build options
+   * @returns {Promise<WorkflowResponse<any>>}
    */
   run: async function (
     event,
-    {cwd = process.cwd(), mode, folder}
+    {cwd = process.cwd(), mode, src}
   ) {
     const logger = new ProgressLogger();
     try {
       logger.log(`Loading config`);
       loadEnvConfig({cwd, logger});
       logger.log(`Running auto-reply workflow`);
-      return _run(event, {cwd, folder, mode, logger})
+      return _run(event, {cwd, src, mode, logger})
         .catch(e => {
           logger.done();
           throw e

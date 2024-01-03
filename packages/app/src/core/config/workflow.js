@@ -12,21 +12,21 @@ import {
 export default async function loadWorkflowsConfig(
   {
     cwd = process.cwd(),
-    folder = 'src'
+    src = 'src'
   } = {}
 ) {
-  const config = globSync(path.resolve(cwd, `${folder}/workflows/**/workflow.{ts,js}`))
+  const config = globSync(path.resolve(cwd, `${src}/workflows/**/workflow.{ts,js}`))
     .map((path) => {
       const segments = path.split('/');
-      const srcIndex = segments.findIndex((segment, index) => segment === folder && segments[index + 1] === 'workflows');
-      const parents = segments.slice(srcIndex + 2, -1).reverse(); // +2 to skip "${folder}" and "workflows"
+      const srcIndex = segments.findIndex((segment, index) => segment === src && segments[index + 1] === 'workflows');
+      const parents = segments.slice(srcIndex + 2, -1).reverse(); // +2 to skip "${src}" and "workflows"
       return {path, parents};
     })
     .filter(path => {
       if (path.parents.length > 0) {
         return true;
       } else {
-        console.log(`WARNING: "${path}" Is not a valid entity path, must be contained in a named folder under workflows/`);
+        console.log(`WARNING: "${path}" Is not a valid entity path, must be contained in a named src under workflows/`);
       }
     })
     .map(({path, parents}) => {

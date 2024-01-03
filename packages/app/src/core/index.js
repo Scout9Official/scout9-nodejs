@@ -42,13 +42,13 @@ async function platformApi(url, options = {}, retries = 0) {
 /**
  * @returns {Promise<string>} - the output directory
  */
-async function runNpmRunBuild({cwd = process.cwd(), folder = 'src'} = {}) {
+async function runNpmRunBuild({cwd = process.cwd(), src = 'src'} = {}) {
   const pkg = JSON.parse(fss.readFileSync(new URL(`${cwd}/package.json`, import.meta.url), 'utf-8'));
   // Package.json must have a "build" script
   const buildScript = pkg.scripts?.build;
   if (!buildScript) {
-    // If no build script then just return folder
-    return path.resolve(cwd, folder);
+    // If no build script then just return src
+    return path.resolve(cwd, src);
   }
   // "build" script cannot contain "scout9 build" (otherwise we'll get stuck in a loop)
   if (buildScript.includes('scout9 build')) {
@@ -135,109 +135,17 @@ async function downloadAndUnpackZip(outputDir) {
   }
 }
 
-export async function getApp({cwd = process.cwd(), folder = 'src', ignoreAppRequire = false} = {}) {
-  const indexTsPath = path.resolve(cwd, folder, 'index.ts');
-  const indexJsPath = path.join(cwd, folder, 'index.js');
-  let exe = '';
-  if (fss.existsSync(indexTsPath)) {
-    exe = path.extname(indexTsPath);
-  } else if (fss.existsSync(indexJsPath)) {
-    exe = path.extname(indexJsPath);
-  } else {
-    throw new Error(`Missing main project entry file ${folder}/index.{js|ts}`);
-  }
-  const filePath = path.resolve(cwd, folder, `app${exe}`);
-  let app;
-  if (!ignoreAppRequire) {
-    app = await requireProjectFile(filePath).then(mod => mod.default);
-    const type = checkVariableType(app);
-    if (!(type === 'function' || type === 'async function')) {
-      throw new Error(`App must return a default function, received "${type}"`);
-    }
-  }
-  return {app, exe, filePath, fileName: `app${exe}`};
-}
-
-
 /**
- * Runs a given project container from scout9 to given environment
- * Runs the project in a container
- *
- * @param {WorkflowEvent} event - every workflow receives an event object
- * @param {{cwd: string; folder: string}} - build options
- * @returns {Promise<WorkflowResponse<any>>}
- */
-export async function run(event, {cwd = process.cwd(), folder, logger = new ProgressLogger()} = {}) {
-  const configuration = new Configuration({
-    apiKey: process.env.SCOUT9_API_KEY
-  });
-  const scout9 = new Scout9Api(configuration);
-  const response = await scout9.runPlatform(event)
-    .catch((err) => {
-      err.message = `Error running platform: ${err.message}`;
-      throw err;
-    })
-  return response.data;
-}
-
-export async function runConfig({cwd = process.cwd(), folder, logger = new ProgressLogger()} = {}) {
-  const configuration = new Configuration({
-    apiKey: process.env.SCOUT9_API_KEY
-  });
-  const scout9 = new Scout9Api(configuration);
-  const response = await scout9.runPlatformConfig()
-    .catch((err) => {
-      err.message = `Error running platform: ${err.message}`;
-      throw err;
-    })
-  return response.data;
-}
-
-/**
- * Builds a local project
- */
-export async function build({cwd = process.cwd(), folder = 'src', logger = new ProgressLogger(), mode} = {}, config) {
-  // 1. Lint: Run validation checks
-
-  // Check if app looks good
-  await getApp({cwd, folder});
-
-  // Check if workflows look good
-  // console.log('@TODO check if workflows are properly written');
-
-  // 2. Build code in user's project
-  const buildDir = await runNpmRunBuild({cwd, folder});
-  const buildPath = buildDir.split('/');
-
-  // Check if directory "build" exists
-  if (!fss.existsSync(buildDir)) {
-    throw new Error(`Missing required "${buildPath[buildPath.length - 1]}" directory, make sure your build script outputs to a "${buildPath[buildPath.length - 1]}" directory or modify your scout9 config`);
-  }
-
-
-  // 3. Remove unnecessary files
-  const files = globSync(path.resolve(cwd, `${buildDir}/**/*(*.test.*|*.spec.*)`));
-  for (const file of files) {
-    await fs.unlink(file);
-  }
-
-  // 3. Run tests
-  // console.log('@TODO run tests');
-}
-
-/**
- * Deploys a local project to scout9
- * @param {{cwd: string; src: string, dest: string}} - build options
+ * Builds the app to a specified location
+ * @param {string} cwd
+ * @param {string} src
+ * @param {string} dest
  * @param {Scout9ProjectBuildConfig} config
+ * @returns {Promise<void>}
  */
-export async function deploy({cwd = process.cwd(), src = './src', dest = '/tmp/project', logger = new ProgressLogger()}, config) {
+async function buildApp(cwd, src, dest, config) {
   // Ensures directory exists
   await fs.mkdir(dest, {recursive: true});
-
-  // Function to copy files
-  // const copyFile = async (source, destination) => {
-  //   await fs.copyFile(source, destination);
-  // }
 
   const copyDirectory = async (source, destination) => {
     await fs.mkdir(destination, { recursive: true });
@@ -301,7 +209,114 @@ export async function deploy({cwd = process.cwd(), src = './src', dest = '/tmp/p
   } else {
     await fs.copyFile(path.resolve(__dirname, './templates/Dockerfile'), path.join(dest, 'Dockerfile'));
   }
-  logger.info(`Files copied to ${dest}`);
+}
+
+export async function getApp({cwd = process.cwd(), src = 'src', ignoreAppRequire = false} = {}) {
+  const indexTsPath = path.resolve(cwd, src, 'index.ts');
+  const indexJsPath = path.join(cwd, src, 'index.js');
+  let exe = '';
+  if (fss.existsSync(indexTsPath)) {
+    exe = path.extname(indexTsPath);
+  } else if (fss.existsSync(indexJsPath)) {
+    exe = path.extname(indexJsPath);
+  } else {
+    throw new Error(`Missing main project entry file ${src}/index.{js|ts}`);
+  }
+  const filePath = path.resolve(cwd, src, `app${exe}`);
+  let app;
+  if (!ignoreAppRequire) {
+    app = await requireProjectFile(filePath).then(mod => mod.default);
+    const type = checkVariableType(app);
+    if (!(type === 'function' || type === 'async function')) {
+      throw new Error(`App must return a default function, received "${type}"`);
+    }
+  }
+  return {app, exe, filePath, fileName: `app${exe}`};
+}
+
+
+/**
+ * Runs a given project container from scout9 to given environment
+ * Runs the project in a container
+ *
+ * @param {WorkflowEvent} event - every workflow receives an event object
+ * @param {{cwd: string; src: string; logger: ProgressLogger}} - run options
+ * @returns {Promise<WorkflowResponse<any>>}
+ */
+export async function run(event, {cwd = process.cwd(), src, logger = new ProgressLogger()} = {}) {
+  const configuration = new Configuration({
+    apiKey: process.env.SCOUT9_API_KEY
+  });
+  const scout9 = new Scout9Api(configuration);
+  const response = await scout9.runPlatform(event)
+    .catch((err) => {
+      err.message = `Error running platform: ${err.message}`;
+      throw err;
+    })
+  return response.data;
+}
+
+export async function runConfig({cwd = process.cwd(), src, logger = new ProgressLogger()} = {}) {
+  const configuration = new Configuration({
+    apiKey: process.env.SCOUT9_API_KEY
+  });
+  const scout9 = new Scout9Api(configuration);
+  const response = await scout9.runPlatformConfig()
+    .catch((err) => {
+      err.message = `Error running platform: ${err.message}`;
+      throw err;
+    })
+  return response.data;
+}
+
+a
+
+/**
+ * Builds a local project
+ * @param {{cwd: string; src: string; dest: string; logger: ProgressLogger; mode: string;}} - build options
+ * @param {Scout9ProjectBuildConfig} config
+ */
+export async function build({cwd = process.cwd(),  src = './src', dest = '/tmp/project', logger = new ProgressLogger(), mode} = {}, config) {
+  // 1. Lint: Run validation checks
+
+  // Check if app looks good
+  await getApp({cwd, src});
+
+  // Check if workflows look good
+  // console.log('@TODO check if workflows are properly written');
+
+  // 2. Build app
+  await buildApp(cwd, src, dest, config);
+
+  // 2. Build code in user's project
+  // const buildDir = await runNpmRunBuild({cwd, src: src});
+  // const buildPath = buildDir.split('/');
+
+  // Check if directory "build" exists
+  // if (!fss.existsSync(buildDir)) {
+  //   throw new Error(`Missing required "${buildPath[buildPath.length - 1]}" directory, make sure your build script outputs to a "${buildPath[buildPath.length - 1]}" directory or modify your scout9 config`);
+  // }
+
+
+  // 3. Remove unnecessary files
+  const files = globSync(path.resolve(cwd, `${dest}/**/*(*.test.*|*.spec.*)`));
+  for (const file of files) {
+    await fs.unlink(file);
+  }
+
+  // 3. Run tests
+  // console.log('@TODO run tests');
+}
+
+/**
+ * Deploys a local project to scout9
+ * @param {{cwd: string; src: string, dest: string}} - build options
+ * @param {Scout9ProjectBuildConfig} config
+ */
+export async function deploy({cwd = process.cwd(), src = './src', dest = '/tmp/project', logger = new ProgressLogger()}, config) {
+
+  await buildApp(cwd, src, dest, config);
+  logger.info(`App built ${dest}`);
 
   const destPaths = dest.split('/');
   const zipFilePath = path.join(dest, `${destPaths[destPaths.length - 1]}.tar.gz`);
@@ -328,11 +343,11 @@ export async function deploy({cwd = process.cwd(), src = './src', dest = '/tmp/p
 
 /**
  *
- * @param {Object} options
+ * @param {{cwd: string; src: string; logger: ProgressLogger}} options
  * @param {Scout9ProjectBuildConfig} config
- * @returns {Promise<void>}
+ * @returns {Promise<{success: boolean}>}
  */
-export async function sync({cwd = process.cwd(), folder = 'src', logger = new ProgressLogger()} = {}, config) {
+export async function sync({cwd = process.cwd(), src = 'src', logger = new ProgressLogger()} = {}, config) {
   logger.log('Fetching project data...');
   if (!process.env.SCOUT9_API_KEY) {
     throw new Error('Missing required environment variable "SCOUT9_API_KEY"');
@@ -384,7 +399,7 @@ export async function sync({cwd = process.cwd(), folder = 'src', logger = new Pr
 
 
   // Write to src/agents
-  const paths = globSync(path.resolve(cwd, `${folder}/entities/agents/{index,config}.{ts,js}`));
+  const paths = globSync(path.resolve(cwd, `${src}/entities/agents/{index,config}.{ts,js}`));
   if (paths.length === 0) {
     throw new Error(`Missing required agents entity file, rerun "scout9 sync" to fix`);
   }
@@ -421,9 +436,9 @@ export default async function ${_entity}Entity() {
   return ${JSON.stringify(rest, null, 2)};
 }
 `;
-    const isConfigNamed = fss.existsSync(`${cwd}/${folder}/entities/${_entity}/config.js`);
-    await fs.writeFile(`${cwd}/${folder}/entities/${_entity}/${isConfigNamed ? 'config' : 'index'}.js`, fileContent);
-    logger.log(`Updated ${cwd}/${folder}/entities/${_entity}/index.js`);
+    const isConfigNamed = fss.existsSync(`${cwd}/${src}/entities/${_entity}/config.js`);
+    await fs.writeFile(`${cwd}/${src}/entities/${_entity}/${isConfigNamed ? 'config' : 'index'}.js`, fileContent);
+    logger.log(`Updated ${cwd}/${src}/entities/${_entity}/index.js`);
   }
 
   return {success: true};

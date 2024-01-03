@@ -6,24 +6,20 @@ export { EventResponse } from './runtime/index.js';
 export * from './testing-tools/index.js';
 
 /**
- * @param event
- * @param cwd
- * @param folder
- * @returns {Promise<*|undefined>}
+ * @param {WorkflowEvent} event - every workflow receives an event object
+ * @param {{cwd: string; mode: 'development' | 'production'; src: string}} options - build options
+ * @returns {Promise<WorkflowResponse<any>>}
  */
-export async function run(
-  event,
-  {cwd = process.cwd(), folder} = {},
-) {
-  return Scout9Platform.run(event, {cwd, folder})
+export async function run(event, options) {
+  return Scout9Platform.run(event, options)
 }
 
-export async function sendEvent(
-  event,
-  {cwd = process.cwd(), folder} = {},
-) {
-  return Scout9Platform.run(event, {cwd, folder})
-}
+/**
+ * @param {WorkflowEvent} event - every workflow receives an event object
+ * @param {{cwd: string; mode: 'development' | 'production'; src: string}} options - build options
+ * @returns {Promise<WorkflowResponse<any>>}
+ */
+export const sendEvent = run;
 
 /**
  * @param data {T}

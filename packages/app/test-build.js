@@ -2,7 +2,7 @@ import { Scout9Platform } from './src/platform.js';
 
 (async () => {
 
-  const result = await Scout9Platform.build({cwd: process.cwd(), mode: 'development', folder: 'src-test'});
+  const result = await Scout9Platform.build({cwd: process.cwd(), mode: 'development', src: 'src-test', dest: './tmp/project'});
   console.log('\n\n----------Build Result:\n\n', result,'\n\n----------\n\n');
 
   const sync = await Scout9Platform.sync({cwd: process.cwd(), mode: 'development', folder: 'src-test'});

@@ -36,21 +36,21 @@ async function loadEntityApiConfig(cwd, filePath) {
  * @returns {Promise<EntitiesBuildConfig>}
  */
 export default async function loadEntitiesConfig(
-  {cwd = process.cwd(), folder = 'src', logger} = {}
+  {cwd = process.cwd(), src = 'src', logger} = {}
 ) {
   /** @type EntitiesBuildConfig */
   const config = [];
-  const paths = globSync(path.resolve(cwd, `${folder}/entities/**/{index,config,api}.{ts,js}`));
+  const paths = globSync(path.resolve(cwd, `${src}/entities/**/{index,config,api}.{ts,js}`));
   const data = [];
   for (const path of paths) {
     const segments = path.split('/');
-    const srcIndex = segments.findIndex((segment, index) => segment === folder && segments[index + 1] === 'entities');
-    const parents = segments.slice(srcIndex + 2, -1).reverse(); // +2 to skip "${folder}" and "entities"
+    const srcIndex = segments.findIndex((segment, index) => segment === src && segments[index + 1] === 'entities');
+    const parents = segments.slice(srcIndex + 2, -1).reverse(); // +2 to skip "${src}" and "entities"
     if (parents.length > 0) {
       const api = await loadEntityApiConfig(cwd, path);
       data.push({path, parents, api});
     } else {
-      console.log(`WARNING: "${path}" Is not a valid entity path, must be contained in a named folder under entities/`);
+      console.log(`WARNING: "${path}" Is not a valid entity path, must be contained in a named src under entities/`);
     }
   }
 

@@ -42,13 +42,19 @@ prog
   .example('sync')
   .option('--mode', 'Specify a mode for loading environment variables', 'production')
   .option('--src', 'Project source code fold', 'src')
-  .action(async ({mode, folder: src}) => {
+  .action(async ({mode, src}) => {
     if (!fs.existsSync('.env')) {
       console.warn(`Missing ${path.resolve('.env')} — skipping`);
       return;
     }
+    mode =  coerceMode(mode);
+    if (!dest) {
+      if (mode !== 'production') {
+        dest = './tmp/project';
+      }
+    }
     try {
-      await Scout9Platform.sync({cwd: process.cwd(), mode: coerceMode(mode), folder: src});
+      await Scout9Platform.sync({cwd: process.cwd(), mode: coerceMode(mode), src});
       process.exit(0);
     } catch (e) {
       handle_error(e);
@@ -61,15 +67,22 @@ prog
   .example('build')
   .example('build --mode development')
   .example('build --mode production')
+  .option('--dest', 'Project local destination', '/tmp/project')
   .option('--mode', 'Specify a mode for loading environment variables', 'production')
   .option('--src', 'Project source code fold', 'src')
-  .action(async ({ mode, src }) => {
+  .action(async ({ mode, src, dest }) => {
     if (!fs.existsSync('.env')) {
       console.warn(`Missing ${path.resolve('.env')} — skipping`);
       return;
     }
+    mode =  coerceMode(mode);
+    if (!dest) {
+      if (mode !== 'production') {
+        dest = './tmp/project';
+      }
+    }
     try {
-      await Scout9Platform.build({cwd: process.cwd(), mode: coerceMode(mode), folder: src});
+      await Scout9Platform.build({cwd: process.cwd(), mode, src, dest});
       process.exit(0);
     } catch (e) {
       handle_error(e);
@@ -87,6 +100,12 @@ prog
     if (!fs.existsSync('.env')) {
       console.warn(`Missing ${path.resolve('.env')} — skipping`);
       return;
+    }
+    mode =  coerceMode(mode);
+    if (!dest) {
+      if (mode !== 'production') {
+        dest = './tmp/project';
+      }
     }
     try {
       await Scout9Platform.deploy({cwd: process.cwd(), mode: coerceMode(mode), src, dest});
@@ -106,11 +125,10 @@ prog
       return;
     }
     try {
-      throw new Error('Dev server not available yet');
+      throw new Error('Dev server not available yet, will be available in new release soon!');
     } catch (e) {
       handle_error(e);
     }
-  })
-
+  });
 
 prog.parse(process.argv, { unknown: (arg) => `Unknown option: ${arg}` });

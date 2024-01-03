@@ -63,12 +63,12 @@ function customRequire(folder, moduleName) {
 
 export async function runInVM(
   event,
-  {folder, filePath, fileName}
+  {src, filePath, fileName}
 ) {
   // Prepare the script context
   const scriptExports = {};
   const context = vm.createContext({
-    require: (moduleName) => customRequire(folder, moduleName),
+    require: (moduleName) => customRequire(src, moduleName),
     console,
     module: { exports: scriptExports },
     exports: scriptExports,

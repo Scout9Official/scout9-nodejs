@@ -9,7 +9,7 @@ import { Scout9ProjectBuildConfigSchema } from '../../runtime/index.js';
 import { ProgressLogger } from '../../utils/index.js';
 
 
-export function loadEnvConfig({ cwd = process.cwd(), folder = 'src', logger = new ProgressLogger()} = {}) {
+export function loadEnvConfig({ cwd = process.cwd(), src = 'src', logger = new ProgressLogger()} = {}) {
   if (!!process.env.SCOUT9_API_KEY) {
     return;
   }
@@ -26,19 +26,16 @@ export function loadEnvConfig({ cwd = process.cwd(), folder = 'src', logger = ne
 }
 
 /**
- *
- * @param cwd
- * @param folder
- * @param logger
+ * @param {{cwd: string; src: string; logger: ProgressLogger}} - build options
  * @returns {Promise<Scout9ProjectBuildConfig>}
  */
-export async function loadConfig({ cwd = process.cwd(), folder = 'src', logger = new ProgressLogger()} = {}) {
+export async function loadConfig({ cwd = process.cwd(), src = 'src', logger = new ProgressLogger()} = {}) {
   // Load globals
-  loadEnvConfig({cwd, folder, logger});
-  const baseProjectConfig  = await loadProjectConfig({cwd, folder, logger});
-  const entitiesConfig = await loadEntitiesConfig({cwd, folder, logger});
-  const agentsConfig = await loadAgentConfig({cwd, folder, logger});
-  const workflowsConfig = await loadWorkflowsConfig({cwd, folder, logger});
+  loadEnvConfig({cwd, src, logger});
+  const baseProjectConfig  = await loadProjectConfig({cwd, src, logger});
+  const entitiesConfig = await loadEntitiesConfig({cwd, src, logger});
+  const agentsConfig = await loadAgentConfig({cwd, src, logger});
+  const workflowsConfig = await loadWorkflowsConfig({cwd, src, logger});
 
   /**
    * @type {Scout9ProjectBuildConfig}
