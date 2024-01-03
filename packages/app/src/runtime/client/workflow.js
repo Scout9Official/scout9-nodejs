@@ -36,6 +36,7 @@ export const WorkflowEventSchema = {
   customer: customerSchema,
   intent: z.string(),
   stagnationCount: z.number(),
+  note: z.string({description: 'Any developer notes to provide'}).optional()
 }
 
 const Primitive = z.union([z.string(), z.number(), z.boolean()]);

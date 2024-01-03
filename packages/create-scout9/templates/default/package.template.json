@@ -9,7 +9,8 @@
   },
   "dependencies": {
     "@scout9/app": "workspace:*",
-    "@scout9/crm": "workspace:*"
+    "@scout9/crm": "workspace:*",
+    "moment": "^2.30.1"
   },
   "type": "module"
 }

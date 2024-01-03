@@ -1,6 +1,6 @@
 /**
  * Configuration for the Scout9 project.
- * @type {Scout9ProjectConfig}
+ * @type {import('@scout9/app').Scout9ProjectConfig}
  */
 export default {
 

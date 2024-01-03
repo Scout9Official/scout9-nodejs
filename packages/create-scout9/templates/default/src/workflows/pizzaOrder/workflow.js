@@ -4,8 +4,8 @@ import { createInvoice, getInvoice } from '../../lib/invoice.js';
 
 /**
  * Example PizzaOrder workflow - this is a simple example of a workflow that can be used to order a pizza
- * @param {WorkflowEvent} event - every workflow receives an event object
- * @returns {Promise<WorkflowResponse>} - every workflow must return a WorkflowResponse
+ * @param {import('@scout9/app').WorkflowEvent} event - the workflow event that every workflow must have
+ * @returns {Promise<import('@scout9/app').WorkflowResponse>} - the response that every workflow must return
  */
 export default async function PizzaOrder(
   {

@@ -102,7 +102,7 @@ await create(cwd, {
   name: path.basename(path.resolve(cwd)),
   template: /** @type {'default' | 'skeleton' | 'skeletonlib'} */ (options.template),
   // types: options.types,
-  types: null,
+  types: 'checkjs',
   prettier: options.features.includes('prettier'),
   eslint: options.features.includes('eslint'),
   jest: options.features.includes('jest'),

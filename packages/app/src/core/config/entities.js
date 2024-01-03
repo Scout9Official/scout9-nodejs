@@ -100,7 +100,7 @@ export default async function loadEntitiesConfig(
   }
 
   if (!config.some(c => c.entity === 'customers')) {
-    throw new Error(`Missing required entity: "entities/customers"`);
+    throw new Error(`Missing required entity: "entities/customers" in ${src}`);
   }
   if (!config.some(c => c.entity === '[customer]')) {
     throw new Error(`Missing required entity: "entities/customers/[customer]"`);

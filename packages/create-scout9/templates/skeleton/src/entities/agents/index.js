@@ -1,6 +1,6 @@
 /**
  * Required core entity type: Agents represents you and your team
- * @returns {Array<Agent>}
+ * @returns {Array<import('@scout9/app').Agent>}
  */
 export default function Agents() {
   return [

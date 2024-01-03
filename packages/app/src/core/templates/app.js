@@ -41,5 +41,9 @@ app.get('/', (req, res) => {
 
 app.listen(process.env.PORT || 8080, err => {
   if (err) throw err;
-  console.log(`> Running on port ${process.env.PORT || 8080}`);
+  const protocol = process.env.PROTOCOL || 'http';
+  const host = process.env.HOST || 'localhost';
+  const port = process.env.PORT || 8080;
+  const fullUrl = `${protocol}://${host}:${port}`;
+  console.log(`> Running Scout9 auto-reply dev server on ${fullUrl}`);
 });

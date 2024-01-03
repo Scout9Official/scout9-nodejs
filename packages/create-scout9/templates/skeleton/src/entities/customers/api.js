@@ -5,7 +5,7 @@ import { EventResponse } from '@scout9/app';
  * Required entity - use this to sync with your CRM
  *
  * Query customer info from your CRM
- * @returns {Promise<EventResponse<Array<Customer>>>}
+ * @returns {Promise<import('@scout9/app').EventResponse<Array<import('@scout9/app').Customer>>>}
  */
 export const QUERY = async ({searchParams}) => {
   const {page, q, orderBy, endAt, startAt, limit} = searchParams;

@@ -269,7 +269,6 @@ export async function runConfig({cwd = process.cwd(), src, logger = new Progress
   return response.data;
 }
 
-a
 
 /**
  * Builds a local project
