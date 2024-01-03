@@ -41,14 +41,14 @@ prog
   .describe('Sync your project with your Scout9 account (copies any missing personas and entities into your project)')
   .example('sync')
   .option('--mode', 'Specify a mode for loading environment variables', 'production')
-  .option('--folder', 'Project source code fold', 'src')
-  .action(async ({mode, folder}) => {
+  .option('--src', 'Project source code fold', 'src')
+  .action(async ({mode, folder: src}) => {
     if (!fs.existsSync('.env')) {
       console.warn(`Missing ${path.resolve('.env')} — skipping`);
       return;
     }
     try {
-      await Scout9Platform.sync({cwd: process.cwd(), mode: coerceMode(mode), folder});
+      await Scout9Platform.sync({cwd: process.cwd(), mode: coerceMode(mode), folder: src});
       process.exit(0);
     } catch (e) {
       handle_error(e);
@@ -62,14 +62,14 @@ prog
   .example('build --mode development')
   .example('build --mode production')
   .option('--mode', 'Specify a mode for loading environment variables', 'production')
-  .option('--folder', 'Project source code fold', 'src')
-  .action(async ({ mode, folder }) => {
+  .option('--src', 'Project source code fold', 'src')
+  .action(async ({ mode, src }) => {
     if (!fs.existsSync('.env')) {
       console.warn(`Missing ${path.resolve('.env')} — skipping`);
       return;
     }
     try {
-      await Scout9Platform.build({cwd: process.cwd(), mode: coerceMode(mode), folder});
+      await Scout9Platform.build({cwd: process.cwd(), mode: coerceMode(mode), folder: src});
       process.exit(0);
     } catch (e) {
       handle_error(e);
@@ -81,14 +81,15 @@ prog
   .command('deploy')
   .describe('Deploy your scout9 auto reply app')
   .option('--mode', 'Specify a mode for loading environment variables', 'production')
-  .option('--folder', 'Project source code fold', 'src')
-  .action(async ({ mode, folder }) => {
+  .option('--src', 'Project source code folder', 'src')
+  .option('--dest', 'Project local destination', '/tmp/project')
+  .action(async ({ mode, src, dest }) => {
     if (!fs.existsSync('.env')) {
       console.warn(`Missing ${path.resolve('.env')} — skipping`);
       return;
     }
     try {
-      await Scout9Platform.deploy({cwd: process.cwd(), mode: coerceMode(mode), folder});
+      await Scout9Platform.deploy({cwd: process.cwd(), mode: coerceMode(mode), src, dest});
       process.exit(0);
     } catch (e) {
       handle_error(e);

@@ -3349,6 +3349,25 @@ export interface GetWorkflowResponseAllOf {
 /**
  *
  * @export
+ * @interface Instruction
+ */
+export interface Instruction {
+    /**
+     *
+     * @type {string}
+     * @memberof Instruction
+     */
+    'id': string;
+    /**
+     *
+     * @type {string}
+     * @memberof Instruction
+     */
+    'content': string;
+}
+/**
+ *
+ * @export
  * @interface ListAgentsResponseInner
  */
 export interface ListAgentsResponseInner {
@@ -6203,6 +6222,63 @@ export interface Workflow {
 /**
  *
  * @export
+ * @interface WorkflowEvent
+ */
+export interface WorkflowEvent {
+    /**
+     *
+     * @type {Array<Message>}
+     * @memberof WorkflowEvent
+     */
+    'messages': Array<Message>;
+    /**
+     *
+     * @type {Message}
+     * @memberof WorkflowEvent
+     */
+    'message'?: Message;
+    /**
+     *
+     * @type {Conversation}
+     * @memberof WorkflowEvent
+     */
+    'conversation': Conversation;
+    /**
+     *
+     * @type {{ [key: string]: any; }}
+     * @memberof WorkflowEvent
+     */
+    'context': {
+        [key: string]: any;
+    };
+    /**
+     *
+     * @type {Agent}
+     * @memberof WorkflowEvent
+     */
+    'agent': Agent;
+    /**
+     *
+     * @type {Customer}
+     * @memberof WorkflowEvent
+     */
+    'customer': Customer;
+    /**
+     * The intent of the message
+     * @type {string}
+     * @memberof WorkflowEvent
+     */
+    'intent': string;
+    /**
+     * The number of times the workflow has been triggered without a response
+     * @type {number}
+     * @memberof WorkflowEvent
+     */
+    'stagnationCount': number;
+}
+/**
+ *
+ * @export
  * @interface WorkflowPartial
  */
 export interface WorkflowPartial {
@@ -6261,6 +6337,100 @@ export interface WorkflowPartial {
      */
     'priority'?: number;
 }
+/**
+ * @type WorkflowResponse
+ * @export
+ */
+export type WorkflowResponse = Array<WorkflowResponseSlot> | WorkflowResponseSlot;
+/**
+ *
+ * @export
+ * @interface WorkflowResponseSlot
+ */
+export interface WorkflowResponseSlot {
+    /**
+     *
+     * @type {WorkflowResponseSlotForward}
+     * @memberof WorkflowResponseSlot
+     */
+    'forward'?: WorkflowResponseSlotForward;
+    /**
+     *
+     * @type {WorkflowResponseSlotInstructions}
+     * @memberof WorkflowResponseSlot
+     */
+    'instructions'?: WorkflowResponseSlotInstructions;
+    /**
+     *
+     * @type {Array<string>}
+     * @memberof WorkflowResponseSlot
+     */
+    'removeInstructions'?: Array<string>;
+    /**
+     *
+     * @type {string}
+     * @memberof WorkflowResponseSlot
+     */
+    'message'?: string;
+    /**
+     *
+     * @type {number}
+     * @memberof WorkflowResponseSlot
+     */
+    'secondsDelay'?: number;
+    /**
+     *
+     * @type {number}
+     * @memberof WorkflowResponseSlot
+     */
+    'scheduled'?: number;
+    /**
+     *
+     * @type {object}
+     * @memberof WorkflowResponseSlot
+     */
+    'contextUpsert'?: object;
+    /**
+     *
+     * @type {boolean}
+     * @memberof WorkflowResponseSlot
+     */
+    'resetIntent'?: boolean;
+}
+/**
+ * @type WorkflowResponseSlotForward
+ * @export
+ */
+export type WorkflowResponseSlotForward = WorkflowResponseSlotForwardOneOf | boolean | string;
+/**
+ *
+ * @export
+ * @interface WorkflowResponseSlotForwardOneOf
+ */
+export interface WorkflowResponseSlotForwardOneOf {
+    /**
+     *
+     * @type {string}
+     * @memberof WorkflowResponseSlotForwardOneOf
+     */
+    'to'?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof WorkflowResponseSlotForwardOneOf
+     */
+    'mode'?: WorkflowResponseSlotForwardOneOfModeEnum;
+}
+export declare const WorkflowResponseSlotForwardOneOfModeEnum: {
+    readonly AfterReply: "after-reply";
+    readonly Immediately: "immediately";
+};
+export type WorkflowResponseSlotForwardOneOfModeEnum = typeof WorkflowResponseSlotForwardOneOfModeEnum[keyof typeof WorkflowResponseSlotForwardOneOfModeEnum];
+/**
+ * @type WorkflowResponseSlotInstructions
+ * @export
+ */
+export type WorkflowResponseSlotInstructions = Array<Instruction> | Array<string> | Instruction | string;
 /**
  * CustomContextApi - axios parameter creator
  * @export
@@ -6740,6 +6910,21 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
      * @throws {RequiredError}
      */
     operations: (q?: string, id?: Array<string>, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Runs your auto-reply app on the Scout9 platform.
+     * @param {WorkflowEvent} workflowEvent
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    runPlatform: (workflowEvent: WorkflowEvent, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Returns the platform run config
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    runPlatformConfig: (options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
      * @summary Creates a new scheduled conversation
@@ -7292,6 +7477,23 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
     operations(q?: string, id?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ListApiOperationsResponseInner>>>;
     /**
      *
+     * @summary Runs your auto-reply app on the Scout9 platform.
+     * @param {WorkflowEvent} workflowEvent
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    runPlatform(workflowEvent: WorkflowEvent, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<WorkflowResponse>>;
+    /**
+     *
+     * @summary Returns the platform run config
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    runPlatformConfig(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<{
+        [key: string]: any;
+    }>>;
+    /**
+     *
      * @summary Creates a new scheduled conversation
      * @param {ScheduleCreateRequest} scheduleCreateRequest
      * @param {*} [options] Override http request option.
@@ -7840,6 +8042,23 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
      * @throws {RequiredError}
      */
     operations(q?: string, id?: Array<string>, options?: any): AxiosPromise<Array<ListApiOperationsResponseInner>>;
+    /**
+     *
+     * @summary Runs your auto-reply app on the Scout9 platform.
+     * @param {WorkflowEvent} workflowEvent
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    runPlatform(workflowEvent: WorkflowEvent, options?: any): AxiosPromise<WorkflowResponse>;
+    /**
+     *
+     * @summary Returns the platform run config
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    runPlatformConfig(options?: any): AxiosPromise<{
+        [key: string]: any;
+    }>;
     /**
      *
      * @summary Creates a new scheduled conversation
@@ -8443,6 +8662,25 @@ export declare class Scout9Api extends BaseAPI {
      * @memberof Scout9Api
      */
     operations(q?: string, id?: Array<string>, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ListApiOperationsResponseInner[], any>>;
+    /**
+     *
+     * @summary Runs your auto-reply app on the Scout9 platform.
+     * @param {WorkflowEvent} workflowEvent
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    runPlatform(workflowEvent: WorkflowEvent, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<WorkflowResponse, any>>;
+    /**
+     *
+     * @summary Returns the platform run config
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    runPlatformConfig(options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<{
+        [key: string]: any;
+    }, any>>;
     /**
      *
      * @summary Creates a new scheduled conversation

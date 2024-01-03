@@ -35,6 +35,7 @@ export const WorkflowEventSchema = {
   agent: agentConfigurationSchema,
   customer: customerSchema,
   intent: z.string(),
+  stagnationCount: z.number(),
 }
 
 const Primitive = z.union([z.string(), z.number(), z.boolean()]);

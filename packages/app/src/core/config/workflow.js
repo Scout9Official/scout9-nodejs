@@ -15,7 +15,6 @@ export default async function loadWorkflowsConfig(
     folder = 'src'
   } = {}
 ) {
-  console.log('loadWorkflowsConfig', {cwd, folder});
   const config = globSync(path.resolve(cwd, `${folder}/workflows/**/workflow.{ts,js}`))
     .map((path) => {
       const segments = path.split('/');

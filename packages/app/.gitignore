@@ -3,6 +3,7 @@ package-lock.json
 /node_modules
 /assets/*
 /dist
+/build
 /docs
 /test/**/build
 !/src/core/adapt/fixtures/*/.scout9
@@ -12,3 +13,6 @@ package-lock.json
 .custom-out-dir
 .scout9
 src-test
+tmp
+package-test.json
+temp.js

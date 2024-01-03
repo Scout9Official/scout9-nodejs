@@ -4,10 +4,39 @@ import { exec } from 'node:child_process';
 import fss from 'node:fs';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import fetch, { FormData } from 'node-fetch';
-import { runInVM } from '../runtime/index.js';
-import { checkVariableType, requireProjectFile } from '../utils/index.js';
+import { Configuration, Scout9Api } from '@scout9/admin';
+import { checkVariableType, ProgressLogger, requireProjectFile } from '../utils/index.js';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+
+async function platformApi(url, options = {}, retries = 0) {
+  if (retries > 3) {
+    throw new Error(`Request timed out, try again later`);
+  }
+  if (!process.env.SCOUT9_API_KEY) {
+    throw new Error('Missing required environment variable "SCOUT9_API_KEY"');
+  }
+  return fetch(url, {
+    method: 'GET',
+    ...options,
+    headers: {
+      'Authorization': process.env.SCOUT9_API_KEY || ''
+    }
+  }).then((res) => {
+    if (res.status === 504) {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve(platformApi(url, options, retries + 1));
+        }, 3000);
+      })
+    }
+    return Promise.resolve(res);
+  });
+}
 
 /**
  * @returns {Promise<string>} - the output directory
@@ -26,13 +55,10 @@ async function runNpmRunBuild({cwd = process.cwd(), folder = 'src'} = {}) {
   }
 
   return new Promise((resolve, reject) => {
-    console.log('Running "npm run build"');
     exec('npm run build', {cwd}, (error, stdout, stderr) => {
       if (error) {
-        console.error(`Build failed: ${error.message}`);
         return reject(error);
       }
-      console.log('Build successful');
       // @TODO don't assume build script created a "build" directory (use a config)
       return resolve(path.resolve(cwd, 'build'));
     });
@@ -41,7 +67,11 @@ async function runNpmRunBuild({cwd = process.cwd(), folder = 'src'} = {}) {
 
 
 function zipDirectory(source, out) {
-  const archive = archiver('zip', {zlib: {level: 9}});
+  const archive = archiver('tar', {
+    gzip: true,
+    gzipOptions: { level: 9 },
+    // zlib: {level: 9}
+  });
   const stream = fss.createWriteStream(out);
 
   return new Promise((resolve, reject) => {
@@ -57,55 +87,47 @@ function zipDirectory(source, out) {
 
 async function deployZipDirectory(zipFilePath, config) {
   const form = new FormData();
-  const blob = new Blob([await fs.readFile(zipFilePath)], {type: 'application/zip'});
-  form.set('file', blob, path.basename(zipFilePath), {contentType: 'application/zip'});
+  // application/gzip
+  const blob = new Blob([await fs.readFile(zipFilePath)], {type: 'application/gzip'});
+  form.set('file', blob, path.basename(zipFilePath), {contentType: 'application/gzip'});
+  // const blob = new Blob([await fs.readFile(zipFilePath)], {type: 'application/zip'});
+  // form.set('file', blob, path.basename(zipFilePath), {contentType: 'application/zip'});
   form.set('config', JSON.stringify(config));
 
-  console.log('Uploading auto-reply app to Scout9...');
   // @TODO append signature secret header
   // const url = 'http://localhost:3000/api/b/platform/upload';
   const url = 'https://pocket-guide.vercel.app/api/b/platform/upload';
-  const response = await fetch(url, {
+  const response = await platformApi(url, {
     method: 'POST',
     body: form,
-    headers: {
-      'Authorization': process.env.SCOUT9_API_KEY || ''
-    }
   });
   if (!response.ok) {
     throw new Error(`${url} responded with ${response.status}: ${response.statusText}`);
   }
 
-  console.log('File sent successfully');
-  return true;
+  return response;
 }
 
-async function downloadAndUnpackZip(outputDir) {
-  const downloadLocalResponse = await fetch(
-    `https://pocket-guide.vercel.app/api/b/platform/download`,
-    {
-      headers: {
-        'Authorization': process.env.SCOUT9_API_KEY || ''
-      }
-    }
-  );
-  if (!downloadLocalResponse.ok) {
-    throw new Error(`Error downloading project file ${downloadLocalResponse.statusText}`);
-  }
-
-  try {
-    const buffer = await downloadLocalResponse.arrayBuffer();
-    const decompress = require('decompress');
-    await decompress(buffer, outputDir + '/build');
-
-    console.log('Files unpacked successfully at ' + outputDir + '/build');
-
-    return outputDir + '/build';
-  } catch (error) {
-    console.error('Error unpacking file:', error);
-    throw error;
-  }
-}
+// async function downloadAndUnpackZip(outputDir) {
+//   const downloadLocalResponse = await platformApi(`https://pocket-guide.vercel.app/api/b/platform/download`);
+//   if (!downloadLocalResponse.ok) {
+//     throw new Error(`Error downloading project file ${downloadLocalResponse.statusText}`);
+//   }
+//
+//   try {
+//     const arrayBuffer = await downloadLocalResponse.arrayBuffer();
+//     const outputPath = path.resolve(outputDir, 'build');
+//     // Convert ArrayBuffer to Buffer
+//     await decompress(Buffer.from(arrayBuffer), outputPath);
+//
+//     console.log('Files unpacked successfully at ' + outputPath);
+//
+//     return outputPath;
+//   } catch (error) {
+//     console.error('Error unpacking file:', error);
+//     throw error;
+//   }
+// }
 
 export async function getApp({cwd = process.cwd(), folder = 'src', ignoreAppRequire = false} = {}) {
   const indexTsPath = path.resolve(cwd, folder, 'index.ts');
@@ -133,35 +155,36 @@ export async function getApp({cwd = process.cwd(), folder = 'src', ignoreAppRequ
 
 /**
  * Runs a given project container from scout9 to given environment
+ * Runs the project in a container
+ *
+ * @param {WorkflowEvent} event - every workflow receives an event object
+ * @param {{cwd: string; folder: string}} - build options
+ * @returns {Promise<WorkflowResponse<any>>}
  */
-export async function run(event, {cwd = process.cwd(), folder} = {}) {
-
-  // @TODO use scout9/admin
-  await downloadAndUnpackZip(folder ? folder : path.resolve(cwd, 'tmp'));
-
-  const {filePath, fileName} = await getApp({
-    cwd,
-    folder: folder ? path.resolve(folder, '/build') : 'tmp/build',
-    ignoreAppRequire: true
+export async function run(event, {cwd = process.cwd(), folder, logger = new ProgressLogger()} = {}) {
+  const configuration = new Configuration({
+    apiKey: process.env.SCOUT9_API_KEY
   });
-
-  return runInVM(
-    event,
-    {folder: folder ? path.resolve(folder, 'build') : path.resolve(cwd, 'tmp/build'), filePath, fileName}
-  );
+  const scout9 = new Scout9Api(configuration);
+  const response = await scout9.runPlatform(event)
+    .catch((err) => {
+      err.message = `Error running platform: ${err.message}`;
+      throw err;
+    })
+  return response.data;
 }
 
 /**
  * Builds a local project
  */
-export async function build({cwd = process.cwd(), folder = 'src'} = {}, config) {
+export async function build({cwd = process.cwd(), folder = 'src', logger = new ProgressLogger(), mode} = {}, config) {
   // 1. Lint: Run validation checks
 
   // Check if app looks good
   await getApp({cwd, folder});
 
   // Check if workflows look good
-  console.log('@TODO check if workflows are properly written');
+  // console.log('@TODO check if workflows are properly written');
 
   // 2. Build code in user's project
   const buildDir = await runNpmRunBuild({cwd, folder});
@@ -185,15 +208,102 @@ export async function build({cwd = process.cwd(), folder = 'src'} = {}, config) 
 
 /**
  * Deploys a local project to scout9
+ * @param {{cwd: string; src: string, dest: string}} - build options
+ * @param {Scout9ProjectBuildConfig} config
  */
-export async function deploy({cwd = process.cwd(), folder = 'build'}, config) {
-  const zipFilePath = path.join(cwd, `${folder}.zip`);
-  await zipDirectory(path.resolve(cwd, folder), zipFilePath);
+export async function deploy({cwd = process.cwd(), src = './src', dest = '/tmp/project', logger = new ProgressLogger()}, config) {
+  // Ensures directory exists
+  await fs.mkdir(dest, {recursive: true});
 
-  console.log('Project zipped successfully.');
+  // Function to copy files
+  // const copyFile = async (source, destination) => {
+  //   await fs.copyFile(source, destination);
+  // }
 
+  const copyDirectory = async (source, destination) => {
+    await fs.mkdir(destination, { recursive: true });
+
+    const dir = await fs.readdir(source, { withFileTypes: true })
+    for (const dirent of dir) {
+      const sourcePath = path.join(source, dirent.name);
+      const destinationPath = path.join(destination, dirent.name);
+
+      dirent.isDirectory() ?
+        await copyDirectory(sourcePath, destinationPath) :
+        await fs.copyFile(sourcePath, destinationPath);
+    }
+  }
+
+  const srcDir = path.resolve(cwd, src);
+  const appJsPath = path.resolve(__dirname, './templates/app.js');
+  const packageJson = path.resolve(cwd, './package.json');
+  const packageTestJson = path.resolve(cwd, './package-test.json');
+
+
+  // Copy src directory
+  await copyDirectory(srcDir, path.join(dest, 'src'));
+
+  // Copy package.json
+  if (fss.existsSync(packageTestJson)) {
+    const pkgTest = JSON.parse(await fs.readFile(new URL(packageTestJson, import.meta.url), 'utf-8'));
+    pkgTest.scripts.start = 'node app.js';
+    pkgTest.dependencies.polka = 'latest';
+    pkgTest.dependencies['body-parser'] = 'latest';
+    await fs.writeFile(path.join(dest, 'package.json'), JSON.stringify(pkgTest, null, 2));
+    // await fs.copyFile(packageTestJson, path.join(dest, 'package.json'));
+  } else {
+    const pkg = JSON.parse(await fs.readFile(new URL(packageJson, import.meta.url), 'utf-8'));
+    pkg.scripts.start = 'node app.js';
+    pkg.dependencies.polka = 'latest';
+    pkg.dependencies['body-parser'] = 'latest';
+    await fs.writeFile(path.join(dest, 'package.json'), JSON.stringify(pkg, null, 2));
+    // await fs.copyFile(packageJson, path.join(dest, 'package.json'));
+  }
+
+  // Copy app.js
+  await fs.copyFile(appJsPath, path.join(dest, 'app.js'));
+
+  // Copy config.js - redact any sensitive information // @TODO use security encoder
+  const redactedConfig = {
+    ...config
+  }
+  for (const agent of redactedConfig.agents) {
+    agent.forwardEmail = 'REDACTED';
+    agent.forwardPhone = 'REDACTED';
+    agent.programmableEmail = 'REDACTED';
+    agent.programmablePhoneNumber = 'REDACTED';
+  }
+  await fs.writeFile(path.join(dest, 'config.js'), `export default ${JSON.stringify(redactedConfig, null, 2)}`);
+
+  // Copy Dockerfile (if it exists)
+  const dockerfile = path.resolve(cwd, './Dockerfile');
+  if (fss.existsSync(dockerfile)) {
+    await fs.copyFile(dockerfile, path.join(dest, 'Dockerfile'));
+  } else {
+    await fs.copyFile(path.resolve(__dirname, './templates/Dockerfile'), path.join(dest, 'Dockerfile'));
+  }
+
+  const destPaths = dest.split('/');
+  const zipFilePath = path.join(dest, `${destPaths[destPaths.length - 1]}.tar.gz`);
+  await zipDirectory(dest, zipFilePath);
+
+  logger.info('Project zipped successfully.', zipFilePath);
+
+  logger.log(`Uploading ${zipFilePath} to Scout9...`)
   const response = await deployZipDirectory(zipFilePath, config);
-  console.log('Response from Firebase Function:', response);
+
+  if (response.status !== 200) {
+    logger.error(`Error uploading project to Scout9 ${response.status} - ${response.statusText}`);
+  } else {
+    logger.info(`File sent successfully: ${response.status} - ${response.statusText}`);
+  }
+
+  // Remove temporary directory
+  // logger.log(`Cleaning up ${dest}...`);
+  // await fs.rmdir(dest, { recursive: true });
+  // logger.info(`Cleaned up ${dest}`);
+
+  return response;
 }
 
 /**
@@ -202,24 +312,19 @@ export async function deploy({cwd = process.cwd(), folder = 'build'}, config) {
  * @param {Scout9ProjectBuildConfig} config
  * @returns {Promise<void>}
  */
-export async function sync({cwd = process.cwd(), folder = 'src'} = {}, config) {
-  console.log('Fetching project data...');
+export async function sync({cwd = process.cwd(), folder = 'src', logger = new ProgressLogger()} = {}, config) {
+  logger.log('Fetching project data...');
   if (!process.env.SCOUT9_API_KEY) {
     throw new Error('Missing required environment variable "SCOUT9_API_KEY"');
   }
-  const {entities, agents} = await fetch(`https://pocket-guide.vercel.app/api/b/platform/sync`, {
-    method: 'GET',
-    headers: {
-      'Authorization': process.env.SCOUT9_API_KEY || ''
-    }
-  }).then(res => {
+  const {entities, agents} = await platformApi(`https://pocket-guide.vercel.app/api/b/platform/sync`).then((res) => {
     if (res.status !== 200) {
       throw new Error(`Server responded with ${res.status}: ${res.statusText}`);
     }
     return res.json();
   })
     .catch((err) => {
-      console.error('Error fetching entities and agents:', err);
+      err.message = `Error fetching entities and agents: ${err.message}`;
       throw err;
     });
 
@@ -277,7 +382,7 @@ export default function Agents() {
   return ${JSON.stringify(config.agents, null, 2)};
 }
 `);
-  console.log(`Updated ${filePath}`);
+  logger.log(`Updated ${filePath}`);
 
   for (const entity of config.entities) {
     const {entity: _entity, entities, api, id, ...rest} = entity;
@@ -298,7 +403,7 @@ export default async function ${_entity}Entity() {
 `;
     const isConfigNamed = fss.existsSync(`${cwd}/${folder}/entities/${_entity}/config.js`);
     await fs.writeFile(`${cwd}/${folder}/entities/${_entity}/${isConfigNamed ? 'config' : 'index'}.js`, fileContent);
-    console.log(`Updated ${cwd}/${folder}/entities/${_entity}/index.js`);
+    logger.log(`Updated ${cwd}/${folder}/entities/${_entity}/index.js`);
   }
 
   return {success: true};

@@ -16,13 +16,13 @@ npm install @scout9/admin --save
 ```
 
 ```typescript
-import { Configuration, PocketScoutApi } from '@scout9/admin';
+import { Configuration, Scout9Api } from '@scout9/admin';
 
 const configuration = new Configuration({
   apiKey: '', // Your API key
 });
 
-const pocketScout = new PocketScoutApi(configuration);
+const scout9 = new Scout9Api(configuration);
 ```
 
 ## Step 1: Register yourself as an agent
@@ -32,7 +32,7 @@ import fs from 'fs/promises';
 import path from 'path';
 
 // Registered your self as an agent within the Pocket Scout context
-const agentId = await pocketScout
+const agentId = await scout9
   .agentRegister({
     firstName: 'Tony',
     lastName: 'Sopranos',
@@ -64,9 +64,9 @@ const agentId = await pocketScout
      * See ../examples/samples to see coversation text format or enter JSON manually
      */
     conversations: [
-      await pocketScout.fileCreate(await fs.readFile('./conversation1.txt'), 'conversation with Chris')
+      await scout9.fileCreate(await fs.readFile('./conversation1.txt'), 'conversation with Chris')
         .then(res => res.data.id),
-      await pocketScout.fileCreate(await fs.readFile('./conversation2.txt'), 'conversation with Paulie')
+      await scout9.fileCreate(await fs.readFile('./conversation2.txt'), 'conversation with Paulie')
         .then(res => res.data.id),
     ],
 
@@ -75,7 +75,7 @@ const agentId = await pocketScout
      * (Eventually your Pocket Scout can use this to generate voice responses, but for now its more of a way to capture your tone/character)
      */
     audio: [
-      await pocketScout.fileCreate(await fs.readFile('./audio.mp3'),
+      await scout9.fileCreate(await fs.readFile('./audio.mp3'),
         'Secret Audio of me talking to Dr. Melfi (no one can know about this)').then(res => res.data.id),
     ]
   })
@@ -91,7 +91,7 @@ initiate conversations with you.
 
 ```typescript
 // Create 1 customer
-const customerId = await pocketScout.createCustomer({
+const customerId = await scout9.createCustomer({
   firstName: 'Hi',
   lastName: 'Jack',
   email: 'hi@example.com',
@@ -135,7 +135,7 @@ const customers: Customer[] = [
     lastSeason: 'season 1'
   }
 ];
-await pocketScout.customersCreate({customers});
+await scout9.customersCreate({customers});
 ```
 
 ## Step 3: Initiate a conversation
@@ -146,7 +146,7 @@ guidance.
 ```typescript
 const initialMessage = `Hey there, would you like a free pizza?`;
 
-const conversation = await pocketScout.conversationCreate({
+const conversation = await scout9.conversationCreate({
   customer: customerId,
   agent: agentId,
   environment: 'phone', // This will attempt to contact via SMS
@@ -163,7 +163,7 @@ const conversation = await pocketScout.conversationCreate({
 });
 
 // Send a message
-await pocketScout.message({convo: conversation.data.id, message: initialMessage});
+await scout9.message({convo: conversation.data.id, message: initialMessage});
 ```
 
 ## Step 4: Test your conversation
@@ -173,7 +173,7 @@ Test your conversation before you send a message.
 ```typescript
 const initialMessage = `Hey there, would you like a free pizza?`;
 
-const conversationId = await pocketScout.conversationCreate({
+const conversationId = await scout9.conversationCreate({
   customer: customerId,
   agent: agentId,
   environment: 'phone', // This will attempt to contact via SMS
@@ -198,7 +198,7 @@ const anticipatedCustomerResponses = [
   'I love you, keep texting me',
 ];
 for (const customerResponse of anticipatedCustomerResponses) {
-  const generatedResponse = await pocketScout.generate({
+  const generatedResponse = await scout9.generate({
     convo: conversationId,
     mocks: {
       messages: [
@@ -215,7 +215,7 @@ for (const customerResponse of anticipatedCustomerResponses) {
 }
 
 console.log(`Looks good 👍 - sending messing to customer`);
-await pocketScout.message({convo: conversation.data.id, message: initialMessage});
+await scout9.message({convo: conversation.data.id, message: initialMessage});
 ```
 
 ## Step 5: View your conversation
@@ -224,7 +224,7 @@ Messages and customer responses can be viewed in the [Scout9 UI](https://pocket-
 configure webhooks in the account portal to listen to incoming messages on your own server.
 
 ```typescript
-const messages = await pocketScout.messages(conversationId);
+const messages = await scout9.messages(conversationId);
 console.log(`Retrieved ${messages.data.length} messages from the conversation`);
 
 for (const message of messages.data) {
@@ -242,7 +242,7 @@ created.
 ```typescript
 const initialMessage = `Hey there, would you like a free pizza?`;
 
-const conversation = await pocketScout.scheduleConversation({
+const conversation = await scout9.scheduleConversation({
   customer: customerId,
   agent: agentId,
   environment: 'phone', // This will attempt to contact via SMS
@@ -285,7 +285,7 @@ const workflow: CreateWorkflowRequest = {
   },
 };
 
-const workflowId = await pocketScout.workflowCreate(workflow).then(res => res.data.id);
+const workflowId = await scout9.workflowCreate(workflow).then(res => res.data.id);
 
 console.log(`Created workflow with id: ${workflowId}`);
 ```
@@ -352,7 +352,7 @@ If a customer triggers one of your active **workflows**, then by default your Po
 If you respond manually, then the Pocket Scout will stop responding to the customer for the entire conversation.
 
 ```typescript
-await pocketScout.message({convo: conversationId, message: 'Hey there, would you like a free pizza?'});
+await scout9.message({convo: conversationId, message: 'Hey there, would you like a free pizza?'});
 ```
 
 ## Available Platforms

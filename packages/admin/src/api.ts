@@ -3403,6 +3403,25 @@ export interface GetWorkflowResponseAllOf {
 /**
  *
  * @export
+ * @interface Instruction
+ */
+export interface Instruction {
+  /**
+   *
+   * @type {string}
+   * @memberof Instruction
+   */
+  'id': string;
+  /**
+   *
+   * @type {string}
+   * @memberof Instruction
+   */
+  'content': string;
+}
+/**
+ *
+ * @export
  * @interface ListAgentsResponseInner
  */
 export interface ListAgentsResponseInner {
@@ -6290,6 +6309,61 @@ export interface Workflow {
 /**
  *
  * @export
+ * @interface WorkflowEvent
+ */
+export interface WorkflowEvent {
+  /**
+   *
+   * @type {Array<Message>}
+   * @memberof WorkflowEvent
+   */
+  'messages': Array<Message>;
+  /**
+   *
+   * @type {Message}
+   * @memberof WorkflowEvent
+   */
+  'message'?: Message;
+  /**
+   *
+   * @type {Conversation}
+   * @memberof WorkflowEvent
+   */
+  'conversation': Conversation;
+  /**
+   *
+   * @type {{ [key: string]: any; }}
+   * @memberof WorkflowEvent
+   */
+  'context': { [key: string]: any; };
+  /**
+   *
+   * @type {Agent}
+   * @memberof WorkflowEvent
+   */
+  'agent': Agent;
+  /**
+   *
+   * @type {Customer}
+   * @memberof WorkflowEvent
+   */
+  'customer': Customer;
+  /**
+   * The intent of the message
+   * @type {string}
+   * @memberof WorkflowEvent
+   */
+  'intent': string;
+  /**
+   * The number of times the workflow has been triggered without a response
+   * @type {number}
+   * @memberof WorkflowEvent
+   */
+  'stagnationCount': number;
+}
+/**
+ *
+ * @export
  * @interface WorkflowPartial
  */
 export interface WorkflowPartial {
@@ -6348,6 +6422,106 @@ export interface WorkflowPartial {
    */
   'priority'?: number;
 }
+/**
+ * @type WorkflowResponse
+ * @export
+ */
+export type WorkflowResponse = Array<WorkflowResponseSlot> | WorkflowResponseSlot;
+
+/**
+ *
+ * @export
+ * @interface WorkflowResponseSlot
+ */
+export interface WorkflowResponseSlot {
+  /**
+   *
+   * @type {WorkflowResponseSlotForward}
+   * @memberof WorkflowResponseSlot
+   */
+  'forward'?: WorkflowResponseSlotForward;
+  /**
+   *
+   * @type {WorkflowResponseSlotInstructions}
+   * @memberof WorkflowResponseSlot
+   */
+  'instructions'?: WorkflowResponseSlotInstructions;
+  /**
+   *
+   * @type {Array<string>}
+   * @memberof WorkflowResponseSlot
+   */
+  'removeInstructions'?: Array<string>;
+  /**
+   *
+   * @type {string}
+   * @memberof WorkflowResponseSlot
+   */
+  'message'?: string;
+  /**
+   *
+   * @type {number}
+   * @memberof WorkflowResponseSlot
+   */
+  'secondsDelay'?: number;
+  /**
+   *
+   * @type {number}
+   * @memberof WorkflowResponseSlot
+   */
+  'scheduled'?: number;
+  /**
+   *
+   * @type {object}
+   * @memberof WorkflowResponseSlot
+   */
+  'contextUpsert'?: object;
+  /**
+   *
+   * @type {boolean}
+   * @memberof WorkflowResponseSlot
+   */
+  'resetIntent'?: boolean;
+}
+/**
+ * @type WorkflowResponseSlotForward
+ * @export
+ */
+export type WorkflowResponseSlotForward = WorkflowResponseSlotForwardOneOf | boolean | string;
+
+/**
+ *
+ * @export
+ * @interface WorkflowResponseSlotForwardOneOf
+ */
+export interface WorkflowResponseSlotForwardOneOf {
+  /**
+   *
+   * @type {string}
+   * @memberof WorkflowResponseSlotForwardOneOf
+   */
+  'to'?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof WorkflowResponseSlotForwardOneOf
+   */
+  'mode'?: WorkflowResponseSlotForwardOneOfModeEnum;
+}
+
+export const WorkflowResponseSlotForwardOneOfModeEnum = {
+  AfterReply: 'after-reply',
+  Immediately: 'immediately'
+} as const;
+
+export type WorkflowResponseSlotForwardOneOfModeEnum = typeof WorkflowResponseSlotForwardOneOfModeEnum[keyof typeof WorkflowResponseSlotForwardOneOfModeEnum];
+
+/**
+ * @type WorkflowResponseSlotInstructions
+ * @export
+ */
+export type WorkflowResponseSlotInstructions = Array<Instruction> | Array<string> | Instruction | string;
+
 
 /**
  * CustomContextApi - axios parameter creator
@@ -8338,6 +8512,72 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
     },
     /**
      *
+     * @summary Runs your auto-reply app on the Scout9 platform.
+     * @param {WorkflowEvent} workflowEvent
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    runPlatform: async (workflowEvent: WorkflowEvent, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'workflowEvent' is not null or undefined
+      assertParamExists('runPlatform', 'workflowEvent', workflowEvent)
+      const localVarPath = `/v1-utils-platform-run`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+      localVarRequestOptions.data = serializeDataIfNeeded(workflowEvent, localVarRequestOptions, configuration)
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @summary Returns the platform run config
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    runPlatformConfig: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      const localVarPath = `/v1-utils-platform-run`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
      * @summary Creates a new scheduled conversation
      * @param {ScheduleCreateRequest} scheduleCreateRequest
      * @param {*} [options] Override http request option.
@@ -9501,6 +9741,27 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
     },
     /**
      *
+     * @summary Runs your auto-reply app on the Scout9 platform.
+     * @param {WorkflowEvent} workflowEvent
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async runPlatform(workflowEvent: WorkflowEvent, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<WorkflowResponse>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.runPlatform(workflowEvent, options);
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+    },
+    /**
+     *
+     * @summary Returns the platform run config
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async runPlatformConfig(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<{ [key: string]: any; }>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.runPlatformConfig(options);
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+    },
+    /**
+     *
      * @summary Creates a new scheduled conversation
      * @param {ScheduleCreateRequest} scheduleCreateRequest
      * @param {*} [options] Override http request option.
@@ -10202,6 +10463,25 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
      */
     operations(q?: string, id?: Array<string>, options?: any): AxiosPromise<Array<ListApiOperationsResponseInner>> {
       return localVarFp.operations(q, id, options).then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @summary Runs your auto-reply app on the Scout9 platform.
+     * @param {WorkflowEvent} workflowEvent
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    runPlatform(workflowEvent: WorkflowEvent, options?: any): AxiosPromise<WorkflowResponse> {
+      return localVarFp.runPlatform(workflowEvent, options).then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @summary Returns the platform run config
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    runPlatformConfig(options?: any): AxiosPromise<{ [key: string]: any; }> {
+      return localVarFp.runPlatformConfig(options).then((request) => request(axios, basePath));
     },
     /**
      *
@@ -10991,6 +11271,29 @@ export class Scout9Api extends BaseAPI {
    */
   public operations(q?: string, id?: Array<string>, options?: AxiosRequestConfig) {
     return Scout9ApiFp(this.configuration).operations(q, id, options).then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @summary Runs your auto-reply app on the Scout9 platform.
+   * @param {WorkflowEvent} workflowEvent
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof Scout9Api
+   */
+  public runPlatform(workflowEvent: WorkflowEvent, options?: AxiosRequestConfig) {
+    return Scout9ApiFp(this.configuration).runPlatform(workflowEvent, options).then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @summary Returns the platform run config
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof Scout9Api
+   */
+  public runPlatformConfig(options?: AxiosRequestConfig) {
+    return Scout9ApiFp(this.configuration).runPlatformConfig(options).then((request) => request(this.axios, this.basePath));
   }
 
   /**

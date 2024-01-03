@@ -2,7 +2,7 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-var index = require('./index-ed683f01.js');
+var index = require('./index-4c8b74a1.js');
 require('fs');
 require('events');
 require('path');
@@ -19,17 +19,22 @@ require('node:child_process');
 require('node:fs');
 require('node:fs/promises');
 require('node:path');
+require('node:url');
 require('node:http');
 require('node:https');
 require('node:zlib');
 require('node:stream');
 require('node:buffer');
 require('node:util');
-require('node:url');
 require('node:net');
-require('node:vm');
+require('http');
+require('https');
+require('tty');
 require('os');
 require('crypto');
+require('node:readline');
+require('node:process');
+require('node:vm');
 
 
 

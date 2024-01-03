@@ -6,7 +6,6 @@ import { globSync } from 'glob';
  * @returns {Promise<Scout9ProjectConfig>}
  */
 export default async function loadProjectConfig({cwd = process.cwd(), folder = 'src'} = {}) {
-  console.log('loadProjectConfig', {cwd, folder});
   const paths = globSync(path.resolve(cwd, `${folder}/index.{ts,js}`));
   if (paths.length === 0) {
     throw new Error(`Missing main project entry file ${folder}/index.{js|ts}`);
