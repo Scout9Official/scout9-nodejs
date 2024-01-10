@@ -75,11 +75,23 @@ export interface Agent {
      */
     'title'?: string;
     /**
-     * Context of the agent, defaults to \"Agent\"
-     * @type {string}
+     *
+     * @type {AgentContext}
      * @memberof Agent
      */
-    'context'?: string;
+    'context'?: AgentContext;
+    /**
+     * Transcripts of the agent
+     * @type {Array<string>}
+     * @memberof Agent
+     */
+    'transcripts'?: Array<string>;
+    /**
+     * Audios of the agent
+     * @type {Array<string>}
+     * @memberof Agent
+     */
+    'audios'?: Array<string>;
     /**
      * Locations ids the agent is included in
      * @type {Array<string>}
@@ -87,24 +99,18 @@ export interface Agent {
      */
     'includedLocations'?: Array<string>;
     /**
-     * AI Model
-     * @type {string}
-     * @memberof Agent
-     */
-    'model'?: AgentModelEnum;
-    /**
      * Locations id the agent is excluded from
      * @type {Array<string>}
      * @memberof Agent
      */
     'excludedLocations'?: Array<string>;
 }
-export declare const AgentModelEnum: {
-    readonly Scout9: "Scout9";
-    readonly Bard: "bard";
-    readonly Null: "null";
-};
-export type AgentModelEnum = typeof AgentModelEnum[keyof typeof AgentModelEnum];
+/**
+ * @type AgentContext
+ * Context of the agent, defaults to \"Agent\"
+ * @export
+ */
+export type AgentContext = Array<string> | string;
 /**
  *
  * @export
@@ -1229,23 +1235,29 @@ export interface CreateAgentRequest {
      */
     'title'?: string;
     /**
-     * Context of the agent, defaults to \"Agent\"
-     * @type {string}
+     *
+     * @type {AgentContext}
      * @memberof CreateAgentRequest
      */
-    'context'?: string;
+    'context'?: AgentContext;
+    /**
+     * Transcripts of the agent
+     * @type {Array<string>}
+     * @memberof CreateAgentRequest
+     */
+    'transcripts'?: Array<string>;
+    /**
+     * Audios of the agent
+     * @type {Array<string>}
+     * @memberof CreateAgentRequest
+     */
+    'audios'?: Array<string>;
     /**
      * Locations ids the agent is included in
      * @type {Array<string>}
      * @memberof CreateAgentRequest
      */
     'includedLocations'?: Array<string>;
-    /**
-     * AI Model
-     * @type {string}
-     * @memberof CreateAgentRequest
-     */
-    'model'?: CreateAgentRequestModelEnum;
     /**
      * Locations id the agent is excluded from
      * @type {Array<string>}
@@ -1265,12 +1277,6 @@ export interface CreateAgentRequest {
      */
     'audio'?: Array<string>;
 }
-export declare const CreateAgentRequestModelEnum: {
-    readonly Scout9: "Scout9";
-    readonly Bard: "bard";
-    readonly Null: "null";
-};
-export type CreateAgentRequestModelEnum = typeof CreateAgentRequestModelEnum[keyof typeof CreateAgentRequestModelEnum];
 /**
  *
  * @export
@@ -1438,11 +1444,23 @@ export interface CreateAgentsRequestAgentsInner {
      */
     'title'?: string;
     /**
-     * Context of the agent, defaults to \"Agent\"
-     * @type {string}
+     *
+     * @type {AgentContext}
      * @memberof CreateAgentsRequestAgentsInner
      */
-    'context'?: string;
+    'context'?: AgentContext;
+    /**
+     * Transcripts of the agent
+     * @type {Array<string>}
+     * @memberof CreateAgentsRequestAgentsInner
+     */
+    'transcripts'?: Array<string>;
+    /**
+     * Audios of the agent
+     * @type {Array<string>}
+     * @memberof CreateAgentsRequestAgentsInner
+     */
+    'audios'?: Array<string>;
     /**
      * Locations ids the agent is included in
      * @type {Array<string>}
@@ -1450,24 +1468,12 @@ export interface CreateAgentsRequestAgentsInner {
      */
     'includedLocations'?: Array<string>;
     /**
-     * AI Model
-     * @type {string}
-     * @memberof CreateAgentsRequestAgentsInner
-     */
-    'model'?: CreateAgentsRequestAgentsInnerModelEnum;
-    /**
      * Locations id the agent is excluded from
      * @type {Array<string>}
      * @memberof CreateAgentsRequestAgentsInner
      */
     'excludedLocations'?: Array<string>;
 }
-export declare const CreateAgentsRequestAgentsInnerModelEnum: {
-    readonly Scout9: "Scout9";
-    readonly Bard: "bard";
-    readonly Null: "null";
-};
-export type CreateAgentsRequestAgentsInnerModelEnum = typeof CreateAgentsRequestAgentsInnerModelEnum[keyof typeof CreateAgentsRequestAgentsInnerModelEnum];
 /**
  *
  * @export
@@ -2695,10 +2701,10 @@ export interface GenerateRequestOneOf {
     'convo'?: ConversationCreateRequest;
     /**
      * Conversation messages and context to generate message from
-     * @type {Array<MessageBase>}
+     * @type {Array<Message>}
      * @memberof GenerateRequestOneOf
      */
-    'messages': Array<MessageBase>;
+    'messages': Array<Message>;
     /**
      * Any key,value information about the conversation, customer, or offer goes here
      * @type {{ [key: string]: any; }}
@@ -2708,11 +2714,47 @@ export interface GenerateRequestOneOf {
         [key: string]: any;
     };
     /**
-     * The persona id (or agent) voice to use for the conversation
-     * @type {string}
+     *
+     * @type {GenerateRequestOneOfPersona}
      * @memberof GenerateRequestOneOf
      */
-    'persona': string;
+    'persona': GenerateRequestOneOfPersona;
+    /**
+     *
+     * @type {LlmConfig}
+     * @memberof GenerateRequestOneOf
+     */
+    'llm'?: LlmConfig;
+    /**
+     *
+     * @type {PmtConfig}
+     * @memberof GenerateRequestOneOf
+     */
+    'pmt'?: PmtConfig;
+}
+/**
+ * @type GenerateRequestOneOfPersona
+ * @export
+ */
+export type GenerateRequestOneOfPersona = Agent | string;
+/**
+ *
+ * @export
+ * @interface GenerateResponse
+ */
+export interface GenerateResponse {
+    /**
+     * The generated message
+     * @type {string}
+     * @memberof GenerateResponse
+     */
+    'message': string;
+    /**
+     * The time it took to generate the message in milliseconds
+     * @type {number}
+     * @memberof GenerateResponse
+     */
+    'ms': number;
 }
 /**
  *
@@ -2775,23 +2817,29 @@ export interface GetAgentResponse {
      */
     'title'?: string;
     /**
-     * Context of the agent, defaults to \"Agent\"
-     * @type {string}
+     *
+     * @type {AgentContext}
      * @memberof GetAgentResponse
      */
-    'context'?: string;
+    'context'?: AgentContext;
+    /**
+     * Transcripts of the agent
+     * @type {Array<string>}
+     * @memberof GetAgentResponse
+     */
+    'transcripts'?: Array<string>;
+    /**
+     * Audios of the agent
+     * @type {Array<string>}
+     * @memberof GetAgentResponse
+     */
+    'audios'?: Array<string>;
     /**
      * Locations ids the agent is included in
      * @type {Array<string>}
      * @memberof GetAgentResponse
      */
     'includedLocations'?: Array<string>;
-    /**
-     * AI Model
-     * @type {string}
-     * @memberof GetAgentResponse
-     */
-    'model'?: GetAgentResponseModelEnum;
     /**
      * Locations id the agent is excluded from
      * @type {Array<string>}
@@ -2805,12 +2853,6 @@ export interface GetAgentResponse {
      */
     '$id': string;
 }
-export declare const GetAgentResponseModelEnum: {
-    readonly Scout9: "Scout9";
-    readonly Bard: "bard";
-    readonly Null: "null";
-};
-export type GetAgentResponseModelEnum = typeof GetAgentResponseModelEnum[keyof typeof GetAgentResponseModelEnum];
 /**
  *
  * @export
@@ -3341,23 +3383,29 @@ export interface ListAgentsResponseInner {
      */
     'title'?: string;
     /**
-     * Context of the agent, defaults to \"Agent\"
-     * @type {string}
+     *
+     * @type {AgentContext}
      * @memberof ListAgentsResponseInner
      */
-    'context'?: string;
+    'context'?: AgentContext;
+    /**
+     * Transcripts of the agent
+     * @type {Array<string>}
+     * @memberof ListAgentsResponseInner
+     */
+    'transcripts'?: Array<string>;
+    /**
+     * Audios of the agent
+     * @type {Array<string>}
+     * @memberof ListAgentsResponseInner
+     */
+    'audios'?: Array<string>;
     /**
      * Locations ids the agent is included in
      * @type {Array<string>}
      * @memberof ListAgentsResponseInner
      */
     'includedLocations'?: Array<string>;
-    /**
-     * AI Model
-     * @type {string}
-     * @memberof ListAgentsResponseInner
-     */
-    'model'?: ListAgentsResponseInnerModelEnum;
     /**
      * Locations id the agent is excluded from
      * @type {Array<string>}
@@ -3371,12 +3419,6 @@ export interface ListAgentsResponseInner {
      */
     '$id': string;
 }
-export declare const ListAgentsResponseInnerModelEnum: {
-    readonly Scout9: "Scout9";
-    readonly Bard: "bard";
-    readonly Null: "null";
-};
-export type ListAgentsResponseInnerModelEnum = typeof ListAgentsResponseInnerModelEnum[keyof typeof ListAgentsResponseInnerModelEnum];
 /**
  *
  * @export
@@ -3889,6 +3931,96 @@ export interface ListWorkflowsResponseInnerAllOf {
     '$id': string;
 }
 /**
+ * @type LlmConfig
+ * @export
+ */
+export type LlmConfig = LlmConfigOneOf | LlmConfigOneOf1 | LlmConfigOneOf2;
+/**
+ *
+ * @export
+ * @interface LlmConfigOneOf
+ */
+export interface LlmConfigOneOf {
+    /**
+     *
+     * @type {string}
+     * @memberof LlmConfigOneOf
+     */
+    'engine'?: LlmConfigOneOfEngineEnum;
+    /**
+     *
+     * @type {string}
+     * @memberof LlmConfigOneOf
+     */
+    'model'?: LlmConfigOneOfModelEnum;
+}
+export declare const LlmConfigOneOfEngineEnum: {
+    readonly Openai: "openai";
+};
+export type LlmConfigOneOfEngineEnum = typeof LlmConfigOneOfEngineEnum[keyof typeof LlmConfigOneOfEngineEnum];
+export declare const LlmConfigOneOfModelEnum: {
+    readonly _41106Preview: "gpt-4-1106-preview";
+    readonly _4VisionPreview: "gpt-4-vision-preview";
+    readonly _4: "gpt-4";
+    readonly _40314: "gpt-4-0314";
+    readonly _40613: "gpt-4-0613";
+    readonly _432k: "gpt-4-32k";
+    readonly _432k0314: "gpt-4-32k-0314";
+    readonly _432k0613: "gpt-4-32k-0613";
+    readonly _35Turbo: "gpt-3.5-turbo";
+    readonly _35Turbo16k: "gpt-3.5-turbo-16k";
+    readonly _35Turbo0301: "gpt-3.5-turbo-0301";
+    readonly _35Turbo0613: "gpt-3.5-turbo-0613";
+    readonly _35Turbo16k0613: "gpt-3.5-turbo-16k-0613";
+};
+export type LlmConfigOneOfModelEnum = typeof LlmConfigOneOfModelEnum[keyof typeof LlmConfigOneOfModelEnum];
+/**
+ *
+ * @export
+ * @interface LlmConfigOneOf1
+ */
+export interface LlmConfigOneOf1 {
+    /**
+     *
+     * @type {string}
+     * @memberof LlmConfigOneOf1
+     */
+    'engine'?: LlmConfigOneOf1EngineEnum;
+    /**
+     *
+     * @type {string}
+     * @memberof LlmConfigOneOf1
+     */
+    'model'?: string;
+}
+export declare const LlmConfigOneOf1EngineEnum: {
+    readonly Llama: "llama";
+};
+export type LlmConfigOneOf1EngineEnum = typeof LlmConfigOneOf1EngineEnum[keyof typeof LlmConfigOneOf1EngineEnum];
+/**
+ *
+ * @export
+ * @interface LlmConfigOneOf2
+ */
+export interface LlmConfigOneOf2 {
+    /**
+     *
+     * @type {string}
+     * @memberof LlmConfigOneOf2
+     */
+    'engine'?: LlmConfigOneOf2EngineEnum;
+    /**
+     *
+     * @type {string}
+     * @memberof LlmConfigOneOf2
+     */
+    'model'?: string;
+}
+export declare const LlmConfigOneOf2EngineEnum: {
+    readonly Bard: "bard";
+};
+export type LlmConfigOneOf2EngineEnum = typeof LlmConfigOneOf2EngineEnum[keyof typeof LlmConfigOneOf2EngineEnum];
+/**
  * @type Logic
  * @export
  */
@@ -4241,7 +4373,7 @@ export interface ParseRequest {
      * @type {string}
      * @memberof ParseRequest
      */
-    'message'?: string;
+    'message': string;
     /**
      * The language of the message
      * @type {string}
@@ -4352,21 +4484,21 @@ export interface ParseResponse {
      * @type {{ [key: string]: any; }}
      * @memberof ParseResponse
      */
-    'context'?: {
+    'context': {
         [key: string]: any;
     };
     /**
-     * The time it took to parse the message in miliseconds
+     * The time it took to parse the message in milliseconds
      * @type {number}
      * @memberof ParseResponse
      */
-    'ms'?: number;
+    'ms': number;
     /**
      * the fields that were parsed
      * @type {Array<string>}
      * @memberof ParseResponse
      */
-    'parsed'?: Array<string>;
+    'parsed': Array<string>;
 }
 /**
  * @type ParsedContextEntity
@@ -4375,6 +4507,34 @@ export interface ParseResponse {
 export type ParsedContextEntity = string | {
     [key: string]: any;
 };
+/**
+ *
+ * @export
+ * @interface PmtConfig
+ */
+export interface PmtConfig {
+    /**
+     *
+     * @type {string}
+     * @memberof PmtConfig
+     */
+    'engine'?: PmtConfigEngineEnum;
+    /**
+     *
+     * @type {string}
+     * @memberof PmtConfig
+     */
+    'model'?: PmtConfigModelEnum;
+}
+export declare const PmtConfigEngineEnum: {
+    readonly Scout9: "scout9";
+};
+export type PmtConfigEngineEnum = typeof PmtConfigEngineEnum[keyof typeof PmtConfigEngineEnum];
+export declare const PmtConfigModelEnum: {
+    readonly _10: "orin-1.0";
+    readonly _20Preview: "orin-2.0-preview";
+};
+export type PmtConfigModelEnum = typeof PmtConfigModelEnum[keyof typeof PmtConfigModelEnum];
 /**
  *
  * @export
@@ -4656,7 +4816,7 @@ export interface ScheduleGroupCreateRequest {
      */
     'initialMessageHtml'?: string | null;
     /**
-     * The delay in miliseconds between each customer, defaults to 15000 (15 seconds)
+     * The delay in milliseconds between each customer, defaults to 15000 (15 seconds)
      * @type {number}
      * @memberof ScheduleGroupCreateRequest
      */
@@ -4754,7 +4914,7 @@ export interface ScheduleGroupGetResponse {
      */
     'initialMessageHtml'?: string | null;
     /**
-     * The delay in miliseconds between each customer, defaults to 15000 (15 seconds)
+     * The delay in milliseconds between each customer, defaults to 15000 (15 seconds)
      * @type {number}
      * @memberof ScheduleGroupGetResponse
      */
@@ -4877,7 +5037,7 @@ export interface ScheduleGroupUpdateRequest {
      */
     'initialMessageHtml'?: string | null;
     /**
-     * The delay in miliseconds between each customer, defaults to 15000 (15 seconds)
+     * The delay in milliseconds between each customer, defaults to 15000 (15 seconds)
      * @type {number}
      * @memberof ScheduleGroupUpdateRequest
      */
@@ -5198,7 +5358,7 @@ export interface ScheduledConversationGroup {
      */
     'initialMessageHtml'?: string | null;
     /**
-     * The delay in miliseconds between each customer, defaults to 15000 (15 seconds)
+     * The delay in milliseconds between each customer, defaults to 15000 (15 seconds)
      * @type {number}
      * @memberof ScheduledConversationGroup
      */
@@ -5211,7 +5371,7 @@ export interface ScheduledConversationGroup {
  */
 export interface ScheduledConversationGroupAllOf {
     /**
-     * The delay in miliseconds between each customer, defaults to 15000 (15 seconds)
+     * The delay in milliseconds between each customer, defaults to 15000 (15 seconds)
      * @type {number}
      * @memberof ScheduledConversationGroupAllOf
      */
@@ -5271,6 +5431,25 @@ export interface Scout9File {
      * @memberof Scout9File
      */
     'status_details'?: string | null;
+}
+/**
+ *
+ * @export
+ * @interface Scout9ProjectConfig
+ */
+export interface Scout9ProjectConfig {
+    /**
+     *
+     * @type {LlmConfig}
+     * @memberof Scout9ProjectConfig
+     */
+    'llm': LlmConfig;
+    /**
+     *
+     * @type {PmtConfig}
+     * @memberof Scout9ProjectConfig
+     */
+    'pmt': PmtConfig;
 }
 /**
  *
@@ -5351,11 +5530,23 @@ export interface UpdateAgentRequest {
      */
     'title'?: string;
     /**
-     * Context of the agent, defaults to \"Agent\"
-     * @type {string}
+     *
+     * @type {AgentContext}
      * @memberof UpdateAgentRequest
      */
-    'context'?: string;
+    'context'?: AgentContext;
+    /**
+     * Transcripts of the agent
+     * @type {Array<string>}
+     * @memberof UpdateAgentRequest
+     */
+    'transcripts'?: Array<string>;
+    /**
+     * Audios of the agent
+     * @type {Array<string>}
+     * @memberof UpdateAgentRequest
+     */
+    'audios'?: Array<string>;
     /**
      * Locations ids the agent is included in
      * @type {Array<string>}
@@ -5363,24 +5554,12 @@ export interface UpdateAgentRequest {
      */
     'includedLocations'?: Array<string>;
     /**
-     * AI Model
-     * @type {string}
-     * @memberof UpdateAgentRequest
-     */
-    'model'?: UpdateAgentRequestModelEnum;
-    /**
      * Locations id the agent is excluded from
      * @type {Array<string>}
      * @memberof UpdateAgentRequest
      */
     'excludedLocations'?: Array<string>;
 }
-export declare const UpdateAgentRequestModelEnum: {
-    readonly Scout9: "Scout9";
-    readonly Bard: "bard";
-    readonly Null: "null";
-};
-export type UpdateAgentRequestModelEnum = typeof UpdateAgentRequestModelEnum[keyof typeof UpdateAgentRequestModelEnum];
 /**
  *
  * @export
@@ -5505,23 +5684,29 @@ export interface UpdateAgentsRequestAgentsInner {
      */
     'title'?: string;
     /**
-     * Context of the agent, defaults to \"Agent\"
-     * @type {string}
+     *
+     * @type {AgentContext}
      * @memberof UpdateAgentsRequestAgentsInner
      */
-    'context'?: string;
+    'context'?: AgentContext;
+    /**
+     * Transcripts of the agent
+     * @type {Array<string>}
+     * @memberof UpdateAgentsRequestAgentsInner
+     */
+    'transcripts'?: Array<string>;
+    /**
+     * Audios of the agent
+     * @type {Array<string>}
+     * @memberof UpdateAgentsRequestAgentsInner
+     */
+    'audios'?: Array<string>;
     /**
      * Locations ids the agent is included in
      * @type {Array<string>}
      * @memberof UpdateAgentsRequestAgentsInner
      */
     'includedLocations'?: Array<string>;
-    /**
-     * AI Model
-     * @type {string}
-     * @memberof UpdateAgentsRequestAgentsInner
-     */
-    'model'?: UpdateAgentsRequestAgentsInnerModelEnum;
     /**
      * Locations id the agent is excluded from
      * @type {Array<string>}
@@ -5535,12 +5720,6 @@ export interface UpdateAgentsRequestAgentsInner {
      */
     '$id': string;
 }
-export declare const UpdateAgentsRequestAgentsInnerModelEnum: {
-    readonly Scout9: "Scout9";
-    readonly Bard: "bard";
-    readonly Null: "null";
-};
-export type UpdateAgentsRequestAgentsInnerModelEnum = typeof UpdateAgentsRequestAgentsInnerModelEnum[keyof typeof UpdateAgentsRequestAgentsInnerModelEnum];
 /**
  *
  * @export
@@ -7502,7 +7681,7 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    generate(generateRequest: GenerateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Message>>;
+    generate(generateRequest: GenerateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GenerateResponse>>;
     /**
      * Creates a new message and sends it to the conversation. If the conversation is scheduled, the message will be scheduled as well. @TODO does not support the ability to mute or delay send
      * @summary Create and send message
@@ -8078,7 +8257,7 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    generate(generateRequest: GenerateRequest, options?: any): AxiosPromise<Message>;
+    generate(generateRequest: GenerateRequest, options?: any): AxiosPromise<GenerateResponse>;
     /**
      * Creates a new message and sends it to the conversation. If the conversation is scheduled, the message will be scheduled as well. @TODO does not support the ability to mute or delay send
      * @summary Create and send message
@@ -8703,7 +8882,7 @@ export declare class Scout9Api extends BaseAPI {
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
-    generate(generateRequest: GenerateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<Message, any>>;
+    generate(generateRequest: GenerateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<GenerateResponse, any>>;
     /**
      * Creates a new message and sends it to the conversation. If the conversation is scheduled, the message will be scheduled as well. @TODO does not support the ability to mute or delay send
      * @summary Create and send message

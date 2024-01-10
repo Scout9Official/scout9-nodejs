@@ -16,18 +16,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Scout9Api = exports.Scout9ApiFactory = exports.Scout9ApiFp = exports.Scout9ApiAxiosParamCreator = exports.CustomContextApi = exports.CustomContextApiFactory = exports.CustomContextApiFp = exports.CustomContextApiAxiosParamCreator = exports.WorkflowResponseSlotForwardOneOfModeEnum = exports.UpdateAgentsRequestAgentsInnerModelEnum = exports.UpdateAgentRequestModelEnum = exports.PurposeEnum = exports.MessageGetResponseInnerRoleEnum = exports.MessageCreateRequestRoleEnum = exports.MessageBaseRoleEnum = exports.MessageRoleEnum = exports.ListApiOperationsResponseInnerMethodEnum = exports.ListAgentsResponseInnerModelEnum = exports.GetApiOperationResponseMethodEnum = exports.GetAgentResponseModelEnum = exports.ExistenceOperator = exports.EqualityOperator = exports.CreateAgentsRequestAgentsInnerModelEnum = exports.CreateAgentRequestModelEnum = exports.ConversationEnvironment = exports.ConversationContextFieldConditionOperatorEnum = exports.ApiOperationMethodEnum = exports.AgentModelEnum = void 0;
+exports.Scout9Api = exports.Scout9ApiFactory = exports.Scout9ApiFp = exports.Scout9ApiAxiosParamCreator = exports.CustomContextApi = exports.CustomContextApiFactory = exports.CustomContextApiFp = exports.CustomContextApiAxiosParamCreator = exports.WorkflowResponseSlotForwardOneOfModeEnum = exports.PurposeEnum = exports.PmtConfigModelEnum = exports.PmtConfigEngineEnum = exports.MessageGetResponseInnerRoleEnum = exports.MessageCreateRequestRoleEnum = exports.MessageBaseRoleEnum = exports.MessageRoleEnum = exports.LlmConfigOneOf2EngineEnum = exports.LlmConfigOneOf1EngineEnum = exports.LlmConfigOneOfModelEnum = exports.LlmConfigOneOfEngineEnum = exports.ListApiOperationsResponseInnerMethodEnum = exports.GetApiOperationResponseMethodEnum = exports.ExistenceOperator = exports.EqualityOperator = exports.ConversationEnvironment = exports.ConversationContextFieldConditionOperatorEnum = exports.ApiOperationMethodEnum = void 0;
 const axios_1 = __importDefault(require("axios"));
 // Some imports not used depending on template conditions
 // @ts-ignore
 const common_1 = require("./common");
 // @ts-ignore
 const base_1 = require("./base");
-exports.AgentModelEnum = {
-    Scout9: 'Scout9',
-    Bard: 'bard',
-    Null: 'null'
-};
 exports.ApiOperationMethodEnum = {
     Get: 'get',
     Post: 'post',
@@ -69,16 +64,6 @@ exports.ConversationEnvironment = {
     Web: 'web',
     Email: 'email'
 };
-exports.CreateAgentRequestModelEnum = {
-    Scout9: 'Scout9',
-    Bard: 'bard',
-    Null: 'null'
-};
-exports.CreateAgentsRequestAgentsInnerModelEnum = {
-    Scout9: 'Scout9',
-    Bard: 'bard',
-    Null: 'null'
-};
 /**
  *
  * @export
@@ -109,11 +94,6 @@ exports.ExistenceOperator = {
     Exists: 'exists',
     NotExists: 'notExists'
 };
-exports.GetAgentResponseModelEnum = {
-    Scout9: 'Scout9',
-    Bard: 'bard',
-    Null: 'null'
-};
 exports.GetApiOperationResponseMethodEnum = {
     Get: 'get',
     Post: 'post',
@@ -121,17 +101,36 @@ exports.GetApiOperationResponseMethodEnum = {
     Delete: 'delete',
     Patch: 'patch'
 };
-exports.ListAgentsResponseInnerModelEnum = {
-    Scout9: 'Scout9',
-    Bard: 'bard',
-    Null: 'null'
-};
 exports.ListApiOperationsResponseInnerMethodEnum = {
     Get: 'get',
     Post: 'post',
     Put: 'put',
     Delete: 'delete',
     Patch: 'patch'
+};
+exports.LlmConfigOneOfEngineEnum = {
+    Openai: 'openai'
+};
+exports.LlmConfigOneOfModelEnum = {
+    _41106Preview: 'gpt-4-1106-preview',
+    _4VisionPreview: 'gpt-4-vision-preview',
+    _4: 'gpt-4',
+    _40314: 'gpt-4-0314',
+    _40613: 'gpt-4-0613',
+    _432k: 'gpt-4-32k',
+    _432k0314: 'gpt-4-32k-0314',
+    _432k0613: 'gpt-4-32k-0613',
+    _35Turbo: 'gpt-3.5-turbo',
+    _35Turbo16k: 'gpt-3.5-turbo-16k',
+    _35Turbo0301: 'gpt-3.5-turbo-0301',
+    _35Turbo0613: 'gpt-3.5-turbo-0613',
+    _35Turbo16k0613: 'gpt-3.5-turbo-16k-0613'
+};
+exports.LlmConfigOneOf1EngineEnum = {
+    Llama: 'llama'
+};
+exports.LlmConfigOneOf2EngineEnum = {
+    Bard: 'bard'
 };
 exports.MessageRoleEnum = {
     Customer: 'customer',
@@ -153,6 +152,13 @@ exports.MessageGetResponseInnerRoleEnum = {
     Agent: 'agent',
     Context: 'context'
 };
+exports.PmtConfigEngineEnum = {
+    Scout9: 'scout9'
+};
+exports.PmtConfigModelEnum = {
+    _10: 'orin-1.0',
+    _20Preview: 'orin-2.0-preview'
+};
 /**
  *
  * @export
@@ -162,16 +168,6 @@ exports.PurposeEnum = {
     Context: 'context',
     AgentAudio: 'agent-audio',
     AgentTranscript: 'agent-transcript'
-};
-exports.UpdateAgentRequestModelEnum = {
-    Scout9: 'Scout9',
-    Bard: 'bard',
-    Null: 'null'
-};
-exports.UpdateAgentsRequestAgentsInnerModelEnum = {
-    Scout9: 'Scout9',
-    Bard: 'bard',
-    Null: 'null'
 };
 exports.WorkflowResponseSlotForwardOneOfModeEnum = {
     AfterReply: 'after-reply',
