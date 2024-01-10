@@ -21,9 +21,9 @@ export function loadEnvConfig({cwd = process.cwd()} = {}) {
     if (!process.env.SCOUT9_API_KEY) {
         const exists = fs.existsSync(configFilePath);
         if (!exists) {
-            throw new Error(`Missing .env file with SCOUT9_API_KEY`);
+            throw new Error(`Missing .env file with "SCOUT9_API_KEY".\n\n\tTo fix, create a .env file at the root of your project.\nAdd "SCOUT9_API_KEY=<your-scout9-api-key>" to the .env file.\n\n\t> You can get your API key at https://scout9.com\n\n`);
         } else {
-            throw new Error('Missing SCOUT9_API_KEY within .env file');
+            throw new Error(`Missing "SCOUT9_API_KEY" within .env file.\n\n\tTo fix, add "SCOUT9_API_KEY=<your-scout9-api-key>" to the .env file.\n\n\tYou can get your API key at https://scout9.com\n\n`);
         }
     }
 }

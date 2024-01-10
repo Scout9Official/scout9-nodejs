@@ -16,7 +16,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Scout9Api = exports.Scout9ApiFactory = exports.Scout9ApiFp = exports.Scout9ApiAxiosParamCreator = exports.CustomContextApi = exports.CustomContextApiFactory = exports.CustomContextApiFp = exports.CustomContextApiAxiosParamCreator = exports.WorkflowResponseSlotForwardOneOfModeEnum = exports.UpdateAgentsRequestAgentsInnerModelEnum = exports.UpdateAgentRequestModelEnum = exports.PurposeEnum = exports.MessageGetResponseInnerRoleEnum = exports.MessageCreateRequestRoleEnum = exports.MessageBaseRoleEnum = exports.MessageRoleEnum = exports.ListApiOperationsResponseInnerMethodEnum = exports.ListAgentsResponseInnerModelEnum = exports.GetApiOperationResponseMethodEnum = exports.GetAgentResponseModelEnum = exports.GenerateResponseRoleEnum = exports.ExistenceOperator = exports.EqualityOperator = exports.CreateAgentsRequestAgentsInnerModelEnum = exports.CreateAgentRequestModelEnum = exports.ConversationEnvironment = exports.ConversationContextFieldConditionOperatorEnum = exports.ApiOperationMethodEnum = exports.AgentModelEnum = void 0;
+exports.Scout9Api = exports.Scout9ApiFactory = exports.Scout9ApiFp = exports.Scout9ApiAxiosParamCreator = exports.CustomContextApi = exports.CustomContextApiFactory = exports.CustomContextApiFp = exports.CustomContextApiAxiosParamCreator = exports.WorkflowResponseSlotForwardOneOfModeEnum = exports.UpdateAgentsRequestAgentsInnerModelEnum = exports.UpdateAgentRequestModelEnum = exports.PurposeEnum = exports.MessageGetResponseInnerRoleEnum = exports.MessageCreateRequestRoleEnum = exports.MessageBaseRoleEnum = exports.MessageRoleEnum = exports.ListApiOperationsResponseInnerMethodEnum = exports.ListAgentsResponseInnerModelEnum = exports.GetApiOperationResponseMethodEnum = exports.GetAgentResponseModelEnum = exports.ExistenceOperator = exports.EqualityOperator = exports.CreateAgentsRequestAgentsInnerModelEnum = exports.CreateAgentRequestModelEnum = exports.ConversationEnvironment = exports.ConversationContextFieldConditionOperatorEnum = exports.ApiOperationMethodEnum = exports.AgentModelEnum = void 0;
 const axios_1 = __importDefault(require("axios"));
 // Some imports not used depending on template conditions
 // @ts-ignore
@@ -108,11 +108,6 @@ exports.EqualityOperator = {
 exports.ExistenceOperator = {
     Exists: 'exists',
     NotExists: 'notExists'
-};
-exports.GenerateResponseRoleEnum = {
-    Customer: 'customer',
-    Agent: 'agent',
-    Context: 'context'
 };
 exports.GetAgentResponseModelEnum = {
     Scout9: 'Scout9',
@@ -1852,6 +1847,36 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
             };
         },
         /**
+         * Parses a message\'s custom context relevant to your organization. This is useful for extracting information from a message to drive your auto reply workflows.
+         * @summary Parse a message\'s custom context relevant to your organization
+         * @param {ParseRequest} parseRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        parse: async (parseRequest, options = {}) => {
+            // verify required parameter 'parseRequest' is not null or undefined
+            (0, common_1.assertParamExists)('parse', 'parseRequest', parseRequest);
+            const localVarPath = `/v1-parse`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options };
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
+            localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(parseRequest, localVarRequestOptions, configuration);
+            return {
+                url: (0, common_1.toPathString)(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          *
          * @summary Runs your auto-reply app on the Scout9 platform.
          * @param {WorkflowEvent} workflowEvent
@@ -1908,9 +1933,10 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         },
         /**
          *
-         * @summary Creates a new scheduled conversation
+         * @summary Creates a new scheduled conversation, don\'t use just use message schedule delay params
          * @param {ScheduleCreateRequest} scheduleCreateRequest
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         scheduleConversation: async (scheduleCreateRequest, options = {}) => {
@@ -2973,6 +2999,17 @@ const Scout9ApiFp = function (configuration) {
             return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
         },
         /**
+         * Parses a message\'s custom context relevant to your organization. This is useful for extracting information from a message to drive your auto reply workflows.
+         * @summary Parse a message\'s custom context relevant to your organization
+         * @param {ParseRequest} parseRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async parse(parseRequest, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.parse(parseRequest, options);
+            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+        },
+        /**
          *
          * @summary Runs your auto-reply app on the Scout9 platform.
          * @param {WorkflowEvent} workflowEvent
@@ -2995,9 +3032,10 @@ const Scout9ApiFp = function (configuration) {
         },
         /**
          *
-         * @summary Creates a new scheduled conversation
+         * @summary Creates a new scheduled conversation, don\'t use just use message schedule delay params
          * @param {ScheduleCreateRequest} scheduleCreateRequest
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         async scheduleConversation(scheduleCreateRequest, options) {
@@ -3698,6 +3736,16 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
             return localVarFp.operations(q, id, options).then((request) => request(axios, basePath));
         },
         /**
+         * Parses a message\'s custom context relevant to your organization. This is useful for extracting information from a message to drive your auto reply workflows.
+         * @summary Parse a message\'s custom context relevant to your organization
+         * @param {ParseRequest} parseRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        parse(parseRequest, options) {
+            return localVarFp.parse(parseRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
          *
          * @summary Runs your auto-reply app on the Scout9 platform.
          * @param {WorkflowEvent} workflowEvent
@@ -3718,9 +3766,10 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
         },
         /**
          *
-         * @summary Creates a new scheduled conversation
+         * @summary Creates a new scheduled conversation, don\'t use just use message schedule delay params
          * @param {ScheduleCreateRequest} scheduleCreateRequest
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         scheduleConversation(scheduleCreateRequest, options) {
@@ -4456,6 +4505,17 @@ class Scout9Api extends base_1.BaseAPI {
         return (0, exports.Scout9ApiFp)(this.configuration).operations(q, id, options).then((request) => request(this.axios, this.basePath));
     }
     /**
+     * Parses a message\'s custom context relevant to your organization. This is useful for extracting information from a message to drive your auto reply workflows.
+     * @summary Parse a message\'s custom context relevant to your organization
+     * @param {ParseRequest} parseRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    parse(parseRequest, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).parse(parseRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
      *
      * @summary Runs your auto-reply app on the Scout9 platform.
      * @param {WorkflowEvent} workflowEvent
@@ -4478,9 +4538,10 @@ class Scout9Api extends base_1.BaseAPI {
     }
     /**
      *
-     * @summary Creates a new scheduled conversation
+     * @summary Creates a new scheduled conversation, don\'t use just use message schedule delay params
      * @param {ScheduleCreateRequest} scheduleCreateRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */

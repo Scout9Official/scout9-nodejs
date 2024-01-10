@@ -1,11 +1,9 @@
 # Scout9 Auto Replies
 
-Try it out the alpha version
+Try out the alpha version
 
 `npm create scout9@latest my-app`
 
-* [x] SMS
-* [ ] Email (Pending)
 
 ### COMING SOON
 

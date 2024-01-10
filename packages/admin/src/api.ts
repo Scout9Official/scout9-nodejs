@@ -539,7 +539,7 @@ export interface ContextTestResponse {
  */
 export interface Conversation {
   /**
-   * Default agent assigned to the conversation(s)
+   * Default agent persona id assigned to the conversation(s)
    * @type {string}
    * @memberof Conversation
    */
@@ -599,7 +599,7 @@ export interface ConversationAllOf {
  */
 export interface ConversationBase {
   /**
-   * Default agent assigned to the conversation(s)
+   * Default agent persona id assigned to the conversation(s)
    * @type {string}
    * @memberof ConversationBase
    */
@@ -771,7 +771,7 @@ export interface ConversationContextGroup {
  */
 export interface ConversationCreateRequest {
   /**
-   * Default agent assigned to the conversation(s)
+   * Default agent persona id assigned to the conversation(s)
    * @type {string}
    * @memberof ConversationCreateRequest
    */
@@ -906,7 +906,7 @@ export type ConversationEnvironment = typeof ConversationEnvironment[keyof typeo
  */
 export interface ConversationGetResponse {
   /**
-   * Default agent assigned to the conversation(s)
+   * Default agent persona id assigned to the conversation(s)
    * @type {string}
    * @memberof ConversationGetResponse
    */
@@ -1063,7 +1063,7 @@ export interface ConversationScheduleParams {
  */
 export interface ConversationUpdateRequest {
   /**
-   * Default agent assigned to the conversation(s)
+   * Default agent persona id assigned to the conversation(s)
    * @type {string}
    * @memberof ConversationUpdateRequest
    */
@@ -2730,126 +2730,42 @@ export interface ExistsConditionAllOf {
 
 
 /**
- *
- * @export
- * @interface GenerateRequest
- */
-export interface GenerateRequest {
-  /**
-   *
-   * @type {GenerateRequestConvo}
-   * @memberof GenerateRequest
-   */
-  'convo': GenerateRequestConvo;
-  /**
-   *
-   * @type {GenerateRequestMocks}
-   * @memberof GenerateRequest
-   */
-  'mocks'?: GenerateRequestMocks;
-}
-/**
- * @type GenerateRequestConvo
- * The conversation to generate a message from
+ * @type GenerateRequest
+ * Either a conversation ID or a conversation object with messages and context metadata to generate from
  * @export
  */
-export type GenerateRequestConvo = ConversationCreateRequest | string;
+export type GenerateRequest = GenerateRequestOneOf | string;
 
 /**
- * If any mocks are provided, the response will be mocked and conversation will not be created. Requires .convo to be a Conversation object
+ *
  * @export
- * @interface GenerateRequestMocks
+ * @interface GenerateRequestOneOf
  */
-export interface GenerateRequestMocks {
+export interface GenerateRequestOneOf {
   /**
-   * Any key,value information about the conversation, customr, or offer goes here
-   * @type {{ [key: string]: any; }}
-   * @memberof GenerateRequestMocks
+   *
+   * @type {ConversationCreateRequest}
+   * @memberof GenerateRequestOneOf
    */
-  'info'?: { [key: string]: any; };
+  'convo'?: ConversationCreateRequest;
   /**
-   * Conversation Context fields to mock, use this to test out conversation logic
-   * @type {Array<ConversationContextField>}
-   * @memberof GenerateRequestMocks
-   */
-  'context'?: Array<ConversationContextField>;
-  /**
-   * Conversation Messages to mock, use this to test out anticipated responses
+   * Conversation messages and context to generate message from
    * @type {Array<MessageBase>}
-   * @memberof GenerateRequestMocks
+   * @memberof GenerateRequestOneOf
    */
-  'messages'?: Array<MessageBase>;
-}
-/**
- *
- * @export
- * @interface GenerateResponse
- */
-export interface GenerateResponse {
+  'messages': Array<MessageBase>;
   /**
-   * The role of the message (customer, agent, or business)
-   * @type {string}
-   * @memberof GenerateResponse
-   */
-  'role': GenerateResponseRoleEnum;
-  /**
-   * The content of the message
-   * @type {string}
-   * @memberof GenerateResponse
-   */
-  'content': string;
-  /**
-   * The name of the sender
-   * @type {string}
-   * @memberof GenerateResponse
-   */
-  'name'?: string;
-  /**
-   * The time the message was sent
-   * @type {string}
-   * @memberof GenerateResponse
-   */
-  'time': string;
-  /**
-   * Any key,value information about the conversation, customr, or offer goes here
+   * Any key,value information about the conversation, customer, or offer goes here
    * @type {{ [key: string]: any; }}
-   * @memberof GenerateResponse
+   * @memberof GenerateRequestOneOf
    */
-  'info': { [key: string]: any; };
+  'context'?: { [key: string]: any; };
   /**
-   * Conversation Context fields to mock, use this to test out conversation logic
-   * @type {Array<ConversationContextField>}
-   * @memberof GenerateResponse
+   * The persona id (or agent) voice to use for the conversation
+   * @type {string}
+   * @memberof GenerateRequestOneOf
    */
-  'included': Array<ConversationContextField>;
-}
-
-export const GenerateResponseRoleEnum = {
-  Customer: 'customer',
-  Agent: 'agent',
-  Context: 'context'
-} as const;
-
-export type GenerateResponseRoleEnum = typeof GenerateResponseRoleEnum[keyof typeof GenerateResponseRoleEnum];
-
-/**
- *
- * @export
- * @interface GenerateResponseAllOf
- */
-export interface GenerateResponseAllOf {
-  /**
-   * Any key,value information about the conversation, customr, or offer goes here
-   * @type {{ [key: string]: any; }}
-   * @memberof GenerateResponseAllOf
-   */
-  'info': { [key: string]: any; };
-  /**
-   * Conversation Context fields to mock, use this to test out conversation logic
-   * @type {Array<ConversationContextField>}
-   * @memberof GenerateResponseAllOf
-   */
-  'included': Array<ConversationContextField>;
+  'persona': string;
 }
 /**
  *
@@ -4389,6 +4305,142 @@ export interface OrLogic {
   'or': Array<Logic>;
 }
 /**
+ * The message to parse
+ * @export
+ * @interface ParseRequest
+ */
+export interface ParseRequest {
+  /**
+   * The message to parse
+   * @type {string}
+   * @memberof ParseRequest
+   */
+  'message'?: string;
+  /**
+   * The language of the message
+   * @type {string}
+   * @memberof ParseRequest
+   */
+  'language'?: string;
+  /**
+   * If provided, this will override the organizations saved entities (used for app development)
+   * @type {Array<ParseRequestEntitiesInner>}
+   * @memberof ParseRequest
+   */
+  'entities'?: Array<ParseRequestEntitiesInner>;
+}
+/**
+ *
+ * @export
+ * @interface ParseRequestEntitiesInner
+ */
+export interface ParseRequestEntitiesInner {
+  /**
+   * The name of the context
+   * @type {string}
+   * @memberof ParseRequestEntitiesInner
+   */
+  'name': string;
+  /**
+   * Whether or not the context is modifiable
+   * @type {boolean}
+   * @memberof ParseRequestEntitiesInner
+   */
+  'modifiable'?: boolean;
+  /**
+   * The description of the context
+   * @type {string}
+   * @memberof ParseRequestEntitiesInner
+   */
+  'description'?: string;
+  /**
+   *
+   * @type {ContextDetectionParams}
+   * @memberof ParseRequestEntitiesInner
+   */
+  'detection'?: ContextDetectionParams;
+  /**
+   * The API to use for context detection
+   * @type {string}
+   * @memberof ParseRequestEntitiesInner
+   */
+  'detectionApi'?: string;
+  /**
+   * The ID column of the context
+   * @type {string}
+   * @memberof ParseRequestEntitiesInner
+   */
+  'idColumn'?: string;
+  /**
+   * The columns of the context
+   * @type {Array<string>}
+   * @memberof ParseRequestEntitiesInner
+   */
+  'columns'?: Array<string>;
+  /**
+   * The required columns of the context
+   * @type {Array<string>}
+   * @memberof ParseRequestEntitiesInner
+   */
+  'requiredColumns'?: Array<string>;
+  /**
+   * Whether or not to force NER
+   * @type {boolean}
+   * @memberof ParseRequestEntitiesInner
+   */
+  'forceNER'?: boolean;
+  /**
+   *
+   * @type {ContextModel}
+   * @memberof ParseRequestEntitiesInner
+   */
+  'model'?: ContextModel;
+  /**
+   * The ID of the context entity
+   * @type {string}
+   * @memberof ParseRequestEntitiesInner
+   */
+  '$id': string;
+}
+/**
+ *
+ * @export
+ * @interface ParseRequestEntitiesInnerAllOf
+ */
+export interface ParseRequestEntitiesInnerAllOf {
+  /**
+   * The ID of the context entity
+   * @type {string}
+   * @memberof ParseRequestEntitiesInnerAllOf
+   */
+  '$id': string;
+}
+/**
+ * The parsed message
+ * @export
+ * @interface ParseResponse
+ */
+export interface ParseResponse {
+  /**
+   * Context that is derived from the message
+   * @type {{ [key: string]: any; }}
+   * @memberof ParseResponse
+   */
+  'context'?: { [key: string]: any; };
+  /**
+   * The time it took to parse the message in miliseconds
+   * @type {number}
+   * @memberof ParseResponse
+   */
+  'ms'?: number;
+  /**
+   * the fields that were parsed
+   * @type {Array<string>}
+   * @memberof ParseResponse
+   */
+  'parsed'?: Array<string>;
+}
+/**
  * @type ParsedContextEntity
  * @export
  */
@@ -4441,7 +4493,7 @@ export interface RegexCondition {
  */
 export interface ScheduleCreateRequest {
   /**
-   * Default agent assigned to the conversation(s)
+   * Default agent persona id assigned to the conversation(s)
    * @type {string}
    * @memberof ScheduleCreateRequest
    */
@@ -4554,7 +4606,7 @@ export interface ScheduleCreateResponseAllOf {
  */
 export interface ScheduleGetResponse {
   /**
-   * Default agent assigned to the conversation(s)
+   * Default agent persona id assigned to the conversation(s)
    * @type {string}
    * @memberof ScheduleGetResponse
    */
@@ -4647,7 +4699,7 @@ export interface ScheduleGroupCreateRequest {
    */
   '$workflow'?: ConversationUpdateRequestBaseWorkflow;
   /**
-   * Default agent assigned to the conversation(s)
+   * Default agent persona id assigned to the conversation(s)
    * @type {string}
    * @memberof ScheduleGroupCreateRequest
    */
@@ -4746,7 +4798,7 @@ export interface ScheduleGroupCreateResponse {
  */
 export interface ScheduleGroupGetResponse {
   /**
-   * Default agent assigned to the conversation(s)
+   * Default agent persona id assigned to the conversation(s)
    * @type {string}
    * @memberof ScheduleGroupGetResponse
    */
@@ -4869,7 +4921,7 @@ export interface ScheduleGroupRemoveResponse {
  */
 export interface ScheduleGroupUpdateRequest {
   /**
-   * Default agent assigned to the conversation(s)
+   * Default agent persona id assigned to the conversation(s)
    * @type {string}
    * @memberof ScheduleGroupUpdateRequest
    */
@@ -5005,7 +5057,7 @@ export interface ScheduleRemoveResponse {
  */
 export interface ScheduleUpdateRequest {
   /**
-   * Default agent assigned to the conversation(s)
+   * Default agent persona id assigned to the conversation(s)
    * @type {string}
    * @memberof ScheduleUpdateRequest
    */
@@ -5118,7 +5170,7 @@ export interface ScheduleUpdateResponse {
  */
 export interface ScheduledConversation {
   /**
-   * Default agent assigned to the conversation(s)
+   * Default agent persona id assigned to the conversation(s)
    * @type {string}
    * @memberof ScheduledConversation
    */
@@ -5194,7 +5246,7 @@ export interface ScheduledConversationAllOf {
  */
 export interface ScheduledConversationGroup {
   /**
-   * Default agent assigned to the conversation(s)
+   * Default agent persona id assigned to the conversation(s)
    * @type {string}
    * @memberof ScheduledConversationGroup
    */
@@ -8511,6 +8563,42 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
       };
     },
     /**
+     * Parses a message\'s custom context relevant to your organization. This is useful for extracting information from a message to drive your auto reply workflows.
+     * @summary Parse a message\'s custom context relevant to your organization
+     * @param {ParseRequest} parseRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    parse: async (parseRequest: ParseRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'parseRequest' is not null or undefined
+      assertParamExists('parse', 'parseRequest', parseRequest)
+      const localVarPath = `/v1-parse`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+      localVarRequestOptions.data = serializeDataIfNeeded(parseRequest, localVarRequestOptions, configuration)
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
      *
      * @summary Runs your auto-reply app on the Scout9 platform.
      * @param {WorkflowEvent} workflowEvent
@@ -8578,9 +8666,10 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
     },
     /**
      *
-     * @summary Creates a new scheduled conversation
+     * @summary Creates a new scheduled conversation, don\'t use just use message schedule delay params
      * @param {ScheduleCreateRequest} scheduleCreateRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     scheduleConversation: async (scheduleCreateRequest: ScheduleCreateRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
@@ -9689,7 +9778,7 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async generate(generateRequest: GenerateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GenerateResponse>> {
+    async generate(generateRequest: GenerateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Message>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.generate(generateRequest, options);
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
     },
@@ -9740,6 +9829,17 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
     },
     /**
+     * Parses a message\'s custom context relevant to your organization. This is useful for extracting information from a message to drive your auto reply workflows.
+     * @summary Parse a message\'s custom context relevant to your organization
+     * @param {ParseRequest} parseRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async parse(parseRequest: ParseRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ParseResponse>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.parse(parseRequest, options);
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+    },
+    /**
      *
      * @summary Runs your auto-reply app on the Scout9 platform.
      * @param {WorkflowEvent} workflowEvent
@@ -9762,9 +9862,10 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
     },
     /**
      *
-     * @summary Creates a new scheduled conversation
+     * @summary Creates a new scheduled conversation, don\'t use just use message schedule delay params
      * @param {ScheduleCreateRequest} scheduleCreateRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     async scheduleConversation(scheduleCreateRequest: ScheduleCreateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleCreateResponse>> {
@@ -10419,7 +10520,7 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    generate(generateRequest: GenerateRequest, options?: any): AxiosPromise<GenerateResponse> {
+    generate(generateRequest: GenerateRequest, options?: any): AxiosPromise<Message> {
       return localVarFp.generate(generateRequest, options).then((request) => request(axios, basePath));
     },
     /**
@@ -10465,6 +10566,16 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
       return localVarFp.operations(q, id, options).then((request) => request(axios, basePath));
     },
     /**
+     * Parses a message\'s custom context relevant to your organization. This is useful for extracting information from a message to drive your auto reply workflows.
+     * @summary Parse a message\'s custom context relevant to your organization
+     * @param {ParseRequest} parseRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    parse(parseRequest: ParseRequest, options?: any): AxiosPromise<ParseResponse> {
+      return localVarFp.parse(parseRequest, options).then((request) => request(axios, basePath));
+    },
+    /**
      *
      * @summary Runs your auto-reply app on the Scout9 platform.
      * @param {WorkflowEvent} workflowEvent
@@ -10485,9 +10596,10 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
     },
     /**
      *
-     * @summary Creates a new scheduled conversation
+     * @summary Creates a new scheduled conversation, don\'t use just use message schedule delay params
      * @param {ScheduleCreateRequest} scheduleCreateRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     scheduleConversation(scheduleCreateRequest: ScheduleCreateRequest, options?: any): AxiosPromise<ScheduleCreateResponse> {
@@ -11274,6 +11386,18 @@ export class Scout9Api extends BaseAPI {
   }
 
   /**
+   * Parses a message\'s custom context relevant to your organization. This is useful for extracting information from a message to drive your auto reply workflows.
+   * @summary Parse a message\'s custom context relevant to your organization
+   * @param {ParseRequest} parseRequest
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof Scout9Api
+   */
+  public parse(parseRequest: ParseRequest, options?: AxiosRequestConfig) {
+    return Scout9ApiFp(this.configuration).parse(parseRequest, options).then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
    *
    * @summary Runs your auto-reply app on the Scout9 platform.
    * @param {WorkflowEvent} workflowEvent
@@ -11298,9 +11422,10 @@ export class Scout9Api extends BaseAPI {
 
   /**
    *
-   * @summary Creates a new scheduled conversation
+   * @summary Creates a new scheduled conversation, don\'t use just use message schedule delay params
    * @param {ScheduleCreateRequest} scheduleCreateRequest
    * @param {*} [options] Override http request option.
+   * @deprecated
    * @throws {RequiredError}
    * @memberof Scout9Api
    */
