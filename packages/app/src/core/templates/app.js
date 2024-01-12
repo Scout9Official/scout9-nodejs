@@ -71,7 +71,7 @@ if (dev) {
   app.use(sirv(path.resolve(__dirname, 'public'), {dev: true}));
 }
 // Root application POST endpoint will run the scout9 app
-app.post(dev ? '/api' : '/', async (req, res) => {
+app.post(dev ? '/dev/workflow' : '/', async (req, res) => {
   try {
     // @TODO use zod to check if req.body is a valid event object
     const response = await projectApp(req.body);
@@ -102,7 +102,7 @@ if (dev) {
         message,
         language: 'en',
         entities: (config.entities || [])
-      }).then((res => res.json()));
+      }).then((res => res.data));
       let fields = '';
       for (const [key, value] of Object.entries(payload.context)) {
         fields += `\n\t\t${colors.bold(colors.white(key))}: ${colors.grey(JSON.stringify(value))}`;
@@ -136,9 +136,9 @@ if (dev) {
         persona,
         llm: config.llm,
         pmt: config.pmt
-      }).then((res => res.json()));
-      console.log(`\t${colors.grey(`Response: ${colors.green('"')}${colors.bold(colors.white(payload.message))}`)}${colors.green(
-        '"')} (elapsed ${payload.ms}ms)`);
+      }).then((res => res.data));
+      console.log(`\t${colors.grey(`Response:\n${colors.green('"')}${colors.bold(colors.white(payload.message))}`)}${colors.green(
+        '"')}\n(elapsed ${payload.ms}ms)`);
       res.writeHead(200, {'Content-Type': 'application/json'});
       res.end(JSON.stringify(payload));
     } catch (e) {
@@ -202,7 +202,7 @@ app.listen(process.env.PORT || 8080, err => {
       language: 'en',
       entities: testableEntities
     }).then((_res) => {
-      // console.log(`\t${colors.green('Entities passed')}`);
+      console.log(`\t${colors.green(`+ ${testableEntities.length} Entities passed`)}`);
     })
       .catch((err) => {
         console.log(`${colors.red('Entity test failed')}`);
