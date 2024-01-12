@@ -5,17 +5,22 @@ Try out the alpha version
 `npm create scout9@latest my-app`
 
 
-### COMING SOON
+### Alpha (Not Released)
 
-Scout9 uss Persona Model Transforming (PMT) technology to craft messages in your voice via SMS and Email auto replies.
+* Chatbots 🤮
+* One on One Communication 😎
+* Scale? 🤷‍
+* 💎 [Scout9](https://pocket-guide.vercel.app/)
 
-Scout9 is the perfect tool to scale your business or organization with a personal touch.
+Scout9's Persona Model Transforming (PMT) technology auto crafts messages in your voice on SMS/Email legacy channels. This technology enables you to personally connect with **thousands of customers simultaneously**.
 
-Scout9 aim's to be one of the lead improved automation SASS 3.0 products on the market by 2025!
+**Perfect for handling repetitive requests**
 
 
 
-#### Thanks to our early backers using our SMS auto reply service:
+
+
+#### Thanks to our early backers using Scout9 to improve their customer experience
 * [REI](https://rei.com): Supply chain procurement SMS auto replies
 * [Microsoft](https://microsoft.com): Azure customer account support SMS auto replies
 * [Accenture](https://accenture.com): Improving sales pipelines
