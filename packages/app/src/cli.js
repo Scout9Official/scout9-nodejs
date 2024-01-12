@@ -118,6 +118,7 @@ prog
         }
         mode = coerceMode(mode);
         try {
+            process.env.DEV_MODE = "true";
             await Scout9Platform.build({cwd: process.cwd(), mode, src, dest});
             import(`${process.cwd()}/${dest}/app.js`);
         } catch (e) {

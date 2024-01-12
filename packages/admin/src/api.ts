@@ -2575,6 +2575,156 @@ export interface DeleteWorkflowsResponse {
 /**
  *
  * @export
+ * @interface EntitiesBuildConfigInner
+ */
+export interface EntitiesBuildConfigInner {
+  /**
+   *
+   * @type {Array<string>}
+   * @memberof EntitiesBuildConfigInner
+   */
+  'entities'?: Array<string>;
+  /**
+   *
+   * @type {string}
+   * @memberof EntitiesBuildConfigInner
+   */
+  'entity'?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof EntitiesBuildConfigInner
+   */
+  'id'?: string;
+  /**
+   *
+   * @type {Array<EntityBuildConfigDefinitionsInner>}
+   * @memberof EntitiesBuildConfigInner
+   */
+  'definitions'?: Array<EntityBuildConfigDefinitionsInner>;
+  /**
+   *
+   * @type {Array<EntityBuildConfigTrainingInner>}
+   * @memberof EntitiesBuildConfigInner
+   */
+  'training'?: Array<EntityBuildConfigTrainingInner>;
+  /**
+   *
+   * @type {Array<EntityBuildConfigTestsInner>}
+   * @memberof EntitiesBuildConfigInner
+   */
+  'tests'?: Array<EntityBuildConfigTestsInner>;
+}
+/**
+ *
+ * @export
+ * @interface EntityBuildConfig
+ */
+export interface EntityBuildConfig {
+  /**
+   *
+   * @type {Array<EntityBuildConfigDefinitionsInner>}
+   * @memberof EntityBuildConfig
+   */
+  'definitions'?: Array<EntityBuildConfigDefinitionsInner>;
+  /**
+   *
+   * @type {Array<EntityBuildConfigTrainingInner>}
+   * @memberof EntityBuildConfig
+   */
+  'training'?: Array<EntityBuildConfigTrainingInner>;
+  /**
+   *
+   * @type {Array<EntityBuildConfigTestsInner>}
+   * @memberof EntityBuildConfig
+   */
+  'tests'?: Array<EntityBuildConfigTestsInner>;
+}
+/**
+ *
+ * @export
+ * @interface EntityBuildConfigDefinitionsInner
+ */
+export interface EntityBuildConfigDefinitionsInner {
+  /**
+   *
+   * @type {string}
+   * @memberof EntityBuildConfigDefinitionsInner
+   */
+  'utterance'?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof EntityBuildConfigDefinitionsInner
+   */
+  'value'?: string;
+  /**
+   *
+   * @type {Array<string>}
+   * @memberof EntityBuildConfigDefinitionsInner
+   */
+  'text'?: Array<string>;
+}
+/**
+ *
+ * @export
+ * @interface EntityBuildConfigTestsInner
+ */
+export interface EntityBuildConfigTestsInner {
+  /**
+   *
+   * @type {string}
+   * @memberof EntityBuildConfigTestsInner
+   */
+  'text'?: string;
+  /**
+   *
+   * @type {EntityBuildConfigTestsInnerExpected}
+   * @memberof EntityBuildConfigTestsInner
+   */
+  'expected'?: EntityBuildConfigTestsInnerExpected;
+}
+/**
+ *
+ * @export
+ * @interface EntityBuildConfigTestsInnerExpected
+ */
+export interface EntityBuildConfigTestsInnerExpected {
+  /**
+   *
+   * @type {string}
+   * @memberof EntityBuildConfigTestsInnerExpected
+   */
+  'intent'?: string;
+  /**
+   *
+   * @type {object}
+   * @memberof EntityBuildConfigTestsInnerExpected
+   */
+  'context'?: object;
+}
+/**
+ *
+ * @export
+ * @interface EntityBuildConfigTrainingInner
+ */
+export interface EntityBuildConfigTrainingInner {
+  /**
+   *
+   * @type {string}
+   * @memberof EntityBuildConfigTrainingInner
+   */
+  'text'?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof EntityBuildConfigTrainingInner
+   */
+  'intent'?: string;
+}
+/**
+ *
+ * @export
  * @interface EqualityCondition
  */
 export interface EqualityCondition {
@@ -4454,96 +4604,10 @@ export interface ParseRequest {
   'language'?: string;
   /**
    * If provided, this will override the organizations saved entities (used for app development)
-   * @type {Array<ParseRequestEntitiesInner>}
+   * @type {Array<Array<EntitiesBuildConfigInner>>}
    * @memberof ParseRequest
    */
-  'entities'?: Array<ParseRequestEntitiesInner>;
-}
-/**
- *
- * @export
- * @interface ParseRequestEntitiesInner
- */
-export interface ParseRequestEntitiesInner {
-  /**
-   * The name of the context
-   * @type {string}
-   * @memberof ParseRequestEntitiesInner
-   */
-  'name': string;
-  /**
-   * Whether or not the context is modifiable
-   * @type {boolean}
-   * @memberof ParseRequestEntitiesInner
-   */
-  'modifiable'?: boolean;
-  /**
-   * The description of the context
-   * @type {string}
-   * @memberof ParseRequestEntitiesInner
-   */
-  'description'?: string;
-  /**
-   *
-   * @type {ContextDetectionParams}
-   * @memberof ParseRequestEntitiesInner
-   */
-  'detection'?: ContextDetectionParams;
-  /**
-   * The API to use for context detection
-   * @type {string}
-   * @memberof ParseRequestEntitiesInner
-   */
-  'detectionApi'?: string;
-  /**
-   * The ID column of the context
-   * @type {string}
-   * @memberof ParseRequestEntitiesInner
-   */
-  'idColumn'?: string;
-  /**
-   * The columns of the context
-   * @type {Array<string>}
-   * @memberof ParseRequestEntitiesInner
-   */
-  'columns'?: Array<string>;
-  /**
-   * The required columns of the context
-   * @type {Array<string>}
-   * @memberof ParseRequestEntitiesInner
-   */
-  'requiredColumns'?: Array<string>;
-  /**
-   * Whether or not to force NER
-   * @type {boolean}
-   * @memberof ParseRequestEntitiesInner
-   */
-  'forceNER'?: boolean;
-  /**
-   *
-   * @type {ContextModel}
-   * @memberof ParseRequestEntitiesInner
-   */
-  'model'?: ContextModel;
-  /**
-   * The ID of the context entity
-   * @type {string}
-   * @memberof ParseRequestEntitiesInner
-   */
-  '$id': string;
-}
-/**
- *
- * @export
- * @interface ParseRequestEntitiesInnerAllOf
- */
-export interface ParseRequestEntitiesInnerAllOf {
-  /**
-   * The ID of the context entity
-   * @type {string}
-   * @memberof ParseRequestEntitiesInnerAllOf
-   */
-  '$id': string;
+  'entities'?: Array<Array<EntitiesBuildConfigInner>>;
 }
 /**
  * The parsed message

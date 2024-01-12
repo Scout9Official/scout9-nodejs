@@ -33,7 +33,7 @@ async function platformApi(url, options = {}, retries = 0) {
         setTimeout(() => {
           resolve(platformApi(url, options, retries + 1));
         }, 3000);
-      })
+      });
     }
     return Promise.resolve(res);
   });
@@ -70,7 +70,7 @@ async function runNpmRunBuild({cwd = process.cwd(), src = 'src'} = {}) {
 function zipDirectory(source, out) {
   const archive = archiver('tar', {
     gzip: true,
-    gzipOptions: { level: 9 },
+    gzipOptions: {level: 9}
     // zlib: {level: 9}
   });
   const stream = fss.createWriteStream(out);
@@ -105,7 +105,7 @@ async function deployZipDirectory(zipFilePath, config) {
   const url = 'https://pocket-guide.vercel.app/api/b/platform/upload';
   const response = await platformApi(url, {
     method: 'POST',
-    body: form,
+    body: form
   });
   if (!response.ok) {
     throw new Error(`${url} responded with ${response.status}: ${response.statusText}`);
@@ -148,9 +148,9 @@ async function buildApp(cwd, src, dest, config) {
   await fs.mkdir(dest, {recursive: true});
 
   const copyDirectory = async (source, destination) => {
-    await fs.mkdir(destination, { recursive: true });
+    await fs.mkdir(destination, {recursive: true});
 
-    const dir = await fs.readdir(source, { withFileTypes: true })
+    const dir = await fs.readdir(source, {withFileTypes: true});
     for (const dirent of dir) {
       const sourcePath = path.join(source, dirent.name);
       const destinationPath = path.join(destination, dirent.name);
@@ -159,7 +159,7 @@ async function buildApp(cwd, src, dest, config) {
         await copyDirectory(sourcePath, destinationPath) :
         await fs.copyFile(sourcePath, destinationPath);
     }
-  }
+  };
 
   const srcDir = path.resolve(cwd, src);
   const appJsPath = path.resolve(__dirname, './templates/app.js');
@@ -193,7 +193,7 @@ async function buildApp(cwd, src, dest, config) {
   // Copy config.js - redact any sensitive information // @TODO use security encoder
   const redactedConfig = {
     ...config
-  }
+  };
   for (const agent of redactedConfig.agents) {
     agent.forwardEmail = 'REDACTED';
     agent.forwardPhone = 'REDACTED';
@@ -209,6 +209,38 @@ async function buildApp(cwd, src, dest, config) {
   } else {
     await fs.copyFile(path.resolve(__dirname, './templates/Dockerfile'), path.join(dest, 'Dockerfile'));
   }
+
+  if (process.env.DEV_MODE === 'true') {
+    // Copy dev app folder
+    // const clientFolder = path.resolve(__dirname, './templates/public');
+    // await copyDirectory(clientFolder, path.join(dest, 'public'));
+
+    // @TODO migrate this into a package
+    const devAppFolder = path.join(dest, 'public');
+    const exists = fss.existsSync(devAppFolder);
+    if (!exists) {
+      await downloadDevApp(devAppFolder, process.env.DEV_APP_VERSION || 'default');
+    }
+  }
+}
+
+// For dev server, downloads the dev app if it doesn't exist
+async function downloadDevApp(destination, version) {
+  const url = `https://pocket-guide.vercel.app/api/b/platform/dev?v=${version}`;
+  // const url = 'http://localhost:3000/api/b/platform/upload';
+  const downloadLocalResponse = await platformApi(url);
+  if (!downloadLocalResponse.ok) {
+    throw new Error(`Error downloading scout9 dev app project file ${downloadLocalResponse.statusText}`);
+  }
+  try {
+    const arrayBuffer = await downloadLocalResponse.arrayBuffer();
+    await decompress(Buffer.from(arrayBuffer), destination);
+    console.log('Dev server unpacked successfully at ' + destination);
+  } catch (error) {
+    console.error('Error unpacking file:', error);
+    throw error;
+  }
+
 }
 
 export async function getApp({cwd = process.cwd(), src = 'src', ignoreAppRequire = false} = {}) {
@@ -252,7 +284,7 @@ export async function run(event, {cwd = process.cwd(), src, logger = new Progres
     .catch((err) => {
       err.message = `Error running platform: ${err.message}`;
       throw err;
-    })
+    });
   return response.data;
 }
 
@@ -265,7 +297,7 @@ export async function runConfig({cwd = process.cwd(), src, logger = new Progress
     .catch((err) => {
       err.message = `Error running platform: ${err.message}`;
       throw err;
-    })
+    });
   return response.data;
 }
 
@@ -275,7 +307,13 @@ export async function runConfig({cwd = process.cwd(), src, logger = new Progress
  * @param {{cwd: string; src: string; dest: string; logger: ProgressLogger; mode: string;}} - build options
  * @param {Scout9ProjectBuildConfig} config
  */
-export async function build({cwd = process.cwd(),  src = './src', dest = '/tmp/project', logger = new ProgressLogger(), mode} = {}, config) {
+export async function build({
+  cwd = process.cwd(),
+  src = './src',
+  dest = '/tmp/project',
+  logger = new ProgressLogger(),
+  mode
+} = {}, config) {
   // 1. Lint: Run validation checks
 
   // Check if app looks good
@@ -312,7 +350,10 @@ export async function build({cwd = process.cwd(),  src = './src', dest = '/tmp/p
  * @param {{cwd: string; src: string, dest: string}} - build options
  * @param {Scout9ProjectBuildConfig} config
  */
-export async function deploy({cwd = process.cwd(), src = './src', dest = '/tmp/project', logger = new ProgressLogger()}, config) {
+export async function deploy(
+  {cwd = process.cwd(), src = './src', dest = '/tmp/project', logger = new ProgressLogger()},
+  config
+) {
 
   await buildApp(cwd, src, dest, config);
   logger.info(`App built ${dest}`);
@@ -323,7 +364,7 @@ export async function deploy({cwd = process.cwd(), src = './src', dest = '/tmp/p
 
   logger.info('Project zipped successfully.', zipFilePath);
 
-  logger.log(`Uploading ${zipFilePath} to Scout9...`)
+  logger.log(`Uploading ${zipFilePath} to Scout9...`);
   const response = await deployZipDirectory(zipFilePath, config);
 
   if (response.status !== 200) {
