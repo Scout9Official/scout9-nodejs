@@ -4,7 +4,7 @@ import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
 
 export default {
-  input: 'src/index.js', // Your main JS file
+  input: './src/index.js', // Your main JS file
   output: {
     dir: 'build',
     format: 'cjs' // Bundle format: 'iife' for browser, 'cjs' for Node, etc.

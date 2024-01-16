@@ -6,7 +6,8 @@
     "deploy": "scout9 deploy",
     "build": "scout9 build",
     "sync": "scout9 sync",
-    "dev": "scout9 dev"
+    "dev": "scout9 dev",
+    "start": "npm run dev"
   },
   "dependencies": {
     "@scout9/app": "workspace:*",

@@ -110,6 +110,7 @@ prog
     .describe('Builds and runs your scout9 auto reply app locally')
     .option('--mode', 'Specify a mode for loading environment variables', 'development')
     .option('--src', 'Project source code folder', 'src')
+    .option('--open', 'Where to open website by default of not', true)
     .option('--dest', 'Project local destination', './build')
     .action(async ({mode, src, dest}) => {
         if (!fs.existsSync('.env')) {

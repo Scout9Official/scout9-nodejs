@@ -152,8 +152,8 @@ async function buildApp(cwd, src, dest, config) {
 
     const dir = await fs.readdir(source, {withFileTypes: true});
     for (const dirent of dir) {
-      const sourcePath = path.join(source, dirent.name);
-      const destinationPath = path.join(destination, dirent.name);
+      const sourcePath = path.resolve(source, dirent.name);
+      const destinationPath = path.resolve(destination, dirent.name);
 
       dirent.isDirectory() ?
         await copyDirectory(sourcePath, destinationPath) :
@@ -168,7 +168,7 @@ async function buildApp(cwd, src, dest, config) {
 
 
   // Copy src directory
-  await copyDirectory(srcDir, path.join(dest, 'src'));
+  await copyDirectory(srcDir, path.resolve(dest, 'src'));
 
   // Copy package.json
   if (fss.existsSync(packageTestJson)) {
@@ -176,19 +176,19 @@ async function buildApp(cwd, src, dest, config) {
     pkgTest.scripts.start = 'node app.js';
     pkgTest.dependencies.polka = 'latest';
     pkgTest.dependencies['body-parser'] = 'latest';
-    await fs.writeFile(path.join(dest, 'package.json'), JSON.stringify(pkgTest, null, 2));
-    // await fs.copyFile(packageTestJson, path.join(dest, 'package.json'));
+    await fs.writeFile(path.resolve(dest, 'package.json'), JSON.stringify(pkgTest, null, 2));
+    // await fs.copyFile(packageTestJson, path.resolve(dest, 'package.json'));
   } else {
     const pkg = JSON.parse(await fs.readFile(new URL(packageJson, import.meta.url), 'utf-8'));
     pkg.scripts.start = 'node app.js';
     pkg.dependencies.polka = 'latest';
     pkg.dependencies['body-parser'] = 'latest';
-    await fs.writeFile(path.join(dest, 'package.json'), JSON.stringify(pkg, null, 2));
-    // await fs.copyFile(packageJson, path.join(dest, 'package.json'));
+    await fs.writeFile(path.resolve(dest, 'package.json'), JSON.stringify(pkg, null, 2));
+    // await fs.copyFile(packageJson, path.resolve(dest, 'package.json'));
   }
 
   // Copy app.js
-  await fs.copyFile(appJsPath, path.join(dest, 'app.js'));
+  await fs.copyFile(appJsPath, path.resolve(dest, 'app.js'));
 
   // Copy config.js - redact any sensitive information // @TODO use security encoder
   const redactedConfig = {
@@ -200,23 +200,23 @@ async function buildApp(cwd, src, dest, config) {
     agent.programmableEmail = 'REDACTED';
     agent.programmablePhoneNumber = 'REDACTED';
   }
-  await fs.writeFile(path.join(dest, 'config.js'), `export default ${JSON.stringify(redactedConfig, null, 2)}`);
+  await fs.writeFile(path.resolve(dest, 'config.js'), `export default ${JSON.stringify(redactedConfig, null, 2)}`);
 
   // Copy Dockerfile (if it exists)
   const dockerfile = path.resolve(cwd, './Dockerfile');
   if (fss.existsSync(dockerfile)) {
-    await fs.copyFile(dockerfile, path.join(dest, 'Dockerfile'));
+    await fs.copyFile(dockerfile, path.resolve(dest, 'Dockerfile'));
   } else {
-    await fs.copyFile(path.resolve(__dirname, './templates/Dockerfile'), path.join(dest, 'Dockerfile'));
+    await fs.copyFile(path.resolve(__dirname, './templates/Dockerfile'), path.resolve(dest, 'Dockerfile'));
   }
 
   if (process.env.DEV_MODE === 'true') {
     // Copy dev app folder
     // const clientFolder = path.resolve(__dirname, './templates/public');
-    // await copyDirectory(clientFolder, path.join(dest, 'public'));
+    // await copyDirectory(clientFolder, path.resolve(dest, 'public'));
 
     // @TODO migrate this into a package
-    const devAppFolder = path.join(dest, 'public');
+    const devAppFolder = path.resolve(dest, 'public');
     const exists = fss.existsSync(devAppFolder);
     if (!exists) {
       await downloadDevApp(devAppFolder, process.env.DEV_APP_VERSION || 'default');
@@ -245,7 +245,7 @@ async function downloadDevApp(destination, version) {
 
 export async function getApp({cwd = process.cwd(), src = 'src', ignoreAppRequire = false} = {}) {
   const indexTsPath = path.resolve(cwd, src, 'index.ts');
-  const indexJsPath = path.join(cwd, src, 'index.js');
+  const indexJsPath = path.resolve(cwd, src, 'index.js');
   let exe = '';
   if (fss.existsSync(indexTsPath)) {
     exe = path.extname(indexTsPath);
@@ -359,7 +359,7 @@ export async function deploy(
   logger.info(`App built ${dest}`);
 
   const destPaths = dest.split('/');
-  const zipFilePath = path.join(dest, `${destPaths[destPaths.length - 1]}.tar.gz`);
+  const zipFilePath = path.resolve(dest, `${destPaths[destPaths.length - 1]}.tar.gz`);
   await zipDirectory(dest, zipFilePath);
 
   logger.info('Project zipped successfully.', zipFilePath);

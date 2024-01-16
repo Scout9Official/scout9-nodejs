@@ -11,7 +11,7 @@ import { checkVariableType, requireOptionalProjectFile, requireProjectFile } fro
 async function loadEntityApiConfig(cwd, filePath) {
   const dir = path.dirname(filePath);
   const extension = path.extname(filePath);
-  const apiFilePath = path.join(dir, `api${extension}`);
+  const apiFilePath = path.resolve(dir, `api${extension}`);
   const root = cwd.split('/').pop();
   const x = apiFilePath.replace(cwd, '').split('/').slice(1).join('/');
 
