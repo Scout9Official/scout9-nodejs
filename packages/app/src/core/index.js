@@ -4,7 +4,7 @@ import { exec } from 'node:child_process';
 import fss from 'node:fs';
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import fetch, { FormData } from 'node-fetch';
 import { Configuration, Scout9Api } from '@scout9/admin';
 import { checkVariableType, ProgressLogger, requireProjectFile } from '../utils/index.js';
@@ -102,7 +102,7 @@ async function deployZipDirectory(zipFilePath, config) {
 
   // @TODO append signature secret header
   // const url = 'http://localhost:3000/api/b/platform/upload';
-  const url = 'https://pocket-guide.vercel.app/api/b/platform/upload';
+  const url = 'https://scout9.vercel.app/api/b/platform/upload';
   const response = await platformApi(url, {
     method: 'POST',
     body: form
@@ -115,7 +115,7 @@ async function deployZipDirectory(zipFilePath, config) {
 }
 
 async function downloadAndUnpackZip(outputDir) {
-  const downloadLocalResponse = await platformApi(`https://pocket-guide.vercel.app/api/b/platform/download`);
+  const downloadLocalResponse = await platformApi(`https://scout9.vercel.app/api/b/platform/download`);
   if (!downloadLocalResponse.ok) {
     throw new Error(`Error downloading project file ${downloadLocalResponse.statusText}`);
   }
@@ -163,23 +163,26 @@ async function buildApp(cwd, src, dest, config) {
 
   const srcDir = path.resolve(cwd, src);
   const appJsPath = path.resolve(__dirname, './templates/app.js');
-  const packageJson = path.resolve(cwd, './package.json');
-  const packageTestJson = path.resolve(cwd, './package-test.json');
+  const packageJsonPath = path.resolve(cwd, './package.json');
+  const packageTestJsonPath = path.resolve(cwd, './package-test.json');
+
+  const packageJsonUrl = pathToFileURL(packageJsonPath)
+  const packageTestJsonUrl = pathToFileURL(packageTestJsonPath)
 
 
   // Copy src directory
   await copyDirectory(srcDir, path.resolve(dest, 'src'));
 
   // Copy package.json
-  if (fss.existsSync(packageTestJson)) {
-    const pkgTest = JSON.parse(await fs.readFile(new URL(packageTestJson, import.meta.url), 'utf-8'));
+  if (fss.existsSync(packageTestJsonUrl)) {
+    const pkgTest = JSON.parse(await fs.readFile(new URL(packageTestJsonUrl, import.meta.url), 'utf-8'));
     pkgTest.scripts.start = 'node app.js';
     pkgTest.dependencies.polka = 'latest';
     pkgTest.dependencies['body-parser'] = 'latest';
     await fs.writeFile(path.resolve(dest, 'package.json'), JSON.stringify(pkgTest, null, 2));
     // await fs.copyFile(packageTestJson, path.resolve(dest, 'package.json'));
   } else {
-    const pkg = JSON.parse(await fs.readFile(new URL(packageJson, import.meta.url), 'utf-8'));
+    const pkg = JSON.parse(await fs.readFile(new URL(packageJsonUrl, import.meta.url), 'utf-8'));
     pkg.scripts.start = 'node app.js';
     pkg.dependencies.polka = 'latest';
     pkg.dependencies['body-parser'] = 'latest';
@@ -226,7 +229,7 @@ async function buildApp(cwd, src, dest, config) {
 
 // For dev server, downloads the dev app if it doesn't exist
 async function downloadDevApp(destination, version) {
-  const url = `https://pocket-guide.vercel.app/api/b/platform/dev?v=${version}`;
+  const url = `https://scout9.vercel.app/api/b/platform/dev?v=${version}`;
   // const url = 'http://localhost:3000/api/b/platform/upload';
   const downloadLocalResponse = await platformApi(url);
   if (!downloadLocalResponse.ok) {
@@ -336,7 +339,8 @@ export async function build({
 
 
   // 3. Remove unnecessary files
-  const files = globSync(path.resolve(cwd, `${dest}/**/*(*.test.*|*.spec.*)`));
+  // const files = globSync(path.resolve(cwd, `${dest}/**/*(*.test.*|*.spec.*)`), {cwd, absolute: true});
+  const files = globSync(`${dest}/**/*(*.test.*|*.spec.*)`, {cwd, absolute: true});
   for (const file of files) {
     await fs.unlink(file);
   }
@@ -392,7 +396,7 @@ export async function sync({cwd = process.cwd(), src = 'src', logger = new Progr
   if (!process.env.SCOUT9_API_KEY) {
     throw new Error('Missing required environment variable "SCOUT9_API_KEY"');
   }
-  const {entities, agents} = await platformApi(`https://pocket-guide.vercel.app/api/b/platform/sync`).then((res) => {
+  const {entities, agents} = await platformApi(`https://scout9.vercel.app/api/b/platform/sync`).then((res) => {
     if (res.status !== 200) {
       throw new Error(`Server responded with ${res.status}: ${res.statusText}`);
     }
@@ -439,7 +443,7 @@ export async function sync({cwd = process.cwd(), src = 'src', logger = new Progr
 
 
   // Write to src/agents
-  const paths = globSync(path.resolve(cwd, `${src}/entities/agents/{index,config}.{ts,js}`));
+  const paths = globSync(`${src}/entities/agents/{index,config}.{ts,js}`, {cwd, absolute: true});
   if (paths.length === 0) {
     throw new Error(`Missing required agents entity file, rerun "scout9 sync" to fix`);
   }
