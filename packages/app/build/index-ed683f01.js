@@ -48179,7 +48179,7 @@ function _deployZipDirectory() {
           console.log('Uploading auto-reply app to Scout9...');
           // @TODO append signature secret header
           // const url = 'http://localhost:3000/api/b/platform/upload';
-          url = 'https://pocket-guide.vercel.app/api/b/platform/upload';
+          url = 'https://scout9.vercel.app/api/b/platform/upload';
           _context2.next = 14;
           return fetch(url, {
             method: 'POST',
@@ -48216,7 +48216,7 @@ function _downloadAndUnpackZip() {
       while (1) switch (_context3.prev = _context3.next) {
         case 0:
           _context3.next = 2;
-          return fetch("https://pocket-guide.vercel.app/api/b/platform/download", {
+          return fetch("https://scout9.vercel.app/api/b/platform/download", {
             headers: {
               'Authorization': process.env.SCOUT9_API_KEY || ''
             }
@@ -48539,7 +48539,7 @@ function _sync() {
           throw new Error('Missing required environment variable "SCOUT9_API_KEY"');
         case 5:
           _context8.next = 7;
-          return fetch("https://pocket-guide.vercel.app/api/b/platform/sync", {
+          return fetch("https://scout9.vercel.app/api/b/platform/sync", {
             method: 'GET',
             headers: {
               'Authorization': process.env.SCOUT9_API_KEY || ''

@@ -1,23 +1,8 @@
+import { fileURLToPath, pathToFileURL } from 'node:url';
+
 async function importFile(filePath) {
-  return import(filePath);
-  //
-  // if (path.extname(filePath) === '.ts') {
-  //   return tsImport.load(filePath, {
-  //     // allowConfigurationWithComments: false,
-  //     useCache: false
-  //   })
-  //     .then((res) => {
-  //       console.log('tsImport.load', res);
-  //       return res;
-  //     })
-  //     .catch((err) => {
-  //       console.log('tsImport.load fail', err);
-  //       throw err;
-  //     });
-  // } else {
-  //   return import(filePath);
-  // }
-  //
+  const fileUrl = pathToFileURL(filePath);
+  return import(fileUrl.href);
 }
 
 export async function requireProjectFile(filePath) {

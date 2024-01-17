@@ -4,7 +4,7 @@ import { checkVariableType, requireProjectFile } from '../../utils/index.js';
 import { agentsConfigurationSchema } from '../../runtime/index.js';
 
 export default async function loadAgentConfig({cwd = process.cwd(), src = 'src'} = {}) {
-  const paths = globSync(path.resolve(cwd, `${src}/entities/agents/{index,config}.{ts,js}`));
+  const paths = globSync(`${src}/entities/agents/{index,config}.{ts,js}`, {cwd, absolute: true});
   if (paths.length === 0) {
     throw new Error(`Missing required agents entity file, rerun "scout9 sync" to fix`);
   }
