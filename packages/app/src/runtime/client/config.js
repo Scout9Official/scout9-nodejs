@@ -51,5 +51,16 @@ export const Scout9ProjectBuildConfigSchema = z.object({
   entities: entitiesRootProjectConfigurationSchema,
   workflows: WorkflowsConfigurationSchema,
   llm: z.union([llmSchema, llamaSchema, bardSchema]),
-  pmt: pmtSchema
+  pmt: pmtSchema,
+  initialContext: z.array(z.string()),
+  organization: z.object({
+    name: z.string(),
+    description: z.string(),
+    logo: z.string().optional(),
+    icon: z.string().optional(),
+    logos: z.string().optional(),
+    website: z.string().optional(),
+    email: z.string().email().optional(),
+    phone: z.string().optional(),
+  }).optional()
 });

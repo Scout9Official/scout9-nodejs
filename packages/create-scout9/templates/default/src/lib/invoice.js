@@ -2,7 +2,7 @@
  * An example service of creating and retrieving an invoice
  */
 export async function createInvoice(pizza) {
-  // @TODO create invoice
+  // @TODO create invoice backend
   return {
     id: 'invoice-123',
     subtotal: 6000,
@@ -13,7 +13,7 @@ export async function createInvoice(pizza) {
 }
 
 export async function getInvoice(id) {
-  // @TODO create invoice
+  // @TODO create invoice backend
   return {
     id: 'invoice-123',
     subtotal: 6000,

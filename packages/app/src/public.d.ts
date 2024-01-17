@@ -32,6 +32,20 @@ export interface Scout9ProjectConfig {
     engine: 'scout9',
     model: 'orin-1.0' | 'orin-2.0-preview'
   }
+  /**
+   * Configure the initial contexts for every conversation
+   */
+  initialContext: string[];
+  organization: {
+    name: string;
+    description: string;
+    logo?: string;
+    icon?: string;
+    logos?: string;
+    website?: string;
+    email?: string;
+    phone?: string;
+  }
 }
 
 export interface EntityBuildConfig {

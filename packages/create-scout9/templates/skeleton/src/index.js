@@ -18,4 +18,6 @@ export default {
     engine: 'scout9',
     model: 'orin-2.2'
   },
+  initialContext: [
+  ]
 }

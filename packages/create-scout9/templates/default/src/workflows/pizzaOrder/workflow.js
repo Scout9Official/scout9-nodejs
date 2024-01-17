@@ -1,6 +1,6 @@
 import moment from 'moment';
-import { getAvailableDriver } from '../../lib/drivers.js';
-import { createInvoice, getInvoice } from '../../lib/invoice.js';
+import { getAvailableDriver } from '../../lib/drivers.mjs';
+import { createInvoice, getInvoice } from '../../lib/invoice.mjs';
 
 /**
  * Example PizzaOrder workflow - this is a simple example of a workflow that can be used to order a pizza
@@ -19,17 +19,11 @@ export default async function PizzaOrder(
     };
   }
 
-  if (!context.deliveryMethod) {
-    return {
-      instructions: `Determine if ${customer?.firstName || 'the customer'} is doing a delivery or pickup and determine time of pickup/delivery`
-    };
-  }
-
-  if (!context.invoiceId) {
+  if (!context.invoiceId && context.delivery_method) {
     const invoice = await createInvoice(context.pizza);
+    const intro = `${context.delivery_method === 'delivery' ? 'Order will be sent over in 30 minutes' : 'Order will be ready for pickup in 30 minutes at 123 Nark Ave Seattle WA 98122'}.`;
     return {
-      instructions: `Send invoice to customer`,
-      message: `Order created - $${(invoice.total/100).toFixed(2)} you can pay at ${invoice.invoiceUrl}`,
+      message: `${intro}.\n\nThe total is $${(invoice.total/100).toFixed(2)}, you can pay at this url: ${invoice.invoiceUrl}`,
       contextUpsert: {
         invoiceId: invoice.id,
         invoicePaid: false
@@ -37,7 +31,7 @@ export default async function PizzaOrder(
     }
   }
 
-  if (!context.invoicePaid) {
+  if (!context.invoicePaid && context.invoiceId) {
     if (!context.invoiceId) {
       return {forward: true};
     }
@@ -47,7 +41,7 @@ export default async function PizzaOrder(
     }
   }
 
-  if (context.deliveryMethod === 'pickup') {
+  if (context.delivery_method === 'pickup') {
     return [
       {
         instructions: `Let user know their order will be ready at ${moment().add(30, 'minutes').format('h:mm a')}`
@@ -63,7 +57,7 @@ export default async function PizzaOrder(
     // @TODO - delay and notify user for feedback and if they got their pizza
   }
 
-  if (!context.address && context.deliveryMethod === 'delivery') {
+  if (!context.address && context.delivery_method === 'delivery') {
     return {
       instructions: `Ask ${customer.firstName || 'the customer'} for their delivery address`
     };
@@ -83,7 +77,15 @@ export default async function PizzaOrder(
     };
   }
 
+  if (!context.delivery_method) {
+    return {
+      instructions: `Ask ${customer.firstName || 'the customer'} if they want their pizza order for either pickup or delivery.`
+    }
+  }
+
+  console.error('No where to go - view context:\n', JSON.stringify(context, null, 2));
   return {
-    forward: true
+    forward: true,
+    notes: 'No where to go, something happened'
   }
 }

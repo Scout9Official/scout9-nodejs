@@ -3,7 +3,7 @@
  * Example entity to help us differentiate if a user wants a delivery or pickup order
  * @returns {IEntityBuildConfig}
  */
-export default async function deliveryMethodEntity() {
+export default async function delivery_methodEntity() {
   return {
     "definitions": [
       {
@@ -27,26 +27,26 @@ export default async function deliveryMethodEntity() {
     ],
     "training": [
       {
-        "text": "I'll have my order %deliveryMethod%",
-        "intent": "deliveryMethod"
+        "text": "I'll have my order %delivery_method%",
+        "intent": "delivery_method"
       },
       {
-        "text": "I'll do a %deliveryMethod% order",
-        "intent": "deliveryMethod"
+        "text": "I'll do a %delivery_method% order",
+        "intent": "delivery_method"
       },
       {
-        "text": "%deliveryMethod% please",
-        "intent": "deliveryMethod"
+        "text": "%delivery_method% please",
+        "intent": "delivery_method"
       }
     ],
     "tests": [
       {
         "text": "drop off order please",
         "expected": {
-          "intent": "deliveryMethod",
+          "intent": "delivery_method",
           "context": [
             {
-              "deliveryMethod": "delivery"
+              "delivery_method": "delivery"
             }
           ]
         }
@@ -54,10 +54,10 @@ export default async function deliveryMethodEntity() {
       {
         "text": "I'll pick this one up",
         "expected": {
-          "intent": "deliveryMethod",
+          "intent": "delivery_method",
           "context": [
             {
-              "deliveryMethod": "pickup"
+              "delivery_method": "pickup"
             }
           ]
         }

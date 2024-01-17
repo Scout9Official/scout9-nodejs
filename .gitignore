@@ -29,5 +29,6 @@ yarn-error.log*
 examples/*.json
 
 examples-test
+examples-archived2
 
 deploy.sh

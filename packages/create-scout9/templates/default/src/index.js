@@ -18,4 +18,12 @@ export default {
     engine: 'scout9',
     model: 'orin-2.2'
   },
+  organization: {
+    name: "PizzaZoom",
+    description: "PizzaZoom is a pizza delivery service that uses drones to deliver pizza to your door in 30 minutes or less.",
+  },
+  initialContext: [
+    "Get the customers pizza order, be as brief and concise as possible.",
+    "Customers generally want the pizza ASAP, so assume unless they ask for a specific time, they want it as soon as possible.",
+  ]
 }
