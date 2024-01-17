@@ -305,4 +305,11 @@ async function main() {
   await generate_templates(shared);
 }
 
-main();
+main()
+  .then(() => {
+    console.log('Templates generated');
+  })
+  .catch((/** @type {Error} */ err) => {
+    console.error(err);
+    process.exit(1);
+  });
