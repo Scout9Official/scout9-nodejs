@@ -48179,7 +48179,7 @@ function _deployZipDirectory() {
 
           // @TODO append signature secret header
           _context2.next = 12;
-          return fetch("https://pocket-guide.vercel.app/api/b/platform/upload", {
+          return fetch("https://scout9.vercel.app/api/b/platform/upload", {
             method: 'POST',
             body: form,
             headers: {
@@ -48214,7 +48214,7 @@ function _downloadAndUnpackZip() {
       while (1) switch (_context3.prev = _context3.next) {
         case 0:
           _context3.next = 2;
-          return fetch("https://pocket-guide.vercel.app/api/b/platform/download", {
+          return fetch("https://scout9.vercel.app/api/b/platform/download", {
             headers: {
               'Authorization': process.env.SCOUT9_API_KEY || ''
             }
@@ -48530,7 +48530,7 @@ function _sync() {
           _ref5 = _args8.length > 0 && _args8[0] !== undefined ? _args8[0] : {}, _ref5$cwd = _ref5.cwd, cwd = _ref5$cwd === void 0 ? process.cwd() : _ref5$cwd, _ref5$folder = _ref5.folder, folder = _ref5$folder === void 0 ? 'src' : _ref5$folder;
           config = _args8.length > 1 ? _args8[1] : undefined;
           _context8.next = 4;
-          return fetch("https://pocket-guide.vercel.app/api/b/platform/sync", {
+          return fetch("https://scout9.vercel.app/api/b/platform/sync", {
             method: 'GET',
             headers: {
               'Authorization': process.env.SCOUT9_API_KEY || ''

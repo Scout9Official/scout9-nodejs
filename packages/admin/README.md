@@ -1,6 +1,6 @@
 # Scout9's Pocket Scout API
 
-Pocket Scout Node.js API for [Scout9](https://pocket-guide.vercel.app/) - mimics you over your personal phone and email
+Pocket Scout Node.js API for [Scout9](https://scout9.vercel.app/) - mimics you over your personal phone and email
 for common tasks like scheduling meetings, answering questions, and more.
 
 **⚠️ Danger**: Avoid using a Pocket Scout to autopilot your job and personal relationships, this tool is designed for
@@ -8,8 +8,8 @@ workplace productivity and not a substitute for human interaction.
 
 ## Setup
 
-1. Register and grab an API key from [Scout9](https://pocket-guide.vercel.app/)
-2. (Optional) [Purchase](https://pocket-guide.vercel.app/) a Scout9 email or phone number if you prefer
+1. Register and grab an API key from [Scout9](https://scout9.vercel.app/)
+2. (Optional) [Purchase](https://scout9.vercel.app/) a Scout9 email or phone number if you prefer
 
 ```bash
 npm install @scout9/admin --save
@@ -220,7 +220,7 @@ await scout9.message({convo: conversation.data.id, message: initialMessage});
 
 ## Step 5: View your conversation
 
-Messages and customer responses can be viewed in the [Scout9 UI](https://pocket-guide.vercel.app/). You can also
+Messages and customer responses can be viewed in the [Scout9 UI](https://scout9.vercel.app/). You can also
 configure webhooks in the account portal to listen to incoming messages on your own server.
 
 ```typescript

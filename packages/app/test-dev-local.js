@@ -1,5 +1,10 @@
 import { Scout9Platform } from './src/platform.js';
 import fetch from 'node-fetch';
+import { fileURLToPath } from "node:url";
+import path from "node:path";
+
+const modulePath = fileURLToPath(import.meta.url);
+const cwd = path.dirname(modulePath);
 
 (async () => {
   const dest = './tmp/project';
