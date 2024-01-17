@@ -231,6 +231,18 @@ declare module '@scout9/app' {
 	 */
 	readonly response: Response;
   }
+	export type BaseApiParams<Params = Record<string, string>> = {
+		searchParams: {[key: string]: string | string[] };
+		params: Params;
+	}
+	export type ApiFunction<Params = Record<string, string>, Response = any> = (params: BaseApiParams<Params>) => Promise<EventResponse<Response>>;
+	export type QueryApiFunction<Params = Record<string, string>, Response = any> = (params: BaseApiParams<Params>) => Promise<EventResponse<Response>>;
+	export type GetApiFunction<Params = Record<string, string>, Response = any> = (params: BaseApiParams<Params>) => Promise<EventResponse<Response>>;
+	export type PostApiFunction<Params = Record<string, string>, RequestBody = any, Response = any> = (params: BaseApiParams<Params> & {body: RequestBody}) => Promise<EventResponse<Response>>;
+	export type PutApiFunction<Params = Record<string, string>, RequestBody = any, Response = any> = (params: BaseApiParams<Params> & {body: Partial<RequestBody>}) => Promise<EventResponse<Response>>;
+	export type PatchApiFunction<Params = Record<string, string>, RequestBody = any, Response = any> = (params: BaseApiParams<Params> & {body: Partial<RequestBody>}) => Promise<EventResponse<Response>>;
+	export type DeleteApiFunction<Params = Record<string, string>, Response = any> = (params: BaseApiParams<Params>) => Promise<EventResponse<Response>>;
+
 }
 
 //# sourceMappingURL=index.d.ts.map

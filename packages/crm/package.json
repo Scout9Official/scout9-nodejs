@@ -1,11 +1,12 @@
 {
   "name": "@scout9/crm",
-  "version": "1.0.0-alpha.0.0.2",
+  "version": "1.0.0-alpha.0.0.3",
   "description": "Default Customer CRM for Scout9 apps",
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
+    "prepublishOnly": "npm run check",
     "lint": "prettier --check .",
     "format": "pnpm lint --write",
     "check": "tsc"

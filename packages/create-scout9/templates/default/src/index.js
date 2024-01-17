@@ -16,7 +16,7 @@ export default {
    */
   pmt: {
     engine: 'scout9',
-    model: 'orin-2.2'
+    model: 'orin-1.0'
   },
   organization: {
     name: "PizzaZoom",
