@@ -1,6 +1,6 @@
 {
   "name": "create-scout9",
-  "version": "1.0.0-alpha.0.0.18",
+  "version": "1.0.0-alpha.0.0.19",
   "bin": "./bin.js",
   "main": "./index.js",
   "publishConfig": {

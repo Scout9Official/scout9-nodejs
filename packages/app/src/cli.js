@@ -43,18 +43,12 @@ prog
     .example('sync')
     .option('--mode', 'Specify a mode for loading environment variables', 'production')
     .option('--src', 'Project source code folder', 'src')
-    .option('--dest', 'Project build destination folder', './tmp/project')
-    .action(async ({mode, src, dest}) => {
+    .action(async ({mode, src}) => {
         if (!fs.existsSync('.env')) {
             console.warn(`Missing ${path.resolve('.env')} — skipping`);
             return;
         }
         mode = coerceMode(mode);
-        if (!dest) {
-            if (mode !== 'production') {
-                dest = './tmp/project';
-            }
-        }
         try {
             await Scout9Platform.sync({cwd: process.cwd(), mode: coerceMode(mode), src});
             process.exit(0);
