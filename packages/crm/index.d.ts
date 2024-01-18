@@ -29,12 +29,12 @@ export default class Scout9CRM {
    * @returns {Promise<Array<import('@scout9/admin').Customer>>}
    */
   public async query(
-    query: {field: string; operator: string; value: any} | undefined,
-    page: number | undefined,
-    limit: number | undefined,
-    orderBy: string | undefined,
-    endAt: string | number | undefined,
-    startAt: string | number | undefined
+    query?: {field: string; operator: string; value: any} | undefined,
+    page?: number | undefined,
+    limit?: number | undefined,
+    orderBy?: string | undefined,
+    endAt?: string | number | undefined,
+    startAt?: string | number | undefined
   ): Promise<Customer[]>;
 
   /**

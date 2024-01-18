@@ -32,3 +32,5 @@ examples-test
 examples-archived2
 
 deploy.sh
+
+.test-tmp/

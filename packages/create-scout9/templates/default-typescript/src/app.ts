@@ -1,11 +1,12 @@
 
-import PizzaOrder from './workflows/pizzaOrder/workflow.js';
+import type { WorkflowEvent, WorkflowResponse } from '@scout9/app';
+import PizzaOrder from './workflows/pizzaOrder/workflow';
 
 /**
  * @param {import('@scout9/app').WorkflowEvent} event - every workflow receives an event object
  * @returns {Promise<import('@scout9/app').WorkflowResponse>} - every workflow must return a WorkflowResponse
  */
-export default async function Scout9App(event) {
+export default async function Scout9App(event: WorkflowEvent): Promise<WorkflowResponse<any>>  {
 
   // If the user intent is pizzaOrder or the context has a pizza object, run the pizza order workflow
   if (event.intent === 'pizzaOrder' || event.context === 'pizza') {

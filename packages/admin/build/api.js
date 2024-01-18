@@ -16,7 +16,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Scout9Api = exports.Scout9ApiFactory = exports.Scout9ApiFp = exports.Scout9ApiAxiosParamCreator = exports.CustomContextApi = exports.CustomContextApiFactory = exports.CustomContextApiFp = exports.CustomContextApiAxiosParamCreator = exports.WorkflowResponseSlotForwardOneOfModeEnum = exports.PurposeEnum = exports.PmtConfigModelEnum = exports.PmtConfigEngineEnum = exports.MessageGetResponseInnerRoleEnum = exports.MessageCreateRequestRoleEnum = exports.MessageBaseRoleEnum = exports.MessageRoleEnum = exports.LlmConfigOneOf2EngineEnum = exports.LlmConfigOneOf1EngineEnum = exports.LlmConfigOneOfModelEnum = exports.LlmConfigOneOfEngineEnum = exports.ListApiOperationsResponseInnerMethodEnum = exports.GetApiOperationResponseMethodEnum = exports.ExistenceOperator = exports.EqualityOperator = exports.ConversationEnvironment = exports.ConversationContextFieldConditionOperatorEnum = exports.ApiOperationMethodEnum = void 0;
+exports.Scout9Api = exports.Scout9ApiFactory = exports.Scout9ApiFp = exports.Scout9ApiAxiosParamCreator = exports.CustomContextApi = exports.CustomContextApiFactory = exports.CustomContextApiFp = exports.CustomContextApiAxiosParamCreator = exports.WorkflowResponseSlotForwardOneOfModeEnum = exports.PurposeEnum = exports.PmtConfigModelEnum = exports.PmtConfigEngineEnum = exports.MessageGetResponseInnerRoleEnum = exports.MessageCreateRequestRoleEnum = exports.MessageBaseRoleEnum = exports.MessageRoleEnum = exports.LlmConfigOneOf2EngineEnum = exports.LlmConfigOneOf1EngineEnum = exports.LlmConfigOneOfModelEnum = exports.LlmConfigOneOfEngineEnum = exports.ListApiOperationsResponseInnerMethodEnum = exports.GetApiOperationResponseMethodEnum = exports.ForwardRequestForwardOneOfModeEnum = exports.ExistenceOperator = exports.EqualityOperator = exports.ConversationEnvironment = exports.ConversationContextFieldConditionOperatorEnum = exports.ApiOperationMethodEnum = void 0;
 const axios_1 = __importDefault(require("axios"));
 // Some imports not used depending on template conditions
 // @ts-ignore
@@ -93,6 +93,10 @@ exports.EqualityOperator = {
 exports.ExistenceOperator = {
     Exists: 'exists',
     NotExists: 'notExists'
+};
+exports.ForwardRequestForwardOneOfModeEnum = {
+    AfterReply: 'after-reply',
+    Immediately: 'immediately'
 };
 exports.GetApiOperationResponseMethodEnum = {
     Get: 'get',
@@ -1684,6 +1688,36 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
             };
         },
         /**
+         * Forwards a locked conversation to agent
+         * @summary forwards a locked conversation to agent
+         * @param {ForwardRequest} forwardRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        forward: async (forwardRequest, options = {}) => {
+            // verify required parameter 'forwardRequest' is not null or undefined
+            (0, common_1.assertParamExists)('forward', 'forwardRequest', forwardRequest);
+            const localVarPath = `/v1-forward`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options };
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
+            localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(forwardRequest, localVarRequestOptions, configuration);
+            return {
+                url: (0, common_1.toPathString)(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Generates a message in the agent\'s voice based on the state of the given conversation. This is useful for testing and debugging. The message will not be sent to the conversation, you must run .message() with the body of the generated message to send it to the conversation.
          * @summary Generate a message from conversation
          * @param {GenerateRequest} generateRequest
@@ -2938,6 +2972,17 @@ const Scout9ApiFp = function (configuration) {
             return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
         },
         /**
+         * Forwards a locked conversation to agent
+         * @summary forwards a locked conversation to agent
+         * @param {ForwardRequest} forwardRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async forward(forwardRequest, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.forward(forwardRequest, options);
+            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+        },
+        /**
          * Generates a message in the agent\'s voice based on the state of the given conversation. This is useful for testing and debugging. The message will not be sent to the conversation, you must run .message() with the body of the generated message to send it to the conversation.
          * @summary Generate a message from conversation
          * @param {GenerateRequest} generateRequest
@@ -3678,6 +3723,16 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
          */
         files(options) {
             return localVarFp.files(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Forwards a locked conversation to agent
+         * @summary forwards a locked conversation to agent
+         * @param {ForwardRequest} forwardRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        forward(forwardRequest, options) {
+            return localVarFp.forward(forwardRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * Generates a message in the agent\'s voice based on the state of the given conversation. This is useful for testing and debugging. The message will not be sent to the conversation, you must run .message() with the body of the generated message to send it to the conversation.
@@ -4442,6 +4497,17 @@ class Scout9Api extends base_1.BaseAPI {
      */
     files(options) {
         return (0, exports.Scout9ApiFp)(this.configuration).files(options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     * Forwards a locked conversation to agent
+     * @summary forwards a locked conversation to agent
+     * @param {ForwardRequest} forwardRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    forward(forwardRequest, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).forward(forwardRequest, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      * Generates a message in the agent\'s voice based on the state of the given conversation. This is useful for testing and debugging. The message will not be sent to the conversation, you must run .message() with the body of the generated message to send it to the conversation.

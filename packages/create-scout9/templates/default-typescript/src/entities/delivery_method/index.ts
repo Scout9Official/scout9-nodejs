@@ -1,9 +1,10 @@
+import type {EntityBuildConfig} from '@scout9/app';
 
 /**
  * Example entity to help us differentiate if a user wants a delivery or pickup order
- * @returns {IEntityBuildConfig}
+ * @returns {EntityBuildConfig}
  */
-export default async function deliveryMethodEntity() {
+export default async function deliveryMethodEntity(): Promise<EntityBuildConfig> {
   return {
     "definitions": [
       {

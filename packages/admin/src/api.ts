@@ -549,6 +549,12 @@ export interface Conversation {
    */
   '$agent': string;
   /**
+   * Business this conversation is in
+   * @type {string}
+   * @memberof Conversation
+   */
+  '$business': string;
+  /**
    * Initial contexts to load when starting the conversation
    * @type {Array<string>}
    * @memberof Conversation
@@ -608,6 +614,12 @@ export interface ConversationBase {
    * @memberof ConversationBase
    */
   '$agent': string;
+  /**
+   * Business this conversation is in
+   * @type {string}
+   * @memberof ConversationBase
+   */
+  '$business': string;
   /**
    * Initial contexts to load when starting the conversation
    * @type {Array<string>}
@@ -781,6 +793,12 @@ export interface ConversationCreateRequest {
    */
   '$agent': string;
   /**
+   * Business this conversation is in
+   * @type {string}
+   * @memberof ConversationCreateRequest
+   */
+  '$business': string;
+  /**
    * Initial contexts to load when starting the conversation
    * @type {Array<string>}
    * @memberof ConversationCreateRequest
@@ -915,6 +933,12 @@ export interface ConversationGetResponse {
    * @memberof ConversationGetResponse
    */
   '$agent': string;
+  /**
+   * Business this conversation is in
+   * @type {string}
+   * @memberof ConversationGetResponse
+   */
+  '$business': string;
   /**
    * Initial contexts to load when starting the conversation
    * @type {Array<string>}
@@ -1073,6 +1097,12 @@ export interface ConversationUpdateRequest {
    */
   '$agent': string;
   /**
+   * Business this conversation is in
+   * @type {string}
+   * @memberof ConversationUpdateRequest
+   */
+  '$business': string;
+  /**
    * Initial contexts to load when starting the conversation
    * @type {Array<string>}
    * @memberof ConversationUpdateRequest
@@ -1204,6 +1234,70 @@ export interface ConversationUrls {
    * @memberof ConversationUrls
    */
   'agentTestWebUrl'?: string;
+}
+/**
+ *
+ * @export
+ * @interface ConversationWithId
+ */
+export interface ConversationWithId {
+  /**
+   * Default agent persona id assigned to the conversation(s)
+   * @type {string}
+   * @memberof ConversationWithId
+   */
+  '$agent': string;
+  /**
+   * Business this conversation is in
+   * @type {string}
+   * @memberof ConversationWithId
+   */
+  '$business': string;
+  /**
+   * Initial contexts to load when starting the conversation
+   * @type {Array<string>}
+   * @memberof ConversationWithId
+   */
+  'initialContexts'?: Array<string>;
+  /**
+   *
+   * @type {ConversationBaseEnvironmentProps}
+   * @memberof ConversationWithId
+   */
+  'environmentProps'?: ConversationBaseEnvironmentProps;
+  /**
+   * Customer this conversation is with
+   * @type {string}
+   * @memberof ConversationWithId
+   */
+  '$customer': string;
+  /**
+   *
+   * @type {ConversationEnvironment}
+   * @memberof ConversationWithId
+   */
+  'environment': ConversationEnvironment;
+  /**
+   * The ID of the conversation
+   * @type {string}
+   * @memberof ConversationWithId
+   */
+  '$id': string;
+}
+
+
+/**
+ *
+ * @export
+ * @interface ConversationWithIdAllOf
+ */
+export interface ConversationWithIdAllOf {
+  /**
+   * The ID of the conversation
+   * @type {string}
+   * @memberof ConversationWithIdAllOf
+   */
+  '$id': string;
 }
 /**
  *
@@ -2877,6 +2971,78 @@ export interface ExistsConditionAllOf {
 }
 
 
+/**
+ * Forward a conversation to the corresponding agent
+ * @export
+ * @interface ForwardRequest
+ */
+export interface ForwardRequest {
+  /**
+   *
+   * @type {ForwardRequestConvo}
+   * @memberof ForwardRequest
+   */
+  'convo'?: ForwardRequestConvo;
+  /**
+   *
+   * @type {ForwardRequestForward}
+   * @memberof ForwardRequest
+   */
+  'forward'?: ForwardRequestForward;
+}
+/**
+ * @type ForwardRequestConvo
+ * @export
+ */
+export type ForwardRequestConvo = ConversationWithId | string;
+
+/**
+ * @type ForwardRequestForward
+ * Forward information, if \"true\", it will automatically forward to the corresponding agent of the given conversation, \"string\" or \"object\" will override the default agent.
+ * @export
+ */
+export type ForwardRequestForward = ForwardRequestForwardOneOf | boolean | string;
+
+/**
+ * The agent to forward to
+ * @export
+ * @interface ForwardRequestForwardOneOf
+ */
+export interface ForwardRequestForwardOneOf {
+  /**
+   * The ID, email or phone number to forward to
+   * @type {string}
+   * @memberof ForwardRequestForwardOneOf
+   */
+  'to': string;
+  /**
+   * The mode to forward the conversation (defaults to immediately)
+   * @type {string}
+   * @memberof ForwardRequestForwardOneOf
+   */
+  'mode'?: ForwardRequestForwardOneOfModeEnum;
+}
+
+export const ForwardRequestForwardOneOfModeEnum = {
+  AfterReply: 'after-reply',
+  Immediately: 'immediately'
+} as const;
+
+export type ForwardRequestForwardOneOfModeEnum = typeof ForwardRequestForwardOneOfModeEnum[keyof typeof ForwardRequestForwardOneOfModeEnum];
+
+/**
+ *
+ * @export
+ * @interface ForwardResponse
+ */
+export interface ForwardResponse {
+  /**
+   * The time it took to forward the message in milliseconds
+   * @type {number}
+   * @memberof ForwardResponse
+   */
+  'ms': number;
+}
 /**
  * @type GenerateRequest
  * Either a conversation ID or a conversation object with messages and context metadata to generate from
@@ -4725,6 +4891,12 @@ export interface ScheduleCreateRequest {
    */
   '$agent': string;
   /**
+   * Business this conversation is in
+   * @type {string}
+   * @memberof ScheduleCreateRequest
+   */
+  '$business': string;
+  /**
    * Initial contexts to load when starting the conversation
    * @type {Array<string>}
    * @memberof ScheduleCreateRequest
@@ -4838,6 +5010,12 @@ export interface ScheduleGetResponse {
    */
   '$agent': string;
   /**
+   * Business this conversation is in
+   * @type {string}
+   * @memberof ScheduleGetResponse
+   */
+  '$business': string;
+  /**
    * Initial contexts to load when starting the conversation
    * @type {Array<string>}
    * @memberof ScheduleGetResponse
@@ -4930,6 +5108,12 @@ export interface ScheduleGroupCreateRequest {
    * @memberof ScheduleGroupCreateRequest
    */
   '$agent': string;
+  /**
+   * Business this conversation is in
+   * @type {string}
+   * @memberof ScheduleGroupCreateRequest
+   */
+  '$business': string;
   /**
    * Initial contexts to load when starting the conversation
    * @type {Array<string>}
@@ -5029,6 +5213,12 @@ export interface ScheduleGroupGetResponse {
    * @memberof ScheduleGroupGetResponse
    */
   '$agent': string;
+  /**
+   * Business this conversation is in
+   * @type {string}
+   * @memberof ScheduleGroupGetResponse
+   */
+  '$business': string;
   /**
    * Initial contexts to load when starting the conversation
    * @type {Array<string>}
@@ -5152,6 +5342,12 @@ export interface ScheduleGroupUpdateRequest {
    * @memberof ScheduleGroupUpdateRequest
    */
   '$agent': string;
+  /**
+   * Business this conversation is in
+   * @type {string}
+   * @memberof ScheduleGroupUpdateRequest
+   */
+  '$business': string;
   /**
    * Initial contexts to load when starting the conversation
    * @type {Array<string>}
@@ -5289,6 +5485,12 @@ export interface ScheduleUpdateRequest {
    */
   '$agent': string;
   /**
+   * Business this conversation is in
+   * @type {string}
+   * @memberof ScheduleUpdateRequest
+   */
+  '$business': string;
+  /**
    * Initial contexts to load when starting the conversation
    * @type {Array<string>}
    * @memberof ScheduleUpdateRequest
@@ -5402,6 +5604,12 @@ export interface ScheduledConversation {
    */
   '$agent': string;
   /**
+   * Business this conversation is in
+   * @type {string}
+   * @memberof ScheduledConversation
+   */
+  '$business': string;
+  /**
    * Initial contexts to load when starting the conversation
    * @type {Array<string>}
    * @memberof ScheduledConversation
@@ -5477,6 +5685,12 @@ export interface ScheduledConversationGroup {
    * @memberof ScheduledConversationGroup
    */
   '$agent': string;
+  /**
+   * Business this conversation is in
+   * @type {string}
+   * @memberof ScheduledConversationGroup
+   */
+  '$business': string;
   /**
    * Initial contexts to load when starting the conversation
    * @type {Array<string>}
@@ -8611,6 +8825,42 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
       };
     },
     /**
+     * Forwards a locked conversation to agent
+     * @summary forwards a locked conversation to agent
+     * @param {ForwardRequest} forwardRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    forward: async (forwardRequest: ForwardRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'forwardRequest' is not null or undefined
+      assertParamExists('forward', 'forwardRequest', forwardRequest)
+      const localVarPath = `/v1-forward`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+      localVarRequestOptions.data = serializeDataIfNeeded(forwardRequest, localVarRequestOptions, configuration)
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
      * Generates a message in the agent\'s voice based on the state of the given conversation. This is useful for testing and debugging. The message will not be sent to the conversation, you must run .message() with the body of the generated message to send it to the conversation.
      * @summary Generate a message from conversation
      * @param {GenerateRequest} generateRequest
@@ -10011,6 +10261,17 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
     },
     /**
+     * Forwards a locked conversation to agent
+     * @summary forwards a locked conversation to agent
+     * @param {ForwardRequest} forwardRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async forward(forwardRequest: ForwardRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ForwardResponse>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.forward(forwardRequest, options);
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+    },
+    /**
      * Generates a message in the agent\'s voice based on the state of the given conversation. This is useful for testing and debugging. The message will not be sent to the conversation, you must run .message() with the body of the generated message to send it to the conversation.
      * @summary Generate a message from conversation
      * @param {GenerateRequest} generateRequest
@@ -10751,6 +11012,16 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
      */
     files(options?: any): AxiosPromise<ListFilesResponse> {
       return localVarFp.files(options).then((request) => request(axios, basePath));
+    },
+    /**
+     * Forwards a locked conversation to agent
+     * @summary forwards a locked conversation to agent
+     * @param {ForwardRequest} forwardRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    forward(forwardRequest: ForwardRequest, options?: any): AxiosPromise<ForwardResponse> {
+      return localVarFp.forward(forwardRequest, options).then((request) => request(axios, basePath));
     },
     /**
      * Generates a message in the agent\'s voice based on the state of the given conversation. This is useful for testing and debugging. The message will not be sent to the conversation, you must run .message() with the body of the generated message to send it to the conversation.
@@ -11560,6 +11831,18 @@ export class Scout9Api extends BaseAPI {
    */
   public files(options?: AxiosRequestConfig) {
     return Scout9ApiFp(this.configuration).files(options).then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   * Forwards a locked conversation to agent
+   * @summary forwards a locked conversation to agent
+   * @param {ForwardRequest} forwardRequest
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof Scout9Api
+   */
+  public forward(forwardRequest: ForwardRequest, options?: AxiosRequestConfig) {
+    return Scout9ApiFp(this.configuration).forward(forwardRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**

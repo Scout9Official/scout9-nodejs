@@ -4,22 +4,55 @@ import compression from 'compression';
 import bodyParser from 'body-parser';
 import colors from 'kleur';
 import { config as dotenv } from 'dotenv';
-
-/** @type (event: WorkflowEvent): Promise<WorkflowResponse> **/
-import projectApp from './src/app.js';
-import config from './config.js';
+import { Configuration, Scout9Api } from '@scout9/admin';
 import path from 'node:path';
 import fs from 'node:fs';
-import { Configuration, Scout9Api } from '@scout9/admin';
 import { fileURLToPath } from 'node:url';
+import projectApp from './src/app.js';
+import config from './config.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const dev = process.env.DEV_MODE === "true" || process.env.TEST_MODE === "true";
 
-// const serve = require('sirv')('path_to_your_static_files', { dev: true });
+class ServerCache {
+  constructor(filePath = path.resolve(__dirname, './server.cache.json')) {
+    this.filePath = filePath;
+    this._load();
+  }
 
+  isTested() {
+    return this._cache.tested === true;
+  }
+
+  setTested(value = true) {
+    this._cache.tested = value;
+    this._save();
+  }
+
+  reset(override = {tested: false}) {
+    this._save(override);
+    this._cache = override;
+  }
+
+  _load() {
+    try {
+      this._cache = JSON.parse(fs.readFileSync(this.filePath, 'utf8'));
+      return this._cache;
+    } catch (e) {
+      if (e.code === 'ENOENT') {
+        this._save();
+      } else {
+        throw e;
+      }
+    }
+  }
+
+  _save(override) {
+    fs.writeFileSync(this.filePath, JSON.stringify(override || this._cache || {tested: false}, null, 2));
+  }
+}
 
 
 // Ensure .env config is set (specifically SCOUT9_API_KEY)
@@ -30,6 +63,11 @@ const configuration = new Configuration({
   apiKey: process.env.SCOUT9_API_KEY
 });
 const scout9 = new Scout9Api(configuration);
+const cache = new ServerCache();
+cache.reset();
+
+
+
 
 const handleError = (e, res = undefined) => {
   let name = e?.name || 'Runtime Error';
@@ -70,6 +108,7 @@ if (dev) {
   app.use(compression());
   app.use(sirv(path.resolve(__dirname, 'public'), {dev: true}));
 }
+
 // Root application POST endpoint will run the scout9 app
 app.post(dev ? '/dev/workflow' : '/', async (req, res) => {
   try {
@@ -85,9 +124,27 @@ app.post(dev ? '/dev/workflow' : '/', async (req, res) => {
 
 // For local development: parse a message
 if (dev) {
+
   app.get('/dev/config', async (req, res, next) => {
-    res.writeHead(200, {'Content-Type': 'application/json'});
-    res.end(JSON.stringify(config));
+    try {
+      if (!cache.isTested()) {
+        const testableEntities = config.entities.filter(e => e?.definitions?.length > 0 || e?.training?.length > 0);
+        if (dev && testableEntities.length > 0) {
+          console.log(`${colors.grey(`${colors.cyan('>')} Testing ${colors.bold(colors.white(testableEntities.length))} Entities...`)}`);
+          const _res = await scout9.parse({
+            message: 'Dummy message to parse',
+            language: 'en',
+            entities: testableEntities
+          });
+          cache.setTested();
+          console.log(`\t${colors.green(`+ ${testableEntities.length} Entities passed`)}`);
+        }
+      }
+      res.writeHead(200, {'Content-Type': 'application/json'});
+      res.end(JSON.stringify(config));
+    } catch (e) {
+      handleError(e);
+    }
   });
 
   app.post('/dev/parse', async (req, res, next) => {
@@ -101,13 +158,27 @@ if (dev) {
       const payload = await scout9.parse({
         message,
         language: 'en',
-        entities: (config.entities || [])
-      }).then((res => res.data));
+        entities: config.entities
+      }).then((_res => _res.data));
       let fields = '';
       for (const [key, value] of Object.entries(payload.context)) {
         fields += `\n\t\t${colors.bold(colors.white(key))}: ${colors.grey(JSON.stringify(value))}`;
       }
       console.log(`\tParsed in ${payload.ms}ms:${colors.grey(`${fields}`)}`);
+      res.writeHead(200, {'Content-Type': 'application/json'});
+      res.end(JSON.stringify(payload));
+    } catch (e) {
+      handleError(e, res);
+    }
+  });
+
+  app.post('/dev/forward', async (req, res, next) => {
+    try {
+      // req.body: {message: string}
+      const {convo} = req.body;
+      console.log(`${colors.grey(`${colors.cyan('>')} Forwarding...`)}`);
+      const payload = await scout9.forward({convo}).then((_res => _res.data));
+      console.log(`\tParsed in ${payload?.ms}ms`);
       res.writeHead(200, {'Content-Type': 'application/json'});
       res.end(JSON.stringify(payload));
     } catch (e) {
@@ -136,9 +207,9 @@ if (dev) {
         persona,
         llm: config.llm,
         pmt: config.pmt
-      }).then((res => res.data));
-      console.log(`\t${colors.grey(`Response:\n${colors.green('"')}${colors.bold(colors.white(payload.message))}`)}${colors.green(
-        '"')}\n(elapsed ${payload.ms}ms)`);
+      }).then((_res => _res.data));
+      console.log(`\t${colors.grey(`Response: ${colors.green('"')}${colors.bold(colors.white(payload.message))}`)}${colors.green(
+        '"')} (elapsed ${payload.ms}ms)`);
       res.writeHead(200, {'Content-Type': 'application/json'});
       res.end(JSON.stringify(payload));
     } catch (e) {
@@ -193,21 +264,6 @@ app.listen(process.env.PORT || 8080, err => {
 
   if (process.env.SCOUT9_API_KEY === '<insert-scout9-api-key>') {
     console.log(`${colors.red('SCOUT9_API_KEY has not been set in your .env file.')} ${colors.grey('You can find your API key in the Scout9 dashboard.')} ${colors.bold(colors.cyan('https://scout9.com'))}`);
-  }
-
-  const testableEntities = config.entities.filter(e => e?.definitions?.length > 0 || e?.training?.length > 0);
-  if (dev && testableEntities.length > 0) {
-    scout9.parse({
-      message: 'Dummy message to parse',
-      language: 'en',
-      entities: testableEntities
-    }).then((_res) => {
-      console.log(`\t${colors.green(`+ ${testableEntities.length} Entities passed`)}`);
-    })
-      .catch((err) => {
-        console.log(`${colors.red('Entity test failed')}`);
-        handleError(err);
-      });
   }
 
 });

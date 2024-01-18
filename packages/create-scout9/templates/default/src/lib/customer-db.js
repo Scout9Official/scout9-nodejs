@@ -1,4 +1,4 @@
-import {Scout9CRM} from '@scout9/crm';
+import Scout9CRM from '@scout9/crm';
 
 const crm = new Scout9CRM({apiKey: process.env.SCOUT9_API_KEY});
 

@@ -1,6 +1,6 @@
 {
   "name": "create-scout9",
-  "version": "1.0.0-alpha.0.0.17",
+  "version": "1.0.0-alpha.0.0.18",
   "bin": "./bin.js",
   "main": "./index.js",
   "publishConfig": {
@@ -12,7 +12,8 @@
   },
   "scripts": {
     "build": "node scripts/build-templates",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "test": "jest"
   },
   "types": "types/index.d.ts",
   "type": "module",

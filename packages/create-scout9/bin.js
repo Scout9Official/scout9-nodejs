@@ -58,22 +58,22 @@ const options = await p.group(
         })
       }),
 
-    // types: () =>
-    //   p.select({
-    //     message: 'Add type checking with TypeScript?',
-    //     initialValue: /** @type {'checkjs' | 'typescript' | null} */ (null),
-    //     options: [
-    //       {
-    //         label: 'Yes, using JavaScript with JSDoc comments',
-    //         value: 'checkjs'
-    //       },
-    //       {
-    //         label: 'Yes, using TypeScript syntax',
-    //         value: 'typescript'
-    //       },
-    //       { label: 'No', value: null }
-    //     ]
-    //   }),
+    types: () =>
+      p.select({
+        message: 'Add type checking with TypeScript?',
+        initialValue: /** @type {'checkjs' | 'typescript' | null} */ (null),
+        options: [
+          {
+            label: 'Yes, using JavaScript with JSDoc comments',
+            value: 'checkjs'
+          },
+          {
+            label: 'Yes, using TypeScript syntax',
+            value: 'typescript'
+          },
+          { label: 'No', value: null }
+        ]
+      }),
 
     features: () =>
       p.multiselect({
@@ -100,9 +100,8 @@ const options = await p.group(
 
 await create(cwd, {
   name: path.basename(path.resolve(cwd)),
-  template: /** @type {'default' | 'skeleton' | 'skeletonlib'} */ (options.template),
-  // types: options.types,
-  types: 'checkjs',
+  template: /** @type {'default' | 'skeleton' | 'skeletonlib' | 'default-typscript} */ (options.template),
+  types: options.types,
   prettier: options.features.includes('prettier'),
   eslint: options.features.includes('eslint'),
   jest: options.features.includes('jest'),
