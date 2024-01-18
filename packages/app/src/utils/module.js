@@ -1,4 +1,4 @@
-import { fileURLToPath, pathToFileURL } from 'node:url';
+import { pathToFileURL } from 'node:url';
 
 async function importFile(filePath) {
   const fileUrl = pathToFileURL(filePath);

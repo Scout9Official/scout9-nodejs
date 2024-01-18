@@ -77,9 +77,9 @@ const cwd = path.dirname(modulePath);
   try {
     const runResult = await Scout9Platform.run(event, {cwd: process.cwd(), mode: 'development', folder: 'src-test'});
     console.log('Run result:', runResult);
-    // process.exit(0);
+    process.exit(0);
   } catch (e) {
     console.error(e);
-    // process.exit(1);
+    process.exit(1);
   }
 })();
