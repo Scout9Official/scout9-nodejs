@@ -11,3 +11,5 @@ package-lock.json
 /types/*.map
 .custom-out-dir
 .scout9
+
+tmp

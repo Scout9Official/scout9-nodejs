@@ -152,7 +152,7 @@ console.log(`  ${i++}: ${bold(cyan(`${package_manager} install`))}`);
 console.log(`  ${i++}: ${bold(cyan('git init && git add -A && git commit -m "Initial commit"'))} (optional)`);
 console.log(`  ${i++}: ${bold(magenta('Add your SCOUT9_API_KEY to .env'))} (login for api key: https://scout9.com/b)`);
 // console.log(`  ${i++}: ${bold(cyan(`${package_manager} run dev`))}`);
-console.log(`  ${i++}: ${bold(cyan(`${package_manager} run dev -- --open`))}`);
+console.log(`  ${i++}: ${bold(cyan(`${package_manager} run dev`))}`);
 
 // console.log(`\nTo close the dev server, hit ${bold(cyan('Ctrl-C'))}`);
 console.log(`\nStuck? Connect with us on ${bold('Discord')} ${cyan('https://discord.gg/kG8hZwc5sQ')}`);

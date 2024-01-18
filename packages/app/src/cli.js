@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import sade from 'sade';
 import colors from 'kleur';
 import path from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { Scout9Platform } from './platform.js';
 import { coalesceToError } from './utils/index.js';
 
@@ -41,8 +42,9 @@ prog
     .describe('Sync your project with your Scout9 account (copies any missing personas and entities into your project)')
     .example('sync')
     .option('--mode', 'Specify a mode for loading environment variables', 'production')
-    .option('--src', 'Project source code fold', 'src')
-    .action(async ({mode, src}) => {
+    .option('--src', 'Project source code folder', 'src')
+    .option('--dest', 'Project build destination folder', './tmp/project')
+    .action(async ({mode, src, dest}) => {
         if (!fs.existsSync('.env')) {
             console.warn(`Missing ${path.resolve('.env')} — skipping`);
             return;
@@ -120,11 +122,13 @@ prog
         mode = coerceMode(mode);
         try {
             process.env.DEV_MODE = "true";
-            await Scout9Platform.build({cwd: process.cwd(), mode, src, dest});
-            import(`${process.cwd()}/${dest}/app.js`);
+            const cwd = process.cwd();
+            await Scout9Platform.build({cwd, mode, src, dest});
+            await import(pathToFileURL(path.join(cwd, `${dest}/app.js`)));
         } catch (e) {
             handle_error(e);
         }
     });
+
 
 prog.parse(process.argv, {unknown: (arg) => `Unknown option: ${arg}`});

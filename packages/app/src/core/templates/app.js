@@ -7,7 +7,7 @@ import { config as dotenv } from 'dotenv';
 import { Configuration, Scout9Api } from '@scout9/admin';
 import path from 'node:path';
 import fs from 'node:fs';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import projectApp from './src/app.js';
 import config from './config.js';
 
