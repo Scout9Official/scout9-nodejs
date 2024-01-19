@@ -126,6 +126,8 @@ app.post(dev ? '/dev/workflow' : '/', async (req, res) => {
 if (dev) {
 
   app.get('/dev/config', async (req, res, next) => {
+    res.writeHead(200, {'Content-Type': 'application/json'});
+    res.end(JSON.stringify(config));
     try {
       if (!cache.isTested()) {
         const testableEntities = config.entities.filter(e => e?.definitions?.length > 0 || e?.training?.length > 0);
@@ -140,9 +142,8 @@ if (dev) {
           console.log(`\t${colors.green(`+ ${testableEntities.length} Entities passed`)}`);
         }
       }
-      res.writeHead(200, {'Content-Type': 'application/json'});
-      res.end(JSON.stringify(config));
     } catch (e) {
+      console.error(e);
       handleError(e);
     }
   });
