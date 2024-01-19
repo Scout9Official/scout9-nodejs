@@ -179,7 +179,7 @@ if (dev) {
       const {convo} = req.body;
       console.log(`${colors.grey(`${colors.cyan('>')} Forwarding...`)}`);
       const payload = await scout9.forward({convo}).then((_res => _res.data));
-      console.log(`\tParsed in ${payload?.ms}ms`);
+      console.log(`\tForwarded in ${payload?.ms}ms`);
       res.writeHead(200, {'Content-Type': 'application/json'});
       res.end(JSON.stringify(payload));
     } catch (e) {

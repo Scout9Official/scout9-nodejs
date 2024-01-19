@@ -1,4 +1,3 @@
-import { BaseApiParams } from '@scout9/app';
 
 /**
  * Represents the configuration provided in src/index.{js | ts} in a project
@@ -242,7 +241,7 @@ export type QueryApiFunction<Params = Record<string, string>, Response = any> = 
 export type GetApiFunction<Params = Record<string, string>, Response = any> = (params: ApiFunctionParams<Params>) => Promise<EventResponse<Response>>;
 export type PostApiFunction<Params = Record<string, string>, Response = any> = (params: ApiFunctionParams<Params>) => Promise<EventResponse<Response>>;
 export type PutApiFunction<Params = Record<string, string>, Response = any> = (params: ApiFunctionParams<Params>) => Promise<EventResponse<Response>>;
-export type PatchApiFunction<Params = Record<string, string>, RequestBody = any, Response = any> = (params: BaseApiParams<Params> & {body: Partial<RequestBody>}) => Promise<EventResponse<Response>>;
+export type PatchApiFunction<Params = Record<string, string>, RequestBody = any, Response = any> = (params: ApiFunctionParams<Params> & {body: Partial<RequestBody>}) => Promise<EventResponse<Response>>;
 export type DeleteApiFunction<Params = Record<string, string>, Response = any> = (params: ApiFunctionParams<Params>) => Promise<EventResponse<Response>>;
 
 

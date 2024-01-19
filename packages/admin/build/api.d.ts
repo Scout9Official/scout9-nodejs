@@ -537,12 +537,6 @@ export interface Conversation {
      */
     '$agent': string;
     /**
-     * Business this conversation is in
-     * @type {string}
-     * @memberof Conversation
-     */
-    '$business': string;
-    /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
      * @memberof Conversation
@@ -598,12 +592,6 @@ export interface ConversationBase {
      * @memberof ConversationBase
      */
     '$agent': string;
-    /**
-     * Business this conversation is in
-     * @type {string}
-     * @memberof ConversationBase
-     */
-    '$business': string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -774,12 +762,6 @@ export interface ConversationCreateRequest {
      */
     '$agent': string;
     /**
-     * Business this conversation is in
-     * @type {string}
-     * @memberof ConversationCreateRequest
-     */
-    '$business': string;
-    /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
      * @memberof ConversationCreateRequest
@@ -908,12 +890,6 @@ export interface ConversationGetResponse {
      * @memberof ConversationGetResponse
      */
     '$agent': string;
-    /**
-     * Business this conversation is in
-     * @type {string}
-     * @memberof ConversationGetResponse
-     */
-    '$business': string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -1070,12 +1046,6 @@ export interface ConversationUpdateRequest {
      */
     '$agent': string;
     /**
-     * Business this conversation is in
-     * @type {string}
-     * @memberof ConversationUpdateRequest
-     */
-    '$business': string;
-    /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
      * @memberof ConversationUpdateRequest
@@ -1216,12 +1186,6 @@ export interface ConversationWithId {
      * @memberof ConversationWithId
      */
     '$agent': string;
-    /**
-     * Business this conversation is in
-     * @type {string}
-     * @memberof ConversationWithId
-     */
-    '$business': string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -2924,7 +2888,7 @@ export interface ExistsConditionAllOf {
     'operator': ExistenceOperator;
 }
 /**
- * Forward a conversation to the corresponding agent
+ * Forward a conversation to the corresponding agent. .convo can be overwritten with a Conversation object, .latestMessage overrides the given conversations latest user messages (typically only used in development). If \".forward\" is provided, it will override the default agent to forward to.
  * @export
  * @interface ForwardRequest
  */
@@ -2941,6 +2905,12 @@ export interface ForwardRequest {
      * @memberof ForwardRequest
      */
     'forward'?: ForwardRequestForward;
+    /**
+     *
+     * @type {ForwardRequestLatestMessage}
+     * @memberof ForwardRequest
+     */
+    'latestMessage'?: ForwardRequestLatestMessage;
 }
 /**
  * @type ForwardRequestConvo
@@ -2977,6 +2947,43 @@ export declare const ForwardRequestForwardOneOfModeEnum: {
     readonly Immediately: "immediately";
 };
 export type ForwardRequestForwardOneOfModeEnum = typeof ForwardRequestForwardOneOfModeEnum[keyof typeof ForwardRequestForwardOneOfModeEnum];
+/**
+ *
+ * @export
+ * @interface ForwardRequestLatestMessage
+ */
+export interface ForwardRequestLatestMessage {
+    /**
+     * The role of the message (customer, agent, or business)
+     * @type {string}
+     * @memberof ForwardRequestLatestMessage
+     */
+    'role': ForwardRequestLatestMessageRoleEnum;
+    /**
+     * The content of the message
+     * @type {string}
+     * @memberof ForwardRequestLatestMessage
+     */
+    'content': string;
+    /**
+     * The name of the sender
+     * @type {string}
+     * @memberof ForwardRequestLatestMessage
+     */
+    'name'?: string;
+    /**
+     * The time the message was sent
+     * @type {string}
+     * @memberof ForwardRequestLatestMessage
+     */
+    'time': string;
+}
+export declare const ForwardRequestLatestMessageRoleEnum: {
+    readonly Customer: "customer";
+    readonly Agent: "agent";
+    readonly Context: "context";
+};
+export type ForwardRequestLatestMessageRoleEnum = typeof ForwardRequestLatestMessageRoleEnum[keyof typeof ForwardRequestLatestMessageRoleEnum];
 /**
  *
  * @export
@@ -4807,12 +4814,6 @@ export interface ScheduleCreateRequest {
      */
     '$agent': string;
     /**
-     * Business this conversation is in
-     * @type {string}
-     * @memberof ScheduleCreateRequest
-     */
-    '$business': string;
-    /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
      * @memberof ScheduleCreateRequest
@@ -4924,12 +4925,6 @@ export interface ScheduleGetResponse {
      */
     '$agent': string;
     /**
-     * Business this conversation is in
-     * @type {string}
-     * @memberof ScheduleGetResponse
-     */
-    '$business': string;
-    /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
      * @memberof ScheduleGetResponse
@@ -5020,12 +5015,6 @@ export interface ScheduleGroupCreateRequest {
      * @memberof ScheduleGroupCreateRequest
      */
     '$agent': string;
-    /**
-     * Business this conversation is in
-     * @type {string}
-     * @memberof ScheduleGroupCreateRequest
-     */
-    '$business': string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -5124,12 +5113,6 @@ export interface ScheduleGroupGetResponse {
      * @memberof ScheduleGroupGetResponse
      */
     '$agent': string;
-    /**
-     * Business this conversation is in
-     * @type {string}
-     * @memberof ScheduleGroupGetResponse
-     */
-    '$business': string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -5253,12 +5236,6 @@ export interface ScheduleGroupUpdateRequest {
      * @memberof ScheduleGroupUpdateRequest
      */
     '$agent': string;
-    /**
-     * Business this conversation is in
-     * @type {string}
-     * @memberof ScheduleGroupUpdateRequest
-     */
-    '$business': string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -5396,12 +5373,6 @@ export interface ScheduleUpdateRequest {
      */
     '$agent': string;
     /**
-     * Business this conversation is in
-     * @type {string}
-     * @memberof ScheduleUpdateRequest
-     */
-    '$business': string;
-    /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
      * @memberof ScheduleUpdateRequest
@@ -5513,12 +5484,6 @@ export interface ScheduledConversation {
      */
     '$agent': string;
     /**
-     * Business this conversation is in
-     * @type {string}
-     * @memberof ScheduledConversation
-     */
-    '$business': string;
-    /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
      * @memberof ScheduledConversation
@@ -5592,12 +5557,6 @@ export interface ScheduledConversationGroup {
      * @memberof ScheduledConversationGroup
      */
     '$agent': string;
-    /**
-     * Business this conversation is in
-     * @type {string}
-     * @memberof ScheduledConversationGroup
-     */
-    '$business': string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
