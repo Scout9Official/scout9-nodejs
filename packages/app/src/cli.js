@@ -37,25 +37,25 @@ const coerceMode = (mode) => {
     }
 };
 
-prog
-    .command('sync')
-    .describe('Sync your project with your Scout9 account (copies any missing personas and entities into your project)')
-    .example('sync')
-    .option('--mode', 'Specify a mode for loading environment variables', 'production')
-    .option('--src', 'Project source code folder', 'src')
-    .action(async ({mode, src}) => {
-        if (!fs.existsSync('.env')) {
-            console.warn(`Missing ${path.resolve('.env')} — skipping`);
-            return;
-        }
-        mode = coerceMode(mode);
-        try {
-            await Scout9Platform.sync({cwd: process.cwd(), mode: coerceMode(mode), src});
-            process.exit(0);
-        } catch (e) {
-            handle_error(e);
-        }
-    });
+// prog
+//     .command('sync')
+//     .describe('Sync your project with your Scout9 account (copies any missing personas and entities into your project)')
+//     .example('sync')
+//     .option('--mode', 'Specify a mode for loading environment variables', 'production')
+//     .option('--src', 'Project source code folder', 'src')
+//     .action(async ({mode, src}) => {
+//         if (!fs.existsSync('.env')) {
+//             console.warn(`Missing ${path.resolve('.env')} — skipping`);
+//             return;
+//         }
+//         mode = coerceMode(mode);
+//         try {
+//             await Scout9Platform.sync({cwd: process.cwd(), mode: coerceMode(mode), src});
+//             process.exit(0);
+//         } catch (e) {
+//             handle_error(e);
+//         }
+//     });
 
 prog
     .command('build')
