@@ -35,6 +35,7 @@ export function loadEnvConfig({cwd = process.cwd()} = {}) {
 export async function loadConfig({cwd = process.cwd(), src = 'src', logger = new ProgressLogger()} = {}) {
     // Load globals
     loadEnvConfig({cwd, src, logger});
+
     const baseProjectConfig = await loadProjectConfig({cwd, src, logger});
     const entitiesConfig = await loadEntitiesConfig({cwd, src, logger});
     const agentsConfig = await loadAgentConfig({cwd, src, logger});
@@ -44,7 +45,10 @@ export async function loadConfig({cwd = process.cwd(), src = 'src', logger = new
      * @type {Scout9ProjectBuildConfig}
      */
     const projectConfig = {
-        ...baseProjectConfig, entities: entitiesConfig, agents: agentsConfig, workflows: workflowsConfig
+        ...baseProjectConfig,
+        entities: entitiesConfig,
+        agents: agentsConfig,
+        workflows: workflowsConfig
     };
 
     // Validate the config

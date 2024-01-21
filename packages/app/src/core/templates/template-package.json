@@ -1,0 +1,13 @@
+{
+  "name": "templates",
+  "version": "1.0.0",
+  "description": "Used to ensure template app.js gets the correct dependencies.",
+  "dependencies": {
+    "body-parser": "latest",
+    "compression": "latest",
+    "dotenv": "latest",
+    "kleur": "latest",
+    "polka": "latest",
+    "sirv": "latest"
+  }
+}

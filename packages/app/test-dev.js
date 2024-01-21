@@ -11,6 +11,6 @@ import path from 'node:path';
     const modulePath = fileURLToPath(import.meta.url);
     const cwd = path.dirname(modulePath);
     const filePath = path.join(cwd, dest, 'app.js');
-    import(pathToFileURL(filePath));
+    await import(pathToFileURL(filePath));
     // await import(`${process.cwd()}/${dest}/app.js`);
 })();

@@ -1,14 +1,14 @@
 import archiver from 'archiver';
 import { globSync } from 'glob';
-import { exec } from 'node:child_process';
 import fss from 'node:fs';
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { fileURLToPath, pathToFileURL } from 'node:url';
+import { fileURLToPath } from 'node:url';
 import fetch, { FormData } from 'node-fetch';
 import { Configuration, Scout9Api } from '@scout9/admin';
 import { checkVariableType, ProgressLogger, requireProjectFile } from '../utils/index.js';
 import decompress from 'decompress';
+import { loadUserPackageJson } from './config/project.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -42,29 +42,29 @@ async function platformApi(url, options = {}, retries = 0) {
 /**
  * @returns {Promise<string>} - the output directory
  */
-async function runNpmRunBuild({cwd = process.cwd(), src = 'src'} = {}) {
-  const pkg = JSON.parse(fss.readFileSync(new URL(`${cwd}/package.json`, import.meta.url), 'utf-8'));
-  // Package.json must have a "build" script
-  const buildScript = pkg.scripts?.build;
-  if (!buildScript) {
-    // If no build script then just return src
-    return path.resolve(cwd, src);
-  }
-  // "build" script cannot contain "scout9 build" (otherwise we'll get stuck in a loop)
-  if (buildScript.includes('scout9 build')) {
-    throw new Error(`"build" script in ${cwd}/package.json cannot contain "scout9 build"`);
-  }
-
-  return new Promise((resolve, reject) => {
-    exec('npm run build', {cwd}, (error, stdout, stderr) => {
-      if (error) {
-        return reject(error);
-      }
-      // @TODO don't assume build script created a "build" directory (use a config)
-      return resolve(path.resolve(cwd, 'build'));
-    });
-  });
-}
+// async function runNpmRunBuild({cwd = process.cwd(), src = 'src'} = {}) {
+//   const pkg = JSON.parse(fss.readFileSync(new URL(`${cwd}/package.json`, import.meta.url), 'utf-8'));
+//   // Package.json must have a "build" script
+//   const buildScript = pkg.scripts?.build;
+//   if (!buildScript) {
+//     // If no build script then just return src
+//     return path.resolve(cwd, src);
+//   }
+//   // "build" script cannot contain "scout9 build" (otherwise we'll get stuck in a loop)
+//   if (buildScript.includes('scout9 build')) {
+//     throw new Error(`"build" script in ${cwd}/package.json cannot contain "scout9 build"`);
+//   }
+//
+//   return new Promise((resolve, reject) => {
+//     exec('npm run build', {cwd}, (error, stdout, stderr) => {
+//       if (error) {
+//         return reject(error);
+//       }
+//       // @TODO don't assume build script created a "build" directory (use a config)
+//       return resolve(path.resolve(cwd, 'build'));
+//     });
+//   });
+// }
 
 
 function zipDirectory(source, out) {
@@ -162,36 +162,21 @@ async function buildApp(cwd, src, dest, config) {
   };
 
   const srcDir = path.resolve(cwd, src);
-  const appJsPath = path.resolve(__dirname, './templates/app.js');
-  const packageJsonPath = path.resolve(cwd, './package.json');
-  const packageTestJsonPath = path.resolve(cwd, './package-test.json');
-
-  const packageJsonUrl = pathToFileURL(packageJsonPath)
-  const packageTestJsonUrl = pathToFileURL(packageTestJsonPath)
-
+  const appTemplateJsPath = path.resolve(__dirname, './templates/app.js');
+  const templatePackagePath = path.resolve(__dirname, './templates/template-package.json');
 
   // Copy src directory
   await copyDirectory(srcDir, path.resolve(dest, 'src'));
 
-  // Copy package.json
-  if (fss.existsSync(packageTestJsonUrl)) {
-    const pkgTest = JSON.parse(await fs.readFile(new URL(packageTestJsonUrl, import.meta.url), 'utf-8'));
-    pkgTest.scripts.start = 'node app.js';
-    pkgTest.dependencies.polka = 'latest';
-    pkgTest.dependencies['body-parser'] = 'latest';
-    await fs.writeFile(path.resolve(dest, 'package.json'), JSON.stringify(pkgTest, null, 2));
-    // await fs.copyFile(packageTestJson, path.resolve(dest, 'package.json'));
-  } else {
-    const pkg = JSON.parse(await fs.readFile(new URL(packageJsonUrl, import.meta.url), 'utf-8'));
-    pkg.scripts.start = 'node app.js';
-    pkg.dependencies.polka = 'latest';
-    pkg.dependencies['body-parser'] = 'latest';
-    await fs.writeFile(path.resolve(dest, 'package.json'), JSON.stringify(pkg, null, 2));
-    // await fs.copyFile(packageJson, path.resolve(dest, 'package.json'));
-  }
+  // Copy user target package.json, first load app.js dependencies/scripts and append to target package.json
+  const packageTemplate = JSON.parse(await fs.readFile(new URL(templatePackagePath, import.meta.url), 'utf-8'));
+  const {pkg} = await loadUserPackageJson({cwd});
+  pkg.dependencies = {...pkg.dependencies, ...packageTemplate.dependencies};
+  pkg.scripts.start = 'node app.js';
+  await fs.writeFile(path.resolve(dest, 'package.json'), JSON.stringify(pkg, null, 2));
 
   // Copy app.js
-  await fs.copyFile(appJsPath, path.resolve(dest, 'app.js'));
+  await fs.copyFile(appTemplateJsPath, path.resolve(dest, 'app.js'));
 
   // Copy config.js - redact any sensitive information // @TODO use security encoder
   const redactedConfig = {

@@ -3,6 +3,13 @@
  * Represents the configuration provided in src/index.{js | ts} in a project
  */
 export interface Scout9ProjectConfig {
+
+  /**
+   * Tag to reference this application
+   * @defaut your local package.json name + version, or scout9-app-v1.0.0
+   */
+  tag?: string;
+
   llm: {
     engine: 'openai',
     model: (string & {})
@@ -33,6 +40,14 @@ export interface Scout9ProjectConfig {
     engine: 'scout9',
     model: 'orin-1.0' | 'orin-2.0-preview'
   }
+
+  /**
+   * Determines the max auto replies without further conversation progression (defined by new context data gathered)
+   * before the conversation is locked and requires manual intervention
+   * @default 3
+   */
+  maxLockAttempts?: number;
+
   /**
    * Configure the initial contexts for every conversation
    */

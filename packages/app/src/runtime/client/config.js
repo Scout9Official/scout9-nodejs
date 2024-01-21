@@ -47,12 +47,14 @@ const pmtSchema = z.object({
 });
 
 export const Scout9ProjectBuildConfigSchema = z.object({
+  tag: z.string().optional(), // Defaults to scout9-app-v1.0.0
   agents: agentsConfigurationSchema,
   entities: entitiesRootProjectConfigurationSchema,
   workflows: WorkflowsConfigurationSchema,
   llm: z.union([llmSchema, llamaSchema, bardSchema]),
   pmt: pmtSchema,
   initialContext: z.array(z.string()),
+  maxLockAttempts: z.number().min(0).max(20).optional(),
   organization: z.object({
     name: z.string(),
     description: z.string(),
