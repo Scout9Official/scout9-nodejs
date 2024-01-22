@@ -36,7 +36,7 @@ async function loadEntityApiConfig(cwd, filePath) {
  * @returns {Promise<EntitiesBuildConfig>}
  */
 export default async function loadEntitiesConfig(
-  {cwd = process.cwd(), src = 'src', logger} = {}
+  {cwd = process.cwd(), src = 'src', logger, cb = (message) => {}} = {}
 ) {
   /** @type EntitiesBuildConfig */
   const config = [];

@@ -27,7 +27,7 @@ export async function loadUserPackageJson({cwd = process.cwd()}) {
 /**
  * @returns {Promise<Scout9ProjectConfig>}
  */
-export default async function loadProjectConfig({cwd = process.cwd(), src = 'src'} = {}) {
+export default async function loadProjectConfig({cwd = process.cwd(), src = 'src', cb = (message) => {}} = {}) {
   // Grab the project tag name (from their package.json)
   const {pkg} = await loadUserPackageJson({cwd});
   const tag = `${pkg.name || 'scout9-app'}-v${pkg.version || '0.0.1'}`;

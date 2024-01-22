@@ -10,14 +10,18 @@ export const Scout9Platform = {
    */
   sync: async function ({cwd = process.cwd(), src = 'src', mode = 'production'} = {}) {
     const logger = new ProgressLogger();
+    const messages = [];
     try {
       logger.log(`Loading config...`);
-      const config = await loadConfig({cwd, src, logger});
+      const config = await loadConfig({cwd, src, logger, cb: (m) => messages.push(m)});
       logger.success('Config Loaded');
       logger.log(`Syncing project...`);
       const result = await _sync({cwd, src, logger}, config);
+      messages.map(logger.info);
       logger.success('Sync Complete');
       logger.done();
+      logger.info()
+      messages.forEach(console.log);
       return {
         config,
         sync: result
@@ -34,13 +38,15 @@ export const Scout9Platform = {
    */
   deploy: async function ({cwd = process.cwd(), src = './src', dest = '/tmp/project', mode = 'production'} = {}) {
     const logger = new ProgressLogger();
+    const messages = [];
     try {
       logger.log(`Loading config...`);
-      const config = await loadConfig({cwd, src, logger});
+      const config = await loadConfig({cwd, src, logger, cb: (m) => messages.push(m)});
       logger.success('Config Loaded');
       // await _build({cwd, folder}, config);
       logger.log(`Deploying project...`);
       await _deploy({cwd, src, dest, logger}, config);
+      messages.map(logger.info);
       logger.success('Deploy Complete');
       logger.done();
       return config;
@@ -55,12 +61,14 @@ export const Scout9Platform = {
    */
   build: async function ({cwd = process.cwd(), src = './src', dest = '/tmp/project', mode = 'production'} = {}) {
     const logger = new ProgressLogger();
+    const messages = [];
     try {
       logger.log(`Loading config...`);
-      const config = await loadConfig({cwd, src, mode, logger});
+      const config = await loadConfig({cwd, src, mode, logger, cb: (m) => messages.push(m)});
       logger.success('Config Loaded');
       logger.log(`Building project...`);
       await _build({cwd, src, dest, mode, logger}, config);
+      messages.map(logger.info);
       logger.success('Build Complete');
       logger.done();
       return config;

@@ -12,7 +12,8 @@ import {
 export default async function loadWorkflowsConfig(
   {
     cwd = process.cwd(),
-    src = 'src'
+    src = 'src',
+    cb = (message) => {}
   } = {}
 ) {
   // const config = globSync(path.resolve(cwd, `${src}/workflows/**/workflow.{ts,js}`), {cwd, absolute: true})

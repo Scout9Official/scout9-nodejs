@@ -294,6 +294,7 @@ export async function runConfig({cwd = process.cwd(), src, logger = new Progress
  * Builds a local project
  * @param {{cwd: string; src: string; dest: string; logger: ProgressLogger; mode: string;}} - build options
  * @param {Scout9ProjectBuildConfig} config
+ * @returns {messages: string[]}
  */
 export async function build({
   cwd = process.cwd(),
@@ -302,6 +303,7 @@ export async function build({
   logger = new ProgressLogger(),
   mode
 } = {}, config) {
+  const messages = [];
   // 1. Lint: Run validation checks
 
   // Check if app looks good
@@ -332,6 +334,7 @@ export async function build({
 
   // 3. Run tests
   // console.log('@TODO run tests');
+  return {messages}
 }
 
 /**
