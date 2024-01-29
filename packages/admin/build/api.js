@@ -534,9 +534,10 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         },
         /**
          *
-         * @summary Gets a context
+         * @summary Gets a context. Don\'t use, create your context entities within your Scout9 application.
          * @param {string} id id of entity to query
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         context: async (id, options = {}) => {
@@ -565,9 +566,10 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         },
         /**
          *
-         * @summary Create a new context
+         * @summary Create a new context. Don\'t use, create your context entities within your Scout9 application.
          * @param {CreateContextRequest} createContextRequest
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         contextCreate: async (createContextRequest, options = {}) => {
@@ -717,9 +719,10 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         },
         /**
          *
-         * @summary Deletes a schedule
+         * @summary Deletes a context entity. Don\'t use, create your context entities within your Scout9 application.
          * @param {string} id id of entity to query
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         contextDelete: async (id, options = {}) => {
@@ -777,10 +780,11 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
             };
         },
         /**
-         * Update a context
+         * Update a context. . Don\'t use, create your context entities within your Scout9 application.
          * @summary Update a context
          * @param {UpdateContextRequest} updateContextRequest
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         contextUpdate: async (updateContextRequest, options = {}) => {
@@ -808,10 +812,11 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         },
         /**
          *
-         * @summary Gets all or specific set of contexts
+         * @summary Gets all or specific set of contexts. Don\'t use, create your context entities within your Scout9 application.
          * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
          * @param {Array<string>} [id] ids for the entities this id belongs to
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         contexts: async (q, id, options = {}) => {
@@ -841,9 +846,10 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         },
         /**
          *
-         * @summary Creates new contexts
+         * @summary Creates new contexts. Don\'t use, create your context entities within your Scout9 application.
          * @param {CreateContextsRequest} createContextsRequest
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         contextsCreate: async (createContextsRequest, options = {}) => {
@@ -871,9 +877,10 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         },
         /**
          *
-         * @summary Deletes multiple contexts
+         * @summary Deletes multiple contexts. Don\'t use, create your context entities within your Scout9 application.
          * @param {Array<string>} [id] ids for the entities this id belongs to
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         contextsDelete: async (id, options = {}) => {
@@ -900,9 +907,10 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         },
         /**
          *
-         * @summary Updates multiple contexts
+         * @summary Updates multiple contexts. Don\'t use, create your context entities within your Scout9 application.
          * @param {UpdateContextRequest} updateContextRequest
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         contextsUpdate: async (updateContextRequest, options = {}) => {
@@ -1540,35 +1548,6 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         },
         /**
          *
-         * @summary Returns information about a specific file.
-         * @param {string} fileId The ID of the file to use for this request
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        file: async (fileId, options = {}) => {
-            // verify required parameter 'fileId' is not null or undefined
-            (0, common_1.assertParamExists)('file', 'fileId', fileId);
-            const localVarPath = `/files/{file_id}`
-                .replace(`{${"file_id"}}`, encodeURIComponent(String(fileId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options };
-            const localVarHeaderParameter = {};
-            const localVarQueryParameter = {};
-            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
-            return {
-                url: (0, common_1.toPathString)(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         *
          * @summary Upload a file that contains document(s) to be used across various endpoints/features. Currently, the size of all the files uploaded by one organization can be up to 1 GB. Please contact us if you need to increase the storage limit.
          * @param {File} file
          * @param {PurposeEnum} [purpose]
@@ -1576,9 +1555,9 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        fileCreate: async (file, purpose, entity, options = {}) => {
+        fileUpload: async (file, purpose, entity, options = {}) => {
             // verify required parameter 'file' is not null or undefined
-            (0, common_1.assertParamExists)('fileCreate', 'file', file);
+            (0, common_1.assertParamExists)('fileUpload', 'file', file);
             const localVarPath = `/v1-utils-files`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
@@ -1604,64 +1583,6 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
             localVarRequestOptions.data = localVarFormParams;
-            return {
-                url: (0, common_1.toPathString)(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         *
-         * @summary Delete a file.
-         * @param {string} fileId The ID of the file to use for this request
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        fileDelete: async (fileId, options = {}) => {
-            // verify required parameter 'fileId' is not null or undefined
-            (0, common_1.assertParamExists)('fileDelete', 'fileId', fileId);
-            const localVarPath = `/files/{file_id}`
-                .replace(`{${"file_id"}}`, encodeURIComponent(String(fileId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options };
-            const localVarHeaderParameter = {};
-            const localVarQueryParameter = {};
-            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
-            return {
-                url: (0, common_1.toPathString)(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         *
-         * @summary Returns the contents of the specified file
-         * @param {string} fileId The ID of the file to use for this request
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        fileDownload: async (fileId, options = {}) => {
-            // verify required parameter 'fileId' is not null or undefined
-            (0, common_1.assertParamExists)('fileDownload', 'fileId', fileId);
-            const localVarPath = `/files/{file_id}/content`
-                .replace(`{${"file_id"}}`, encodeURIComponent(String(fileId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options };
-            const localVarHeaderParameter = {};
-            const localVarQueryParameter = {};
-            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
             return {
                 url: (0, common_1.toPathString)(localVarUrlObj),
                 options: localVarRequestOptions,
@@ -1913,6 +1834,36 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         },
         /**
          *
+         * @summary Purchase phone for a given agent
+         * @param {PurchasePhoneRequest} purchasePhoneRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        purchasePhone: async (purchasePhoneRequest, options = {}) => {
+            // verify required parameter 'purchasePhoneRequest' is not null or undefined
+            (0, common_1.assertParamExists)('purchasePhone', 'purchasePhoneRequest', purchasePhoneRequest);
+            const localVarPath = `/v1-purchasePhone`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options };
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
+            localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(purchasePhoneRequest, localVarRequestOptions, configuration);
+            return {
+                url: (0, common_1.toPathString)(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
          * @summary Runs your auto-reply app on the Scout9 platform.
          * @param {WorkflowEvent} workflowEvent
          * @param {*} [options] Override http request option.
@@ -1999,9 +1950,10 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         },
         /**
          *
-         * @summary Deletes a schedule
+         * @summary Deletes a schedule, don\'t use just delete the message id.
          * @param {string} id id of entity to query
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         scheduleDelete: async (id, options = {}) => {
@@ -2030,9 +1982,10 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         },
         /**
          *
-         * @summary Creates a new schedule group
+         * @summary Creates a new schedule group, don\'t use just create multiple messages with schedule delay params
          * @param {ScheduleGroupCreateRequest} scheduleGroupCreateRequest
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         scheduleGroupCreate: async (scheduleGroupCreateRequest, options = {}) => {
@@ -2060,9 +2013,10 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         },
         /**
          *
-         * @summary Deletes and cancels a schedule group
+         * @summary Deletes and cancels a schedule group. Don\'t use just delete the messages individually
          * @param {string} id id of entity to query
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         scheduleGroupDelete: async (id, options = {}) => {
@@ -2091,9 +2045,10 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         },
         /**
          *
-         * @summary Gets a schedule group
+         * @summary Gets a schedule group, don\'t use just create multiple messages with schedule delay params
          * @param {string} id id of entity to query
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         scheduleGroupRetrieve: async (id, options = {}) => {
@@ -2122,9 +2077,10 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         },
         /**
          *
-         * @summary Updates a schedule group
+         * @summary Updates a schedule group, don\'t use just create multiple messages with schedule delay params
          * @param {ScheduleGroupUpdateRequest} scheduleGroupUpdateRequest
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         scheduleGroupUpdate: async (scheduleGroupUpdateRequest, options = {}) => {
@@ -2152,9 +2108,10 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         },
         /**
          *
-         * @summary Gets a schedule
+         * @summary Gets a schedule, don\'t use just use message api
          * @param {string} id id of entity to query
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         scheduleRetrieve: async (id, options = {}) => {
@@ -2183,9 +2140,10 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         },
         /**
          *
-         * @summary Updates a schedule
+         * @summary Updates a schedule, don\'t use just use message schedule delay params
          * @param {ScheduleUpdateRequest} scheduleUpdateRequest
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         scheduleUpdate: async (scheduleUpdateRequest, options = {}) => {
@@ -2213,9 +2171,10 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         },
         /**
          *
-         * @summary Gets a workflow
+         * @summary Gets a workflow. This has been replaced by Scout9 application.
          * @param {string} id id of entity to query
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         workflow: async (id, options = {}) => {
@@ -2244,9 +2203,10 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         },
         /**
          *
-         * @summary Create a new workflow
+         * @summary Create a new workflow. This has been replaced by Scout9 application.
          * @param {CreateWorkflowRequest} createWorkflowRequest
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         workflowCreate: async (createWorkflowRequest, options = {}) => {
@@ -2274,9 +2234,10 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         },
         /**
          *
-         * @summary Deletes a workflow
+         * @summary Deletes a workflow. This has been replaced by Scout9 application.
          * @param {string} id id of entity to query
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         workflowDelete: async (id, options = {}) => {
@@ -2305,9 +2266,10 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         },
         /**
          *
-         * @summary Update a workflow
+         * @summary Update a workflow. This has been replaced by Scout9 application.
          * @param {UpdateWorkflowRequest} updateWorkflowRequest
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         workflowUpdate: async (updateWorkflowRequest, options = {}) => {
@@ -2335,10 +2297,11 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         },
         /**
          *
-         * @summary Gets all or specific set of workflows
+         * @summary Gets all or specific set of workflows. This has been replaced by Scout9 application.
          * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
          * @param {Array<string>} [id] ids for the entities this id belongs to
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         workflows: async (q, id, options = {}) => {
@@ -2368,9 +2331,10 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         },
         /**
          *
-         * @summary Creates new workflows
+         * @summary Creates new workflows. This has been replaced by Scout9 application.
          * @param {CreateWorkflowsRequest} createWorkflowsRequest
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         workflowsCreate: async (createWorkflowsRequest, options = {}) => {
@@ -2398,9 +2362,10 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         },
         /**
          *
-         * @summary Deletes multiple workflows
+         * @summary Deletes multiple workflows. This has been replaced by Scout9 application.
          * @param {Array<string>} [id] ids for the entities this id belongs to
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         workflowsDelete: async (id, options = {}) => {
@@ -2427,9 +2392,10 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         },
         /**
          *
-         * @summary Updates multiple workflows
+         * @summary Updates multiple workflows. This has been replaced by Scout9 application.
          * @param {UpdateWorkflowRequest} updateWorkflowRequest
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         workflowsUpdate: async (updateWorkflowRequest, options = {}) => {
@@ -2556,9 +2522,10 @@ const Scout9ApiFp = function (configuration) {
         },
         /**
          *
-         * @summary Gets a context
+         * @summary Gets a context. Don\'t use, create your context entities within your Scout9 application.
          * @param {string} id id of entity to query
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         async context(id, options) {
@@ -2567,9 +2534,10 @@ const Scout9ApiFp = function (configuration) {
         },
         /**
          *
-         * @summary Create a new context
+         * @summary Create a new context. Don\'t use, create your context entities within your Scout9 application.
          * @param {CreateContextRequest} createContextRequest
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         async contextCreate(createContextRequest, options) {
@@ -2622,9 +2590,10 @@ const Scout9ApiFp = function (configuration) {
         },
         /**
          *
-         * @summary Deletes a schedule
+         * @summary Deletes a context entity. Don\'t use, create your context entities within your Scout9 application.
          * @param {string} id id of entity to query
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         async contextDelete(id, options) {
@@ -2643,10 +2612,11 @@ const Scout9ApiFp = function (configuration) {
             return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
         },
         /**
-         * Update a context
+         * Update a context. . Don\'t use, create your context entities within your Scout9 application.
          * @summary Update a context
          * @param {UpdateContextRequest} updateContextRequest
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         async contextUpdate(updateContextRequest, options) {
@@ -2655,10 +2625,11 @@ const Scout9ApiFp = function (configuration) {
         },
         /**
          *
-         * @summary Gets all or specific set of contexts
+         * @summary Gets all or specific set of contexts. Don\'t use, create your context entities within your Scout9 application.
          * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
          * @param {Array<string>} [id] ids for the entities this id belongs to
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         async contexts(q, id, options) {
@@ -2667,9 +2638,10 @@ const Scout9ApiFp = function (configuration) {
         },
         /**
          *
-         * @summary Creates new contexts
+         * @summary Creates new contexts. Don\'t use, create your context entities within your Scout9 application.
          * @param {CreateContextsRequest} createContextsRequest
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         async contextsCreate(createContextsRequest, options) {
@@ -2678,9 +2650,10 @@ const Scout9ApiFp = function (configuration) {
         },
         /**
          *
-         * @summary Deletes multiple contexts
+         * @summary Deletes multiple contexts. Don\'t use, create your context entities within your Scout9 application.
          * @param {Array<string>} [id] ids for the entities this id belongs to
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         async contextsDelete(id, options) {
@@ -2689,9 +2662,10 @@ const Scout9ApiFp = function (configuration) {
         },
         /**
          *
-         * @summary Updates multiple contexts
+         * @summary Updates multiple contexts. Don\'t use, create your context entities within your Scout9 application.
          * @param {UpdateContextRequest} updateContextRequest
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         async contextsUpdate(updateContextRequest, options) {
@@ -2922,17 +2896,6 @@ const Scout9ApiFp = function (configuration) {
         },
         /**
          *
-         * @summary Returns information about a specific file.
-         * @param {string} fileId The ID of the file to use for this request
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async file(fileId, options) {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.file(fileId, options);
-            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
-        },
-        /**
-         *
          * @summary Upload a file that contains document(s) to be used across various endpoints/features. Currently, the size of all the files uploaded by one organization can be up to 1 GB. Please contact us if you need to increase the storage limit.
          * @param {File} file
          * @param {PurposeEnum} [purpose]
@@ -2940,30 +2903,8 @@ const Scout9ApiFp = function (configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async fileCreate(file, purpose, entity, options) {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.fileCreate(file, purpose, entity, options);
-            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
-        },
-        /**
-         *
-         * @summary Delete a file.
-         * @param {string} fileId The ID of the file to use for this request
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async fileDelete(fileId, options) {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.fileDelete(fileId, options);
-            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
-        },
-        /**
-         *
-         * @summary Returns the contents of the specified file
-         * @param {string} fileId The ID of the file to use for this request
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async fileDownload(fileId, options) {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.fileDownload(fileId, options);
+        async fileUpload(file, purpose, entity, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.fileUpload(file, purpose, entity, options);
             return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
         },
         /**
@@ -3057,6 +2998,17 @@ const Scout9ApiFp = function (configuration) {
         },
         /**
          *
+         * @summary Purchase phone for a given agent
+         * @param {PurchasePhoneRequest} purchasePhoneRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async purchasePhone(purchasePhoneRequest, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.purchasePhone(purchasePhoneRequest, options);
+            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+        },
+        /**
+         *
          * @summary Runs your auto-reply app on the Scout9 platform.
          * @param {WorkflowEvent} workflowEvent
          * @param {*} [options] Override http request option.
@@ -3090,9 +3042,10 @@ const Scout9ApiFp = function (configuration) {
         },
         /**
          *
-         * @summary Deletes a schedule
+         * @summary Deletes a schedule, don\'t use just delete the message id.
          * @param {string} id id of entity to query
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         async scheduleDelete(id, options) {
@@ -3101,9 +3054,10 @@ const Scout9ApiFp = function (configuration) {
         },
         /**
          *
-         * @summary Creates a new schedule group
+         * @summary Creates a new schedule group, don\'t use just create multiple messages with schedule delay params
          * @param {ScheduleGroupCreateRequest} scheduleGroupCreateRequest
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         async scheduleGroupCreate(scheduleGroupCreateRequest, options) {
@@ -3112,9 +3066,10 @@ const Scout9ApiFp = function (configuration) {
         },
         /**
          *
-         * @summary Deletes and cancels a schedule group
+         * @summary Deletes and cancels a schedule group. Don\'t use just delete the messages individually
          * @param {string} id id of entity to query
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         async scheduleGroupDelete(id, options) {
@@ -3123,9 +3078,10 @@ const Scout9ApiFp = function (configuration) {
         },
         /**
          *
-         * @summary Gets a schedule group
+         * @summary Gets a schedule group, don\'t use just create multiple messages with schedule delay params
          * @param {string} id id of entity to query
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         async scheduleGroupRetrieve(id, options) {
@@ -3134,9 +3090,10 @@ const Scout9ApiFp = function (configuration) {
         },
         /**
          *
-         * @summary Updates a schedule group
+         * @summary Updates a schedule group, don\'t use just create multiple messages with schedule delay params
          * @param {ScheduleGroupUpdateRequest} scheduleGroupUpdateRequest
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         async scheduleGroupUpdate(scheduleGroupUpdateRequest, options) {
@@ -3145,9 +3102,10 @@ const Scout9ApiFp = function (configuration) {
         },
         /**
          *
-         * @summary Gets a schedule
+         * @summary Gets a schedule, don\'t use just use message api
          * @param {string} id id of entity to query
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         async scheduleRetrieve(id, options) {
@@ -3156,9 +3114,10 @@ const Scout9ApiFp = function (configuration) {
         },
         /**
          *
-         * @summary Updates a schedule
+         * @summary Updates a schedule, don\'t use just use message schedule delay params
          * @param {ScheduleUpdateRequest} scheduleUpdateRequest
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         async scheduleUpdate(scheduleUpdateRequest, options) {
@@ -3167,9 +3126,10 @@ const Scout9ApiFp = function (configuration) {
         },
         /**
          *
-         * @summary Gets a workflow
+         * @summary Gets a workflow. This has been replaced by Scout9 application.
          * @param {string} id id of entity to query
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         async workflow(id, options) {
@@ -3178,9 +3138,10 @@ const Scout9ApiFp = function (configuration) {
         },
         /**
          *
-         * @summary Create a new workflow
+         * @summary Create a new workflow. This has been replaced by Scout9 application.
          * @param {CreateWorkflowRequest} createWorkflowRequest
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         async workflowCreate(createWorkflowRequest, options) {
@@ -3189,9 +3150,10 @@ const Scout9ApiFp = function (configuration) {
         },
         /**
          *
-         * @summary Deletes a workflow
+         * @summary Deletes a workflow. This has been replaced by Scout9 application.
          * @param {string} id id of entity to query
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         async workflowDelete(id, options) {
@@ -3200,9 +3162,10 @@ const Scout9ApiFp = function (configuration) {
         },
         /**
          *
-         * @summary Update a workflow
+         * @summary Update a workflow. This has been replaced by Scout9 application.
          * @param {UpdateWorkflowRequest} updateWorkflowRequest
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         async workflowUpdate(updateWorkflowRequest, options) {
@@ -3211,10 +3174,11 @@ const Scout9ApiFp = function (configuration) {
         },
         /**
          *
-         * @summary Gets all or specific set of workflows
+         * @summary Gets all or specific set of workflows. This has been replaced by Scout9 application.
          * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
          * @param {Array<string>} [id] ids for the entities this id belongs to
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         async workflows(q, id, options) {
@@ -3223,9 +3187,10 @@ const Scout9ApiFp = function (configuration) {
         },
         /**
          *
-         * @summary Creates new workflows
+         * @summary Creates new workflows. This has been replaced by Scout9 application.
          * @param {CreateWorkflowsRequest} createWorkflowsRequest
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         async workflowsCreate(createWorkflowsRequest, options) {
@@ -3234,9 +3199,10 @@ const Scout9ApiFp = function (configuration) {
         },
         /**
          *
-         * @summary Deletes multiple workflows
+         * @summary Deletes multiple workflows. This has been replaced by Scout9 application.
          * @param {Array<string>} [id] ids for the entities this id belongs to
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         async workflowsDelete(id, options) {
@@ -3245,9 +3211,10 @@ const Scout9ApiFp = function (configuration) {
         },
         /**
          *
-         * @summary Updates multiple workflows
+         * @summary Updates multiple workflows. This has been replaced by Scout9 application.
          * @param {UpdateWorkflowRequest} updateWorkflowRequest
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         async workflowsUpdate(updateWorkflowRequest, options) {
@@ -3347,9 +3314,10 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
         },
         /**
          *
-         * @summary Gets a context
+         * @summary Gets a context. Don\'t use, create your context entities within your Scout9 application.
          * @param {string} id id of entity to query
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         context(id, options) {
@@ -3357,9 +3325,10 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
         },
         /**
          *
-         * @summary Create a new context
+         * @summary Create a new context. Don\'t use, create your context entities within your Scout9 application.
          * @param {CreateContextRequest} createContextRequest
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         contextCreate(createContextRequest, options) {
@@ -3407,9 +3376,10 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
         },
         /**
          *
-         * @summary Deletes a schedule
+         * @summary Deletes a context entity. Don\'t use, create your context entities within your Scout9 application.
          * @param {string} id id of entity to query
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         contextDelete(id, options) {
@@ -3426,10 +3396,11 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
             return localVarFp.contextTest(contextTestRequest, options).then((request) => request(axios, basePath));
         },
         /**
-         * Update a context
+         * Update a context. . Don\'t use, create your context entities within your Scout9 application.
          * @summary Update a context
          * @param {UpdateContextRequest} updateContextRequest
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         contextUpdate(updateContextRequest, options) {
@@ -3437,10 +3408,11 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
         },
         /**
          *
-         * @summary Gets all or specific set of contexts
+         * @summary Gets all or specific set of contexts. Don\'t use, create your context entities within your Scout9 application.
          * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
          * @param {Array<string>} [id] ids for the entities this id belongs to
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         contexts(q, id, options) {
@@ -3448,9 +3420,10 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
         },
         /**
          *
-         * @summary Creates new contexts
+         * @summary Creates new contexts. Don\'t use, create your context entities within your Scout9 application.
          * @param {CreateContextsRequest} createContextsRequest
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         contextsCreate(createContextsRequest, options) {
@@ -3458,9 +3431,10 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
         },
         /**
          *
-         * @summary Deletes multiple contexts
+         * @summary Deletes multiple contexts. Don\'t use, create your context entities within your Scout9 application.
          * @param {Array<string>} [id] ids for the entities this id belongs to
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         contextsDelete(id, options) {
@@ -3468,9 +3442,10 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
         },
         /**
          *
-         * @summary Updates multiple contexts
+         * @summary Updates multiple contexts. Don\'t use, create your context entities within your Scout9 application.
          * @param {UpdateContextRequest} updateContextRequest
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         contextsUpdate(updateContextRequest, options) {
@@ -3680,16 +3655,6 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
         },
         /**
          *
-         * @summary Returns information about a specific file.
-         * @param {string} fileId The ID of the file to use for this request
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        file(fileId, options) {
-            return localVarFp.file(fileId, options).then((request) => request(axios, basePath));
-        },
-        /**
-         *
          * @summary Upload a file that contains document(s) to be used across various endpoints/features. Currently, the size of all the files uploaded by one organization can be up to 1 GB. Please contact us if you need to increase the storage limit.
          * @param {File} file
          * @param {PurposeEnum} [purpose]
@@ -3697,28 +3662,8 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        fileCreate(file, purpose, entity, options) {
-            return localVarFp.fileCreate(file, purpose, entity, options).then((request) => request(axios, basePath));
-        },
-        /**
-         *
-         * @summary Delete a file.
-         * @param {string} fileId The ID of the file to use for this request
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        fileDelete(fileId, options) {
-            return localVarFp.fileDelete(fileId, options).then((request) => request(axios, basePath));
-        },
-        /**
-         *
-         * @summary Returns the contents of the specified file
-         * @param {string} fileId The ID of the file to use for this request
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        fileDownload(fileId, options) {
-            return localVarFp.fileDownload(fileId, options).then((request) => request(axios, basePath));
+        fileUpload(file, purpose, entity, options) {
+            return localVarFp.fileUpload(file, purpose, entity, options).then((request) => request(axios, basePath));
         },
         /**
          *
@@ -3803,6 +3748,16 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
         },
         /**
          *
+         * @summary Purchase phone for a given agent
+         * @param {PurchasePhoneRequest} purchasePhoneRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        purchasePhone(purchasePhoneRequest, options) {
+            return localVarFp.purchasePhone(purchasePhoneRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
          * @summary Runs your auto-reply app on the Scout9 platform.
          * @param {WorkflowEvent} workflowEvent
          * @param {*} [options] Override http request option.
@@ -3833,9 +3788,10 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
         },
         /**
          *
-         * @summary Deletes a schedule
+         * @summary Deletes a schedule, don\'t use just delete the message id.
          * @param {string} id id of entity to query
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         scheduleDelete(id, options) {
@@ -3843,9 +3799,10 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
         },
         /**
          *
-         * @summary Creates a new schedule group
+         * @summary Creates a new schedule group, don\'t use just create multiple messages with schedule delay params
          * @param {ScheduleGroupCreateRequest} scheduleGroupCreateRequest
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         scheduleGroupCreate(scheduleGroupCreateRequest, options) {
@@ -3853,9 +3810,10 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
         },
         /**
          *
-         * @summary Deletes and cancels a schedule group
+         * @summary Deletes and cancels a schedule group. Don\'t use just delete the messages individually
          * @param {string} id id of entity to query
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         scheduleGroupDelete(id, options) {
@@ -3863,9 +3821,10 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
         },
         /**
          *
-         * @summary Gets a schedule group
+         * @summary Gets a schedule group, don\'t use just create multiple messages with schedule delay params
          * @param {string} id id of entity to query
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         scheduleGroupRetrieve(id, options) {
@@ -3873,9 +3832,10 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
         },
         /**
          *
-         * @summary Updates a schedule group
+         * @summary Updates a schedule group, don\'t use just create multiple messages with schedule delay params
          * @param {ScheduleGroupUpdateRequest} scheduleGroupUpdateRequest
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         scheduleGroupUpdate(scheduleGroupUpdateRequest, options) {
@@ -3883,9 +3843,10 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
         },
         /**
          *
-         * @summary Gets a schedule
+         * @summary Gets a schedule, don\'t use just use message api
          * @param {string} id id of entity to query
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         scheduleRetrieve(id, options) {
@@ -3893,9 +3854,10 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
         },
         /**
          *
-         * @summary Updates a schedule
+         * @summary Updates a schedule, don\'t use just use message schedule delay params
          * @param {ScheduleUpdateRequest} scheduleUpdateRequest
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         scheduleUpdate(scheduleUpdateRequest, options) {
@@ -3903,9 +3865,10 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
         },
         /**
          *
-         * @summary Gets a workflow
+         * @summary Gets a workflow. This has been replaced by Scout9 application.
          * @param {string} id id of entity to query
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         workflow(id, options) {
@@ -3913,9 +3876,10 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
         },
         /**
          *
-         * @summary Create a new workflow
+         * @summary Create a new workflow. This has been replaced by Scout9 application.
          * @param {CreateWorkflowRequest} createWorkflowRequest
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         workflowCreate(createWorkflowRequest, options) {
@@ -3923,9 +3887,10 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
         },
         /**
          *
-         * @summary Deletes a workflow
+         * @summary Deletes a workflow. This has been replaced by Scout9 application.
          * @param {string} id id of entity to query
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         workflowDelete(id, options) {
@@ -3933,9 +3898,10 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
         },
         /**
          *
-         * @summary Update a workflow
+         * @summary Update a workflow. This has been replaced by Scout9 application.
          * @param {UpdateWorkflowRequest} updateWorkflowRequest
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         workflowUpdate(updateWorkflowRequest, options) {
@@ -3943,10 +3909,11 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
         },
         /**
          *
-         * @summary Gets all or specific set of workflows
+         * @summary Gets all or specific set of workflows. This has been replaced by Scout9 application.
          * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
          * @param {Array<string>} [id] ids for the entities this id belongs to
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         workflows(q, id, options) {
@@ -3954,9 +3921,10 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
         },
         /**
          *
-         * @summary Creates new workflows
+         * @summary Creates new workflows. This has been replaced by Scout9 application.
          * @param {CreateWorkflowsRequest} createWorkflowsRequest
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         workflowsCreate(createWorkflowsRequest, options) {
@@ -3964,9 +3932,10 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
         },
         /**
          *
-         * @summary Deletes multiple workflows
+         * @summary Deletes multiple workflows. This has been replaced by Scout9 application.
          * @param {Array<string>} [id] ids for the entities this id belongs to
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         workflowsDelete(id, options) {
@@ -3974,9 +3943,10 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
         },
         /**
          *
-         * @summary Updates multiple workflows
+         * @summary Updates multiple workflows. This has been replaced by Scout9 application.
          * @param {UpdateWorkflowRequest} updateWorkflowRequest
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         workflowsUpdate(updateWorkflowRequest, options) {
@@ -4083,9 +4053,10 @@ class Scout9Api extends base_1.BaseAPI {
     }
     /**
      *
-     * @summary Gets a context
+     * @summary Gets a context. Don\'t use, create your context entities within your Scout9 application.
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
@@ -4094,9 +4065,10 @@ class Scout9Api extends base_1.BaseAPI {
     }
     /**
      *
-     * @summary Create a new context
+     * @summary Create a new context. Don\'t use, create your context entities within your Scout9 application.
      * @param {CreateContextRequest} createContextRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
@@ -4149,9 +4121,10 @@ class Scout9Api extends base_1.BaseAPI {
     }
     /**
      *
-     * @summary Deletes a schedule
+     * @summary Deletes a context entity. Don\'t use, create your context entities within your Scout9 application.
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
@@ -4170,10 +4143,11 @@ class Scout9Api extends base_1.BaseAPI {
         return (0, exports.Scout9ApiFp)(this.configuration).contextTest(contextTestRequest, options).then((request) => request(this.axios, this.basePath));
     }
     /**
-     * Update a context
+     * Update a context. . Don\'t use, create your context entities within your Scout9 application.
      * @summary Update a context
      * @param {UpdateContextRequest} updateContextRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
@@ -4182,10 +4156,11 @@ class Scout9Api extends base_1.BaseAPI {
     }
     /**
      *
-     * @summary Gets all or specific set of contexts
+     * @summary Gets all or specific set of contexts. Don\'t use, create your context entities within your Scout9 application.
      * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
      * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
@@ -4194,9 +4169,10 @@ class Scout9Api extends base_1.BaseAPI {
     }
     /**
      *
-     * @summary Creates new contexts
+     * @summary Creates new contexts. Don\'t use, create your context entities within your Scout9 application.
      * @param {CreateContextsRequest} createContextsRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
@@ -4205,9 +4181,10 @@ class Scout9Api extends base_1.BaseAPI {
     }
     /**
      *
-     * @summary Deletes multiple contexts
+     * @summary Deletes multiple contexts. Don\'t use, create your context entities within your Scout9 application.
      * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
@@ -4216,9 +4193,10 @@ class Scout9Api extends base_1.BaseAPI {
     }
     /**
      *
-     * @summary Updates multiple contexts
+     * @summary Updates multiple contexts. Don\'t use, create your context entities within your Scout9 application.
      * @param {UpdateContextRequest} updateContextRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
@@ -4449,17 +4427,6 @@ class Scout9Api extends base_1.BaseAPI {
     }
     /**
      *
-     * @summary Returns information about a specific file.
-     * @param {string} fileId The ID of the file to use for this request
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    file(fileId, options) {
-        return (0, exports.Scout9ApiFp)(this.configuration).file(fileId, options).then((request) => request(this.axios, this.basePath));
-    }
-    /**
-     *
      * @summary Upload a file that contains document(s) to be used across various endpoints/features. Currently, the size of all the files uploaded by one organization can be up to 1 GB. Please contact us if you need to increase the storage limit.
      * @param {File} file
      * @param {PurposeEnum} [purpose]
@@ -4468,30 +4435,8 @@ class Scout9Api extends base_1.BaseAPI {
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
-    fileCreate(file, purpose, entity, options) {
-        return (0, exports.Scout9ApiFp)(this.configuration).fileCreate(file, purpose, entity, options).then((request) => request(this.axios, this.basePath));
-    }
-    /**
-     *
-     * @summary Delete a file.
-     * @param {string} fileId The ID of the file to use for this request
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    fileDelete(fileId, options) {
-        return (0, exports.Scout9ApiFp)(this.configuration).fileDelete(fileId, options).then((request) => request(this.axios, this.basePath));
-    }
-    /**
-     *
-     * @summary Returns the contents of the specified file
-     * @param {string} fileId The ID of the file to use for this request
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    fileDownload(fileId, options) {
-        return (0, exports.Scout9ApiFp)(this.configuration).fileDownload(fileId, options).then((request) => request(this.axios, this.basePath));
+    fileUpload(file, purpose, entity, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).fileUpload(file, purpose, entity, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      *
@@ -4584,6 +4529,17 @@ class Scout9Api extends base_1.BaseAPI {
     }
     /**
      *
+     * @summary Purchase phone for a given agent
+     * @param {PurchasePhoneRequest} purchasePhoneRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    purchasePhone(purchasePhoneRequest, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).purchasePhone(purchasePhoneRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     *
      * @summary Runs your auto-reply app on the Scout9 platform.
      * @param {WorkflowEvent} workflowEvent
      * @param {*} [options] Override http request option.
@@ -4617,9 +4573,10 @@ class Scout9Api extends base_1.BaseAPI {
     }
     /**
      *
-     * @summary Deletes a schedule
+     * @summary Deletes a schedule, don\'t use just delete the message id.
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
@@ -4628,9 +4585,10 @@ class Scout9Api extends base_1.BaseAPI {
     }
     /**
      *
-     * @summary Creates a new schedule group
+     * @summary Creates a new schedule group, don\'t use just create multiple messages with schedule delay params
      * @param {ScheduleGroupCreateRequest} scheduleGroupCreateRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
@@ -4639,9 +4597,10 @@ class Scout9Api extends base_1.BaseAPI {
     }
     /**
      *
-     * @summary Deletes and cancels a schedule group
+     * @summary Deletes and cancels a schedule group. Don\'t use just delete the messages individually
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
@@ -4650,9 +4609,10 @@ class Scout9Api extends base_1.BaseAPI {
     }
     /**
      *
-     * @summary Gets a schedule group
+     * @summary Gets a schedule group, don\'t use just create multiple messages with schedule delay params
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
@@ -4661,9 +4621,10 @@ class Scout9Api extends base_1.BaseAPI {
     }
     /**
      *
-     * @summary Updates a schedule group
+     * @summary Updates a schedule group, don\'t use just create multiple messages with schedule delay params
      * @param {ScheduleGroupUpdateRequest} scheduleGroupUpdateRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
@@ -4672,9 +4633,10 @@ class Scout9Api extends base_1.BaseAPI {
     }
     /**
      *
-     * @summary Gets a schedule
+     * @summary Gets a schedule, don\'t use just use message api
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
@@ -4683,9 +4645,10 @@ class Scout9Api extends base_1.BaseAPI {
     }
     /**
      *
-     * @summary Updates a schedule
+     * @summary Updates a schedule, don\'t use just use message schedule delay params
      * @param {ScheduleUpdateRequest} scheduleUpdateRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
@@ -4694,9 +4657,10 @@ class Scout9Api extends base_1.BaseAPI {
     }
     /**
      *
-     * @summary Gets a workflow
+     * @summary Gets a workflow. This has been replaced by Scout9 application.
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
@@ -4705,9 +4669,10 @@ class Scout9Api extends base_1.BaseAPI {
     }
     /**
      *
-     * @summary Create a new workflow
+     * @summary Create a new workflow. This has been replaced by Scout9 application.
      * @param {CreateWorkflowRequest} createWorkflowRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
@@ -4716,9 +4681,10 @@ class Scout9Api extends base_1.BaseAPI {
     }
     /**
      *
-     * @summary Deletes a workflow
+     * @summary Deletes a workflow. This has been replaced by Scout9 application.
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
@@ -4727,9 +4693,10 @@ class Scout9Api extends base_1.BaseAPI {
     }
     /**
      *
-     * @summary Update a workflow
+     * @summary Update a workflow. This has been replaced by Scout9 application.
      * @param {UpdateWorkflowRequest} updateWorkflowRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
@@ -4738,10 +4705,11 @@ class Scout9Api extends base_1.BaseAPI {
     }
     /**
      *
-     * @summary Gets all or specific set of workflows
+     * @summary Gets all or specific set of workflows. This has been replaced by Scout9 application.
      * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
      * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
@@ -4750,9 +4718,10 @@ class Scout9Api extends base_1.BaseAPI {
     }
     /**
      *
-     * @summary Creates new workflows
+     * @summary Creates new workflows. This has been replaced by Scout9 application.
      * @param {CreateWorkflowsRequest} createWorkflowsRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
@@ -4761,9 +4730,10 @@ class Scout9Api extends base_1.BaseAPI {
     }
     /**
      *
-     * @summary Deletes multiple workflows
+     * @summary Deletes multiple workflows. This has been replaced by Scout9 application.
      * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
@@ -4772,9 +4742,10 @@ class Scout9Api extends base_1.BaseAPI {
     }
     /**
      *
-     * @summary Updates multiple workflows
+     * @summary Updates multiple workflows. This has been replaced by Scout9 application.
      * @param {UpdateWorkflowRequest} updateWorkflowRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */

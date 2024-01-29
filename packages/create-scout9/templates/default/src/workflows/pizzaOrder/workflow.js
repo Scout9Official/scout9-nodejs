@@ -32,9 +32,6 @@ export default async function PizzaOrder(
   }
 
   if (!context.invoicePaid && context.invoiceId) {
-    if (!context.invoiceId) {
-      return {forward: true};
-    }
     const invoice = await getInvoice(context.invoiceId || '');
     return {
       instructions: `Let user know order is ready for payment at ${invoice.invoiceUrl}`

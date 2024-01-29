@@ -4766,6 +4766,50 @@ export declare const PmtConfigModelEnum: {
 };
 export type PmtConfigModelEnum = typeof PmtConfigModelEnum[keyof typeof PmtConfigModelEnum];
 /**
+ * Purchase a phone number subscription for an agent
+ * @export
+ * @interface PurchasePhoneRequest
+ */
+export interface PurchasePhoneRequest {
+    /**
+     * The agent\'s id
+     * @type {string}
+     * @memberof PurchasePhoneRequest
+     */
+    '$agent': string;
+    /**
+     * If true, the phone number will be purchased for an annual subscription
+     * @type {boolean}
+     * @memberof PurchasePhoneRequest
+     */
+    'annual'?: boolean;
+    /**
+     * The area code of the phone number to purchase
+     * @type {number}
+     * @memberof PurchasePhoneRequest
+     */
+    'areaCode'?: number;
+}
+/**
+ *
+ * @export
+ * @interface PurchasePhoneResponse
+ */
+export interface PurchasePhoneResponse {
+    /**
+     * the phone number that was purchased
+     * @type {string}
+     * @memberof PurchasePhoneResponse
+     */
+    'phoneNumber'?: string;
+    /**
+     * Internal identifier for the phone number
+     * @type {string}
+     * @memberof PurchasePhoneResponse
+     */
+    'sid'?: string;
+}
+/**
  *
  * @export
  * @enum {string}
@@ -7024,17 +7068,19 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
     agentsUpdate: (updateAgentsRequest: UpdateAgentsRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
-     * @summary Gets a context
+     * @summary Gets a context. Don\'t use, create your context entities within your Scout9 application.
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     context: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
-     * @summary Create a new context
+     * @summary Create a new context. Don\'t use, create your context entities within your Scout9 application.
      * @param {CreateContextRequest} createContextRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     contextCreate: (createContextRequest: CreateContextRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
@@ -7072,9 +7118,10 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
     contextDataUpdate: (updateContextDataRequest: UpdateContextDataRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
-     * @summary Deletes a schedule
+     * @summary Deletes a context entity. Don\'t use, create your context entities within your Scout9 application.
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     contextDelete: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
@@ -7087,43 +7134,48 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
      */
     contextTest: (contextTestRequest: ContextTestRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
-     * Update a context
+     * Update a context. . Don\'t use, create your context entities within your Scout9 application.
      * @summary Update a context
      * @param {UpdateContextRequest} updateContextRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     contextUpdate: (updateContextRequest: UpdateContextRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
-     * @summary Gets all or specific set of contexts
+     * @summary Gets all or specific set of contexts. Don\'t use, create your context entities within your Scout9 application.
      * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
      * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     contexts: (q?: string, id?: Array<string>, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
-     * @summary Creates new contexts
+     * @summary Creates new contexts. Don\'t use, create your context entities within your Scout9 application.
      * @param {CreateContextsRequest} createContextsRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     contextsCreate: (createContextsRequest: CreateContextsRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
-     * @summary Deletes multiple contexts
+     * @summary Deletes multiple contexts. Don\'t use, create your context entities within your Scout9 application.
      * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     contextsDelete: (id?: Array<string>, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
-     * @summary Updates multiple contexts
+     * @summary Updates multiple contexts. Don\'t use, create your context entities within your Scout9 application.
      * @param {UpdateContextRequest} updateContextRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     contextsUpdate: (updateContextRequest: UpdateContextRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
@@ -7291,14 +7343,6 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
     customersUpdate: (updateCustomersRequest: UpdateCustomersRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
-     * @summary Returns information about a specific file.
-     * @param {string} fileId The ID of the file to use for this request
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    file: (fileId: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
      * @summary Upload a file that contains document(s) to be used across various endpoints/features. Currently, the size of all the files uploaded by one organization can be up to 1 GB. Please contact us if you need to increase the storage limit.
      * @param {File} file
      * @param {PurposeEnum} [purpose]
@@ -7306,23 +7350,7 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    fileCreate: (file: File | Buffer | Blob, purpose?: PurposeEnum, entity?: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Delete a file.
-     * @param {string} fileId The ID of the file to use for this request
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    fileDelete: (fileId: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Returns the contents of the specified file
-     * @param {string} fileId The ID of the file to use for this request
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    fileDownload: (fileId: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    fileUpload: (file: File | Buffer | Blob, purpose?: PurposeEnum, entity?: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
      * @summary Returns a list of files that belong to the user\'s organization.
@@ -7390,6 +7418,14 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
     parse: (parseRequest: ParseRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
+     * @summary Purchase phone for a given agent
+     * @param {PurchasePhoneRequest} purchasePhoneRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    purchasePhone: (purchasePhoneRequest: PurchasePhoneRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
      * @summary Runs your auto-reply app on the Scout9 platform.
      * @param {WorkflowEvent} workflowEvent
      * @param {*} [options] Override http request option.
@@ -7414,122 +7450,137 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
     scheduleConversation: (scheduleCreateRequest: ScheduleCreateRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
-     * @summary Deletes a schedule
+     * @summary Deletes a schedule, don\'t use just delete the message id.
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     scheduleDelete: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
-     * @summary Creates a new schedule group
+     * @summary Creates a new schedule group, don\'t use just create multiple messages with schedule delay params
      * @param {ScheduleGroupCreateRequest} scheduleGroupCreateRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     scheduleGroupCreate: (scheduleGroupCreateRequest: ScheduleGroupCreateRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
-     * @summary Deletes and cancels a schedule group
+     * @summary Deletes and cancels a schedule group. Don\'t use just delete the messages individually
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     scheduleGroupDelete: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
-     * @summary Gets a schedule group
+     * @summary Gets a schedule group, don\'t use just create multiple messages with schedule delay params
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     scheduleGroupRetrieve: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
-     * @summary Updates a schedule group
+     * @summary Updates a schedule group, don\'t use just create multiple messages with schedule delay params
      * @param {ScheduleGroupUpdateRequest} scheduleGroupUpdateRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     scheduleGroupUpdate: (scheduleGroupUpdateRequest: ScheduleGroupUpdateRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
-     * @summary Gets a schedule
+     * @summary Gets a schedule, don\'t use just use message api
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     scheduleRetrieve: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
-     * @summary Updates a schedule
+     * @summary Updates a schedule, don\'t use just use message schedule delay params
      * @param {ScheduleUpdateRequest} scheduleUpdateRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     scheduleUpdate: (scheduleUpdateRequest: ScheduleUpdateRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
-     * @summary Gets a workflow
+     * @summary Gets a workflow. This has been replaced by Scout9 application.
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     workflow: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
-     * @summary Create a new workflow
+     * @summary Create a new workflow. This has been replaced by Scout9 application.
      * @param {CreateWorkflowRequest} createWorkflowRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     workflowCreate: (createWorkflowRequest: CreateWorkflowRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
-     * @summary Deletes a workflow
+     * @summary Deletes a workflow. This has been replaced by Scout9 application.
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     workflowDelete: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
-     * @summary Update a workflow
+     * @summary Update a workflow. This has been replaced by Scout9 application.
      * @param {UpdateWorkflowRequest} updateWorkflowRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     workflowUpdate: (updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
-     * @summary Gets all or specific set of workflows
+     * @summary Gets all or specific set of workflows. This has been replaced by Scout9 application.
      * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
      * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     workflows: (q?: string, id?: Array<string>, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
-     * @summary Creates new workflows
+     * @summary Creates new workflows. This has been replaced by Scout9 application.
      * @param {CreateWorkflowsRequest} createWorkflowsRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     workflowsCreate: (createWorkflowsRequest: CreateWorkflowsRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
-     * @summary Deletes multiple workflows
+     * @summary Deletes multiple workflows. This has been replaced by Scout9 application.
      * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     workflowsDelete: (id?: Array<string>, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
-     * @summary Updates multiple workflows
+     * @summary Updates multiple workflows. This has been replaced by Scout9 application.
      * @param {UpdateWorkflowRequest} updateWorkflowRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     workflowsUpdate: (updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
@@ -7606,17 +7657,19 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
     agentsUpdate(updateAgentsRequest: UpdateAgentsRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateAgentsResponse>>;
     /**
      *
-     * @summary Gets a context
+     * @summary Gets a context. Don\'t use, create your context entities within your Scout9 application.
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     context(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetContextResponse>>;
     /**
      *
-     * @summary Create a new context
+     * @summary Create a new context. Don\'t use, create your context entities within your Scout9 application.
      * @param {CreateContextRequest} createContextRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     contextCreate(createContextRequest: CreateContextRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateContextResponse>>;
@@ -7654,9 +7707,10 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
     contextDataUpdate(updateContextDataRequest: UpdateContextDataRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateContextDataResponse>>;
     /**
      *
-     * @summary Deletes a schedule
+     * @summary Deletes a context entity. Don\'t use, create your context entities within your Scout9 application.
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     contextDelete(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteContextResponse>>;
@@ -7669,43 +7723,48 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
      */
     contextTest(contextTestRequest: ContextTestRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ContextTestResponse>>;
     /**
-     * Update a context
+     * Update a context. . Don\'t use, create your context entities within your Scout9 application.
      * @summary Update a context
      * @param {UpdateContextRequest} updateContextRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     contextUpdate(updateContextRequest: UpdateContextRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateContextResponse>>;
     /**
      *
-     * @summary Gets all or specific set of contexts
+     * @summary Gets all or specific set of contexts. Don\'t use, create your context entities within your Scout9 application.
      * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
      * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     contexts(q?: string, id?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ListContextsResponseInner>>>;
     /**
      *
-     * @summary Creates new contexts
+     * @summary Creates new contexts. Don\'t use, create your context entities within your Scout9 application.
      * @param {CreateContextsRequest} createContextsRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     contextsCreate(createContextsRequest: CreateContextsRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateContextsResponse>>;
     /**
      *
-     * @summary Deletes multiple contexts
+     * @summary Deletes multiple contexts. Don\'t use, create your context entities within your Scout9 application.
      * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     contextsDelete(id?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteContextsResponse>>;
     /**
      *
-     * @summary Updates multiple contexts
+     * @summary Updates multiple contexts. Don\'t use, create your context entities within your Scout9 application.
      * @param {UpdateContextRequest} updateContextRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     contextsUpdate(updateContextRequest: UpdateContextRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateContextsResponse>>;
@@ -7873,14 +7932,6 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
     customersUpdate(updateCustomersRequest: UpdateCustomersRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateCustomersResponse>>;
     /**
      *
-     * @summary Returns information about a specific file.
-     * @param {string} fileId The ID of the file to use for this request
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    file(fileId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Scout9File>>;
-    /**
-     *
      * @summary Upload a file that contains document(s) to be used across various endpoints/features. Currently, the size of all the files uploaded by one organization can be up to 1 GB. Please contact us if you need to increase the storage limit.
      * @param {File} file
      * @param {PurposeEnum} [purpose]
@@ -7888,23 +7939,7 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    fileCreate(file: File | Buffer | Blob, purpose?: PurposeEnum, entity?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Scout9File>>;
-    /**
-     *
-     * @summary Delete a file.
-     * @param {string} fileId The ID of the file to use for this request
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    fileDelete(fileId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteFileResponse>>;
-    /**
-     *
-     * @summary Returns the contents of the specified file
-     * @param {string} fileId The ID of the file to use for this request
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    fileDownload(fileId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>>;
+    fileUpload(file: File | Buffer | Blob, purpose?: PurposeEnum, entity?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Scout9File>>;
     /**
      *
      * @summary Returns a list of files that belong to the user\'s organization.
@@ -7972,6 +8007,14 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
     parse(parseRequest: ParseRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ParseResponse>>;
     /**
      *
+     * @summary Purchase phone for a given agent
+     * @param {PurchasePhoneRequest} purchasePhoneRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    purchasePhone(purchasePhoneRequest: PurchasePhoneRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PurchasePhoneResponse>>;
+    /**
+     *
      * @summary Runs your auto-reply app on the Scout9 platform.
      * @param {WorkflowEvent} workflowEvent
      * @param {*} [options] Override http request option.
@@ -7998,122 +8041,137 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
     scheduleConversation(scheduleCreateRequest: ScheduleCreateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleCreateResponse>>;
     /**
      *
-     * @summary Deletes a schedule
+     * @summary Deletes a schedule, don\'t use just delete the message id.
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     scheduleDelete(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleRemoveResponse>>;
     /**
      *
-     * @summary Creates a new schedule group
+     * @summary Creates a new schedule group, don\'t use just create multiple messages with schedule delay params
      * @param {ScheduleGroupCreateRequest} scheduleGroupCreateRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     scheduleGroupCreate(scheduleGroupCreateRequest: ScheduleGroupCreateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleGroupCreateResponse>>;
     /**
      *
-     * @summary Deletes and cancels a schedule group
+     * @summary Deletes and cancels a schedule group. Don\'t use just delete the messages individually
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     scheduleGroupDelete(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleGroupRemoveResponse>>;
     /**
      *
-     * @summary Gets a schedule group
+     * @summary Gets a schedule group, don\'t use just create multiple messages with schedule delay params
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     scheduleGroupRetrieve(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleGroupGetResponse>>;
     /**
      *
-     * @summary Updates a schedule group
+     * @summary Updates a schedule group, don\'t use just create multiple messages with schedule delay params
      * @param {ScheduleGroupUpdateRequest} scheduleGroupUpdateRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     scheduleGroupUpdate(scheduleGroupUpdateRequest: ScheduleGroupUpdateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleGroupUpdateResponse>>;
     /**
      *
-     * @summary Gets a schedule
+     * @summary Gets a schedule, don\'t use just use message api
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     scheduleRetrieve(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleCreateResponse>>;
     /**
      *
-     * @summary Updates a schedule
+     * @summary Updates a schedule, don\'t use just use message schedule delay params
      * @param {ScheduleUpdateRequest} scheduleUpdateRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     scheduleUpdate(scheduleUpdateRequest: ScheduleUpdateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleUpdateResponse>>;
     /**
      *
-     * @summary Gets a workflow
+     * @summary Gets a workflow. This has been replaced by Scout9 application.
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     workflow(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetWorkflowResponse>>;
     /**
      *
-     * @summary Create a new workflow
+     * @summary Create a new workflow. This has been replaced by Scout9 application.
      * @param {CreateWorkflowRequest} createWorkflowRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     workflowCreate(createWorkflowRequest: CreateWorkflowRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateWorkflowResponse>>;
     /**
      *
-     * @summary Deletes a workflow
+     * @summary Deletes a workflow. This has been replaced by Scout9 application.
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     workflowDelete(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteWorkflowResponse>>;
     /**
      *
-     * @summary Update a workflow
+     * @summary Update a workflow. This has been replaced by Scout9 application.
      * @param {UpdateWorkflowRequest} updateWorkflowRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     workflowUpdate(updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateWorkflowResponse>>;
     /**
      *
-     * @summary Gets all or specific set of workflows
+     * @summary Gets all or specific set of workflows. This has been replaced by Scout9 application.
      * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
      * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     workflows(q?: string, id?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ListWorkflowsResponseInner>>>;
     /**
      *
-     * @summary Creates new workflows
+     * @summary Creates new workflows. This has been replaced by Scout9 application.
      * @param {CreateWorkflowsRequest} createWorkflowsRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     workflowsCreate(createWorkflowsRequest: CreateWorkflowsRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateWorkflowsResponse>>;
     /**
      *
-     * @summary Deletes multiple workflows
+     * @summary Deletes multiple workflows. This has been replaced by Scout9 application.
      * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     workflowsDelete(id?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteWorkflowsResponse>>;
     /**
      *
-     * @summary Updates multiple workflows
+     * @summary Updates multiple workflows. This has been replaced by Scout9 application.
      * @param {UpdateWorkflowRequest} updateWorkflowRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     workflowsUpdate(updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateWorkflowsResponse>>;
@@ -8190,17 +8248,19 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
     agentsUpdate(updateAgentsRequest: UpdateAgentsRequest, options?: any): AxiosPromise<UpdateAgentsResponse>;
     /**
      *
-     * @summary Gets a context
+     * @summary Gets a context. Don\'t use, create your context entities within your Scout9 application.
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     context(id: string, options?: any): AxiosPromise<GetContextResponse>;
     /**
      *
-     * @summary Create a new context
+     * @summary Create a new context. Don\'t use, create your context entities within your Scout9 application.
      * @param {CreateContextRequest} createContextRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     contextCreate(createContextRequest: CreateContextRequest, options?: any): AxiosPromise<CreateContextResponse>;
@@ -8238,9 +8298,10 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
     contextDataUpdate(updateContextDataRequest: UpdateContextDataRequest, options?: any): AxiosPromise<UpdateContextDataResponse>;
     /**
      *
-     * @summary Deletes a schedule
+     * @summary Deletes a context entity. Don\'t use, create your context entities within your Scout9 application.
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     contextDelete(id: string, options?: any): AxiosPromise<DeleteContextResponse>;
@@ -8253,43 +8314,48 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
      */
     contextTest(contextTestRequest: ContextTestRequest, options?: any): AxiosPromise<ContextTestResponse>;
     /**
-     * Update a context
+     * Update a context. . Don\'t use, create your context entities within your Scout9 application.
      * @summary Update a context
      * @param {UpdateContextRequest} updateContextRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     contextUpdate(updateContextRequest: UpdateContextRequest, options?: any): AxiosPromise<UpdateContextResponse>;
     /**
      *
-     * @summary Gets all or specific set of contexts
+     * @summary Gets all or specific set of contexts. Don\'t use, create your context entities within your Scout9 application.
      * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
      * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     contexts(q?: string, id?: Array<string>, options?: any): AxiosPromise<Array<ListContextsResponseInner>>;
     /**
      *
-     * @summary Creates new contexts
+     * @summary Creates new contexts. Don\'t use, create your context entities within your Scout9 application.
      * @param {CreateContextsRequest} createContextsRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     contextsCreate(createContextsRequest: CreateContextsRequest, options?: any): AxiosPromise<CreateContextsResponse>;
     /**
      *
-     * @summary Deletes multiple contexts
+     * @summary Deletes multiple contexts. Don\'t use, create your context entities within your Scout9 application.
      * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     contextsDelete(id?: Array<string>, options?: any): AxiosPromise<DeleteContextsResponse>;
     /**
      *
-     * @summary Updates multiple contexts
+     * @summary Updates multiple contexts. Don\'t use, create your context entities within your Scout9 application.
      * @param {UpdateContextRequest} updateContextRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     contextsUpdate(updateContextRequest: UpdateContextRequest, options?: any): AxiosPromise<UpdateContextsResponse>;
@@ -8457,14 +8523,6 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
     customersUpdate(updateCustomersRequest: UpdateCustomersRequest, options?: any): AxiosPromise<UpdateCustomersResponse>;
     /**
      *
-     * @summary Returns information about a specific file.
-     * @param {string} fileId The ID of the file to use for this request
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    file(fileId: string, options?: any): AxiosPromise<Scout9File>;
-    /**
-     *
      * @summary Upload a file that contains document(s) to be used across various endpoints/features. Currently, the size of all the files uploaded by one organization can be up to 1 GB. Please contact us if you need to increase the storage limit.
      * @param {File} file
      * @param {PurposeEnum} [purpose]
@@ -8472,23 +8530,7 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    fileCreate(file: File | Buffer | Blob, purpose?: PurposeEnum, entity?: string, options?: any): AxiosPromise<Scout9File>;
-    /**
-     *
-     * @summary Delete a file.
-     * @param {string} fileId The ID of the file to use for this request
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    fileDelete(fileId: string, options?: any): AxiosPromise<DeleteFileResponse>;
-    /**
-     *
-     * @summary Returns the contents of the specified file
-     * @param {string} fileId The ID of the file to use for this request
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    fileDownload(fileId: string, options?: any): AxiosPromise<string>;
+    fileUpload(file: File | Buffer | Blob, purpose?: PurposeEnum, entity?: string, options?: any): AxiosPromise<Scout9File>;
     /**
      *
      * @summary Returns a list of files that belong to the user\'s organization.
@@ -8556,6 +8598,14 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
     parse(parseRequest: ParseRequest, options?: any): AxiosPromise<ParseResponse>;
     /**
      *
+     * @summary Purchase phone for a given agent
+     * @param {PurchasePhoneRequest} purchasePhoneRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    purchasePhone(purchasePhoneRequest: PurchasePhoneRequest, options?: any): AxiosPromise<PurchasePhoneResponse>;
+    /**
+     *
      * @summary Runs your auto-reply app on the Scout9 platform.
      * @param {WorkflowEvent} workflowEvent
      * @param {*} [options] Override http request option.
@@ -8582,122 +8632,137 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
     scheduleConversation(scheduleCreateRequest: ScheduleCreateRequest, options?: any): AxiosPromise<ScheduleCreateResponse>;
     /**
      *
-     * @summary Deletes a schedule
+     * @summary Deletes a schedule, don\'t use just delete the message id.
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     scheduleDelete(id: string, options?: any): AxiosPromise<ScheduleRemoveResponse>;
     /**
      *
-     * @summary Creates a new schedule group
+     * @summary Creates a new schedule group, don\'t use just create multiple messages with schedule delay params
      * @param {ScheduleGroupCreateRequest} scheduleGroupCreateRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     scheduleGroupCreate(scheduleGroupCreateRequest: ScheduleGroupCreateRequest, options?: any): AxiosPromise<ScheduleGroupCreateResponse>;
     /**
      *
-     * @summary Deletes and cancels a schedule group
+     * @summary Deletes and cancels a schedule group. Don\'t use just delete the messages individually
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     scheduleGroupDelete(id: string, options?: any): AxiosPromise<ScheduleGroupRemoveResponse>;
     /**
      *
-     * @summary Gets a schedule group
+     * @summary Gets a schedule group, don\'t use just create multiple messages with schedule delay params
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     scheduleGroupRetrieve(id: string, options?: any): AxiosPromise<ScheduleGroupGetResponse>;
     /**
      *
-     * @summary Updates a schedule group
+     * @summary Updates a schedule group, don\'t use just create multiple messages with schedule delay params
      * @param {ScheduleGroupUpdateRequest} scheduleGroupUpdateRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     scheduleGroupUpdate(scheduleGroupUpdateRequest: ScheduleGroupUpdateRequest, options?: any): AxiosPromise<ScheduleGroupUpdateResponse>;
     /**
      *
-     * @summary Gets a schedule
+     * @summary Gets a schedule, don\'t use just use message api
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     scheduleRetrieve(id: string, options?: any): AxiosPromise<ScheduleCreateResponse>;
     /**
      *
-     * @summary Updates a schedule
+     * @summary Updates a schedule, don\'t use just use message schedule delay params
      * @param {ScheduleUpdateRequest} scheduleUpdateRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     scheduleUpdate(scheduleUpdateRequest: ScheduleUpdateRequest, options?: any): AxiosPromise<ScheduleUpdateResponse>;
     /**
      *
-     * @summary Gets a workflow
+     * @summary Gets a workflow. This has been replaced by Scout9 application.
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     workflow(id: string, options?: any): AxiosPromise<GetWorkflowResponse>;
     /**
      *
-     * @summary Create a new workflow
+     * @summary Create a new workflow. This has been replaced by Scout9 application.
      * @param {CreateWorkflowRequest} createWorkflowRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     workflowCreate(createWorkflowRequest: CreateWorkflowRequest, options?: any): AxiosPromise<CreateWorkflowResponse>;
     /**
      *
-     * @summary Deletes a workflow
+     * @summary Deletes a workflow. This has been replaced by Scout9 application.
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     workflowDelete(id: string, options?: any): AxiosPromise<DeleteWorkflowResponse>;
     /**
      *
-     * @summary Update a workflow
+     * @summary Update a workflow. This has been replaced by Scout9 application.
      * @param {UpdateWorkflowRequest} updateWorkflowRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     workflowUpdate(updateWorkflowRequest: UpdateWorkflowRequest, options?: any): AxiosPromise<UpdateWorkflowResponse>;
     /**
      *
-     * @summary Gets all or specific set of workflows
+     * @summary Gets all or specific set of workflows. This has been replaced by Scout9 application.
      * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
      * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     workflows(q?: string, id?: Array<string>, options?: any): AxiosPromise<Array<ListWorkflowsResponseInner>>;
     /**
      *
-     * @summary Creates new workflows
+     * @summary Creates new workflows. This has been replaced by Scout9 application.
      * @param {CreateWorkflowsRequest} createWorkflowsRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     workflowsCreate(createWorkflowsRequest: CreateWorkflowsRequest, options?: any): AxiosPromise<CreateWorkflowsResponse>;
     /**
      *
-     * @summary Deletes multiple workflows
+     * @summary Deletes multiple workflows. This has been replaced by Scout9 application.
      * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     workflowsDelete(id?: Array<string>, options?: any): AxiosPromise<DeleteWorkflowsResponse>;
     /**
      *
-     * @summary Updates multiple workflows
+     * @summary Updates multiple workflows. This has been replaced by Scout9 application.
      * @param {UpdateWorkflowRequest} updateWorkflowRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     workflowsUpdate(updateWorkflowRequest: UpdateWorkflowRequest, options?: any): AxiosPromise<UpdateWorkflowsResponse>;
@@ -8784,18 +8849,20 @@ export declare class Scout9Api extends BaseAPI {
     agentsUpdate(updateAgentsRequest: UpdateAgentsRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateAgentsResponse, any>>;
     /**
      *
-     * @summary Gets a context
+     * @summary Gets a context. Don\'t use, create your context entities within your Scout9 application.
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
     context(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<GetContextResponse, any>>;
     /**
      *
-     * @summary Create a new context
+     * @summary Create a new context. Don\'t use, create your context entities within your Scout9 application.
      * @param {CreateContextRequest} createContextRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
@@ -8838,9 +8905,10 @@ export declare class Scout9Api extends BaseAPI {
     contextDataUpdate(updateContextDataRequest: UpdateContextDataRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateContextDataResponse, any>>;
     /**
      *
-     * @summary Deletes a schedule
+     * @summary Deletes a context entity. Don\'t use, create your context entities within your Scout9 application.
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
@@ -8855,47 +8923,52 @@ export declare class Scout9Api extends BaseAPI {
      */
     contextTest(contextTestRequest: ContextTestRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ContextTestResponse, any>>;
     /**
-     * Update a context
+     * Update a context. . Don\'t use, create your context entities within your Scout9 application.
      * @summary Update a context
      * @param {UpdateContextRequest} updateContextRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
     contextUpdate(updateContextRequest: UpdateContextRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateContextResponse, any>>;
     /**
      *
-     * @summary Gets all or specific set of contexts
+     * @summary Gets all or specific set of contexts. Don\'t use, create your context entities within your Scout9 application.
      * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
      * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
     contexts(q?: string, id?: Array<string>, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ListContextsResponseInner[], any>>;
     /**
      *
-     * @summary Creates new contexts
+     * @summary Creates new contexts. Don\'t use, create your context entities within your Scout9 application.
      * @param {CreateContextsRequest} createContextsRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
     contextsCreate(createContextsRequest: CreateContextsRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateContextsResponse, any>>;
     /**
      *
-     * @summary Deletes multiple contexts
+     * @summary Deletes multiple contexts. Don\'t use, create your context entities within your Scout9 application.
      * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
     contextsDelete(id?: Array<string>, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteContextsResponse, any>>;
     /**
      *
-     * @summary Updates multiple contexts
+     * @summary Updates multiple contexts. Don\'t use, create your context entities within your Scout9 application.
      * @param {UpdateContextRequest} updateContextRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
@@ -9084,15 +9157,6 @@ export declare class Scout9Api extends BaseAPI {
     customersUpdate(updateCustomersRequest: UpdateCustomersRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateCustomersResponse, any>>;
     /**
      *
-     * @summary Returns information about a specific file.
-     * @param {string} fileId The ID of the file to use for this request
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    file(fileId: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<Scout9File, any>>;
-    /**
-     *
      * @summary Upload a file that contains document(s) to be used across various endpoints/features. Currently, the size of all the files uploaded by one organization can be up to 1 GB. Please contact us if you need to increase the storage limit.
      * @param {File} file
      * @param {PurposeEnum} [purpose]
@@ -9101,25 +9165,7 @@ export declare class Scout9Api extends BaseAPI {
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
-    fileCreate(file: File | Buffer | Blob, purpose?: PurposeEnum, entity?: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<Scout9File, any>>;
-    /**
-     *
-     * @summary Delete a file.
-     * @param {string} fileId The ID of the file to use for this request
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    fileDelete(fileId: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteFileResponse, any>>;
-    /**
-     *
-     * @summary Returns the contents of the specified file
-     * @param {string} fileId The ID of the file to use for this request
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    fileDownload(fileId: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<string, any>>;
+    fileUpload(file: File | Buffer | Blob, purpose?: PurposeEnum, entity?: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<Scout9File, any>>;
     /**
      *
      * @summary Returns a list of files that belong to the user\'s organization.
@@ -9195,6 +9241,15 @@ export declare class Scout9Api extends BaseAPI {
     parse(parseRequest: ParseRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ParseResponse, any>>;
     /**
      *
+     * @summary Purchase phone for a given agent
+     * @param {PurchasePhoneRequest} purchasePhoneRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    purchasePhone(purchasePhoneRequest: PurchasePhoneRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<PurchasePhoneResponse, any>>;
+    /**
+     *
      * @summary Runs your auto-reply app on the Scout9 platform.
      * @param {WorkflowEvent} workflowEvent
      * @param {*} [options] Override http request option.
@@ -9224,136 +9279,151 @@ export declare class Scout9Api extends BaseAPI {
     scheduleConversation(scheduleCreateRequest: ScheduleCreateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleCreateResponse, any>>;
     /**
      *
-     * @summary Deletes a schedule
+     * @summary Deletes a schedule, don\'t use just delete the message id.
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
     scheduleDelete(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleRemoveResponse, any>>;
     /**
      *
-     * @summary Creates a new schedule group
+     * @summary Creates a new schedule group, don\'t use just create multiple messages with schedule delay params
      * @param {ScheduleGroupCreateRequest} scheduleGroupCreateRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
     scheduleGroupCreate(scheduleGroupCreateRequest: ScheduleGroupCreateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleGroupCreateResponse, any>>;
     /**
      *
-     * @summary Deletes and cancels a schedule group
+     * @summary Deletes and cancels a schedule group. Don\'t use just delete the messages individually
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
     scheduleGroupDelete(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleGroupRemoveResponse, any>>;
     /**
      *
-     * @summary Gets a schedule group
+     * @summary Gets a schedule group, don\'t use just create multiple messages with schedule delay params
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
     scheduleGroupRetrieve(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleGroupGetResponse, any>>;
     /**
      *
-     * @summary Updates a schedule group
+     * @summary Updates a schedule group, don\'t use just create multiple messages with schedule delay params
      * @param {ScheduleGroupUpdateRequest} scheduleGroupUpdateRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
     scheduleGroupUpdate(scheduleGroupUpdateRequest: ScheduleGroupUpdateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleGroupUpdateResponse, any>>;
     /**
      *
-     * @summary Gets a schedule
+     * @summary Gets a schedule, don\'t use just use message api
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
     scheduleRetrieve(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleCreateResponse, any>>;
     /**
      *
-     * @summary Updates a schedule
+     * @summary Updates a schedule, don\'t use just use message schedule delay params
      * @param {ScheduleUpdateRequest} scheduleUpdateRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
     scheduleUpdate(scheduleUpdateRequest: ScheduleUpdateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleUpdateResponse, any>>;
     /**
      *
-     * @summary Gets a workflow
+     * @summary Gets a workflow. This has been replaced by Scout9 application.
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
     workflow(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<GetWorkflowResponse, any>>;
     /**
      *
-     * @summary Create a new workflow
+     * @summary Create a new workflow. This has been replaced by Scout9 application.
      * @param {CreateWorkflowRequest} createWorkflowRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
     workflowCreate(createWorkflowRequest: CreateWorkflowRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateWorkflowResponse, any>>;
     /**
      *
-     * @summary Deletes a workflow
+     * @summary Deletes a workflow. This has been replaced by Scout9 application.
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
     workflowDelete(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteWorkflowResponse, any>>;
     /**
      *
-     * @summary Update a workflow
+     * @summary Update a workflow. This has been replaced by Scout9 application.
      * @param {UpdateWorkflowRequest} updateWorkflowRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
     workflowUpdate(updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateWorkflowResponse, any>>;
     /**
      *
-     * @summary Gets all or specific set of workflows
+     * @summary Gets all or specific set of workflows. This has been replaced by Scout9 application.
      * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
      * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
     workflows(q?: string, id?: Array<string>, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ListWorkflowsResponseInner[], any>>;
     /**
      *
-     * @summary Creates new workflows
+     * @summary Creates new workflows. This has been replaced by Scout9 application.
      * @param {CreateWorkflowsRequest} createWorkflowsRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
     workflowsCreate(createWorkflowsRequest: CreateWorkflowsRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateWorkflowsResponse, any>>;
     /**
      *
-     * @summary Deletes multiple workflows
+     * @summary Deletes multiple workflows. This has been replaced by Scout9 application.
      * @param {Array<string>} [id] ids for the entities this id belongs to
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
     workflowsDelete(id?: Array<string>, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteWorkflowsResponse, any>>;
     /**
      *
-     * @summary Updates multiple workflows
+     * @summary Updates multiple workflows. This has been replaced by Scout9 application.
      * @param {UpdateWorkflowRequest} updateWorkflowRequest
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
