@@ -4849,6 +4849,50 @@ export const PmtConfigModelEnum = {
 export type PmtConfigModelEnum = typeof PmtConfigModelEnum[keyof typeof PmtConfigModelEnum];
 
 /**
+ * Purchase a phone number subscription for an agent
+ * @export
+ * @interface PurchasePhoneRequest
+ */
+export interface PurchasePhoneRequest {
+  /**
+   * The agent\'s id
+   * @type {string}
+   * @memberof PurchasePhoneRequest
+   */
+  '$agent': string;
+  /**
+   * If true, the phone number will be purchased for an annual subscription
+   * @type {boolean}
+   * @memberof PurchasePhoneRequest
+   */
+  'annual'?: boolean;
+  /**
+   * The area code of the phone number to purchase
+   * @type {number}
+   * @memberof PurchasePhoneRequest
+   */
+  'areaCode'?: number;
+}
+/**
+ *
+ * @export
+ * @interface PurchasePhoneResponse
+ */
+export interface PurchasePhoneResponse {
+  /**
+   * the phone number that was purchased
+   * @type {string}
+   * @memberof PurchasePhoneResponse
+   */
+  'phoneNumber'?: string;
+  /**
+   * Internal identifier for the phone number
+   * @type {string}
+   * @memberof PurchasePhoneResponse
+   */
+  'sid'?: string;
+}
+/**
  *
  * @export
  * @enum {string}
@@ -8957,6 +9001,42 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
     },
     /**
      *
+     * @summary Purchase phone for a given agent
+     * @param {PurchasePhoneRequest} purchasePhoneRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    purchasePhone: async (purchasePhoneRequest: PurchasePhoneRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'purchasePhoneRequest' is not null or undefined
+      assertParamExists('purchasePhone', 'purchasePhoneRequest', purchasePhoneRequest)
+      const localVarPath = `/v1-purchasePhone`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+      localVarRequestOptions.data = serializeDataIfNeeded(purchasePhoneRequest, localVarRequestOptions, configuration)
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
      * @summary Runs your auto-reply app on the Scout9 platform.
      * @param {WorkflowEvent} workflowEvent
      * @param {*} [options] Override http request option.
@@ -10199,6 +10279,17 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
     },
     /**
      *
+     * @summary Purchase phone for a given agent
+     * @param {PurchasePhoneRequest} purchasePhoneRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async purchasePhone(purchasePhoneRequest: PurchasePhoneRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PurchasePhoneResponse>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.purchasePhone(purchasePhoneRequest, options);
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+    },
+    /**
+     *
      * @summary Runs your auto-reply app on the Scout9 platform.
      * @param {WorkflowEvent} workflowEvent
      * @param {*} [options] Override http request option.
@@ -10935,6 +11026,16 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
      */
     parse(parseRequest: ParseRequest, options?: any): AxiosPromise<ParseResponse> {
       return localVarFp.parse(parseRequest, options).then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @summary Purchase phone for a given agent
+     * @param {PurchasePhoneRequest} purchasePhoneRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    purchasePhone(purchasePhoneRequest: PurchasePhoneRequest, options?: any): AxiosPromise<PurchasePhoneResponse> {
+      return localVarFp.purchasePhone(purchasePhoneRequest, options).then((request) => request(axios, basePath));
     },
     /**
      *
@@ -11755,6 +11856,18 @@ export class Scout9Api extends BaseAPI {
    */
   public parse(parseRequest: ParseRequest, options?: AxiosRequestConfig) {
     return Scout9ApiFp(this.configuration).parse(parseRequest, options).then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @summary Purchase phone for a given agent
+   * @param {PurchasePhoneRequest} purchasePhoneRequest
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof Scout9Api
+   */
+  public purchasePhone(purchasePhoneRequest: PurchasePhoneRequest, options?: AxiosRequestConfig) {
+    return Scout9ApiFp(this.configuration).purchasePhone(purchasePhoneRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
