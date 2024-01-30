@@ -3,7 +3,7 @@
 Pocket Scout Node.js API for [Scout9](https://scout9.vercel.app/) - mimics you over your personal phone and email
 for common tasks like scheduling meetings, answering questions, and more.
 
-**⚠️ Danger**: Avoid using a Pocket Scout to autopilot your job and personal relationships, this tool is designed for
+**⚠️ Danger**: Avoid using Scout9 autopilot your job and personal relationships, this tool is designed for
 workplace productivity and not a substitute for human interaction.
 
 ## Setup

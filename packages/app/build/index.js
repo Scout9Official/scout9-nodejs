@@ -2,7 +2,7 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-var index = require('./index-abd36229.js');
+var index = require('./index-3521ebe4.js');
 require('fs');
 require('events');
 require('path');
@@ -15,7 +15,6 @@ require('zlib');
 require('url');
 require('fs/promises');
 require('string_decoder');
-require('node:child_process');
 require('node:fs');
 require('node:fs/promises');
 require('node:path');
