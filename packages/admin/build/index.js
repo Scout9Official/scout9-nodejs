@@ -27,6 +27,151 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.toQuery = void 0;
 __exportStar(require("./api"), exports);
 __exportStar(require("./configuration"), exports);
 __exportStar(require("./webhooks"), exports);
+const api_1 = require("./api");
+const configuration_1 = require("./configuration");
+const toQuery = (payload) => `${payload.field},${payload.operator},${payload.value}`;
+exports.toQuery = toQuery;
+async function sendMessage(_scout9, input) {
+    if (!('convo' in input) && !input.to) {
+        throw new Error('Either .convo or .to must be provided in message payload');
+    }
+    return _scout9.message({
+        convo: 'convo' in input ? input.convo : {
+            customerIdOrPhoneOrEmail: input.to || '',
+            agentIdOrPhoneOrEmail: input.from || '',
+            environment: input.environment,
+        },
+        message: input.message,
+        ...(input.html ? { html: input.html } : {}),
+        role: input.role || 'agent'
+    }).then((resolve));
+}
+function resolve(res) {
+    return res.data;
+}
+function default_1(apiKey) {
+    const configuration = new configuration_1.Configuration({ apiKey });
+    const scout9 = new api_1.Scout9Api(configuration);
+    return {
+        app: {
+            run: async (event) => scout9.runPlatform(event),
+            config: async () => scout9.runPlatformConfig().then((resolve)),
+            context: {
+                files: {
+                    list: async () => scout9.files('context').then((resolve)),
+                    retrieve: async (contextId) => scout9.file('context', contextId),
+                    remove: async (contextId) => scout9.fileRemove('context', contextId),
+                }
+            }
+        },
+        agents: {
+            retrieve: async (id) => scout9.agent(id).then((resolve)),
+            list: async (query) => scout9.agents((0, exports.toQuery)(query)).then((resolve)),
+            create: async (data) => scout9.agentRegister({
+                firstName: '',
+                lastName: '',
+                forwardEmail: '',
+                forwardPhone: '',
+                ...data
+            }).then((resolve)),
+            update: async (id, data) => scout9.agentUpdate({
+                ...data,
+                $id: id
+            }).then((resolve)),
+            purchasePhone: async (agentId, purchaseOptions) => scout9.purchasePhone(agentId ? {
+                $agent: agentId,
+                ...(purchaseOptions || {})
+            } : undefined).then((resolve)),
+            remove: async (id) => scout9.agentDelete(id).then((resolve)),
+            bulkRemove: async (ids) => scout9.agentsDelete(ids).then((resolve)),
+            bulkCreate: async (data) => scout9.agentsCreate({
+                agents: data.map(a => ({
+                    firstName: '',
+                    lastName: '',
+                    ...a
+                }))
+            }).then((resolve)),
+            bulkUpdate: async (data) => scout9.agentsUpdate({
+                agents: data.map(a => ({
+                    $id: a.id,
+                    ...a
+                }))
+            }).then((resolve)),
+            transcripts: {
+                list: async (agentId) => scout9.files('agent-transcript', agentId).then((resolve)),
+                retrieve: async (agentId, fileId) => scout9.file('agent-transcript', fileId, agentId),
+                remove: async (agentId, fileId) => scout9.fileRemove('agent-transcript', fileId, agentId),
+                upload: async (agentId, file, fileId) => scout9.fileUpload(file, 'agent-transcript', fileId, agentId),
+            },
+            audio: {
+                list: async (agentId) => scout9.files('agent-audio', agentId).then((resolve)),
+                retrieve: async (agentId, fileId) => scout9.file('agent-audio', fileId, agentId),
+                remove: async (agentId, fileId) => scout9.fileRemove('agent-audio', fileId, agentId),
+                upload: async (agentId, file, fileId) => scout9.fileUpload(file, 'agent-audio', fileId, agentId),
+            }
+        },
+        conversation: {
+            retrieve: async (id) => scout9.conversation(id).then((resolve)),
+            list: async (query) => scout9.conversations((0, exports.toQuery)(query))
+                .then((resolve)),
+            remove: async (id) => scout9.conversationDelete(id).then((resolve)),
+            create: async (data) => scout9.conversationCreate({
+                ...data
+            }).then((resolve)),
+            update: async (id, data) => scout9.conversationUpdate({
+                ...data,
+                $id: id
+            }).then((resolve)),
+            forward: async (conversationId, options) => scout9.forward({
+                convo: conversationId,
+                ...(options || {})
+            }).then((resolve)),
+            generate: async (conversationId, mockData) => scout9.generate(mockData ? mockData : conversationId),
+            message: async (conversationId, message, role = 'agent', html) => scout9.message({
+                convo: conversationId,
+                message,
+                ...(html ? { html } : {}),
+                role
+            }).then((resolve)),
+            messages: {
+                send: (input) => sendMessage(scout9, input),
+                list: async (conversationId) => scout9.messages(conversationId).then((resolve)),
+            }
+        },
+        message: {
+            send: (input) => sendMessage(scout9, input),
+        },
+        messages: {
+            list: async (conversationId) => scout9.messages(conversationId).then((resolve)),
+        },
+        customers: {
+            retrieve: async (idOrEmailOrPhone) => scout9.customer(idOrEmailOrPhone).then((resolve)),
+            list: async (query) => scout9.customers((0, exports.toQuery)(query))
+                .then((resolve)),
+            remove: async (customerId) => scout9.customerDelete(customerId).then((resolve)),
+            create: async (data) => scout9.customerCreate(data).then((resolve)),
+            update: async (customerId, data) => scout9.customerUpdate({
+                name: '', ...data,
+                $id: customerId
+            }).then((resolve)),
+            bulkCreate: async (customers) => scout9.customersCreate({ customers })
+                .then((resolve)),
+            bulkRemove: async (ids) => scout9.customersDelete(ids).then((resolve)),
+            bulkUpdate: async (data) => scout9.customersUpdate({
+                customers: data.map(c => ({
+                    ...c
+                }))
+            }).then((resolve)),
+        },
+        utils: {
+            fileUpload: scout9.fileUpload,
+            files: scout9.files,
+        },
+        v1: scout9
+    };
+}
+exports.default = default_1;

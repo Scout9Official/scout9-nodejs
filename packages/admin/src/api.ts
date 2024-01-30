@@ -124,6 +124,50 @@ export type AgentContext = Array<string> | string;
 /**
  *
  * @export
+ * @interface AgentDeleteResponse
+ */
+export interface AgentDeleteResponse {
+  /**
+   *
+   * @type {boolean}
+   * @memberof AgentDeleteResponse
+   */
+  'success': boolean;
+  /**
+   *
+   * @type {Error}
+   * @memberof AgentDeleteResponse
+   */
+  'error'?: Error;
+  /**
+   * The id of the document that was created, updated, or deleted
+   * @type {string}
+   * @memberof AgentDeleteResponse
+   */
+  'id': string;
+}
+/**
+ *
+ * @export
+ * @interface AgentsDeleteResponse
+ */
+export interface AgentsDeleteResponse {
+  /**
+   * ISO 8601 datetime string of when the operation was queued
+   * @type {string}
+   * @memberof AgentsDeleteResponse
+   */
+  'queued': string;
+  /**
+   * The operation id to view the operation end results
+   * @type {string}
+   * @memberof AgentsDeleteResponse
+   */
+  '$operation': string;
+}
+/**
+ *
+ * @export
  * @interface AndLogic
  */
 export interface AndLogic {
@@ -806,10 +850,10 @@ export interface ConversationCreateRequest {
   'environment': ConversationEnvironment;
   /**
    *
-   * @type {ConversationUpdateRequestBaseWorkflow}
+   * @type {ConversationCreateRequestBaseWorkflow}
    * @memberof ConversationCreateRequest
    */
-  '$workflow'?: ConversationUpdateRequestBaseWorkflow;
+  '$workflow'?: ConversationCreateRequestBaseWorkflow;
 }
 
 
@@ -821,11 +865,17 @@ export interface ConversationCreateRequest {
 export interface ConversationCreateRequestBase {
   /**
    *
-   * @type {ConversationUpdateRequestBaseWorkflow}
+   * @type {ConversationCreateRequestBaseWorkflow}
    * @memberof ConversationCreateRequestBase
    */
-  '$workflow'?: ConversationUpdateRequestBaseWorkflow;
+  '$workflow'?: ConversationCreateRequestBaseWorkflow;
 }
+/**
+ * @type ConversationCreateRequestBaseWorkflow
+ * @export
+ */
+export type ConversationCreateRequestBaseWorkflow = Workflow | string;
+
 /**
  *
  * @export
@@ -1100,6 +1150,7 @@ export interface ConversationUpdateRequest {
    *
    * @type {ConversationUpdateRequestAllOfWorkflow}
    * @memberof ConversationUpdateRequest
+   * @deprecated
    */
   '$workflow'?: ConversationUpdateRequestAllOfWorkflow;
   /**
@@ -1127,6 +1178,7 @@ export interface ConversationUpdateRequestAllOf {
    *
    * @type {ConversationUpdateRequestAllOfWorkflow}
    * @memberof ConversationUpdateRequestAllOf
+   * @deprecated
    */
   '$workflow'?: ConversationUpdateRequestAllOfWorkflow;
 }
@@ -1146,6 +1198,7 @@ export interface ConversationUpdateRequestBase {
    *
    * @type {ConversationUpdateRequestBaseWorkflow}
    * @memberof ConversationUpdateRequestBase
+   * @deprecated
    */
   '$workflow'?: ConversationUpdateRequestBaseWorkflow;
 }
@@ -1909,31 +1962,6 @@ export interface CreateCustomerGroupsResponse {
 /**
  *
  * @export
- * @interface CreateCustomerResponse
- */
-export interface CreateCustomerResponse {
-  /**
-   *
-   * @type {boolean}
-   * @memberof CreateCustomerResponse
-   */
-  'success': boolean;
-  /**
-   *
-   * @type {Error}
-   * @memberof CreateCustomerResponse
-   */
-  'error'?: Error;
-  /**
-   * The id of the document that was created, updated, or deleted
-   * @type {string}
-   * @memberof CreateCustomerResponse
-   */
-  'id': string;
-}
-/**
- *
- * @export
  * @interface CreateCustomersRequest
  */
 export interface CreateCustomersRequest {
@@ -1995,6 +2023,12 @@ export interface CreateFileRequestWithStringPurpose {
  */
 export interface CreateWorkflowRequest {
   /**
+   *
+   * @type {PurposeEnum}
+   * @memberof CreateWorkflowRequest
+   */
+  'purpose'?: PurposeEnum;
+  /**
    * The name of the workflow
    * @type {string}
    * @memberof CreateWorkflowRequest
@@ -2049,6 +2083,8 @@ export interface CreateWorkflowRequest {
    */
   'priority': number;
 }
+
+
 /**
  *
  * @export
@@ -2094,6 +2130,12 @@ export interface CreateWorkflowsRequest {
  */
 export interface CreateWorkflowsRequestWorkflowsInner {
   /**
+   *
+   * @type {PurposeEnum}
+   * @memberof CreateWorkflowsRequestWorkflowsInner
+   */
+  'purpose'?: PurposeEnum;
+  /**
    * The name of the workflow
    * @type {string}
    * @memberof CreateWorkflowsRequestWorkflowsInner
@@ -2148,6 +2190,8 @@ export interface CreateWorkflowsRequestWorkflowsInner {
    */
   'priority': number;
 }
+
+
 /**
  *
  * @export
@@ -2297,6 +2341,56 @@ export interface Customer {
   'stripeDev'?: string | null;
 }
 /**
+ *
+ * @export
+ * @interface CustomerCreateResponse
+ */
+export interface CustomerCreateResponse {
+  /**
+   *
+   * @type {boolean}
+   * @memberof CustomerCreateResponse
+   */
+  'success': boolean;
+  /**
+   *
+   * @type {Error}
+   * @memberof CustomerCreateResponse
+   */
+  'error'?: Error;
+  /**
+   * The id of the document that was created, updated, or deleted
+   * @type {string}
+   * @memberof CustomerCreateResponse
+   */
+  'id': string;
+}
+/**
+ *
+ * @export
+ * @interface CustomerDeleteResponse
+ */
+export interface CustomerDeleteResponse {
+  /**
+   *
+   * @type {boolean}
+   * @memberof CustomerDeleteResponse
+   */
+  'success': boolean;
+  /**
+   *
+   * @type {Error}
+   * @memberof CustomerDeleteResponse
+   */
+  'error'?: Error;
+  /**
+   * The id of the document that was created, updated, or deleted
+   * @type {string}
+   * @memberof CustomerDeleteResponse
+   */
+  'id': string;
+}
+/**
  * A way for a business to group customers to use in scheduling batch conversations
  * @export
  * @interface CustomerGroup
@@ -2355,55 +2449,36 @@ export interface CustomerGroupRecord {
 
 
 /**
- * @type CustomerValue
- * @export
- */
-export type CustomerValue = boolean | number | string;
-
-/**
  *
  * @export
- * @interface DeleteAgentResponse
+ * @interface CustomerUpdateResponse
  */
-export interface DeleteAgentResponse {
+export interface CustomerUpdateResponse {
   /**
    *
    * @type {boolean}
-   * @memberof DeleteAgentResponse
+   * @memberof CustomerUpdateResponse
    */
   'success': boolean;
   /**
    *
    * @type {Error}
-   * @memberof DeleteAgentResponse
+   * @memberof CustomerUpdateResponse
    */
   'error'?: Error;
   /**
    * The id of the document that was created, updated, or deleted
    * @type {string}
-   * @memberof DeleteAgentResponse
+   * @memberof CustomerUpdateResponse
    */
   'id': string;
 }
 /**
- *
+ * @type CustomerValue
  * @export
- * @interface DeleteAgentsResponse
  */
-export interface DeleteAgentsResponse {
-  /**
-   * ISO 8601 datetime string of when the operation was queued
-   * @type {string}
-   * @memberof DeleteAgentsResponse
-   */
-  'queued': string;
-  /**
-   * The operation id to view the operation end results
-   * @type {string}
-   * @memberof DeleteAgentsResponse
-   */
-  '$operation': string;
-}
+export type CustomerValue = boolean | number | string;
+
 /**
  *
  * @export
@@ -2516,31 +2591,6 @@ export interface DeleteCustomerGroupsResponse {
    * @memberof DeleteCustomerGroupsResponse
    */
   '$operation': string;
-}
-/**
- *
- * @export
- * @interface DeleteCustomerResponse
- */
-export interface DeleteCustomerResponse {
-  /**
-   *
-   * @type {boolean}
-   * @memberof DeleteCustomerResponse
-   */
-  'success': boolean;
-  /**
-   *
-   * @type {Error}
-   * @memberof DeleteCustomerResponse
-   */
-  'error'?: Error;
-  /**
-   * The id of the document that was created, updated, or deleted
-   * @type {string}
-   * @memberof DeleteCustomerResponse
-   */
-  'id': string;
 }
 /**
  *
@@ -3601,6 +3651,12 @@ export interface GetCustomerResponseAllOf {
  */
 export interface GetWorkflowResponse {
   /**
+   *
+   * @type {PurposeEnum}
+   * @memberof GetWorkflowResponse
+   */
+  'purpose'?: PurposeEnum;
+  /**
    * The name of the workflow
    * @type {string}
    * @memberof GetWorkflowResponse
@@ -3661,6 +3717,8 @@ export interface GetWorkflowResponse {
    */
   '$id': string;
 }
+
+
 /**
  *
  * @export
@@ -3953,6 +4011,94 @@ export interface ListContextsResponseInnerAllOf {
 /**
  *
  * @export
+ * @interface ListConversationsResponseInner
+ */
+export interface ListConversationsResponseInner {
+  /**
+   * Default agent persona id assigned to the conversation(s)
+   * @type {string}
+   * @memberof ListConversationsResponseInner
+   */
+  '$agent': string;
+  /**
+   * Initial contexts to load when starting the conversation
+   * @type {Array<string>}
+   * @memberof ListConversationsResponseInner
+   */
+  'initialContexts'?: Array<string>;
+  /**
+   *
+   * @type {ConversationBaseEnvironmentProps}
+   * @memberof ListConversationsResponseInner
+   */
+  'environmentProps'?: ConversationBaseEnvironmentProps;
+  /**
+   * Customer this conversation is with
+   * @type {string}
+   * @memberof ListConversationsResponseInner
+   */
+  '$customer': string;
+  /**
+   *
+   * @type {ConversationEnvironment}
+   * @memberof ListConversationsResponseInner
+   */
+  'environment': ConversationEnvironment;
+  /**
+   * The client web url of the conversation
+   * @type {string}
+   * @memberof ListConversationsResponseInner
+   */
+  'clientWebUrl'?: string;
+  /**
+   * The agent web url of the conversation (requires phone two-factor authentication)
+   * @type {string}
+   * @memberof ListConversationsResponseInner
+   */
+  'agentWebUrl'?: string;
+  /**
+   * The agent test web url of the conversation, used for testing the conversation without notifying the customer
+   * @type {string}
+   * @memberof ListConversationsResponseInner
+   */
+  'agentTestWebUrl'?: string;
+  /**
+   * The ID of the workflow used for this conversation
+   * @type {string}
+   * @memberof ListConversationsResponseInner
+   */
+  '$workflow': string;
+  /**
+   * ISO 8601 date string of when the conversation was initiated
+   * @type {string}
+   * @memberof ListConversationsResponseInner
+   */
+  'initiated': string;
+  /**
+   * The ID of the conversation
+   * @type {string}
+   * @memberof ListConversationsResponseInner
+   */
+  '$id': string;
+}
+
+
+/**
+ *
+ * @export
+ * @interface ListConversationsResponseInnerAllOf
+ */
+export interface ListConversationsResponseInnerAllOf {
+  /**
+   * The ID of the conversation
+   * @type {string}
+   * @memberof ListConversationsResponseInnerAllOf
+   */
+  '$id': string;
+}
+/**
+ *
+ * @export
  * @interface ListCustomerGroupsResponseInner
  */
 export interface ListCustomerGroupsResponseInner {
@@ -4149,30 +4295,28 @@ export interface ListCustomersResponseInnerAllOf {
 /**
  *
  * @export
- * @interface ListFilesResponse
+ * @interface ListFilesResponseInner
  */
-export interface ListFilesResponse {
+export interface ListFilesResponseInner {
   /**
-   *
+   * The file identifier, which can be referenced in the API endpoints.
    * @type {string}
-   * @memberof ListFilesResponse
+   * @memberof ListFilesResponseInner
    */
-  'object': string;
+  '$id'?: string;
   /**
-   *
-   * @type {Array<Scout9File>}
-   * @memberof ListFilesResponse
+   * The name of the file.
+   * @type {string}
+   * @memberof ListFilesResponseInner
    */
-  'data': Array<Scout9File>;
+  'name'?: string;
   /**
-   *
-   * @type {PurposeEnum}
-   * @memberof ListFilesResponse
+   * The path of the file.
+   * @type {string}
+   * @memberof ListFilesResponseInner
    */
-  'purpose'?: PurposeEnum;
+  'path'?: string;
 }
-
-
 /**
  *
  * @export
@@ -4229,6 +4373,12 @@ export interface ListQueryOperationsInner {
  * @interface ListWorkflowsResponseInner
  */
 export interface ListWorkflowsResponseInner {
+  /**
+   *
+   * @type {PurposeEnum}
+   * @memberof ListWorkflowsResponseInner
+   */
+  'purpose'?: PurposeEnum;
   /**
    * The name of the workflow
    * @type {string}
@@ -4290,6 +4440,8 @@ export interface ListWorkflowsResponseInner {
    */
   '$id': string;
 }
+
+
 /**
  *
  * @export
@@ -4504,11 +4656,11 @@ export type MessageBaseRoleEnum = typeof MessageBaseRoleEnum[keyof typeof Messag
  */
 export interface MessageCreateRequest {
   /**
-   * Conversation ID this belonds to
-   * @type {string}
+   *
+   * @type {MessageCreateRequestConvo}
    * @memberof MessageCreateRequest
    */
-  'convo': string;
+  'convo': MessageCreateRequestConvo;
   /**
    * The message content to send to a user
    * @type {string}
@@ -4536,6 +4688,39 @@ export const MessageCreateRequestRoleEnum = {
 } as const;
 
 export type MessageCreateRequestRoleEnum = typeof MessageCreateRequestRoleEnum[keyof typeof MessageCreateRequestRoleEnum];
+
+/**
+ * @type MessageCreateRequestConvo
+ * @export
+ */
+export type MessageCreateRequestConvo = MessageCreateRequestConvoOneOf | string;
+
+/**
+ *
+ * @export
+ * @interface MessageCreateRequestConvoOneOf
+ */
+export interface MessageCreateRequestConvoOneOf {
+  /**
+   * The customers id, phone, or email to send to. The customer must be registered with your organization by having them reach out to you first.
+   * @type {string}
+   * @memberof MessageCreateRequestConvoOneOf
+   */
+  'customerIdOrPhoneOrEmail'?: string;
+  /**
+   * The agent id, phone (programmable or forward), or email this message is from. If an id is not provided and the provided value is a valid contact, the backend will resolve the agent with the corresponding agent document.
+   * @type {string}
+   * @memberof MessageCreateRequestConvoOneOf
+   */
+  'agentIdOrPhoneOrEmail': string;
+  /**
+   *
+   * @type {ConversationEnvironment}
+   * @memberof MessageCreateRequestConvoOneOf
+   */
+  'environment'?: ConversationEnvironment;
+}
+
 
 /**
  *
@@ -4859,7 +5044,7 @@ export interface PurchasePhoneRequest {
    * @type {string}
    * @memberof PurchasePhoneRequest
    */
-  '$agent': string;
+  '$agent'?: string;
   /**
    * If true, the phone number will be purchased for an annual subscription
    * @type {boolean}
@@ -4994,10 +5179,10 @@ export interface ScheduleCreateRequest {
   '$group'?: string;
   /**
    *
-   * @type {ConversationUpdateRequestBaseWorkflow}
+   * @type {ConversationCreateRequestBaseWorkflow}
    * @memberof ScheduleCreateRequest
    */
-  '$workflow'?: ConversationUpdateRequestBaseWorkflow;
+  '$workflow'?: ConversationCreateRequestBaseWorkflow;
 }
 
 
@@ -5140,10 +5325,10 @@ export interface ScheduleGetResponse {
 export interface ScheduleGroupCreateRequest {
   /**
    *
-   * @type {ConversationUpdateRequestBaseWorkflow}
+   * @type {ConversationCreateRequestBaseWorkflow}
    * @memberof ScheduleGroupCreateRequest
    */
-  '$workflow'?: ConversationUpdateRequestBaseWorkflow;
+  '$workflow'?: ConversationCreateRequestBaseWorkflow;
   /**
    * Default agent persona id assigned to the conversation(s)
    * @type {string}
@@ -5412,6 +5597,7 @@ export interface ScheduleGroupUpdateRequest {
    *
    * @type {ConversationUpdateRequestBaseWorkflow}
    * @memberof ScheduleGroupUpdateRequest
+   * @deprecated
    */
   '$workflow'?: ConversationUpdateRequestBaseWorkflow;
   /**
@@ -5560,6 +5746,7 @@ export interface ScheduleUpdateRequest {
    *
    * @type {ConversationUpdateRequestBaseWorkflow}
    * @memberof ScheduleUpdateRequest
+   * @deprecated
    */
   '$workflow'?: ConversationUpdateRequestBaseWorkflow;
   /**
@@ -6565,31 +6752,6 @@ export interface UpdateCustomerRequestAllOf {
 /**
  *
  * @export
- * @interface UpdateCustomerResponse
- */
-export interface UpdateCustomerResponse {
-  /**
-   *
-   * @type {boolean}
-   * @memberof UpdateCustomerResponse
-   */
-  'success': boolean;
-  /**
-   *
-   * @type {Error}
-   * @memberof UpdateCustomerResponse
-   */
-  'error'?: Error;
-  /**
-   * The id of the document that was created, updated, or deleted
-   * @type {string}
-   * @memberof UpdateCustomerResponse
-   */
-  'id': string;
-}
-/**
- *
- * @export
  * @interface UpdateCustomersRequest
  */
 export interface UpdateCustomersRequest {
@@ -6598,7 +6760,7 @@ export interface UpdateCustomersRequest {
    * @type {Array<ListCustomersResponseInner>}
    * @memberof UpdateCustomersRequest
    */
-  'customers'?: Array<ListCustomersResponseInner>;
+  'customers': Array<ListCustomersResponseInner>;
 }
 /**
  *
@@ -6631,6 +6793,12 @@ export interface UpdateWorkflowRequest {
    * @memberof UpdateWorkflowRequest
    */
   '$id': string;
+  /**
+   *
+   * @type {PurposeEnum}
+   * @memberof UpdateWorkflowRequest
+   */
+  'purpose'?: PurposeEnum;
   /**
    * The name of the workflow
    * @type {string}
@@ -6686,6 +6854,8 @@ export interface UpdateWorkflowRequest {
    */
   'priority'?: number;
 }
+
+
 /**
  *
  * @export
@@ -6763,6 +6933,12 @@ export interface UpdateWorkflowsResponse {
  */
 export interface Workflow {
   /**
+   *
+   * @type {PurposeEnum}
+   * @memberof Workflow
+   */
+  'purpose'?: PurposeEnum;
+  /**
    * The name of the workflow
    * @type {string}
    * @memberof Workflow
@@ -6817,6 +6993,8 @@ export interface Workflow {
    */
   'priority': number;
 }
+
+
 /**
  *
  * @export
@@ -6879,6 +7057,12 @@ export interface WorkflowEvent {
  */
 export interface WorkflowPartial {
   /**
+   *
+   * @type {PurposeEnum}
+   * @memberof WorkflowPartial
+   */
+  'purpose'?: PurposeEnum;
+  /**
    * The name of the workflow
    * @type {string}
    * @memberof WorkflowPartial
@@ -6933,6 +7117,8 @@ export interface WorkflowPartial {
    */
   'priority'?: number;
 }
+
+
 /**
  * @type WorkflowResponse
  * @export
@@ -8071,6 +8257,46 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
     },
     /**
      *
+     * @summary Gets all or specific set of conversations
+     * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
+     * @param {Array<string>} [id] ids for the entities this id belongs to
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    conversations: async (q?: string, id?: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      const localVarPath = `/v1-conversations`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      if (q !== undefined) {
+        localVarQueryParameter['q'] = q;
+      }
+
+      if (id) {
+        localVarQueryParameter['id'] = id;
+      }
+
+
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
      * @summary Gets a customer
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
@@ -8657,17 +8883,114 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
     },
     /**
      *
-     * @summary Upload a file that contains document(s) to be used across various endpoints/features. Currently, the size of all the files uploaded by one organization can be up to 1 GB. Please contact us if you need to increase the storage limit.
-     * @param {File} file
-     * @param {PurposeEnum} [purpose]
-     * @param {string} [entity]
+     * @summary Returns a file
+     * @param {string} purpose File categorical purpose
+     * @param {string} [entity] File entity id
+     * @param {string} [agent] Agent id, only used if purpose is either agent-audio or agent-transcript
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    fileUpload: async (file: File | Buffer | Blob, purpose?: PurposeEnum, entity?: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+    file: async (purpose: string, entity?: string, agent?: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'purpose' is not null or undefined
+      assertParamExists('file', 'purpose', purpose)
+      const localVarPath = `/v1-utils-file`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      if (purpose !== undefined) {
+        localVarQueryParameter['purpose'] = purpose;
+      }
+
+      if (entity !== undefined) {
+        localVarQueryParameter['entity'] = entity;
+      }
+
+      if (agent !== undefined) {
+        localVarQueryParameter['agent'] = agent;
+      }
+
+
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @summary Remove a file
+     * @param {string} purpose File categorical purpose
+     * @param {string} entity File entity id
+     * @param {string} [agent] Agent id, only used if purpose is either agent-audio or agent-transcript
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    fileRemove: async (purpose: string, entity: string, agent?: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'purpose' is not null or undefined
+      assertParamExists('fileRemove', 'purpose', purpose)
+      // verify required parameter 'entity' is not null or undefined
+      assertParamExists('fileRemove', 'entity', entity)
+      const localVarPath = `/v1-utils-file`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      if (purpose !== undefined) {
+        localVarQueryParameter['purpose'] = purpose;
+      }
+
+      if (entity !== undefined) {
+        localVarQueryParameter['entity'] = entity;
+      }
+
+      if (agent !== undefined) {
+        localVarQueryParameter['agent'] = agent;
+      }
+
+
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @summary Upload a file that contains document(s) to be used across various endpoints/features. Currently, the size of all the files uploaded by one organization can be up to 1 GB. Please contact us if you need to increase the storage limit.
+     * @param {File} file
+     * @param {PurposeEnum} [purpose]
+     * @param {string} [entity] The entity id, if not provided the entity id becomes the provided file name
+     * @param {string} [$agent] The agent that this file belongs to. Only used for entity.audio and entity.transcript files.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    fileUpload: async (file: File | Buffer | Blob, purpose?: PurposeEnum, entity?: string, $agent?: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
       // verify required parameter 'file' is not null or undefined
       assertParamExists('fileUpload', 'file', file)
-      const localVarPath = `/v1-utils-files`;
+      const localVarPath = `/v1-utils-file`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -8693,6 +9016,10 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         localVarFormParams.append('entity', entity as any);
       }
 
+      if ($agent !== undefined) {
+        localVarFormParams.append('$agent', $agent as any);
+      }
+
 
       localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
 
@@ -8709,10 +9036,14 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
     /**
      *
      * @summary Returns a list of files that belong to the user\'s organization.
+     * @param {string} purpose File categorical purpose
+     * @param {string} [agent] Agent id, only used if purpose is either agent-audio or agent-transcript
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    files: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+    files: async (purpose: string, agent?: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'purpose' is not null or undefined
+      assertParamExists('files', 'purpose', purpose)
       const localVarPath = `/v1-utils-files`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -8724,6 +9055,14 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
       const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
+
+      if (purpose !== undefined) {
+        localVarQueryParameter['purpose'] = purpose;
+      }
+
+      if (agent !== undefined) {
+        localVarQueryParameter['agent'] = agent;
+      }
 
 
 
@@ -9001,15 +9340,13 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
     },
     /**
      *
-     * @summary Purchase phone for a given agent
-     * @param {PurchasePhoneRequest} purchasePhoneRequest
+     * @summary Purchase phone for a given agent.
+     * @param {PurchasePhoneRequest} [purchasePhoneRequest] If no agent id is provided, the phone will be purchased for the owner of the API key.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    purchasePhone: async (purchasePhoneRequest: PurchasePhoneRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-      // verify required parameter 'purchasePhoneRequest' is not null or undefined
-      assertParamExists('purchasePhone', 'purchasePhoneRequest', purchasePhoneRequest)
-      const localVarPath = `/v1-purchasePhone`;
+    purchasePhone: async (purchasePhoneRequest?: PurchasePhoneRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      const localVarPath = `/v1-purchases-phone`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -9101,607 +9438,6 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         options: localVarRequestOptions,
       };
     },
-    /**
-     *
-     * @summary Creates a new scheduled conversation, don\'t use just use message schedule delay params
-     * @param {ScheduleCreateRequest} scheduleCreateRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scheduleConversation: async (scheduleCreateRequest: ScheduleCreateRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-      // verify required parameter 'scheduleCreateRequest' is not null or undefined
-      assertParamExists('scheduleConversation', 'scheduleCreateRequest', scheduleCreateRequest)
-      const localVarPath = `/v1-schedule`;
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-      let baseOptions;
-      if (configuration) {
-        baseOptions = configuration.baseOptions;
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
-
-
-
-      localVarHeaderParameter['Content-Type'] = 'application/json';
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter);
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-      localVarRequestOptions.data = serializeDataIfNeeded(scheduleCreateRequest, localVarRequestOptions, configuration)
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      };
-    },
-    /**
-     *
-     * @summary Deletes a schedule, don\'t use just delete the message id.
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scheduleDelete: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-      // verify required parameter 'id' is not null or undefined
-      assertParamExists('scheduleDelete', 'id', id)
-      const localVarPath = `/v1-schedule`;
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-      let baseOptions;
-      if (configuration) {
-        baseOptions = configuration.baseOptions;
-      }
-
-      const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
-
-      if (id !== undefined) {
-        localVarQueryParameter['id'] = id;
-      }
-
-
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter);
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      };
-    },
-    /**
-     *
-     * @summary Creates a new schedule group, don\'t use just create multiple messages with schedule delay params
-     * @param {ScheduleGroupCreateRequest} scheduleGroupCreateRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scheduleGroupCreate: async (scheduleGroupCreateRequest: ScheduleGroupCreateRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-      // verify required parameter 'scheduleGroupCreateRequest' is not null or undefined
-      assertParamExists('scheduleGroupCreate', 'scheduleGroupCreateRequest', scheduleGroupCreateRequest)
-      const localVarPath = `/v1-scheduleGroup`;
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-      let baseOptions;
-      if (configuration) {
-        baseOptions = configuration.baseOptions;
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
-
-
-
-      localVarHeaderParameter['Content-Type'] = 'application/json';
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter);
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-      localVarRequestOptions.data = serializeDataIfNeeded(scheduleGroupCreateRequest, localVarRequestOptions, configuration)
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      };
-    },
-    /**
-     *
-     * @summary Deletes and cancels a schedule group. Don\'t use just delete the messages individually
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scheduleGroupDelete: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-      // verify required parameter 'id' is not null or undefined
-      assertParamExists('scheduleGroupDelete', 'id', id)
-      const localVarPath = `/v1-scheduleGroup`;
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-      let baseOptions;
-      if (configuration) {
-        baseOptions = configuration.baseOptions;
-      }
-
-      const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
-
-      if (id !== undefined) {
-        localVarQueryParameter['id'] = id;
-      }
-
-
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter);
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      };
-    },
-    /**
-     *
-     * @summary Gets a schedule group, don\'t use just create multiple messages with schedule delay params
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scheduleGroupRetrieve: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-      // verify required parameter 'id' is not null or undefined
-      assertParamExists('scheduleGroupRetrieve', 'id', id)
-      const localVarPath = `/v1-scheduleGroup`;
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-      let baseOptions;
-      if (configuration) {
-        baseOptions = configuration.baseOptions;
-      }
-
-      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
-
-      if (id !== undefined) {
-        localVarQueryParameter['id'] = id;
-      }
-
-
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter);
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      };
-    },
-    /**
-     *
-     * @summary Updates a schedule group, don\'t use just create multiple messages with schedule delay params
-     * @param {ScheduleGroupUpdateRequest} scheduleGroupUpdateRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scheduleGroupUpdate: async (scheduleGroupUpdateRequest: ScheduleGroupUpdateRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-      // verify required parameter 'scheduleGroupUpdateRequest' is not null or undefined
-      assertParamExists('scheduleGroupUpdate', 'scheduleGroupUpdateRequest', scheduleGroupUpdateRequest)
-      const localVarPath = `/v1-scheduleGroup`;
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-      let baseOptions;
-      if (configuration) {
-        baseOptions = configuration.baseOptions;
-      }
-
-      const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
-
-
-
-      localVarHeaderParameter['Content-Type'] = 'application/json';
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter);
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-      localVarRequestOptions.data = serializeDataIfNeeded(scheduleGroupUpdateRequest, localVarRequestOptions, configuration)
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      };
-    },
-    /**
-     *
-     * @summary Gets a schedule, don\'t use just use message api
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scheduleRetrieve: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-      // verify required parameter 'id' is not null or undefined
-      assertParamExists('scheduleRetrieve', 'id', id)
-      const localVarPath = `/v1-schedule`;
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-      let baseOptions;
-      if (configuration) {
-        baseOptions = configuration.baseOptions;
-      }
-
-      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
-
-      if (id !== undefined) {
-        localVarQueryParameter['id'] = id;
-      }
-
-
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter);
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      };
-    },
-    /**
-     *
-     * @summary Updates a schedule, don\'t use just use message schedule delay params
-     * @param {ScheduleUpdateRequest} scheduleUpdateRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scheduleUpdate: async (scheduleUpdateRequest: ScheduleUpdateRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-      // verify required parameter 'scheduleUpdateRequest' is not null or undefined
-      assertParamExists('scheduleUpdate', 'scheduleUpdateRequest', scheduleUpdateRequest)
-      const localVarPath = `/v1-schedule`;
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-      let baseOptions;
-      if (configuration) {
-        baseOptions = configuration.baseOptions;
-      }
-
-      const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
-
-
-
-      localVarHeaderParameter['Content-Type'] = 'application/json';
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter);
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-      localVarRequestOptions.data = serializeDataIfNeeded(scheduleUpdateRequest, localVarRequestOptions, configuration)
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      };
-    },
-    /**
-     *
-     * @summary Gets a workflow. This has been replaced by Scout9 application.
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    workflow: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-      // verify required parameter 'id' is not null or undefined
-      assertParamExists('workflow', 'id', id)
-      const localVarPath = `/v1-workflow`;
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-      let baseOptions;
-      if (configuration) {
-        baseOptions = configuration.baseOptions;
-      }
-
-      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
-
-      if (id !== undefined) {
-        localVarQueryParameter['id'] = id;
-      }
-
-
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter);
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      };
-    },
-    /**
-     *
-     * @summary Create a new workflow. This has been replaced by Scout9 application.
-     * @param {CreateWorkflowRequest} createWorkflowRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    workflowCreate: async (createWorkflowRequest: CreateWorkflowRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-      // verify required parameter 'createWorkflowRequest' is not null or undefined
-      assertParamExists('workflowCreate', 'createWorkflowRequest', createWorkflowRequest)
-      const localVarPath = `/v1-workflow`;
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-      let baseOptions;
-      if (configuration) {
-        baseOptions = configuration.baseOptions;
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
-
-
-
-      localVarHeaderParameter['Content-Type'] = 'application/json';
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter);
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-      localVarRequestOptions.data = serializeDataIfNeeded(createWorkflowRequest, localVarRequestOptions, configuration)
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      };
-    },
-    /**
-     *
-     * @summary Deletes a workflow. This has been replaced by Scout9 application.
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    workflowDelete: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-      // verify required parameter 'id' is not null or undefined
-      assertParamExists('workflowDelete', 'id', id)
-      const localVarPath = `/v1-workflow`;
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-      let baseOptions;
-      if (configuration) {
-        baseOptions = configuration.baseOptions;
-      }
-
-      const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
-
-      if (id !== undefined) {
-        localVarQueryParameter['id'] = id;
-      }
-
-
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter);
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      };
-    },
-    /**
-     *
-     * @summary Update a workflow. This has been replaced by Scout9 application.
-     * @param {UpdateWorkflowRequest} updateWorkflowRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    workflowUpdate: async (updateWorkflowRequest: UpdateWorkflowRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-      // verify required parameter 'updateWorkflowRequest' is not null or undefined
-      assertParamExists('workflowUpdate', 'updateWorkflowRequest', updateWorkflowRequest)
-      const localVarPath = `/v1-workflow`;
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-      let baseOptions;
-      if (configuration) {
-        baseOptions = configuration.baseOptions;
-      }
-
-      const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
-
-
-
-      localVarHeaderParameter['Content-Type'] = 'application/json';
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter);
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-      localVarRequestOptions.data = serializeDataIfNeeded(updateWorkflowRequest, localVarRequestOptions, configuration)
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      };
-    },
-    /**
-     *
-     * @summary Gets all or specific set of workflows. This has been replaced by Scout9 application.
-     * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
-     * @param {Array<string>} [id] ids for the entities this id belongs to
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    workflows: async (q?: string, id?: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-      const localVarPath = `/v1-workflows`;
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-      let baseOptions;
-      if (configuration) {
-        baseOptions = configuration.baseOptions;
-      }
-
-      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
-
-      if (q !== undefined) {
-        localVarQueryParameter['q'] = q;
-      }
-
-      if (id) {
-        localVarQueryParameter['id'] = id;
-      }
-
-
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter);
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      };
-    },
-    /**
-     *
-     * @summary Creates new workflows. This has been replaced by Scout9 application.
-     * @param {CreateWorkflowsRequest} createWorkflowsRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    workflowsCreate: async (createWorkflowsRequest: CreateWorkflowsRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-      // verify required parameter 'createWorkflowsRequest' is not null or undefined
-      assertParamExists('workflowsCreate', 'createWorkflowsRequest', createWorkflowsRequest)
-      const localVarPath = `/v1-workflows`;
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-      let baseOptions;
-      if (configuration) {
-        baseOptions = configuration.baseOptions;
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
-
-
-
-      localVarHeaderParameter['Content-Type'] = 'application/json';
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter);
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-      localVarRequestOptions.data = serializeDataIfNeeded(createWorkflowsRequest, localVarRequestOptions, configuration)
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      };
-    },
-    /**
-     *
-     * @summary Deletes multiple workflows. This has been replaced by Scout9 application.
-     * @param {Array<string>} [id] ids for the entities this id belongs to
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    workflowsDelete: async (id?: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-      const localVarPath = `/v1-workflows`;
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-      let baseOptions;
-      if (configuration) {
-        baseOptions = configuration.baseOptions;
-      }
-
-      const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
-
-      if (id) {
-        localVarQueryParameter['id'] = id;
-      }
-
-
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter);
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      };
-    },
-    /**
-     *
-     * @summary Updates multiple workflows. This has been replaced by Scout9 application.
-     * @param {UpdateWorkflowRequest} updateWorkflowRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    workflowsUpdate: async (updateWorkflowRequest: UpdateWorkflowRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-      // verify required parameter 'updateWorkflowRequest' is not null or undefined
-      assertParamExists('workflowsUpdate', 'updateWorkflowRequest', updateWorkflowRequest)
-      const localVarPath = `/v1-workflows`;
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-      let baseOptions;
-      if (configuration) {
-        baseOptions = configuration.baseOptions;
-      }
-
-      const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
-
-
-
-      localVarHeaderParameter['Content-Type'] = 'application/json';
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter);
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-      localVarRequestOptions.data = serializeDataIfNeeded(updateWorkflowRequest, localVarRequestOptions, configuration)
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      };
-    },
   }
 };
 
@@ -9730,7 +9466,7 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async agentDelete(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteAgentResponse>> {
+    async agentDelete(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AgentDeleteResponse>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.agentDelete(id, options);
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
     },
@@ -9786,7 +9522,7 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async agentsDelete(id?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteAgentsResponse>> {
+    async agentsDelete(id?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AgentsDeleteResponse>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.agentsDelete(id, options);
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
     },
@@ -9999,6 +9735,18 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
     },
     /**
      *
+     * @summary Gets all or specific set of conversations
+     * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
+     * @param {Array<string>} [id] ids for the entities this id belongs to
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async conversations(q?: string, id?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ListConversationsResponseInner>>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.conversations(q, id, options);
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+    },
+    /**
+     *
      * @summary Gets a customer
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
@@ -10015,7 +9763,7 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async customerCreate(body: Customer, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateCustomerResponse>> {
+    async customerCreate(body: Customer, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CustomerCreateResponse>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.customerCreate(body, options);
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
     },
@@ -10026,7 +9774,7 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async customerDelete(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteCustomerResponse>> {
+    async customerDelete(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CustomerDeleteResponse>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.customerDelete(id, options);
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
     },
@@ -10126,7 +9874,7 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async customerUpdate(updateCustomerRequest: UpdateCustomerRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateCustomerResponse>> {
+    async customerUpdate(updateCustomerRequest: UpdateCustomerRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CustomerUpdateResponse>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.customerUpdate(updateCustomerRequest, options);
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
     },
@@ -10177,25 +9925,54 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
     },
     /**
      *
-     * @summary Upload a file that contains document(s) to be used across various endpoints/features. Currently, the size of all the files uploaded by one organization can be up to 1 GB. Please contact us if you need to increase the storage limit.
-     * @param {File} file
-     * @param {PurposeEnum} [purpose]
-     * @param {string} [entity]
+     * @summary Returns a file
+     * @param {string} purpose File categorical purpose
+     * @param {string} [entity] File entity id
+     * @param {string} [agent] Agent id, only used if purpose is either agent-audio or agent-transcript
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async fileUpload(file: File | Buffer | Blob, purpose?: PurposeEnum, entity?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Scout9File>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.fileUpload(file, purpose, entity, options);
+    async file(purpose: string, entity?: string, agent?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<File>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.file(purpose, entity, agent, options);
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+    },
+    /**
+     *
+     * @summary Remove a file
+     * @param {string} purpose File categorical purpose
+     * @param {string} entity File entity id
+     * @param {string} [agent] Agent id, only used if purpose is either agent-audio or agent-transcript
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async fileRemove(purpose: string, entity: string, agent?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OperationDocResponse>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.fileRemove(purpose, entity, agent, options);
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+    },
+    /**
+     *
+     * @summary Upload a file that contains document(s) to be used across various endpoints/features. Currently, the size of all the files uploaded by one organization can be up to 1 GB. Please contact us if you need to increase the storage limit.
+     * @param {File} file
+     * @param {PurposeEnum} [purpose]
+     * @param {string} [entity] The entity id, if not provided the entity id becomes the provided file name
+     * @param {string} [$agent] The agent that this file belongs to. Only used for entity.audio and entity.transcript files.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async fileUpload(file: File | Buffer | Blob, purpose?: PurposeEnum, entity?: string, $agent?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Scout9File>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.fileUpload(file, purpose, entity, $agent, options);
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
     },
     /**
      *
      * @summary Returns a list of files that belong to the user\'s organization.
+     * @param {string} purpose File categorical purpose
+     * @param {string} [agent] Agent id, only used if purpose is either agent-audio or agent-transcript
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async files(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ListFilesResponse>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.files(options);
+    async files(purpose: string, agent?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ListFilesResponseInner>>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.files(purpose, agent, options);
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
     },
     /**
@@ -10279,12 +10056,12 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
     },
     /**
      *
-     * @summary Purchase phone for a given agent
-     * @param {PurchasePhoneRequest} purchasePhoneRequest
+     * @summary Purchase phone for a given agent.
+     * @param {PurchasePhoneRequest} [purchasePhoneRequest] If no agent id is provided, the phone will be purchased for the owner of the API key.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async purchasePhone(purchasePhoneRequest: PurchasePhoneRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PurchasePhoneResponse>> {
+    async purchasePhone(purchasePhoneRequest?: PurchasePhoneRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PurchasePhoneResponse>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.purchasePhone(purchasePhoneRequest, options);
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
     },
@@ -10307,199 +10084,6 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
      */
     async runPlatformConfig(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<{ [key: string]: any; }>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.runPlatformConfig(options);
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-    },
-    /**
-     *
-     * @summary Creates a new scheduled conversation, don\'t use just use message schedule delay params
-     * @param {ScheduleCreateRequest} scheduleCreateRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    async scheduleConversation(scheduleCreateRequest: ScheduleCreateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleCreateResponse>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.scheduleConversation(scheduleCreateRequest, options);
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-    },
-    /**
-     *
-     * @summary Deletes a schedule, don\'t use just delete the message id.
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    async scheduleDelete(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleRemoveResponse>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.scheduleDelete(id, options);
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-    },
-    /**
-     *
-     * @summary Creates a new schedule group, don\'t use just create multiple messages with schedule delay params
-     * @param {ScheduleGroupCreateRequest} scheduleGroupCreateRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    async scheduleGroupCreate(scheduleGroupCreateRequest: ScheduleGroupCreateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleGroupCreateResponse>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.scheduleGroupCreate(scheduleGroupCreateRequest, options);
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-    },
-    /**
-     *
-     * @summary Deletes and cancels a schedule group. Don\'t use just delete the messages individually
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    async scheduleGroupDelete(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleGroupRemoveResponse>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.scheduleGroupDelete(id, options);
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-    },
-    /**
-     *
-     * @summary Gets a schedule group, don\'t use just create multiple messages with schedule delay params
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    async scheduleGroupRetrieve(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleGroupGetResponse>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.scheduleGroupRetrieve(id, options);
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-    },
-    /**
-     *
-     * @summary Updates a schedule group, don\'t use just create multiple messages with schedule delay params
-     * @param {ScheduleGroupUpdateRequest} scheduleGroupUpdateRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    async scheduleGroupUpdate(scheduleGroupUpdateRequest: ScheduleGroupUpdateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleGroupUpdateResponse>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.scheduleGroupUpdate(scheduleGroupUpdateRequest, options);
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-    },
-    /**
-     *
-     * @summary Gets a schedule, don\'t use just use message api
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    async scheduleRetrieve(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleCreateResponse>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.scheduleRetrieve(id, options);
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-    },
-    /**
-     *
-     * @summary Updates a schedule, don\'t use just use message schedule delay params
-     * @param {ScheduleUpdateRequest} scheduleUpdateRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    async scheduleUpdate(scheduleUpdateRequest: ScheduleUpdateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleUpdateResponse>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.scheduleUpdate(scheduleUpdateRequest, options);
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-    },
-    /**
-     *
-     * @summary Gets a workflow. This has been replaced by Scout9 application.
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    async workflow(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetWorkflowResponse>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.workflow(id, options);
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-    },
-    /**
-     *
-     * @summary Create a new workflow. This has been replaced by Scout9 application.
-     * @param {CreateWorkflowRequest} createWorkflowRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    async workflowCreate(createWorkflowRequest: CreateWorkflowRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateWorkflowResponse>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.workflowCreate(createWorkflowRequest, options);
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-    },
-    /**
-     *
-     * @summary Deletes a workflow. This has been replaced by Scout9 application.
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    async workflowDelete(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteWorkflowResponse>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.workflowDelete(id, options);
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-    },
-    /**
-     *
-     * @summary Update a workflow. This has been replaced by Scout9 application.
-     * @param {UpdateWorkflowRequest} updateWorkflowRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    async workflowUpdate(updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateWorkflowResponse>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.workflowUpdate(updateWorkflowRequest, options);
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-    },
-    /**
-     *
-     * @summary Gets all or specific set of workflows. This has been replaced by Scout9 application.
-     * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
-     * @param {Array<string>} [id] ids for the entities this id belongs to
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    async workflows(q?: string, id?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ListWorkflowsResponseInner>>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.workflows(q, id, options);
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-    },
-    /**
-     *
-     * @summary Creates new workflows. This has been replaced by Scout9 application.
-     * @param {CreateWorkflowsRequest} createWorkflowsRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    async workflowsCreate(createWorkflowsRequest: CreateWorkflowsRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateWorkflowsResponse>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.workflowsCreate(createWorkflowsRequest, options);
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-    },
-    /**
-     *
-     * @summary Deletes multiple workflows. This has been replaced by Scout9 application.
-     * @param {Array<string>} [id] ids for the entities this id belongs to
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    async workflowsDelete(id?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteWorkflowsResponse>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.workflowsDelete(id, options);
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-    },
-    /**
-     *
-     * @summary Updates multiple workflows. This has been replaced by Scout9 application.
-     * @param {UpdateWorkflowRequest} updateWorkflowRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    async workflowsUpdate(updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateWorkflowsResponse>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.workflowsUpdate(updateWorkflowRequest, options);
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
     },
   }
@@ -10529,7 +10113,7 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    agentDelete(id: string, options?: any): AxiosPromise<DeleteAgentResponse> {
+    agentDelete(id: string, options?: any): AxiosPromise<AgentDeleteResponse> {
       return localVarFp.agentDelete(id, options).then((request) => request(axios, basePath));
     },
     /**
@@ -10580,7 +10164,7 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    agentsDelete(id?: Array<string>, options?: any): AxiosPromise<DeleteAgentsResponse> {
+    agentsDelete(id?: Array<string>, options?: any): AxiosPromise<AgentsDeleteResponse> {
       return localVarFp.agentsDelete(id, options).then((request) => request(axios, basePath));
     },
     /**
@@ -10774,6 +10358,17 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
     },
     /**
      *
+     * @summary Gets all or specific set of conversations
+     * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
+     * @param {Array<string>} [id] ids for the entities this id belongs to
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    conversations(q?: string, id?: Array<string>, options?: any): AxiosPromise<Array<ListConversationsResponseInner>> {
+      return localVarFp.conversations(q, id, options).then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @summary Gets a customer
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
@@ -10789,7 +10384,7 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    customerCreate(body: Customer, options?: any): AxiosPromise<CreateCustomerResponse> {
+    customerCreate(body: Customer, options?: any): AxiosPromise<CustomerCreateResponse> {
       return localVarFp.customerCreate(body, options).then((request) => request(axios, basePath));
     },
     /**
@@ -10799,7 +10394,7 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    customerDelete(id: string, options?: any): AxiosPromise<DeleteCustomerResponse> {
+    customerDelete(id: string, options?: any): AxiosPromise<CustomerDeleteResponse> {
       return localVarFp.customerDelete(id, options).then((request) => request(axios, basePath));
     },
     /**
@@ -10890,7 +10485,7 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    customerUpdate(updateCustomerRequest: UpdateCustomerRequest, options?: any): AxiosPromise<UpdateCustomerResponse> {
+    customerUpdate(updateCustomerRequest: UpdateCustomerRequest, options?: any): AxiosPromise<CustomerUpdateResponse> {
       return localVarFp.customerUpdate(updateCustomerRequest, options).then((request) => request(axios, basePath));
     },
     /**
@@ -10936,24 +10531,51 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
     },
     /**
      *
-     * @summary Upload a file that contains document(s) to be used across various endpoints/features. Currently, the size of all the files uploaded by one organization can be up to 1 GB. Please contact us if you need to increase the storage limit.
-     * @param {File} file
-     * @param {PurposeEnum} [purpose]
-     * @param {string} [entity]
+     * @summary Returns a file
+     * @param {string} purpose File categorical purpose
+     * @param {string} [entity] File entity id
+     * @param {string} [agent] Agent id, only used if purpose is either agent-audio or agent-transcript
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    fileUpload(file: File | Buffer | Blob, purpose?: PurposeEnum, entity?: string, options?: any): AxiosPromise<Scout9File> {
-      return localVarFp.fileUpload(file, purpose, entity, options).then((request) => request(axios, basePath));
+    file(purpose: string, entity?: string, agent?: string, options?: any): AxiosPromise<File> {
+      return localVarFp.file(purpose, entity, agent, options).then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @summary Remove a file
+     * @param {string} purpose File categorical purpose
+     * @param {string} entity File entity id
+     * @param {string} [agent] Agent id, only used if purpose is either agent-audio or agent-transcript
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    fileRemove(purpose: string, entity: string, agent?: string, options?: any): AxiosPromise<OperationDocResponse> {
+      return localVarFp.fileRemove(purpose, entity, agent, options).then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @summary Upload a file that contains document(s) to be used across various endpoints/features. Currently, the size of all the files uploaded by one organization can be up to 1 GB. Please contact us if you need to increase the storage limit.
+     * @param {File} file
+     * @param {PurposeEnum} [purpose]
+     * @param {string} [entity] The entity id, if not provided the entity id becomes the provided file name
+     * @param {string} [$agent] The agent that this file belongs to. Only used for entity.audio and entity.transcript files.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    fileUpload(file: File | Buffer | Blob, purpose?: PurposeEnum, entity?: string, $agent?: string, options?: any): AxiosPromise<Scout9File> {
+      return localVarFp.fileUpload(file, purpose, entity, $agent, options).then((request) => request(axios, basePath));
     },
     /**
      *
      * @summary Returns a list of files that belong to the user\'s organization.
+     * @param {string} purpose File categorical purpose
+     * @param {string} [agent] Agent id, only used if purpose is either agent-audio or agent-transcript
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    files(options?: any): AxiosPromise<ListFilesResponse> {
-      return localVarFp.files(options).then((request) => request(axios, basePath));
+    files(purpose: string, agent?: string, options?: any): AxiosPromise<Array<ListFilesResponseInner>> {
+      return localVarFp.files(purpose, agent, options).then((request) => request(axios, basePath));
     },
     /**
      * Forwards a locked conversation to agent
@@ -11029,12 +10651,12 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
     },
     /**
      *
-     * @summary Purchase phone for a given agent
-     * @param {PurchasePhoneRequest} purchasePhoneRequest
+     * @summary Purchase phone for a given agent.
+     * @param {PurchasePhoneRequest} [purchasePhoneRequest] If no agent id is provided, the phone will be purchased for the owner of the API key.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    purchasePhone(purchasePhoneRequest: PurchasePhoneRequest, options?: any): AxiosPromise<PurchasePhoneResponse> {
+    purchasePhone(purchasePhoneRequest?: PurchasePhoneRequest, options?: any): AxiosPromise<PurchasePhoneResponse> {
       return localVarFp.purchasePhone(purchasePhoneRequest, options).then((request) => request(axios, basePath));
     },
     /**
@@ -11055,183 +10677,6 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
      */
     runPlatformConfig(options?: any): AxiosPromise<{ [key: string]: any; }> {
       return localVarFp.runPlatformConfig(options).then((request) => request(axios, basePath));
-    },
-    /**
-     *
-     * @summary Creates a new scheduled conversation, don\'t use just use message schedule delay params
-     * @param {ScheduleCreateRequest} scheduleCreateRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scheduleConversation(scheduleCreateRequest: ScheduleCreateRequest, options?: any): AxiosPromise<ScheduleCreateResponse> {
-      return localVarFp.scheduleConversation(scheduleCreateRequest, options).then((request) => request(axios, basePath));
-    },
-    /**
-     *
-     * @summary Deletes a schedule, don\'t use just delete the message id.
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scheduleDelete(id: string, options?: any): AxiosPromise<ScheduleRemoveResponse> {
-      return localVarFp.scheduleDelete(id, options).then((request) => request(axios, basePath));
-    },
-    /**
-     *
-     * @summary Creates a new schedule group, don\'t use just create multiple messages with schedule delay params
-     * @param {ScheduleGroupCreateRequest} scheduleGroupCreateRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scheduleGroupCreate(scheduleGroupCreateRequest: ScheduleGroupCreateRequest, options?: any): AxiosPromise<ScheduleGroupCreateResponse> {
-      return localVarFp.scheduleGroupCreate(scheduleGroupCreateRequest, options).then((request) => request(axios, basePath));
-    },
-    /**
-     *
-     * @summary Deletes and cancels a schedule group. Don\'t use just delete the messages individually
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scheduleGroupDelete(id: string, options?: any): AxiosPromise<ScheduleGroupRemoveResponse> {
-      return localVarFp.scheduleGroupDelete(id, options).then((request) => request(axios, basePath));
-    },
-    /**
-     *
-     * @summary Gets a schedule group, don\'t use just create multiple messages with schedule delay params
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scheduleGroupRetrieve(id: string, options?: any): AxiosPromise<ScheduleGroupGetResponse> {
-      return localVarFp.scheduleGroupRetrieve(id, options).then((request) => request(axios, basePath));
-    },
-    /**
-     *
-     * @summary Updates a schedule group, don\'t use just create multiple messages with schedule delay params
-     * @param {ScheduleGroupUpdateRequest} scheduleGroupUpdateRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scheduleGroupUpdate(scheduleGroupUpdateRequest: ScheduleGroupUpdateRequest, options?: any): AxiosPromise<ScheduleGroupUpdateResponse> {
-      return localVarFp.scheduleGroupUpdate(scheduleGroupUpdateRequest, options).then((request) => request(axios, basePath));
-    },
-    /**
-     *
-     * @summary Gets a schedule, don\'t use just use message api
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scheduleRetrieve(id: string, options?: any): AxiosPromise<ScheduleCreateResponse> {
-      return localVarFp.scheduleRetrieve(id, options).then((request) => request(axios, basePath));
-    },
-    /**
-     *
-     * @summary Updates a schedule, don\'t use just use message schedule delay params
-     * @param {ScheduleUpdateRequest} scheduleUpdateRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scheduleUpdate(scheduleUpdateRequest: ScheduleUpdateRequest, options?: any): AxiosPromise<ScheduleUpdateResponse> {
-      return localVarFp.scheduleUpdate(scheduleUpdateRequest, options).then((request) => request(axios, basePath));
-    },
-    /**
-     *
-     * @summary Gets a workflow. This has been replaced by Scout9 application.
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    workflow(id: string, options?: any): AxiosPromise<GetWorkflowResponse> {
-      return localVarFp.workflow(id, options).then((request) => request(axios, basePath));
-    },
-    /**
-     *
-     * @summary Create a new workflow. This has been replaced by Scout9 application.
-     * @param {CreateWorkflowRequest} createWorkflowRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    workflowCreate(createWorkflowRequest: CreateWorkflowRequest, options?: any): AxiosPromise<CreateWorkflowResponse> {
-      return localVarFp.workflowCreate(createWorkflowRequest, options).then((request) => request(axios, basePath));
-    },
-    /**
-     *
-     * @summary Deletes a workflow. This has been replaced by Scout9 application.
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    workflowDelete(id: string, options?: any): AxiosPromise<DeleteWorkflowResponse> {
-      return localVarFp.workflowDelete(id, options).then((request) => request(axios, basePath));
-    },
-    /**
-     *
-     * @summary Update a workflow. This has been replaced by Scout9 application.
-     * @param {UpdateWorkflowRequest} updateWorkflowRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    workflowUpdate(updateWorkflowRequest: UpdateWorkflowRequest, options?: any): AxiosPromise<UpdateWorkflowResponse> {
-      return localVarFp.workflowUpdate(updateWorkflowRequest, options).then((request) => request(axios, basePath));
-    },
-    /**
-     *
-     * @summary Gets all or specific set of workflows. This has been replaced by Scout9 application.
-     * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
-     * @param {Array<string>} [id] ids for the entities this id belongs to
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    workflows(q?: string, id?: Array<string>, options?: any): AxiosPromise<Array<ListWorkflowsResponseInner>> {
-      return localVarFp.workflows(q, id, options).then((request) => request(axios, basePath));
-    },
-    /**
-     *
-     * @summary Creates new workflows. This has been replaced by Scout9 application.
-     * @param {CreateWorkflowsRequest} createWorkflowsRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    workflowsCreate(createWorkflowsRequest: CreateWorkflowsRequest, options?: any): AxiosPromise<CreateWorkflowsResponse> {
-      return localVarFp.workflowsCreate(createWorkflowsRequest, options).then((request) => request(axios, basePath));
-    },
-    /**
-     *
-     * @summary Deletes multiple workflows. This has been replaced by Scout9 application.
-     * @param {Array<string>} [id] ids for the entities this id belongs to
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    workflowsDelete(id?: Array<string>, options?: any): AxiosPromise<DeleteWorkflowsResponse> {
-      return localVarFp.workflowsDelete(id, options).then((request) => request(axios, basePath));
-    },
-    /**
-     *
-     * @summary Updates multiple workflows. This has been replaced by Scout9 application.
-     * @param {UpdateWorkflowRequest} updateWorkflowRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    workflowsUpdate(updateWorkflowRequest: UpdateWorkflowRequest, options?: any): AxiosPromise<UpdateWorkflowsResponse> {
-      return localVarFp.workflowsUpdate(updateWorkflowRequest, options).then((request) => request(axios, basePath));
     },
   };
 };
@@ -11555,6 +11000,19 @@ export class Scout9Api extends BaseAPI {
 
   /**
    *
+   * @summary Gets all or specific set of conversations
+   * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
+   * @param {Array<string>} [id] ids for the entities this id belongs to
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof Scout9Api
+   */
+  public conversations(q?: string, id?: Array<string>, options?: AxiosRequestConfig) {
+    return Scout9ApiFp(this.configuration).conversations(q, id, options).then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
    * @summary Gets a customer
    * @param {string} id id of entity to query
    * @param {*} [options] Override http request option.
@@ -11749,27 +11207,58 @@ export class Scout9Api extends BaseAPI {
 
   /**
    *
-   * @summary Upload a file that contains document(s) to be used across various endpoints/features. Currently, the size of all the files uploaded by one organization can be up to 1 GB. Please contact us if you need to increase the storage limit.
-   * @param {File} file
-   * @param {PurposeEnum} [purpose]
-   * @param {string} [entity]
+   * @summary Returns a file
+   * @param {string} purpose File categorical purpose
+   * @param {string} [entity] File entity id
+   * @param {string} [agent] Agent id, only used if purpose is either agent-audio or agent-transcript
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof Scout9Api
    */
-  public fileUpload(file: File | Buffer | Blob, purpose?: PurposeEnum, entity?: string, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).fileUpload(file, purpose, entity, options).then((request) => request(this.axios, this.basePath));
+  public file(purpose: string, entity?: string, agent?: string, options?: AxiosRequestConfig) {
+    return Scout9ApiFp(this.configuration).file(purpose, entity, agent, options).then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @summary Remove a file
+   * @param {string} purpose File categorical purpose
+   * @param {string} entity File entity id
+   * @param {string} [agent] Agent id, only used if purpose is either agent-audio or agent-transcript
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof Scout9Api
+   */
+  public fileRemove(purpose: string, entity: string, agent?: string, options?: AxiosRequestConfig) {
+    return Scout9ApiFp(this.configuration).fileRemove(purpose, entity, agent, options).then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @summary Upload a file that contains document(s) to be used across various endpoints/features. Currently, the size of all the files uploaded by one organization can be up to 1 GB. Please contact us if you need to increase the storage limit.
+   * @param {File} file
+   * @param {PurposeEnum} [purpose]
+   * @param {string} [entity] The entity id, if not provided the entity id becomes the provided file name
+   * @param {string} [$agent] The agent that this file belongs to. Only used for entity.audio and entity.transcript files.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof Scout9Api
+   */
+  public fileUpload(file: File | Buffer | Blob, purpose?: PurposeEnum, entity?: string, $agent?: string, options?: AxiosRequestConfig) {
+    return Scout9ApiFp(this.configuration).fileUpload(file, purpose, entity, $agent, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
    * @summary Returns a list of files that belong to the user\'s organization.
+   * @param {string} purpose File categorical purpose
+   * @param {string} [agent] Agent id, only used if purpose is either agent-audio or agent-transcript
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof Scout9Api
    */
-  public files(options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).files(options).then((request) => request(this.axios, this.basePath));
+  public files(purpose: string, agent?: string, options?: AxiosRequestConfig) {
+    return Scout9ApiFp(this.configuration).files(purpose, agent, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -11860,13 +11349,13 @@ export class Scout9Api extends BaseAPI {
 
   /**
    *
-   * @summary Purchase phone for a given agent
-   * @param {PurchasePhoneRequest} purchasePhoneRequest
+   * @summary Purchase phone for a given agent.
+   * @param {PurchasePhoneRequest} [purchasePhoneRequest] If no agent id is provided, the phone will be purchased for the owner of the API key.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof Scout9Api
    */
-  public purchasePhone(purchasePhoneRequest: PurchasePhoneRequest, options?: AxiosRequestConfig) {
+  public purchasePhone(purchasePhoneRequest?: PurchasePhoneRequest, options?: AxiosRequestConfig) {
     return Scout9ApiFp(this.configuration).purchasePhone(purchasePhoneRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
@@ -11891,215 +11380,6 @@ export class Scout9Api extends BaseAPI {
    */
   public runPlatformConfig(options?: AxiosRequestConfig) {
     return Scout9ApiFp(this.configuration).runPlatformConfig(options).then((request) => request(this.axios, this.basePath));
-  }
-
-  /**
-   *
-   * @summary Creates a new scheduled conversation, don\'t use just use message schedule delay params
-   * @param {ScheduleCreateRequest} scheduleCreateRequest
-   * @param {*} [options] Override http request option.
-   * @deprecated
-   * @throws {RequiredError}
-   * @memberof Scout9Api
-   */
-  public scheduleConversation(scheduleCreateRequest: ScheduleCreateRequest, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).scheduleConversation(scheduleCreateRequest, options).then((request) => request(this.axios, this.basePath));
-  }
-
-  /**
-   *
-   * @summary Deletes a schedule, don\'t use just delete the message id.
-   * @param {string} id id of entity to query
-   * @param {*} [options] Override http request option.
-   * @deprecated
-   * @throws {RequiredError}
-   * @memberof Scout9Api
-   */
-  public scheduleDelete(id: string, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).scheduleDelete(id, options).then((request) => request(this.axios, this.basePath));
-  }
-
-  /**
-   *
-   * @summary Creates a new schedule group, don\'t use just create multiple messages with schedule delay params
-   * @param {ScheduleGroupCreateRequest} scheduleGroupCreateRequest
-   * @param {*} [options] Override http request option.
-   * @deprecated
-   * @throws {RequiredError}
-   * @memberof Scout9Api
-   */
-  public scheduleGroupCreate(scheduleGroupCreateRequest: ScheduleGroupCreateRequest, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).scheduleGroupCreate(scheduleGroupCreateRequest, options).then((request) => request(this.axios, this.basePath));
-  }
-
-  /**
-   *
-   * @summary Deletes and cancels a schedule group. Don\'t use just delete the messages individually
-   * @param {string} id id of entity to query
-   * @param {*} [options] Override http request option.
-   * @deprecated
-   * @throws {RequiredError}
-   * @memberof Scout9Api
-   */
-  public scheduleGroupDelete(id: string, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).scheduleGroupDelete(id, options).then((request) => request(this.axios, this.basePath));
-  }
-
-  /**
-   *
-   * @summary Gets a schedule group, don\'t use just create multiple messages with schedule delay params
-   * @param {string} id id of entity to query
-   * @param {*} [options] Override http request option.
-   * @deprecated
-   * @throws {RequiredError}
-   * @memberof Scout9Api
-   */
-  public scheduleGroupRetrieve(id: string, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).scheduleGroupRetrieve(id, options).then((request) => request(this.axios, this.basePath));
-  }
-
-  /**
-   *
-   * @summary Updates a schedule group, don\'t use just create multiple messages with schedule delay params
-   * @param {ScheduleGroupUpdateRequest} scheduleGroupUpdateRequest
-   * @param {*} [options] Override http request option.
-   * @deprecated
-   * @throws {RequiredError}
-   * @memberof Scout9Api
-   */
-  public scheduleGroupUpdate(scheduleGroupUpdateRequest: ScheduleGroupUpdateRequest, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).scheduleGroupUpdate(scheduleGroupUpdateRequest, options).then((request) => request(this.axios, this.basePath));
-  }
-
-  /**
-   *
-   * @summary Gets a schedule, don\'t use just use message api
-   * @param {string} id id of entity to query
-   * @param {*} [options] Override http request option.
-   * @deprecated
-   * @throws {RequiredError}
-   * @memberof Scout9Api
-   */
-  public scheduleRetrieve(id: string, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).scheduleRetrieve(id, options).then((request) => request(this.axios, this.basePath));
-  }
-
-  /**
-   *
-   * @summary Updates a schedule, don\'t use just use message schedule delay params
-   * @param {ScheduleUpdateRequest} scheduleUpdateRequest
-   * @param {*} [options] Override http request option.
-   * @deprecated
-   * @throws {RequiredError}
-   * @memberof Scout9Api
-   */
-  public scheduleUpdate(scheduleUpdateRequest: ScheduleUpdateRequest, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).scheduleUpdate(scheduleUpdateRequest, options).then((request) => request(this.axios, this.basePath));
-  }
-
-  /**
-   *
-   * @summary Gets a workflow. This has been replaced by Scout9 application.
-   * @param {string} id id of entity to query
-   * @param {*} [options] Override http request option.
-   * @deprecated
-   * @throws {RequiredError}
-   * @memberof Scout9Api
-   */
-  public workflow(id: string, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).workflow(id, options).then((request) => request(this.axios, this.basePath));
-  }
-
-  /**
-   *
-   * @summary Create a new workflow. This has been replaced by Scout9 application.
-   * @param {CreateWorkflowRequest} createWorkflowRequest
-   * @param {*} [options] Override http request option.
-   * @deprecated
-   * @throws {RequiredError}
-   * @memberof Scout9Api
-   */
-  public workflowCreate(createWorkflowRequest: CreateWorkflowRequest, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).workflowCreate(createWorkflowRequest, options).then((request) => request(this.axios, this.basePath));
-  }
-
-  /**
-   *
-   * @summary Deletes a workflow. This has been replaced by Scout9 application.
-   * @param {string} id id of entity to query
-   * @param {*} [options] Override http request option.
-   * @deprecated
-   * @throws {RequiredError}
-   * @memberof Scout9Api
-   */
-  public workflowDelete(id: string, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).workflowDelete(id, options).then((request) => request(this.axios, this.basePath));
-  }
-
-  /**
-   *
-   * @summary Update a workflow. This has been replaced by Scout9 application.
-   * @param {UpdateWorkflowRequest} updateWorkflowRequest
-   * @param {*} [options] Override http request option.
-   * @deprecated
-   * @throws {RequiredError}
-   * @memberof Scout9Api
-   */
-  public workflowUpdate(updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).workflowUpdate(updateWorkflowRequest, options).then((request) => request(this.axios, this.basePath));
-  }
-
-  /**
-   *
-   * @summary Gets all or specific set of workflows. This has been replaced by Scout9 application.
-   * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
-   * @param {Array<string>} [id] ids for the entities this id belongs to
-   * @param {*} [options] Override http request option.
-   * @deprecated
-   * @throws {RequiredError}
-   * @memberof Scout9Api
-   */
-  public workflows(q?: string, id?: Array<string>, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).workflows(q, id, options).then((request) => request(this.axios, this.basePath));
-  }
-
-  /**
-   *
-   * @summary Creates new workflows. This has been replaced by Scout9 application.
-   * @param {CreateWorkflowsRequest} createWorkflowsRequest
-   * @param {*} [options] Override http request option.
-   * @deprecated
-   * @throws {RequiredError}
-   * @memberof Scout9Api
-   */
-  public workflowsCreate(createWorkflowsRequest: CreateWorkflowsRequest, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).workflowsCreate(createWorkflowsRequest, options).then((request) => request(this.axios, this.basePath));
-  }
-
-  /**
-   *
-   * @summary Deletes multiple workflows. This has been replaced by Scout9 application.
-   * @param {Array<string>} [id] ids for the entities this id belongs to
-   * @param {*} [options] Override http request option.
-   * @deprecated
-   * @throws {RequiredError}
-   * @memberof Scout9Api
-   */
-  public workflowsDelete(id?: Array<string>, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).workflowsDelete(id, options).then((request) => request(this.axios, this.basePath));
-  }
-
-  /**
-   *
-   * @summary Updates multiple workflows. This has been replaced by Scout9 application.
-   * @param {UpdateWorkflowRequest} updateWorkflowRequest
-   * @param {*} [options] Override http request option.
-   * @deprecated
-   * @throws {RequiredError}
-   * @memberof Scout9Api
-   */
-  public workflowsUpdate(updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).workflowsUpdate(updateWorkflowRequest, options).then((request) => request(this.axios, this.basePath));
   }
 }
 

@@ -114,6 +114,50 @@ export type AgentContext = Array<string> | string;
 /**
  *
  * @export
+ * @interface AgentDeleteResponse
+ */
+export interface AgentDeleteResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof AgentDeleteResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof AgentDeleteResponse
+     */
+    'error'?: Error;
+    /**
+     * The id of the document that was created, updated, or deleted
+     * @type {string}
+     * @memberof AgentDeleteResponse
+     */
+    'id': string;
+}
+/**
+ *
+ * @export
+ * @interface AgentsDeleteResponse
+ */
+export interface AgentsDeleteResponse {
+    /**
+     * ISO 8601 datetime string of when the operation was queued
+     * @type {string}
+     * @memberof AgentsDeleteResponse
+     */
+    'queued': string;
+    /**
+     * The operation id to view the operation end results
+     * @type {string}
+     * @memberof AgentsDeleteResponse
+     */
+    '$operation': string;
+}
+/**
+ *
+ * @export
  * @interface AndLogic
  */
 export interface AndLogic {
@@ -787,10 +831,10 @@ export interface ConversationCreateRequest {
     'environment': ConversationEnvironment;
     /**
      *
-     * @type {ConversationUpdateRequestBaseWorkflow}
+     * @type {ConversationCreateRequestBaseWorkflow}
      * @memberof ConversationCreateRequest
      */
-    '$workflow'?: ConversationUpdateRequestBaseWorkflow;
+    '$workflow'?: ConversationCreateRequestBaseWorkflow;
 }
 /**
  *
@@ -800,11 +844,16 @@ export interface ConversationCreateRequest {
 export interface ConversationCreateRequestBase {
     /**
      *
-     * @type {ConversationUpdateRequestBaseWorkflow}
+     * @type {ConversationCreateRequestBaseWorkflow}
      * @memberof ConversationCreateRequestBase
      */
-    '$workflow'?: ConversationUpdateRequestBaseWorkflow;
+    '$workflow'?: ConversationCreateRequestBaseWorkflow;
 }
+/**
+ * @type ConversationCreateRequestBaseWorkflow
+ * @export
+ */
+export type ConversationCreateRequestBaseWorkflow = Workflow | string;
 /**
  *
  * @export
@@ -1073,6 +1122,7 @@ export interface ConversationUpdateRequest {
      *
      * @type {ConversationUpdateRequestAllOfWorkflow}
      * @memberof ConversationUpdateRequest
+     * @deprecated
      */
     '$workflow'?: ConversationUpdateRequestAllOfWorkflow;
     /**
@@ -1098,6 +1148,7 @@ export interface ConversationUpdateRequestAllOf {
      *
      * @type {ConversationUpdateRequestAllOfWorkflow}
      * @memberof ConversationUpdateRequestAllOf
+     * @deprecated
      */
     '$workflow'?: ConversationUpdateRequestAllOfWorkflow;
 }
@@ -1116,6 +1167,7 @@ export interface ConversationUpdateRequestBase {
      *
      * @type {ConversationUpdateRequestBaseWorkflow}
      * @memberof ConversationUpdateRequestBase
+     * @deprecated
      */
     '$workflow'?: ConversationUpdateRequestBaseWorkflow;
 }
@@ -1879,31 +1931,6 @@ export interface CreateCustomerGroupsResponse {
 /**
  *
  * @export
- * @interface CreateCustomerResponse
- */
-export interface CreateCustomerResponse {
-    /**
-     *
-     * @type {boolean}
-     * @memberof CreateCustomerResponse
-     */
-    'success': boolean;
-    /**
-     *
-     * @type {Error}
-     * @memberof CreateCustomerResponse
-     */
-    'error'?: Error;
-    /**
-     * The id of the document that was created, updated, or deleted
-     * @type {string}
-     * @memberof CreateCustomerResponse
-     */
-    'id': string;
-}
-/**
- *
- * @export
  * @interface CreateCustomersRequest
  */
 export interface CreateCustomersRequest {
@@ -1964,6 +1991,12 @@ export interface CreateFileRequestWithStringPurpose {
  * @interface CreateWorkflowRequest
  */
 export interface CreateWorkflowRequest {
+    /**
+     *
+     * @type {PurposeEnum}
+     * @memberof CreateWorkflowRequest
+     */
+    'purpose'?: PurposeEnum;
     /**
      * The name of the workflow
      * @type {string}
@@ -2063,6 +2096,12 @@ export interface CreateWorkflowsRequest {
  * @interface CreateWorkflowsRequestWorkflowsInner
  */
 export interface CreateWorkflowsRequestWorkflowsInner {
+    /**
+     *
+     * @type {PurposeEnum}
+     * @memberof CreateWorkflowsRequestWorkflowsInner
+     */
+    'purpose'?: PurposeEnum;
     /**
      * The name of the workflow
      * @type {string}
@@ -2266,6 +2305,56 @@ export interface Customer {
     'stripeDev'?: string | null;
 }
 /**
+ *
+ * @export
+ * @interface CustomerCreateResponse
+ */
+export interface CustomerCreateResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof CustomerCreateResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof CustomerCreateResponse
+     */
+    'error'?: Error;
+    /**
+     * The id of the document that was created, updated, or deleted
+     * @type {string}
+     * @memberof CustomerCreateResponse
+     */
+    'id': string;
+}
+/**
+ *
+ * @export
+ * @interface CustomerDeleteResponse
+ */
+export interface CustomerDeleteResponse {
+    /**
+     *
+     * @type {boolean}
+     * @memberof CustomerDeleteResponse
+     */
+    'success': boolean;
+    /**
+     *
+     * @type {Error}
+     * @memberof CustomerDeleteResponse
+     */
+    'error'?: Error;
+    /**
+     * The id of the document that was created, updated, or deleted
+     * @type {string}
+     * @memberof CustomerDeleteResponse
+     */
+    'id': string;
+}
+/**
  * A way for a business to group customers to use in scheduling batch conversations
  * @export
  * @interface CustomerGroup
@@ -2324,54 +2413,35 @@ export interface CustomerGroupRecord {
     '$agent'?: string;
 }
 /**
- * @type CustomerValue
- * @export
- */
-export type CustomerValue = boolean | number | string;
-/**
  *
  * @export
- * @interface DeleteAgentResponse
+ * @interface CustomerUpdateResponse
  */
-export interface DeleteAgentResponse {
+export interface CustomerUpdateResponse {
     /**
      *
      * @type {boolean}
-     * @memberof DeleteAgentResponse
+     * @memberof CustomerUpdateResponse
      */
     'success': boolean;
     /**
      *
      * @type {Error}
-     * @memberof DeleteAgentResponse
+     * @memberof CustomerUpdateResponse
      */
     'error'?: Error;
     /**
      * The id of the document that was created, updated, or deleted
      * @type {string}
-     * @memberof DeleteAgentResponse
+     * @memberof CustomerUpdateResponse
      */
     'id': string;
 }
 /**
- *
+ * @type CustomerValue
  * @export
- * @interface DeleteAgentsResponse
  */
-export interface DeleteAgentsResponse {
-    /**
-     * ISO 8601 datetime string of when the operation was queued
-     * @type {string}
-     * @memberof DeleteAgentsResponse
-     */
-    'queued': string;
-    /**
-     * The operation id to view the operation end results
-     * @type {string}
-     * @memberof DeleteAgentsResponse
-     */
-    '$operation': string;
-}
+export type CustomerValue = boolean | number | string;
 /**
  *
  * @export
@@ -2484,31 +2554,6 @@ export interface DeleteCustomerGroupsResponse {
      * @memberof DeleteCustomerGroupsResponse
      */
     '$operation': string;
-}
-/**
- *
- * @export
- * @interface DeleteCustomerResponse
- */
-export interface DeleteCustomerResponse {
-    /**
-     *
-     * @type {boolean}
-     * @memberof DeleteCustomerResponse
-     */
-    'success': boolean;
-    /**
-     *
-     * @type {Error}
-     * @memberof DeleteCustomerResponse
-     */
-    'error'?: Error;
-    /**
-     * The id of the document that was created, updated, or deleted
-     * @type {string}
-     * @memberof DeleteCustomerResponse
-     */
-    'id': string;
 }
 /**
  *
@@ -3546,6 +3591,12 @@ export interface GetCustomerResponseAllOf {
  */
 export interface GetWorkflowResponse {
     /**
+     *
+     * @type {PurposeEnum}
+     * @memberof GetWorkflowResponse
+     */
+    'purpose'?: PurposeEnum;
+    /**
      * The name of the workflow
      * @type {string}
      * @memberof GetWorkflowResponse
@@ -3897,6 +3948,92 @@ export interface ListContextsResponseInnerAllOf {
 /**
  *
  * @export
+ * @interface ListConversationsResponseInner
+ */
+export interface ListConversationsResponseInner {
+    /**
+     * Default agent persona id assigned to the conversation(s)
+     * @type {string}
+     * @memberof ListConversationsResponseInner
+     */
+    '$agent': string;
+    /**
+     * Initial contexts to load when starting the conversation
+     * @type {Array<string>}
+     * @memberof ListConversationsResponseInner
+     */
+    'initialContexts'?: Array<string>;
+    /**
+     *
+     * @type {ConversationBaseEnvironmentProps}
+     * @memberof ListConversationsResponseInner
+     */
+    'environmentProps'?: ConversationBaseEnvironmentProps;
+    /**
+     * Customer this conversation is with
+     * @type {string}
+     * @memberof ListConversationsResponseInner
+     */
+    '$customer': string;
+    /**
+     *
+     * @type {ConversationEnvironment}
+     * @memberof ListConversationsResponseInner
+     */
+    'environment': ConversationEnvironment;
+    /**
+     * The client web url of the conversation
+     * @type {string}
+     * @memberof ListConversationsResponseInner
+     */
+    'clientWebUrl'?: string;
+    /**
+     * The agent web url of the conversation (requires phone two-factor authentication)
+     * @type {string}
+     * @memberof ListConversationsResponseInner
+     */
+    'agentWebUrl'?: string;
+    /**
+     * The agent test web url of the conversation, used for testing the conversation without notifying the customer
+     * @type {string}
+     * @memberof ListConversationsResponseInner
+     */
+    'agentTestWebUrl'?: string;
+    /**
+     * The ID of the workflow used for this conversation
+     * @type {string}
+     * @memberof ListConversationsResponseInner
+     */
+    '$workflow': string;
+    /**
+     * ISO 8601 date string of when the conversation was initiated
+     * @type {string}
+     * @memberof ListConversationsResponseInner
+     */
+    'initiated': string;
+    /**
+     * The ID of the conversation
+     * @type {string}
+     * @memberof ListConversationsResponseInner
+     */
+    '$id': string;
+}
+/**
+ *
+ * @export
+ * @interface ListConversationsResponseInnerAllOf
+ */
+export interface ListConversationsResponseInnerAllOf {
+    /**
+     * The ID of the conversation
+     * @type {string}
+     * @memberof ListConversationsResponseInnerAllOf
+     */
+    '$id': string;
+}
+/**
+ *
+ * @export
  * @interface ListCustomerGroupsResponseInner
  */
 export interface ListCustomerGroupsResponseInner {
@@ -4095,27 +4232,27 @@ export interface ListCustomersResponseInnerAllOf {
 /**
  *
  * @export
- * @interface ListFilesResponse
+ * @interface ListFilesResponseInner
  */
-export interface ListFilesResponse {
+export interface ListFilesResponseInner {
     /**
-     *
+     * The file identifier, which can be referenced in the API endpoints.
      * @type {string}
-     * @memberof ListFilesResponse
+     * @memberof ListFilesResponseInner
      */
-    'object': string;
+    '$id'?: string;
     /**
-     *
-     * @type {Array<Scout9File>}
-     * @memberof ListFilesResponse
+     * The name of the file.
+     * @type {string}
+     * @memberof ListFilesResponseInner
      */
-    'data': Array<Scout9File>;
+    'name'?: string;
     /**
-     *
-     * @type {PurposeEnum}
-     * @memberof ListFilesResponse
+     * The path of the file.
+     * @type {string}
+     * @memberof ListFilesResponseInner
      */
-    'purpose'?: PurposeEnum;
+    'path'?: string;
 }
 /**
  *
@@ -4172,6 +4309,12 @@ export interface ListQueryOperationsInner {
  * @interface ListWorkflowsResponseInner
  */
 export interface ListWorkflowsResponseInner {
+    /**
+     *
+     * @type {PurposeEnum}
+     * @memberof ListWorkflowsResponseInner
+     */
+    'purpose'?: PurposeEnum;
     /**
      * The name of the workflow
      * @type {string}
@@ -4429,11 +4572,11 @@ export type MessageBaseRoleEnum = typeof MessageBaseRoleEnum[keyof typeof Messag
  */
 export interface MessageCreateRequest {
     /**
-     * Conversation ID this belonds to
-     * @type {string}
+     *
+     * @type {MessageCreateRequestConvo}
      * @memberof MessageCreateRequest
      */
-    'convo': string;
+    'convo': MessageCreateRequestConvo;
     /**
      * The message content to send to a user
      * @type {string}
@@ -4459,6 +4602,36 @@ export declare const MessageCreateRequestRoleEnum: {
     readonly Context: "context";
 };
 export type MessageCreateRequestRoleEnum = typeof MessageCreateRequestRoleEnum[keyof typeof MessageCreateRequestRoleEnum];
+/**
+ * @type MessageCreateRequestConvo
+ * @export
+ */
+export type MessageCreateRequestConvo = MessageCreateRequestConvoOneOf | string;
+/**
+ *
+ * @export
+ * @interface MessageCreateRequestConvoOneOf
+ */
+export interface MessageCreateRequestConvoOneOf {
+    /**
+     * The customers id, phone, or email to send to. The customer must be registered with your organization by having them reach out to you first.
+     * @type {string}
+     * @memberof MessageCreateRequestConvoOneOf
+     */
+    'customerIdOrPhoneOrEmail'?: string;
+    /**
+     * The agent id, phone (programmable or forward), or email this message is from. If an id is not provided and the provided value is a valid contact, the backend will resolve the agent with the corresponding agent document.
+     * @type {string}
+     * @memberof MessageCreateRequestConvoOneOf
+     */
+    'agentIdOrPhoneOrEmail': string;
+    /**
+     *
+     * @type {ConversationEnvironment}
+     * @memberof MessageCreateRequestConvoOneOf
+     */
+    'environment'?: ConversationEnvironment;
+}
 /**
  *
  * @export
@@ -4776,7 +4949,7 @@ export interface PurchasePhoneRequest {
      * @type {string}
      * @memberof PurchasePhoneRequest
      */
-    '$agent': string;
+    '$agent'?: string;
     /**
      * If true, the phone number will be purchased for an annual subscription
      * @type {boolean}
@@ -4907,10 +5080,10 @@ export interface ScheduleCreateRequest {
     '$group'?: string;
     /**
      *
-     * @type {ConversationUpdateRequestBaseWorkflow}
+     * @type {ConversationCreateRequestBaseWorkflow}
      * @memberof ScheduleCreateRequest
      */
-    '$workflow'?: ConversationUpdateRequestBaseWorkflow;
+    '$workflow'?: ConversationCreateRequestBaseWorkflow;
 }
 /**
  *
@@ -5049,10 +5222,10 @@ export interface ScheduleGetResponse {
 export interface ScheduleGroupCreateRequest {
     /**
      *
-     * @type {ConversationUpdateRequestBaseWorkflow}
+     * @type {ConversationCreateRequestBaseWorkflow}
      * @memberof ScheduleGroupCreateRequest
      */
-    '$workflow'?: ConversationUpdateRequestBaseWorkflow;
+    '$workflow'?: ConversationCreateRequestBaseWorkflow;
     /**
      * Default agent persona id assigned to the conversation(s)
      * @type {string}
@@ -5320,6 +5493,7 @@ export interface ScheduleGroupUpdateRequest {
      *
      * @type {ConversationUpdateRequestBaseWorkflow}
      * @memberof ScheduleGroupUpdateRequest
+     * @deprecated
      */
     '$workflow'?: ConversationUpdateRequestBaseWorkflow;
     /**
@@ -5468,6 +5642,7 @@ export interface ScheduleUpdateRequest {
      *
      * @type {ConversationUpdateRequestBaseWorkflow}
      * @memberof ScheduleUpdateRequest
+     * @deprecated
      */
     '$workflow'?: ConversationUpdateRequestBaseWorkflow;
     /**
@@ -6473,31 +6648,6 @@ export interface UpdateCustomerRequestAllOf {
 /**
  *
  * @export
- * @interface UpdateCustomerResponse
- */
-export interface UpdateCustomerResponse {
-    /**
-     *
-     * @type {boolean}
-     * @memberof UpdateCustomerResponse
-     */
-    'success': boolean;
-    /**
-     *
-     * @type {Error}
-     * @memberof UpdateCustomerResponse
-     */
-    'error'?: Error;
-    /**
-     * The id of the document that was created, updated, or deleted
-     * @type {string}
-     * @memberof UpdateCustomerResponse
-     */
-    'id': string;
-}
-/**
- *
- * @export
  * @interface UpdateCustomersRequest
  */
 export interface UpdateCustomersRequest {
@@ -6506,7 +6656,7 @@ export interface UpdateCustomersRequest {
      * @type {Array<ListCustomersResponseInner>}
      * @memberof UpdateCustomersRequest
      */
-    'customers'?: Array<ListCustomersResponseInner>;
+    'customers': Array<ListCustomersResponseInner>;
 }
 /**
  *
@@ -6539,6 +6689,12 @@ export interface UpdateWorkflowRequest {
      * @memberof UpdateWorkflowRequest
      */
     '$id': string;
+    /**
+     *
+     * @type {PurposeEnum}
+     * @memberof UpdateWorkflowRequest
+     */
+    'purpose'?: PurposeEnum;
     /**
      * The name of the workflow
      * @type {string}
@@ -6671,6 +6827,12 @@ export interface UpdateWorkflowsResponse {
  */
 export interface Workflow {
     /**
+     *
+     * @type {PurposeEnum}
+     * @memberof Workflow
+     */
+    'purpose'?: PurposeEnum;
+    /**
      * The name of the workflow
      * @type {string}
      * @memberof Workflow
@@ -6788,6 +6950,12 @@ export interface WorkflowEvent {
  * @interface WorkflowPartial
  */
 export interface WorkflowPartial {
+    /**
+     *
+     * @type {PurposeEnum}
+     * @memberof WorkflowPartial
+     */
+    'purpose'?: PurposeEnum;
     /**
      * The name of the workflow
      * @type {string}
@@ -7213,6 +7381,15 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
     conversationUpdate: (conversationUpdateRequest: ConversationUpdateRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
+     * @summary Gets all or specific set of conversations
+     * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
+     * @param {Array<string>} [id] ids for the entities this id belongs to
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    conversations: (q?: string, id?: Array<string>, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
      * @summary Gets a customer
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
@@ -7343,21 +7520,44 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
     customersUpdate: (updateCustomersRequest: UpdateCustomersRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
+     * @summary Returns a file
+     * @param {string} purpose File categorical purpose
+     * @param {string} [entity] File entity id
+     * @param {string} [agent] Agent id, only used if purpose is either agent-audio or agent-transcript
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    file: (purpose: string, entity?: string, agent?: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Remove a file
+     * @param {string} purpose File categorical purpose
+     * @param {string} entity File entity id
+     * @param {string} [agent] Agent id, only used if purpose is either agent-audio or agent-transcript
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    fileRemove: (purpose: string, entity: string, agent?: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
      * @summary Upload a file that contains document(s) to be used across various endpoints/features. Currently, the size of all the files uploaded by one organization can be up to 1 GB. Please contact us if you need to increase the storage limit.
      * @param {File} file
      * @param {PurposeEnum} [purpose]
-     * @param {string} [entity]
+     * @param {string} [entity] The entity id, if not provided the entity id becomes the provided file name
+     * @param {string} [$agent] The agent that this file belongs to. Only used for entity.audio and entity.transcript files.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    fileUpload: (file: File | Buffer | Blob, purpose?: PurposeEnum, entity?: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    fileUpload: (file: File | Buffer | Blob, purpose?: PurposeEnum, entity?: string, $agent?: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
      * @summary Returns a list of files that belong to the user\'s organization.
+     * @param {string} purpose File categorical purpose
+     * @param {string} [agent] Agent id, only used if purpose is either agent-audio or agent-transcript
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    files: (options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    files: (purpose: string, agent?: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      * Forwards a locked conversation to agent
      * @summary forwards a locked conversation to agent
@@ -7418,12 +7618,12 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
     parse: (parseRequest: ParseRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
-     * @summary Purchase phone for a given agent
-     * @param {PurchasePhoneRequest} purchasePhoneRequest
+     * @summary Purchase phone for a given agent.
+     * @param {PurchasePhoneRequest} [purchasePhoneRequest] If no agent id is provided, the phone will be purchased for the owner of the API key.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    purchasePhone: (purchasePhoneRequest: PurchasePhoneRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    purchasePhone: (purchasePhoneRequest?: PurchasePhoneRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
      * @summary Runs your auto-reply app on the Scout9 platform.
@@ -7439,151 +7639,6 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
      * @throws {RequiredError}
      */
     runPlatformConfig: (options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Creates a new scheduled conversation, don\'t use just use message schedule delay params
-     * @param {ScheduleCreateRequest} scheduleCreateRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scheduleConversation: (scheduleCreateRequest: ScheduleCreateRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Deletes a schedule, don\'t use just delete the message id.
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scheduleDelete: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Creates a new schedule group, don\'t use just create multiple messages with schedule delay params
-     * @param {ScheduleGroupCreateRequest} scheduleGroupCreateRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scheduleGroupCreate: (scheduleGroupCreateRequest: ScheduleGroupCreateRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Deletes and cancels a schedule group. Don\'t use just delete the messages individually
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scheduleGroupDelete: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Gets a schedule group, don\'t use just create multiple messages with schedule delay params
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scheduleGroupRetrieve: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Updates a schedule group, don\'t use just create multiple messages with schedule delay params
-     * @param {ScheduleGroupUpdateRequest} scheduleGroupUpdateRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scheduleGroupUpdate: (scheduleGroupUpdateRequest: ScheduleGroupUpdateRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Gets a schedule, don\'t use just use message api
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scheduleRetrieve: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Updates a schedule, don\'t use just use message schedule delay params
-     * @param {ScheduleUpdateRequest} scheduleUpdateRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scheduleUpdate: (scheduleUpdateRequest: ScheduleUpdateRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Gets a workflow. This has been replaced by Scout9 application.
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    workflow: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Create a new workflow. This has been replaced by Scout9 application.
-     * @param {CreateWorkflowRequest} createWorkflowRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    workflowCreate: (createWorkflowRequest: CreateWorkflowRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Deletes a workflow. This has been replaced by Scout9 application.
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    workflowDelete: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Update a workflow. This has been replaced by Scout9 application.
-     * @param {UpdateWorkflowRequest} updateWorkflowRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    workflowUpdate: (updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Gets all or specific set of workflows. This has been replaced by Scout9 application.
-     * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
-     * @param {Array<string>} [id] ids for the entities this id belongs to
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    workflows: (q?: string, id?: Array<string>, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Creates new workflows. This has been replaced by Scout9 application.
-     * @param {CreateWorkflowsRequest} createWorkflowsRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    workflowsCreate: (createWorkflowsRequest: CreateWorkflowsRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Deletes multiple workflows. This has been replaced by Scout9 application.
-     * @param {Array<string>} [id] ids for the entities this id belongs to
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    workflowsDelete: (id?: Array<string>, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary Updates multiple workflows. This has been replaced by Scout9 application.
-     * @param {UpdateWorkflowRequest} updateWorkflowRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    workflowsUpdate: (updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
 };
 /**
  * Scout9Api - functional programming interface
@@ -7605,7 +7660,7 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    agentDelete(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteAgentResponse>>;
+    agentDelete(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AgentDeleteResponse>>;
     /**
      *
      * @summary Registers a new agent
@@ -7646,7 +7701,7 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    agentsDelete(id?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteAgentsResponse>>;
+    agentsDelete(id?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AgentsDeleteResponse>>;
     /**
      *
      * @summary Updates multiple agents
@@ -7802,6 +7857,15 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
     conversationUpdate(conversationUpdateRequest: ConversationUpdateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ConversationUpdateResponse>>;
     /**
      *
+     * @summary Gets all or specific set of conversations
+     * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
+     * @param {Array<string>} [id] ids for the entities this id belongs to
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    conversations(q?: string, id?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ListConversationsResponseInner>>>;
+    /**
+     *
      * @summary Gets a customer
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
@@ -7815,7 +7879,7 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    customerCreate(body: Customer, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateCustomerResponse>>;
+    customerCreate(body: Customer, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CustomerCreateResponse>>;
     /**
      *
      * @summary Deletes a customer
@@ -7823,7 +7887,7 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    customerDelete(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteCustomerResponse>>;
+    customerDelete(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CustomerDeleteResponse>>;
     /**
      *
      * @summary Gets a customer group
@@ -7896,7 +7960,7 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    customerUpdate(updateCustomerRequest: UpdateCustomerRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateCustomerResponse>>;
+    customerUpdate(updateCustomerRequest: UpdateCustomerRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CustomerUpdateResponse>>;
     /**
      *
      * @summary Gets all or specific set of customers
@@ -7932,21 +7996,44 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
     customersUpdate(updateCustomersRequest: UpdateCustomersRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateCustomersResponse>>;
     /**
      *
+     * @summary Returns a file
+     * @param {string} purpose File categorical purpose
+     * @param {string} [entity] File entity id
+     * @param {string} [agent] Agent id, only used if purpose is either agent-audio or agent-transcript
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    file(purpose: string, entity?: string, agent?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<File>>;
+    /**
+     *
+     * @summary Remove a file
+     * @param {string} purpose File categorical purpose
+     * @param {string} entity File entity id
+     * @param {string} [agent] Agent id, only used if purpose is either agent-audio or agent-transcript
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    fileRemove(purpose: string, entity: string, agent?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OperationDocResponse>>;
+    /**
+     *
      * @summary Upload a file that contains document(s) to be used across various endpoints/features. Currently, the size of all the files uploaded by one organization can be up to 1 GB. Please contact us if you need to increase the storage limit.
      * @param {File} file
      * @param {PurposeEnum} [purpose]
-     * @param {string} [entity]
+     * @param {string} [entity] The entity id, if not provided the entity id becomes the provided file name
+     * @param {string} [$agent] The agent that this file belongs to. Only used for entity.audio and entity.transcript files.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    fileUpload(file: File | Buffer | Blob, purpose?: PurposeEnum, entity?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Scout9File>>;
+    fileUpload(file: File | Buffer | Blob, purpose?: PurposeEnum, entity?: string, $agent?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Scout9File>>;
     /**
      *
      * @summary Returns a list of files that belong to the user\'s organization.
+     * @param {string} purpose File categorical purpose
+     * @param {string} [agent] Agent id, only used if purpose is either agent-audio or agent-transcript
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    files(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ListFilesResponse>>;
+    files(purpose: string, agent?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ListFilesResponseInner>>>;
     /**
      * Forwards a locked conversation to agent
      * @summary forwards a locked conversation to agent
@@ -8007,12 +8094,12 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
     parse(parseRequest: ParseRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ParseResponse>>;
     /**
      *
-     * @summary Purchase phone for a given agent
-     * @param {PurchasePhoneRequest} purchasePhoneRequest
+     * @summary Purchase phone for a given agent.
+     * @param {PurchasePhoneRequest} [purchasePhoneRequest] If no agent id is provided, the phone will be purchased for the owner of the API key.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    purchasePhone(purchasePhoneRequest: PurchasePhoneRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PurchasePhoneResponse>>;
+    purchasePhone(purchasePhoneRequest?: PurchasePhoneRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PurchasePhoneResponse>>;
     /**
      *
      * @summary Runs your auto-reply app on the Scout9 platform.
@@ -8030,151 +8117,6 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
     runPlatformConfig(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<{
         [key: string]: any;
     }>>;
-    /**
-     *
-     * @summary Creates a new scheduled conversation, don\'t use just use message schedule delay params
-     * @param {ScheduleCreateRequest} scheduleCreateRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scheduleConversation(scheduleCreateRequest: ScheduleCreateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleCreateResponse>>;
-    /**
-     *
-     * @summary Deletes a schedule, don\'t use just delete the message id.
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scheduleDelete(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleRemoveResponse>>;
-    /**
-     *
-     * @summary Creates a new schedule group, don\'t use just create multiple messages with schedule delay params
-     * @param {ScheduleGroupCreateRequest} scheduleGroupCreateRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scheduleGroupCreate(scheduleGroupCreateRequest: ScheduleGroupCreateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleGroupCreateResponse>>;
-    /**
-     *
-     * @summary Deletes and cancels a schedule group. Don\'t use just delete the messages individually
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scheduleGroupDelete(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleGroupRemoveResponse>>;
-    /**
-     *
-     * @summary Gets a schedule group, don\'t use just create multiple messages with schedule delay params
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scheduleGroupRetrieve(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleGroupGetResponse>>;
-    /**
-     *
-     * @summary Updates a schedule group, don\'t use just create multiple messages with schedule delay params
-     * @param {ScheduleGroupUpdateRequest} scheduleGroupUpdateRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scheduleGroupUpdate(scheduleGroupUpdateRequest: ScheduleGroupUpdateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleGroupUpdateResponse>>;
-    /**
-     *
-     * @summary Gets a schedule, don\'t use just use message api
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scheduleRetrieve(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleCreateResponse>>;
-    /**
-     *
-     * @summary Updates a schedule, don\'t use just use message schedule delay params
-     * @param {ScheduleUpdateRequest} scheduleUpdateRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scheduleUpdate(scheduleUpdateRequest: ScheduleUpdateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ScheduleUpdateResponse>>;
-    /**
-     *
-     * @summary Gets a workflow. This has been replaced by Scout9 application.
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    workflow(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetWorkflowResponse>>;
-    /**
-     *
-     * @summary Create a new workflow. This has been replaced by Scout9 application.
-     * @param {CreateWorkflowRequest} createWorkflowRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    workflowCreate(createWorkflowRequest: CreateWorkflowRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateWorkflowResponse>>;
-    /**
-     *
-     * @summary Deletes a workflow. This has been replaced by Scout9 application.
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    workflowDelete(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteWorkflowResponse>>;
-    /**
-     *
-     * @summary Update a workflow. This has been replaced by Scout9 application.
-     * @param {UpdateWorkflowRequest} updateWorkflowRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    workflowUpdate(updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateWorkflowResponse>>;
-    /**
-     *
-     * @summary Gets all or specific set of workflows. This has been replaced by Scout9 application.
-     * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
-     * @param {Array<string>} [id] ids for the entities this id belongs to
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    workflows(q?: string, id?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ListWorkflowsResponseInner>>>;
-    /**
-     *
-     * @summary Creates new workflows. This has been replaced by Scout9 application.
-     * @param {CreateWorkflowsRequest} createWorkflowsRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    workflowsCreate(createWorkflowsRequest: CreateWorkflowsRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateWorkflowsResponse>>;
-    /**
-     *
-     * @summary Deletes multiple workflows. This has been replaced by Scout9 application.
-     * @param {Array<string>} [id] ids for the entities this id belongs to
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    workflowsDelete(id?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeleteWorkflowsResponse>>;
-    /**
-     *
-     * @summary Updates multiple workflows. This has been replaced by Scout9 application.
-     * @param {UpdateWorkflowRequest} updateWorkflowRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    workflowsUpdate(updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateWorkflowsResponse>>;
 };
 /**
  * Scout9Api - factory interface
@@ -8196,7 +8138,7 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    agentDelete(id: string, options?: any): AxiosPromise<DeleteAgentResponse>;
+    agentDelete(id: string, options?: any): AxiosPromise<AgentDeleteResponse>;
     /**
      *
      * @summary Registers a new agent
@@ -8237,7 +8179,7 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    agentsDelete(id?: Array<string>, options?: any): AxiosPromise<DeleteAgentsResponse>;
+    agentsDelete(id?: Array<string>, options?: any): AxiosPromise<AgentsDeleteResponse>;
     /**
      *
      * @summary Updates multiple agents
@@ -8393,6 +8335,15 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
     conversationUpdate(conversationUpdateRequest: ConversationUpdateRequest, options?: any): AxiosPromise<ConversationUpdateResponse>;
     /**
      *
+     * @summary Gets all or specific set of conversations
+     * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
+     * @param {Array<string>} [id] ids for the entities this id belongs to
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    conversations(q?: string, id?: Array<string>, options?: any): AxiosPromise<Array<ListConversationsResponseInner>>;
+    /**
+     *
      * @summary Gets a customer
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
@@ -8406,7 +8357,7 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    customerCreate(body: Customer, options?: any): AxiosPromise<CreateCustomerResponse>;
+    customerCreate(body: Customer, options?: any): AxiosPromise<CustomerCreateResponse>;
     /**
      *
      * @summary Deletes a customer
@@ -8414,7 +8365,7 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    customerDelete(id: string, options?: any): AxiosPromise<DeleteCustomerResponse>;
+    customerDelete(id: string, options?: any): AxiosPromise<CustomerDeleteResponse>;
     /**
      *
      * @summary Gets a customer group
@@ -8487,7 +8438,7 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    customerUpdate(updateCustomerRequest: UpdateCustomerRequest, options?: any): AxiosPromise<UpdateCustomerResponse>;
+    customerUpdate(updateCustomerRequest: UpdateCustomerRequest, options?: any): AxiosPromise<CustomerUpdateResponse>;
     /**
      *
      * @summary Gets all or specific set of customers
@@ -8523,21 +8474,44 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
     customersUpdate(updateCustomersRequest: UpdateCustomersRequest, options?: any): AxiosPromise<UpdateCustomersResponse>;
     /**
      *
+     * @summary Returns a file
+     * @param {string} purpose File categorical purpose
+     * @param {string} [entity] File entity id
+     * @param {string} [agent] Agent id, only used if purpose is either agent-audio or agent-transcript
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    file(purpose: string, entity?: string, agent?: string, options?: any): AxiosPromise<File>;
+    /**
+     *
+     * @summary Remove a file
+     * @param {string} purpose File categorical purpose
+     * @param {string} entity File entity id
+     * @param {string} [agent] Agent id, only used if purpose is either agent-audio or agent-transcript
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    fileRemove(purpose: string, entity: string, agent?: string, options?: any): AxiosPromise<OperationDocResponse>;
+    /**
+     *
      * @summary Upload a file that contains document(s) to be used across various endpoints/features. Currently, the size of all the files uploaded by one organization can be up to 1 GB. Please contact us if you need to increase the storage limit.
      * @param {File} file
      * @param {PurposeEnum} [purpose]
-     * @param {string} [entity]
+     * @param {string} [entity] The entity id, if not provided the entity id becomes the provided file name
+     * @param {string} [$agent] The agent that this file belongs to. Only used for entity.audio and entity.transcript files.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    fileUpload(file: File | Buffer | Blob, purpose?: PurposeEnum, entity?: string, options?: any): AxiosPromise<Scout9File>;
+    fileUpload(file: File | Buffer | Blob, purpose?: PurposeEnum, entity?: string, $agent?: string, options?: any): AxiosPromise<Scout9File>;
     /**
      *
      * @summary Returns a list of files that belong to the user\'s organization.
+     * @param {string} purpose File categorical purpose
+     * @param {string} [agent] Agent id, only used if purpose is either agent-audio or agent-transcript
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    files(options?: any): AxiosPromise<ListFilesResponse>;
+    files(purpose: string, agent?: string, options?: any): AxiosPromise<Array<ListFilesResponseInner>>;
     /**
      * Forwards a locked conversation to agent
      * @summary forwards a locked conversation to agent
@@ -8598,12 +8572,12 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
     parse(parseRequest: ParseRequest, options?: any): AxiosPromise<ParseResponse>;
     /**
      *
-     * @summary Purchase phone for a given agent
-     * @param {PurchasePhoneRequest} purchasePhoneRequest
+     * @summary Purchase phone for a given agent.
+     * @param {PurchasePhoneRequest} [purchasePhoneRequest] If no agent id is provided, the phone will be purchased for the owner of the API key.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    purchasePhone(purchasePhoneRequest: PurchasePhoneRequest, options?: any): AxiosPromise<PurchasePhoneResponse>;
+    purchasePhone(purchasePhoneRequest?: PurchasePhoneRequest, options?: any): AxiosPromise<PurchasePhoneResponse>;
     /**
      *
      * @summary Runs your auto-reply app on the Scout9 platform.
@@ -8621,151 +8595,6 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
     runPlatformConfig(options?: any): AxiosPromise<{
         [key: string]: any;
     }>;
-    /**
-     *
-     * @summary Creates a new scheduled conversation, don\'t use just use message schedule delay params
-     * @param {ScheduleCreateRequest} scheduleCreateRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scheduleConversation(scheduleCreateRequest: ScheduleCreateRequest, options?: any): AxiosPromise<ScheduleCreateResponse>;
-    /**
-     *
-     * @summary Deletes a schedule, don\'t use just delete the message id.
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scheduleDelete(id: string, options?: any): AxiosPromise<ScheduleRemoveResponse>;
-    /**
-     *
-     * @summary Creates a new schedule group, don\'t use just create multiple messages with schedule delay params
-     * @param {ScheduleGroupCreateRequest} scheduleGroupCreateRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scheduleGroupCreate(scheduleGroupCreateRequest: ScheduleGroupCreateRequest, options?: any): AxiosPromise<ScheduleGroupCreateResponse>;
-    /**
-     *
-     * @summary Deletes and cancels a schedule group. Don\'t use just delete the messages individually
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scheduleGroupDelete(id: string, options?: any): AxiosPromise<ScheduleGroupRemoveResponse>;
-    /**
-     *
-     * @summary Gets a schedule group, don\'t use just create multiple messages with schedule delay params
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scheduleGroupRetrieve(id: string, options?: any): AxiosPromise<ScheduleGroupGetResponse>;
-    /**
-     *
-     * @summary Updates a schedule group, don\'t use just create multiple messages with schedule delay params
-     * @param {ScheduleGroupUpdateRequest} scheduleGroupUpdateRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scheduleGroupUpdate(scheduleGroupUpdateRequest: ScheduleGroupUpdateRequest, options?: any): AxiosPromise<ScheduleGroupUpdateResponse>;
-    /**
-     *
-     * @summary Gets a schedule, don\'t use just use message api
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scheduleRetrieve(id: string, options?: any): AxiosPromise<ScheduleCreateResponse>;
-    /**
-     *
-     * @summary Updates a schedule, don\'t use just use message schedule delay params
-     * @param {ScheduleUpdateRequest} scheduleUpdateRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scheduleUpdate(scheduleUpdateRequest: ScheduleUpdateRequest, options?: any): AxiosPromise<ScheduleUpdateResponse>;
-    /**
-     *
-     * @summary Gets a workflow. This has been replaced by Scout9 application.
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    workflow(id: string, options?: any): AxiosPromise<GetWorkflowResponse>;
-    /**
-     *
-     * @summary Create a new workflow. This has been replaced by Scout9 application.
-     * @param {CreateWorkflowRequest} createWorkflowRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    workflowCreate(createWorkflowRequest: CreateWorkflowRequest, options?: any): AxiosPromise<CreateWorkflowResponse>;
-    /**
-     *
-     * @summary Deletes a workflow. This has been replaced by Scout9 application.
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    workflowDelete(id: string, options?: any): AxiosPromise<DeleteWorkflowResponse>;
-    /**
-     *
-     * @summary Update a workflow. This has been replaced by Scout9 application.
-     * @param {UpdateWorkflowRequest} updateWorkflowRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    workflowUpdate(updateWorkflowRequest: UpdateWorkflowRequest, options?: any): AxiosPromise<UpdateWorkflowResponse>;
-    /**
-     *
-     * @summary Gets all or specific set of workflows. This has been replaced by Scout9 application.
-     * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
-     * @param {Array<string>} [id] ids for the entities this id belongs to
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    workflows(q?: string, id?: Array<string>, options?: any): AxiosPromise<Array<ListWorkflowsResponseInner>>;
-    /**
-     *
-     * @summary Creates new workflows. This has been replaced by Scout9 application.
-     * @param {CreateWorkflowsRequest} createWorkflowsRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    workflowsCreate(createWorkflowsRequest: CreateWorkflowsRequest, options?: any): AxiosPromise<CreateWorkflowsResponse>;
-    /**
-     *
-     * @summary Deletes multiple workflows. This has been replaced by Scout9 application.
-     * @param {Array<string>} [id] ids for the entities this id belongs to
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    workflowsDelete(id?: Array<string>, options?: any): AxiosPromise<DeleteWorkflowsResponse>;
-    /**
-     *
-     * @summary Updates multiple workflows. This has been replaced by Scout9 application.
-     * @param {UpdateWorkflowRequest} updateWorkflowRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    workflowsUpdate(updateWorkflowRequest: UpdateWorkflowRequest, options?: any): AxiosPromise<UpdateWorkflowsResponse>;
 };
 /**
  * Scout9Api - object-oriented interface
@@ -8791,7 +8620,7 @@ export declare class Scout9Api extends BaseAPI {
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
-    agentDelete(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteAgentResponse, any>>;
+    agentDelete(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<AgentDeleteResponse, any>>;
     /**
      *
      * @summary Registers a new agent
@@ -8837,7 +8666,7 @@ export declare class Scout9Api extends BaseAPI {
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
-    agentsDelete(id?: Array<string>, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteAgentsResponse, any>>;
+    agentsDelete(id?: Array<string>, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<AgentsDeleteResponse, any>>;
     /**
      *
      * @summary Updates multiple agents
@@ -9011,6 +8840,16 @@ export declare class Scout9Api extends BaseAPI {
     conversationUpdate(conversationUpdateRequest: ConversationUpdateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ConversationUpdateResponse, any>>;
     /**
      *
+     * @summary Gets all or specific set of conversations
+     * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
+     * @param {Array<string>} [id] ids for the entities this id belongs to
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    conversations(q?: string, id?: Array<string>, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ListConversationsResponseInner[], any>>;
+    /**
+     *
      * @summary Gets a customer
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
@@ -9026,7 +8865,7 @@ export declare class Scout9Api extends BaseAPI {
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
-    customerCreate(body: Customer, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateCustomerResponse, any>>;
+    customerCreate(body: Customer, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CustomerCreateResponse, any>>;
     /**
      *
      * @summary Deletes a customer
@@ -9035,7 +8874,7 @@ export declare class Scout9Api extends BaseAPI {
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
-    customerDelete(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteCustomerResponse, any>>;
+    customerDelete(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CustomerDeleteResponse, any>>;
     /**
      *
      * @summary Gets a customer group
@@ -9117,7 +8956,7 @@ export declare class Scout9Api extends BaseAPI {
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
-    customerUpdate(updateCustomerRequest: UpdateCustomerRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateCustomerResponse, any>>;
+    customerUpdate(updateCustomerRequest: UpdateCustomerRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CustomerUpdateResponse, any>>;
     /**
      *
      * @summary Gets all or specific set of customers
@@ -9157,23 +8996,48 @@ export declare class Scout9Api extends BaseAPI {
     customersUpdate(updateCustomersRequest: UpdateCustomersRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateCustomersResponse, any>>;
     /**
      *
+     * @summary Returns a file
+     * @param {string} purpose File categorical purpose
+     * @param {string} [entity] File entity id
+     * @param {string} [agent] Agent id, only used if purpose is either agent-audio or agent-transcript
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    file(purpose: string, entity?: string, agent?: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<File, any>>;
+    /**
+     *
+     * @summary Remove a file
+     * @param {string} purpose File categorical purpose
+     * @param {string} entity File entity id
+     * @param {string} [agent] Agent id, only used if purpose is either agent-audio or agent-transcript
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    fileRemove(purpose: string, entity: string, agent?: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<OperationDocResponse, any>>;
+    /**
+     *
      * @summary Upload a file that contains document(s) to be used across various endpoints/features. Currently, the size of all the files uploaded by one organization can be up to 1 GB. Please contact us if you need to increase the storage limit.
      * @param {File} file
      * @param {PurposeEnum} [purpose]
-     * @param {string} [entity]
+     * @param {string} [entity] The entity id, if not provided the entity id becomes the provided file name
+     * @param {string} [$agent] The agent that this file belongs to. Only used for entity.audio and entity.transcript files.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
-    fileUpload(file: File | Buffer | Blob, purpose?: PurposeEnum, entity?: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<Scout9File, any>>;
+    fileUpload(file: File | Buffer | Blob, purpose?: PurposeEnum, entity?: string, $agent?: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<Scout9File, any>>;
     /**
      *
      * @summary Returns a list of files that belong to the user\'s organization.
+     * @param {string} purpose File categorical purpose
+     * @param {string} [agent] Agent id, only used if purpose is either agent-audio or agent-transcript
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
-    files(options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ListFilesResponse, any>>;
+    files(purpose: string, agent?: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ListFilesResponseInner[], any>>;
     /**
      * Forwards a locked conversation to agent
      * @summary forwards a locked conversation to agent
@@ -9241,13 +9105,13 @@ export declare class Scout9Api extends BaseAPI {
     parse(parseRequest: ParseRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ParseResponse, any>>;
     /**
      *
-     * @summary Purchase phone for a given agent
-     * @param {PurchasePhoneRequest} purchasePhoneRequest
+     * @summary Purchase phone for a given agent.
+     * @param {PurchasePhoneRequest} [purchasePhoneRequest] If no agent id is provided, the phone will be purchased for the owner of the API key.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
-    purchasePhone(purchasePhoneRequest: PurchasePhoneRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<PurchasePhoneResponse, any>>;
+    purchasePhone(purchasePhoneRequest?: PurchasePhoneRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<PurchasePhoneResponse, any>>;
     /**
      *
      * @summary Runs your auto-reply app on the Scout9 platform.
@@ -9267,165 +9131,4 @@ export declare class Scout9Api extends BaseAPI {
     runPlatformConfig(options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<{
         [key: string]: any;
     }, any>>;
-    /**
-     *
-     * @summary Creates a new scheduled conversation, don\'t use just use message schedule delay params
-     * @param {ScheduleCreateRequest} scheduleCreateRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    scheduleConversation(scheduleCreateRequest: ScheduleCreateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleCreateResponse, any>>;
-    /**
-     *
-     * @summary Deletes a schedule, don\'t use just delete the message id.
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    scheduleDelete(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleRemoveResponse, any>>;
-    /**
-     *
-     * @summary Creates a new schedule group, don\'t use just create multiple messages with schedule delay params
-     * @param {ScheduleGroupCreateRequest} scheduleGroupCreateRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    scheduleGroupCreate(scheduleGroupCreateRequest: ScheduleGroupCreateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleGroupCreateResponse, any>>;
-    /**
-     *
-     * @summary Deletes and cancels a schedule group. Don\'t use just delete the messages individually
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    scheduleGroupDelete(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleGroupRemoveResponse, any>>;
-    /**
-     *
-     * @summary Gets a schedule group, don\'t use just create multiple messages with schedule delay params
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    scheduleGroupRetrieve(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleGroupGetResponse, any>>;
-    /**
-     *
-     * @summary Updates a schedule group, don\'t use just create multiple messages with schedule delay params
-     * @param {ScheduleGroupUpdateRequest} scheduleGroupUpdateRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    scheduleGroupUpdate(scheduleGroupUpdateRequest: ScheduleGroupUpdateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleGroupUpdateResponse, any>>;
-    /**
-     *
-     * @summary Gets a schedule, don\'t use just use message api
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    scheduleRetrieve(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleCreateResponse, any>>;
-    /**
-     *
-     * @summary Updates a schedule, don\'t use just use message schedule delay params
-     * @param {ScheduleUpdateRequest} scheduleUpdateRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    scheduleUpdate(scheduleUpdateRequest: ScheduleUpdateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ScheduleUpdateResponse, any>>;
-    /**
-     *
-     * @summary Gets a workflow. This has been replaced by Scout9 application.
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    workflow(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<GetWorkflowResponse, any>>;
-    /**
-     *
-     * @summary Create a new workflow. This has been replaced by Scout9 application.
-     * @param {CreateWorkflowRequest} createWorkflowRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    workflowCreate(createWorkflowRequest: CreateWorkflowRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateWorkflowResponse, any>>;
-    /**
-     *
-     * @summary Deletes a workflow. This has been replaced by Scout9 application.
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    workflowDelete(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteWorkflowResponse, any>>;
-    /**
-     *
-     * @summary Update a workflow. This has been replaced by Scout9 application.
-     * @param {UpdateWorkflowRequest} updateWorkflowRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    workflowUpdate(updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateWorkflowResponse, any>>;
-    /**
-     *
-     * @summary Gets all or specific set of workflows. This has been replaced by Scout9 application.
-     * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
-     * @param {Array<string>} [id] ids for the entities this id belongs to
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    workflows(q?: string, id?: Array<string>, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ListWorkflowsResponseInner[], any>>;
-    /**
-     *
-     * @summary Creates new workflows. This has been replaced by Scout9 application.
-     * @param {CreateWorkflowsRequest} createWorkflowsRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    workflowsCreate(createWorkflowsRequest: CreateWorkflowsRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CreateWorkflowsResponse, any>>;
-    /**
-     *
-     * @summary Deletes multiple workflows. This has been replaced by Scout9 application.
-     * @param {Array<string>} [id] ids for the entities this id belongs to
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    workflowsDelete(id?: Array<string>, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<DeleteWorkflowsResponse, any>>;
-    /**
-     *
-     * @summary Updates multiple workflows. This has been replaced by Scout9 application.
-     * @param {UpdateWorkflowRequest} updateWorkflowRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    workflowsUpdate(updateWorkflowRequest: UpdateWorkflowRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateWorkflowsResponse, any>>;
 }

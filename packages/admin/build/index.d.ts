@@ -9,6 +9,124 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-export * from "./api";
-export * from "./configuration";
+/// <reference types="node" />
+export * from './api';
+export * from './configuration';
 export * from './webhooks';
+import { AxiosResponse } from 'axios';
+import type { Agent, Conversation, Customer, ForwardRequest, ForwardResponse, GenerateRequestOneOf, Message, MessageCreateRequestRoleEnum, MessageCreateResponse, OperationBulkResponse, OperationDocResponse, PurchasePhoneRequest, PurchasePhoneResponse, WorkflowEvent, PurposeEnum } from './api';
+import { ConversationEnvironment, ListFilesResponseInner, Scout9Api } from './api';
+export type WhereFilterOp = '<' | '<=' | '==' | '!=' | '>=' | '>' | 'array-contains' | 'in' | 'not-in' | 'array-contains-any';
+export type S9File = ListFilesResponseInner;
+export type QueryPayload = {
+    field: string;
+    operator: WhereFilterOp;
+    value: string | number | boolean;
+};
+export declare const toQuery: (payload: QueryPayload) => string;
+export type MessageInputExistingConversation = {
+    convo: string;
+    message: string;
+    role?: MessageCreateRequestRoleEnum;
+    html?: string;
+};
+export type MessageInputNewConversation = {
+    /**
+     * Either customer id, customer phone, or customer email
+     */
+    to: string;
+    /**
+     * Either agent id, agent forward phone #, programmable phone #, forward email, or programmable email address. If the
+     * contact is valid, it will auto resolve the correct agent.
+     */
+    from: string;
+    /**
+     * Overrides auto detected environment
+     */
+    environment?: ConversationEnvironment;
+    message: string;
+    role?: MessageCreateRequestRoleEnum;
+    html?: string;
+};
+export type MessageInput = MessageInputExistingConversation | MessageInputNewConversation;
+export default function (apiKey: string): {
+    app: {
+        run: (event: WorkflowEvent) => Promise<AxiosResponse<import("./api").WorkflowResponse, any>>;
+        config: () => Promise<any>;
+        context: {
+            files: {
+                list: () => Promise<ListFilesResponseInner[]>;
+                retrieve: (contextId: string) => Promise<AxiosResponse<File, any>>;
+                remove: (contextId: string) => Promise<AxiosResponse<OperationDocResponse, any>>;
+            };
+        };
+    };
+    agents: {
+        retrieve: (id: string) => Promise<Agent | null>;
+        list: (query: QueryPayload) => Promise<(Agent & {
+            $id: string;
+        })[]>;
+        create: (data: Agent) => Promise<OperationDocResponse>;
+        update: (id: string, data: Partial<Agent>) => Promise<OperationDocResponse>;
+        purchasePhone: (agentId?: string, purchaseOptions?: Omit<PurchasePhoneRequest, '$agent'>) => Promise<PurchasePhoneResponse>;
+        remove: (id: string) => Promise<OperationDocResponse>;
+        bulkRemove: (ids: string[]) => Promise<OperationBulkResponse>;
+        bulkCreate: (data: Agent[]) => Promise<OperationBulkResponse>;
+        bulkUpdate: (data: (Partial<Agent> & {
+            id: string;
+        })[]) => Promise<OperationBulkResponse>;
+        transcripts: {
+            list: (agentId?: string) => Promise<ListFilesResponseInner[]>;
+            retrieve: (agentId: string, fileId: string) => Promise<AxiosResponse<File, any>>;
+            remove: (agentId: string, fileId: string) => Promise<AxiosResponse<OperationDocResponse, any>>;
+            upload: (agentId: string, file: File | Buffer | Blob, fileId?: string) => Promise<AxiosResponse<import("./api").Scout9File, any>>;
+        };
+        audio: {
+            list: (agentId?: string) => Promise<ListFilesResponseInner[]>;
+            retrieve: (agentId: string, fileId: string) => Promise<AxiosResponse<File, any>>;
+            remove: (agentId: string, fileId: string) => Promise<AxiosResponse<OperationDocResponse, any>>;
+            upload: (agentId: string, file: File | Buffer | Blob, fileId?: string) => Promise<AxiosResponse<import("./api").Scout9File, any>>;
+        };
+    };
+    conversation: {
+        retrieve: (id: string) => Promise<Conversation | null>;
+        list: (query: QueryPayload) => Promise<(Agent & {
+            $id: string;
+        })[]>;
+        remove: (id: string) => Promise<OperationDocResponse>;
+        create: (data: Conversation) => Promise<OperationDocResponse>;
+        update: (id: string, data: Partial<Conversation>) => Promise<OperationDocResponse>;
+        forward: (conversationId: string, options?: Pick<ForwardRequest, 'forward' | 'latestMessage' | 'convo'>) => Promise<ForwardResponse>;
+        generate: (conversationId: string, mockData?: GenerateRequestOneOf) => Promise<AxiosResponse<import("./api").GenerateResponse, any>>;
+        message: (conversationId: string, message: string, role?: MessageCreateRequestRoleEnum, html?: string) => Promise<MessageCreateResponse>;
+        messages: {
+            send: (input: MessageInput) => Promise<MessageCreateResponse>;
+            list: (conversationId: string) => Promise<Message[]>;
+        };
+    };
+    message: {
+        send: (input: MessageInput) => Promise<MessageCreateResponse>;
+    };
+    messages: {
+        list: (conversationId: string) => Promise<Message[]>;
+    };
+    customers: {
+        retrieve: (idOrEmailOrPhone: string) => Promise<Customer>;
+        list: (query: QueryPayload) => Promise<(Customer & {
+            $id: string;
+        })[]>;
+        remove: (customerId: string) => Promise<OperationDocResponse>;
+        create: (data: Customer) => Promise<OperationDocResponse>;
+        update: (customerId: string, data: Partial<Customer>) => Promise<OperationDocResponse>;
+        bulkCreate: (customers: Customer[]) => Promise<OperationBulkResponse>;
+        bulkRemove: (ids: string[]) => Promise<OperationBulkResponse>;
+        bulkUpdate: (data: {
+            $id: string & Partial<Customer>;
+        }[]) => Promise<OperationBulkResponse>;
+    };
+    utils: {
+        fileUpload: (file: File | Blob | Buffer, purpose?: PurposeEnum | undefined, entity?: string | undefined, $agent?: string | undefined, options?: import("axios").AxiosRequestConfig<any> | undefined) => Promise<AxiosResponse<import("./api").Scout9File, any>>;
+        files: (purpose: string, agent?: string | undefined, options?: import("axios").AxiosRequestConfig<any> | undefined) => Promise<AxiosResponse<ListFilesResponseInner[], any>>;
+    };
+    v1: Scout9Api;
+};

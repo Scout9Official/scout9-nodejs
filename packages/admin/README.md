@@ -16,16 +16,12 @@ npm install @scout9/admin --save
 ```
 
 ```typescript
-import { Configuration, Scout9Api } from '@scout9/admin';
+import Scout9Admin from '@scout9/admin';
 
-const configuration = new Configuration({
-  apiKey: '', // Your API key
-});
-
-const scout9 = new Scout9Api(configuration);
+const scout9 = Scout9Admin('s9_api_key');
 ```
-
-## Step 1: Register yourself as an agent
+```
+## Example: Start a conversation
 
 ```typescript
 import fs from 'fs/promises';
