@@ -33,9 +33,11 @@ import type {
   PurchasePhoneRequest,
   PurchasePhoneResponse,
   WorkflowEvent,
-  PurposeEnum
+  PurposeEnum,
+  ConversationEnvironment,
+  ListFilesResponseInner,
 } from './api';
-import { ConversationEnvironment, ListFilesResponseInner, Scout9Api, } from './api';
+import { MessageCreateRequest, Scout9Api } from './api';
 import { Configuration } from './configuration';
 
 export type WhereFilterOp =
@@ -64,17 +66,21 @@ export type MessageInputExistingConversation = {
   message: string;
   role?: MessageCreateRequestRoleEnum;
   html?: string;
+  scheduled?: number;
+  secondsDelay?: number;
 }
 export type MessageInputNewConversation = {
   /**
    * Either customer id, customer phone, or customer email
    */
   to: string;
+
   /**
    * Either agent id, agent forward phone #, programmable phone #, forward email, or programmable email address. If the
    * contact is valid, it will auto resolve the correct agent.
+   * @default to owner of account
    */
-  from: string;
+  from?: string;
 
   /**
    * Overrides auto detected environment
@@ -84,6 +90,8 @@ export type MessageInputNewConversation = {
   message: string;
   role?: MessageCreateRequestRoleEnum;
   html?: string;
+  scheduled?: number;
+  secondsDelay?: number;
 }
 export type MessageInput = MessageInputExistingConversation | MessageInputNewConversation;
 
@@ -91,7 +99,7 @@ async function sendMessage(_scout9: Scout9Api, input: MessageInput) {
   if (!('convo' in input) && !input.to) {
     throw new Error('Either .convo or .to must be provided in message payload');
   }
-  return _scout9.message({
+  const request: MessageCreateRequest = {
     convo: 'convo' in input ? input.convo : {
       customerIdOrPhoneOrEmail: input.to || '',
       agentIdOrPhoneOrEmail: input.from || '',
@@ -99,11 +107,18 @@ async function sendMessage(_scout9: Scout9Api, input: MessageInput) {
     },
     message: input.message,
     ...(input.html ? {html: input.html} : {}),
-    role: input.role || 'agent'
-  }).then(resolve<MessageCreateResponse>);
+    role: input.role || 'agent',
+  }
+  if (input.scheduled) {
+    request.scheduled = input.scheduled;
+  }
+  if (input.secondsDelay) {
+    request.secondsDelay = input.secondsDelay;
+  }
+  return _scout9.message(request).then(resolve<MessageCreateResponse>);
 }
 
-function resolve<Type>(res: AxiosResponse<Type, any>) {
+function resolve<Type = any>(res: AxiosResponse<Type, any>) {
   return res.data;
 }
 
@@ -161,21 +176,27 @@ export default function (apiKey: string) {
       }).then(resolve<OperationBulkResponse>),
       transcripts: {
         list: async (agentId?: string) => scout9.files('agent-transcript', agentId).then(resolve<S9File[]>),
-        retrieve: async (agentId: string, fileId: string,) => scout9.file('agent-transcript', fileId, agentId),
-        remove: async (agentId: string, fileId: string) => scout9.fileRemove('agent-transcript', fileId, agentId),
-        upload: async (agentId: string, file: File | Buffer | Blob, fileId?: string) => scout9.fileUpload(file,
+        retrieve: async (agentId: string, fileId: string,) => scout9.file('agent-transcript', fileId, agentId).then(resolve),
+        remove: async (agentId: string, fileId: string) => scout9.fileRemove('agent-transcript', fileId, agentId).then(resolve),
+        upload: async (agentId: string, file: File | Buffer | Blob, context?: string, fileId?: string) => scout9.fileUpload(
+          file,
           'agent-transcript',
+          context,
           fileId,
-          agentId),
+          agentId
+        ).then(res => res.data.files?.[0] || null),
       },
       audio: {
         list: async (agentId?: string) => scout9.files('agent-audio', agentId).then(resolve<S9File[]>),
-        retrieve: async (agentId: string, fileId: string,) => scout9.file('agent-audio', fileId, agentId),
-        remove: async (agentId: string, fileId: string) => scout9.fileRemove('agent-audio', fileId, agentId),
-        upload: async (agentId: string, file: File | Buffer | Blob, fileId?: string) => scout9.fileUpload(file,
+        retrieve: async (agentId: string, fileId: string,) => scout9.file('agent-audio', fileId, agentId).then(resolve<S9File | null>),
+        remove: async (agentId: string, fileId: string) => scout9.fileRemove('agent-audio', fileId, agentId).then(resolve),
+        upload: async (agentId: string, file: File | Buffer | Blob, context?: string, fileId?: string) => scout9.fileUpload(
+          file,
           'agent-audio',
+          context,
           fileId,
-          agentId),
+          agentId
+        ).then(res => res.data.files?.[0] || null),
       }
     },
     conversation: {
@@ -197,26 +218,12 @@ export default function (apiKey: string) {
           ...(options || {})
         }).then(resolve<ForwardResponse>),
       generate: async (conversationId: string, mockData?: GenerateRequestOneOf) => scout9.generate(mockData ? mockData : conversationId),
-      message: async (conversationId: string, message: string, role: MessageCreateRequestRoleEnum = 'agent', html?: string) => scout9.message(
-        {
-          convo: conversationId,
-          message,
-          ...(html ? {html} : {}),
-          role
-        }).then(resolve<MessageCreateResponse>),
-      messages: {
-        send: (input: MessageInput) => sendMessage(scout9, input),
-        list: async (conversationId: string) => scout9.messages(conversationId).then(resolve<Message[]>),
-      }
+      message: (input: MessageInput) => sendMessage(scout9, input),
+      messages: async (conversationId: string) => scout9.messages(conversationId).then(resolve<Message[]>),
     },
 
-    message: {
-      send: (input: MessageInput) => sendMessage(scout9, input),
-    },
-    messages: {
-      list: async (conversationId: string) => scout9.messages(conversationId).then(resolve<Message[]>),
-    },
-
+    message: (input: MessageInput) => sendMessage(scout9, input),
+    messages: async (conversationId: string) => scout9.messages(conversationId).then(resolve<Message[]>),
     customers: {
       retrieve: async (idOrEmailOrPhone: string) => scout9.customer(idOrEmailOrPhone).then(resolve<Customer>),
       list: async (query: QueryPayload) => scout9.customers(toQuery(query))

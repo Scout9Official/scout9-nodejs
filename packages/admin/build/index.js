@@ -39,7 +39,7 @@ async function sendMessage(_scout9, input) {
     if (!('convo' in input) && !input.to) {
         throw new Error('Either .convo or .to must be provided in message payload');
     }
-    return _scout9.message({
+    const request = {
         convo: 'convo' in input ? input.convo : {
             customerIdOrPhoneOrEmail: input.to || '',
             agentIdOrPhoneOrEmail: input.from || '',
@@ -47,8 +47,15 @@ async function sendMessage(_scout9, input) {
         },
         message: input.message,
         ...(input.html ? { html: input.html } : {}),
-        role: input.role || 'agent'
-    }).then((resolve));
+        role: input.role || 'agent',
+    };
+    if (input.scheduled) {
+        request.scheduled = input.scheduled;
+    }
+    if (input.secondsDelay) {
+        request.secondsDelay = input.secondsDelay;
+    }
+    return _scout9.message(request).then((resolve));
 }
 function resolve(res) {
     return res.data;
@@ -103,15 +110,15 @@ function default_1(apiKey) {
             }).then((resolve)),
             transcripts: {
                 list: async (agentId) => scout9.files('agent-transcript', agentId).then((resolve)),
-                retrieve: async (agentId, fileId) => scout9.file('agent-transcript', fileId, agentId),
-                remove: async (agentId, fileId) => scout9.fileRemove('agent-transcript', fileId, agentId),
-                upload: async (agentId, file, fileId) => scout9.fileUpload(file, 'agent-transcript', fileId, agentId),
+                retrieve: async (agentId, fileId) => scout9.file('agent-transcript', fileId, agentId).then(resolve),
+                remove: async (agentId, fileId) => scout9.fileRemove('agent-transcript', fileId, agentId).then(resolve),
+                upload: async (agentId, file, context, fileId) => scout9.fileUpload(file, 'agent-transcript', context, fileId, agentId).then(res => res.data.files?.[0] || null),
             },
             audio: {
                 list: async (agentId) => scout9.files('agent-audio', agentId).then((resolve)),
-                retrieve: async (agentId, fileId) => scout9.file('agent-audio', fileId, agentId),
-                remove: async (agentId, fileId) => scout9.fileRemove('agent-audio', fileId, agentId),
-                upload: async (agentId, file, fileId) => scout9.fileUpload(file, 'agent-audio', fileId, agentId),
+                retrieve: async (agentId, fileId) => scout9.file('agent-audio', fileId, agentId).then((resolve)),
+                remove: async (agentId, fileId) => scout9.fileRemove('agent-audio', fileId, agentId).then(resolve),
+                upload: async (agentId, file, context, fileId) => scout9.fileUpload(file, 'agent-audio', context, fileId, agentId).then(res => res.data.files?.[0] || null),
             }
         },
         conversation: {
@@ -131,23 +138,11 @@ function default_1(apiKey) {
                 ...(options || {})
             }).then((resolve)),
             generate: async (conversationId, mockData) => scout9.generate(mockData ? mockData : conversationId),
-            message: async (conversationId, message, role = 'agent', html) => scout9.message({
-                convo: conversationId,
-                message,
-                ...(html ? { html } : {}),
-                role
-            }).then((resolve)),
-            messages: {
-                send: (input) => sendMessage(scout9, input),
-                list: async (conversationId) => scout9.messages(conversationId).then((resolve)),
-            }
+            message: (input) => sendMessage(scout9, input),
+            messages: async (conversationId) => scout9.messages(conversationId).then((resolve)),
         },
-        message: {
-            send: (input) => sendMessage(scout9, input),
-        },
-        messages: {
-            list: async (conversationId) => scout9.messages(conversationId).then((resolve)),
-        },
+        message: (input) => sendMessage(scout9, input),
+        messages: async (conversationId) => scout9.messages(conversationId).then((resolve)),
         customers: {
             retrieve: async (idOrEmailOrPhone) => scout9.customer(idOrEmailOrPhone).then((resolve)),
             list: async (query) => scout9.customers((0, exports.toQuery)(query))

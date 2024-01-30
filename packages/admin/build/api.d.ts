@@ -80,30 +80,6 @@ export interface Agent {
      * @memberof Agent
      */
     'context'?: AgentContext;
-    /**
-     * Transcripts of the agent
-     * @type {Array<string>}
-     * @memberof Agent
-     */
-    'transcripts'?: Array<string>;
-    /**
-     * Audios of the agent
-     * @type {Array<string>}
-     * @memberof Agent
-     */
-    'audios'?: Array<string>;
-    /**
-     * Locations ids the agent is included in
-     * @type {Array<string>}
-     * @memberof Agent
-     */
-    'includedLocations'?: Array<string>;
-    /**
-     * Locations id the agent is excluded from
-     * @type {Array<string>}
-     * @memberof Agent
-     */
-    'excludedLocations'?: Array<string>;
 }
 /**
  * @type AgentContext
@@ -135,6 +111,25 @@ export interface AgentDeleteResponse {
      * @memberof AgentDeleteResponse
      */
     'id': string;
+}
+/**
+ *
+ * @export
+ * @interface AgentWithFiles
+ */
+export interface AgentWithFiles {
+    /**
+     * Transcript file ids of the agent
+     * @type {Array<string>}
+     * @memberof AgentWithFiles
+     */
+    'transcripts'?: Array<string>;
+    /**
+     * Audio file ids of the agent
+     * @type {Array<string>}
+     * @memberof AgentWithFiles
+     */
+    'audios'?: Array<string>;
 }
 /**
  *
@@ -829,31 +824,7 @@ export interface ConversationCreateRequest {
      * @memberof ConversationCreateRequest
      */
     'environment': ConversationEnvironment;
-    /**
-     *
-     * @type {ConversationCreateRequestBaseWorkflow}
-     * @memberof ConversationCreateRequest
-     */
-    '$workflow'?: ConversationCreateRequestBaseWorkflow;
 }
-/**
- *
- * @export
- * @interface ConversationCreateRequestBase
- */
-export interface ConversationCreateRequestBase {
-    /**
-     *
-     * @type {ConversationCreateRequestBaseWorkflow}
-     * @memberof ConversationCreateRequestBase
-     */
-    '$workflow'?: ConversationCreateRequestBaseWorkflow;
-}
-/**
- * @type ConversationCreateRequestBaseWorkflow
- * @export
- */
-export type ConversationCreateRequestBaseWorkflow = Workflow | string;
 /**
  *
  * @export
@@ -982,12 +953,6 @@ export interface ConversationGetResponse {
      */
     'agentTestWebUrl'?: string;
     /**
-     * The ID of the workflow used for this conversation
-     * @type {string}
-     * @memberof ConversationGetResponse
-     */
-    '$workflow': string;
-    /**
      * ISO 8601 date string of when the conversation was initiated
      * @type {string}
      * @memberof ConversationGetResponse
@@ -1018,19 +983,6 @@ export interface ConversationGetResponseAllOf {
      * @memberof ConversationGetResponseAllOf
      */
     '$id': string;
-}
-/**
- *
- * @export
- * @interface ConversationGetResponseBase
- */
-export interface ConversationGetResponseBase {
-    /**
-     * The ID of the workflow used for this conversation
-     * @type {string}
-     * @memberof ConversationGetResponseBase
-     */
-    '$workflow': string;
 }
 /**
  *
@@ -1119,13 +1071,6 @@ export interface ConversationUpdateRequest {
      */
     'environment': ConversationEnvironment;
     /**
-     *
-     * @type {ConversationUpdateRequestAllOfWorkflow}
-     * @memberof ConversationUpdateRequest
-     * @deprecated
-     */
-    '$workflow'?: ConversationUpdateRequestAllOfWorkflow;
-    /**
      * The ID of the conversation to update
      * @type {string}
      * @memberof ConversationUpdateRequest
@@ -1144,38 +1089,7 @@ export interface ConversationUpdateRequestAllOf {
      * @memberof ConversationUpdateRequestAllOf
      */
     '$id': string;
-    /**
-     *
-     * @type {ConversationUpdateRequestAllOfWorkflow}
-     * @memberof ConversationUpdateRequestAllOf
-     * @deprecated
-     */
-    '$workflow'?: ConversationUpdateRequestAllOfWorkflow;
 }
-/**
- * @type ConversationUpdateRequestAllOfWorkflow
- * @export
- */
-export type ConversationUpdateRequestAllOfWorkflow = Workflow | string;
-/**
- *
- * @export
- * @interface ConversationUpdateRequestBase
- */
-export interface ConversationUpdateRequestBase {
-    /**
-     *
-     * @type {ConversationUpdateRequestBaseWorkflow}
-     * @memberof ConversationUpdateRequestBase
-     * @deprecated
-     */
-    '$workflow'?: ConversationUpdateRequestBaseWorkflow;
-}
-/**
- * @type ConversationUpdateRequestBaseWorkflow
- * @export
- */
-export type ConversationUpdateRequestBaseWorkflow = Workflow | string;
 /**
  *
  * @export
@@ -1293,13 +1207,13 @@ export interface CreateAgentRequest {
      * @type {string}
      * @memberof CreateAgentRequest
      */
-    'firstName': string;
+    'firstName'?: string;
     /**
      * Agent last name
      * @type {string}
      * @memberof CreateAgentRequest
      */
-    'lastName': string;
+    'lastName'?: string;
     /**
      * Agent is inactive
      * @type {boolean}
@@ -1329,13 +1243,13 @@ export interface CreateAgentRequest {
      * @type {string}
      * @memberof CreateAgentRequest
      */
-    'forwardEmail': string;
+    'forwardEmail'?: string;
     /**
      * Forward phone
      * @type {string}
      * @memberof CreateAgentRequest
      */
-    'forwardPhone': string;
+    'forwardPhone'?: string;
     /**
      * Title of the agent, defaults to \"Agent\"
      * @type {string}
@@ -1348,110 +1262,6 @@ export interface CreateAgentRequest {
      * @memberof CreateAgentRequest
      */
     'context'?: AgentContext;
-    /**
-     * Transcripts of the agent
-     * @type {Array<string>}
-     * @memberof CreateAgentRequest
-     */
-    'transcripts'?: Array<string>;
-    /**
-     * Audios of the agent
-     * @type {Array<string>}
-     * @memberof CreateAgentRequest
-     */
-    'audios'?: Array<string>;
-    /**
-     * Locations ids the agent is included in
-     * @type {Array<string>}
-     * @memberof CreateAgentRequest
-     */
-    'includedLocations'?: Array<string>;
-    /**
-     * Locations id the agent is excluded from
-     * @type {Array<string>}
-     * @memberof CreateAgentRequest
-     */
-    'excludedLocations'?: Array<string>;
-    /**
-     * Sample conversations that help build out your agent to mimic your responses
-     * @type {Array<CreateAgentRequestAllOfConversationsInner>}
-     * @memberof CreateAgentRequest
-     */
-    'conversations'?: Array<CreateAgentRequestAllOfConversationsInner>;
-    /**
-     * Sample audio files that help build out your agent to mimic your voice
-     * @type {Array<string>}
-     * @memberof CreateAgentRequest
-     */
-    'audio'?: Array<string>;
-}
-/**
- *
- * @export
- * @interface CreateAgentRequestAllOf
- */
-export interface CreateAgentRequestAllOf {
-    /**
-     * Sample conversations that help build out your agent to mimic your responses
-     * @type {Array<CreateAgentRequestAllOfConversationsInner>}
-     * @memberof CreateAgentRequestAllOf
-     */
-    'conversations'?: Array<CreateAgentRequestAllOfConversationsInner>;
-    /**
-     * Sample audio files that help build out your agent to mimic your voice
-     * @type {Array<string>}
-     * @memberof CreateAgentRequestAllOf
-     */
-    'audio'?: Array<string>;
-}
-/**
- * @type CreateAgentRequestAllOfConversationsInner
- * @export
- */
-export type CreateAgentRequestAllOfConversationsInner = CreateAgentRequestAllOfConversationsInnerOneOf | string;
-/**
- * Conversation sample
- * @export
- * @interface CreateAgentRequestAllOfConversationsInnerOneOf
- */
-export interface CreateAgentRequestAllOfConversationsInnerOneOf {
-    /**
-     * The type or category of the conversation (this helps with associating work flows)
-     * @type {string}
-     * @memberof CreateAgentRequestAllOfConversationsInnerOneOf
-     */
-    'type': string;
-    /**
-     * The context of the conversation, this helps with associating work flows, or any caveats to the conversation
-     * @type {string}
-     * @memberof CreateAgentRequestAllOfConversationsInnerOneOf
-     */
-    'context'?: string;
-    /**
-     * Conversation
-     * @type {Array<CreateAgentRequestAllOfConversationsInnerOneOfConversationInner>}
-     * @memberof CreateAgentRequestAllOfConversationsInnerOneOf
-     */
-    'conversation': Array<CreateAgentRequestAllOfConversationsInnerOneOfConversationInner>;
-}
-/**
- *
- * @export
- * @interface CreateAgentRequestAllOfConversationsInnerOneOfConversationInner
- */
-export interface CreateAgentRequestAllOfConversationsInnerOneOfConversationInner {
-    /**
-     * The speaker of the message, if this from the agent then this must have \"agent\" or match the agent\'s first or full name
-     * @type {string}
-     * @memberof CreateAgentRequestAllOfConversationsInnerOneOfConversationInner
-     */
-    'speaker': string;
-    /**
-     * The message content
-     * @type {string}
-     * @memberof CreateAgentRequestAllOfConversationsInnerOneOfConversationInner
-     */
-    'message': string;
 }
 /**
  *
@@ -1557,30 +1367,6 @@ export interface CreateAgentsRequestAgentsInner {
      * @memberof CreateAgentsRequestAgentsInner
      */
     'context'?: AgentContext;
-    /**
-     * Transcripts of the agent
-     * @type {Array<string>}
-     * @memberof CreateAgentsRequestAgentsInner
-     */
-    'transcripts'?: Array<string>;
-    /**
-     * Audios of the agent
-     * @type {Array<string>}
-     * @memberof CreateAgentsRequestAgentsInner
-     */
-    'audios'?: Array<string>;
-    /**
-     * Locations ids the agent is included in
-     * @type {Array<string>}
-     * @memberof CreateAgentsRequestAgentsInner
-     */
-    'includedLocations'?: Array<string>;
-    /**
-     * Locations id the agent is excluded from
-     * @type {Array<string>}
-     * @memberof CreateAgentsRequestAgentsInner
-     */
-    'excludedLocations'?: Array<string>;
 }
 /**
  *
@@ -2933,6 +2719,19 @@ export interface ExistsConditionAllOf {
     'operator': ExistenceOperator;
 }
 /**
+ *
+ * @export
+ * @interface FileUpload200Response
+ */
+export interface FileUpload200Response {
+    /**
+     *
+     * @type {Array<Scout9File>}
+     * @memberof FileUpload200Response
+     */
+    'files'?: Array<Scout9File>;
+}
+/**
  * Forward a conversation to the corresponding agent. .convo can be overwritten with a Conversation object, .latestMessage overrides the given conversations latest user messages (typically only used in development). If \".forward\" is provided, it will override the default agent to forward to.
  * @export
  * @interface ForwardRequest
@@ -3183,30 +2982,6 @@ export interface GetAgentResponse {
      * @memberof GetAgentResponse
      */
     'context'?: AgentContext;
-    /**
-     * Transcripts of the agent
-     * @type {Array<string>}
-     * @memberof GetAgentResponse
-     */
-    'transcripts'?: Array<string>;
-    /**
-     * Audios of the agent
-     * @type {Array<string>}
-     * @memberof GetAgentResponse
-     */
-    'audios'?: Array<string>;
-    /**
-     * Locations ids the agent is included in
-     * @type {Array<string>}
-     * @memberof GetAgentResponse
-     */
-    'includedLocations'?: Array<string>;
-    /**
-     * Locations id the agent is excluded from
-     * @type {Array<string>}
-     * @memberof GetAgentResponse
-     */
-    'excludedLocations'?: Array<string>;
     /**
      * The ID of the agent
      * @type {string}
@@ -3756,30 +3531,6 @@ export interface ListAgentsResponseInner {
      */
     'context'?: AgentContext;
     /**
-     * Transcripts of the agent
-     * @type {Array<string>}
-     * @memberof ListAgentsResponseInner
-     */
-    'transcripts'?: Array<string>;
-    /**
-     * Audios of the agent
-     * @type {Array<string>}
-     * @memberof ListAgentsResponseInner
-     */
-    'audios'?: Array<string>;
-    /**
-     * Locations ids the agent is included in
-     * @type {Array<string>}
-     * @memberof ListAgentsResponseInner
-     */
-    'includedLocations'?: Array<string>;
-    /**
-     * Locations id the agent is excluded from
-     * @type {Array<string>}
-     * @memberof ListAgentsResponseInner
-     */
-    'excludedLocations'?: Array<string>;
-    /**
      * The ID of the agent
      * @type {string}
      * @memberof ListAgentsResponseInner
@@ -3999,12 +3750,6 @@ export interface ListConversationsResponseInner {
      * @memberof ListConversationsResponseInner
      */
     'agentTestWebUrl'?: string;
-    /**
-     * The ID of the workflow used for this conversation
-     * @type {string}
-     * @memberof ListConversationsResponseInner
-     */
-    '$workflow': string;
     /**
      * ISO 8601 date string of when the conversation was initiated
      * @type {string}
@@ -4595,6 +4340,18 @@ export interface MessageCreateRequest {
      * @memberof MessageCreateRequest
      */
     'role'?: MessageCreateRequestRoleEnum;
+    /**
+     * The delay in seconds until to send this message
+     * @type {number}
+     * @memberof MessageCreateRequest
+     */
+    'secondsDelay'?: number;
+    /**
+     * Unix timestamp to send the message
+     * @type {number}
+     * @memberof MessageCreateRequest
+     */
+    'scheduled'?: number;
 }
 export declare const MessageCreateRequestRoleEnum: {
     readonly Agent: "agent";
@@ -4624,7 +4381,7 @@ export interface MessageCreateRequestConvoOneOf {
      * @type {string}
      * @memberof MessageCreateRequestConvoOneOf
      */
-    'agentIdOrPhoneOrEmail': string;
+    'agentIdOrPhoneOrEmail'?: string;
     /**
      *
      * @type {ConversationEnvironment}
@@ -4913,6 +4670,19 @@ export type ParsedContextEntity = string | {
 /**
  *
  * @export
+ * @interface PingRequest
+ */
+export interface PingRequest {
+    /**
+     *
+     * @type {PurposeEnum}
+     * @memberof PingRequest
+     */
+    'purpose'?: PurposeEnum;
+}
+/**
+ *
+ * @export
  * @interface PmtConfig
  */
 export interface PmtConfig {
@@ -4938,6 +4708,25 @@ export declare const PmtConfigModelEnum: {
     readonly _20Preview: "orin-2.0-preview";
 };
 export type PmtConfigModelEnum = typeof PmtConfigModelEnum[keyof typeof PmtConfigModelEnum];
+/**
+ * When audio or transcript files are provided, this will return the PMT (persona model transformer) status of the audio/transcript files
+ * @export
+ * @interface PmtRatings
+ */
+export interface PmtRatings {
+    /**
+     *
+     * @type {Rating}
+     * @memberof PmtRatings
+     */
+    'audio'?: Rating;
+    /**
+     *
+     * @type {Rating}
+     * @memberof PmtRatings
+     */
+    'transcripts'?: Rating;
+}
 /**
  * Purchase a phone number subscription for an agent
  * @export
@@ -4974,13 +4763,13 @@ export interface PurchasePhoneResponse {
      * @type {string}
      * @memberof PurchasePhoneResponse
      */
-    'phoneNumber'?: string;
+    'phoneNumber': string;
     /**
      * Internal identifier for the phone number
      * @type {string}
      * @memberof PurchasePhoneResponse
      */
-    'sid'?: string;
+    'sid': string;
 }
 /**
  *
@@ -4993,6 +4782,25 @@ export declare const PurposeEnum: {
     readonly AgentTranscript: "agent-transcript";
 };
 export type PurposeEnum = typeof PurposeEnum[keyof typeof PurposeEnum];
+/**
+ *
+ * @export
+ * @interface Rating
+ */
+export interface Rating {
+    /**
+     * The rating of the audio file out of 100, only provided if audio/transcripts are provided
+     * @type {number}
+     * @memberof Rating
+     */
+    'rating': number;
+    /**
+     * classification of the rating
+     * @type {string}
+     * @memberof Rating
+     */
+    'name': string;
+}
 /**
  *
  * @export
@@ -5078,12 +4886,6 @@ export interface ScheduleCreateRequest {
      * @memberof ScheduleCreateRequest
      */
     '$group'?: string;
-    /**
-     *
-     * @type {ConversationCreateRequestBaseWorkflow}
-     * @memberof ScheduleCreateRequest
-     */
-    '$workflow'?: ConversationCreateRequestBaseWorkflow;
 }
 /**
  *
@@ -5190,12 +4992,6 @@ export interface ScheduleGetResponse {
      */
     '$group'?: string;
     /**
-     * The ID of the workflow used for this conversation
-     * @type {string}
-     * @memberof ScheduleGetResponse
-     */
-    '$workflow': string;
-    /**
      * The client web url of the conversation
      * @type {string}
      * @memberof ScheduleGetResponse
@@ -5220,12 +5016,6 @@ export interface ScheduleGetResponse {
  * @interface ScheduleGroupCreateRequest
  */
 export interface ScheduleGroupCreateRequest {
-    /**
-     *
-     * @type {ConversationCreateRequestBaseWorkflow}
-     * @memberof ScheduleGroupCreateRequest
-     */
-    '$workflow'?: ConversationCreateRequestBaseWorkflow;
     /**
      * Default agent persona id assigned to the conversation(s)
      * @type {string}
@@ -5367,12 +5157,6 @@ export interface ScheduleGroupGetResponse {
      */
     'delay'?: number;
     /**
-     * The ID of the workflow used for this conversation
-     * @type {string}
-     * @memberof ScheduleGroupGetResponse
-     */
-    '$workflow': string;
-    /**
      * The ID of the scheduled conversation group
      * @type {string}
      * @memberof ScheduleGroupGetResponse
@@ -5489,13 +5273,6 @@ export interface ScheduleGroupUpdateRequest {
      * @memberof ScheduleGroupUpdateRequest
      */
     'delay'?: number;
-    /**
-     *
-     * @type {ConversationUpdateRequestBaseWorkflow}
-     * @memberof ScheduleGroupUpdateRequest
-     * @deprecated
-     */
-    '$workflow'?: ConversationUpdateRequestBaseWorkflow;
     /**
      *
      * @type {ScheduleGroupCreateRequestAllOfCGroup}
@@ -5638,13 +5415,6 @@ export interface ScheduleUpdateRequest {
      * @memberof ScheduleUpdateRequest
      */
     '$group'?: string;
-    /**
-     *
-     * @type {ConversationUpdateRequestBaseWorkflow}
-     * @memberof ScheduleUpdateRequest
-     * @deprecated
-     */
-    '$workflow'?: ConversationUpdateRequestBaseWorkflow;
     /**
      * The ID of the scheduled conversation to update
      * @type {string}
@@ -5863,7 +5633,7 @@ export interface Scout9File {
      */
     'filename': string;
     /**
-     * The intended purpose of the file. Currently, only \"fine-tune\" is supported.
+     * The intended purpose of the file.
      * @type {string}
      * @memberof Scout9File
      */
@@ -5912,18 +5682,6 @@ export interface UpdateAgentRequest {
      * @memberof UpdateAgentRequest
      */
     '$id': string;
-    /**
-     * Sample conversations that help build out your agent to mimic your responses
-     * @type {Array<CreateAgentRequestAllOfConversationsInner>}
-     * @memberof UpdateAgentRequest
-     */
-    'conversations'?: Array<CreateAgentRequestAllOfConversationsInner>;
-    /**
-     * Sample audio files that help build out your agent to mimic your voice
-     * @type {Array<string>}
-     * @memberof UpdateAgentRequest
-     */
-    'audio'?: Array<string>;
     /**
      * Agent first name
      * @type {string}
@@ -5984,30 +5742,6 @@ export interface UpdateAgentRequest {
      * @memberof UpdateAgentRequest
      */
     'context'?: AgentContext;
-    /**
-     * Transcripts of the agent
-     * @type {Array<string>}
-     * @memberof UpdateAgentRequest
-     */
-    'transcripts'?: Array<string>;
-    /**
-     * Audios of the agent
-     * @type {Array<string>}
-     * @memberof UpdateAgentRequest
-     */
-    'audios'?: Array<string>;
-    /**
-     * Locations ids the agent is included in
-     * @type {Array<string>}
-     * @memberof UpdateAgentRequest
-     */
-    'includedLocations'?: Array<string>;
-    /**
-     * Locations id the agent is excluded from
-     * @type {Array<string>}
-     * @memberof UpdateAgentRequest
-     */
-    'excludedLocations'?: Array<string>;
 }
 /**
  *
@@ -6021,18 +5755,6 @@ export interface UpdateAgentRequestAllOf {
      * @memberof UpdateAgentRequestAllOf
      */
     '$id': string;
-    /**
-     * Sample conversations that help build out your agent to mimic your responses
-     * @type {Array<CreateAgentRequestAllOfConversationsInner>}
-     * @memberof UpdateAgentRequestAllOf
-     */
-    'conversations'?: Array<CreateAgentRequestAllOfConversationsInner>;
-    /**
-     * Sample audio files that help build out your agent to mimic your voice
-     * @type {Array<string>}
-     * @memberof UpdateAgentRequestAllOf
-     */
-    'audio'?: Array<string>;
 }
 /**
  *
@@ -6138,30 +5860,6 @@ export interface UpdateAgentsRequestAgentsInner {
      * @memberof UpdateAgentsRequestAgentsInner
      */
     'context'?: AgentContext;
-    /**
-     * Transcripts of the agent
-     * @type {Array<string>}
-     * @memberof UpdateAgentsRequestAgentsInner
-     */
-    'transcripts'?: Array<string>;
-    /**
-     * Audios of the agent
-     * @type {Array<string>}
-     * @memberof UpdateAgentsRequestAgentsInner
-     */
-    'audios'?: Array<string>;
-    /**
-     * Locations ids the agent is included in
-     * @type {Array<string>}
-     * @memberof UpdateAgentsRequestAgentsInner
-     */
-    'includedLocations'?: Array<string>;
-    /**
-     * Locations id the agent is excluded from
-     * @type {Array<string>}
-     * @memberof UpdateAgentsRequestAgentsInner
-     */
-    'excludedLocations'?: Array<string>;
     /**
      * The ID of the agent
      * @type {string}
@@ -7165,6 +6863,65 @@ export declare class CustomContextApi extends BaseAPI {
     contextTest(contextTestRequest: ContextTestRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ContextTestResponse, any>>;
 }
 /**
+ * DefaultApi - axios parameter creator
+ * @export
+ */
+export declare const DefaultApiAxiosParamCreator: (configuration?: Configuration) => {
+    /**
+     *
+     * @summary This is used for the generator to incldue PurposeEnum, because for whatever reason, query params are not included in the generator.
+     * @param {PingRequest} pingRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    ping: (pingRequest: PingRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+};
+/**
+ * DefaultApi - functional programming interface
+ * @export
+ */
+export declare const DefaultApiFp: (configuration?: Configuration) => {
+    /**
+     *
+     * @summary This is used for the generator to incldue PurposeEnum, because for whatever reason, query params are not included in the generator.
+     * @param {PingRequest} pingRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    ping(pingRequest: PingRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PingRequest>>;
+};
+/**
+ * DefaultApi - factory interface
+ * @export
+ */
+export declare const DefaultApiFactory: (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) => {
+    /**
+     *
+     * @summary This is used for the generator to incldue PurposeEnum, because for whatever reason, query params are not included in the generator.
+     * @param {PingRequest} pingRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    ping(pingRequest: PingRequest, options?: any): AxiosPromise<PingRequest>;
+};
+/**
+ * DefaultApi - object-oriented interface
+ * @export
+ * @class DefaultApi
+ * @extends {BaseAPI}
+ */
+export declare class DefaultApi extends BaseAPI {
+    /**
+     *
+     * @summary This is used for the generator to incldue PurposeEnum, because for whatever reason, query params are not included in the generator.
+     * @param {PingRequest} pingRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    ping(pingRequest: PingRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<PingRequest, any>>;
+}
+/**
  * Scout9Api - axios parameter creator
  * @export
  */
@@ -7543,12 +7300,13 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
      * @summary Upload a file that contains document(s) to be used across various endpoints/features. Currently, the size of all the files uploaded by one organization can be up to 1 GB. Please contact us if you need to increase the storage limit.
      * @param {File} file
      * @param {PurposeEnum} [purpose]
+     * @param {string} [context] Additional information about this file
      * @param {string} [entity] The entity id, if not provided the entity id becomes the provided file name
      * @param {string} [$agent] The agent that this file belongs to. Only used for entity.audio and entity.transcript files.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    fileUpload: (file: File | Buffer | Blob, purpose?: PurposeEnum, entity?: string, $agent?: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    fileUpload: (file: File | Buffer | Blob, purpose?: PurposeEnum, context?: string, entity?: string, $agent?: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
      * @summary Returns a list of files that belong to the user\'s organization.
@@ -8019,12 +7777,13 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
      * @summary Upload a file that contains document(s) to be used across various endpoints/features. Currently, the size of all the files uploaded by one organization can be up to 1 GB. Please contact us if you need to increase the storage limit.
      * @param {File} file
      * @param {PurposeEnum} [purpose]
+     * @param {string} [context] Additional information about this file
      * @param {string} [entity] The entity id, if not provided the entity id becomes the provided file name
      * @param {string} [$agent] The agent that this file belongs to. Only used for entity.audio and entity.transcript files.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    fileUpload(file: File | Buffer | Blob, purpose?: PurposeEnum, entity?: string, $agent?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Scout9File>>;
+    fileUpload(file: File | Buffer | Blob, purpose?: PurposeEnum, context?: string, entity?: string, $agent?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FileUpload200Response>>;
     /**
      *
      * @summary Returns a list of files that belong to the user\'s organization.
@@ -8497,12 +8256,13 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
      * @summary Upload a file that contains document(s) to be used across various endpoints/features. Currently, the size of all the files uploaded by one organization can be up to 1 GB. Please contact us if you need to increase the storage limit.
      * @param {File} file
      * @param {PurposeEnum} [purpose]
+     * @param {string} [context] Additional information about this file
      * @param {string} [entity] The entity id, if not provided the entity id becomes the provided file name
      * @param {string} [$agent] The agent that this file belongs to. Only used for entity.audio and entity.transcript files.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    fileUpload(file: File | Buffer | Blob, purpose?: PurposeEnum, entity?: string, $agent?: string, options?: any): AxiosPromise<Scout9File>;
+    fileUpload(file: File | Buffer | Blob, purpose?: PurposeEnum, context?: string, entity?: string, $agent?: string, options?: any): AxiosPromise<FileUpload200Response>;
     /**
      *
      * @summary Returns a list of files that belong to the user\'s organization.
@@ -9021,13 +8781,14 @@ export declare class Scout9Api extends BaseAPI {
      * @summary Upload a file that contains document(s) to be used across various endpoints/features. Currently, the size of all the files uploaded by one organization can be up to 1 GB. Please contact us if you need to increase the storage limit.
      * @param {File} file
      * @param {PurposeEnum} [purpose]
+     * @param {string} [context] Additional information about this file
      * @param {string} [entity] The entity id, if not provided the entity id becomes the provided file name
      * @param {string} [$agent] The agent that this file belongs to. Only used for entity.audio and entity.transcript files.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
-    fileUpload(file: File | Buffer | Blob, purpose?: PurposeEnum, entity?: string, $agent?: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<Scout9File, any>>;
+    fileUpload(file: File | Buffer | Blob, purpose?: PurposeEnum, context?: string, entity?: string, $agent?: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<FileUpload200Response, any>>;
     /**
      *
      * @summary Returns a list of files that belong to the user\'s organization.

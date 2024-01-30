@@ -20,229 +20,207 @@ import Scout9Admin from '@scout9/admin';
 
 const scout9 = Scout9Admin('s9_api_key');
 ```
-```
 ## Example: Start a conversation
+
+```typescript
+await scout9.message.send({
+  to: '+12345678900',
+  message: 'Hey, bob, do you need that ladder?'
+});
+```
+
+## Example: Programmatically register an agent
+
+```typescript
+const {id: agentId} = await scout9.agents.create({
+  firstName: 'Tony',
+  lastName: 'Soprano',
+  forwardPhone: '+14327650098'
+});
+
+// Use Tony instead of the default agent (owner of account)
+await scout9.message({
+  to: '+12345678900',
+  from: agentId,
+  message: 'Hey, bob, do you need that ladder?'
+});
+
+
+```
+
+## Example: Programmatically purchase a phone number
+
+You can purchase and assign a masked phone number to your agent entity. You will have to have a [default payment method attached](https://scout9.com/b) to your account.
+
+```typescript
+// Purchase a phone - assuming I have a payment method at https://scout9.com/b
+const {phoneNumber} = await scout9.agents.purchasePhone(agentId, {areaCode: 206});
+console.log(`Purchased phone number: ${phoneNumber}`);
+```
+
+Purchasing a phone number will assign your phone number and its aid to your agent's `.programmablePhoneNumber`.
+
+## Example: Programmatically add agent audio and conversation files
+
+You can programmatically upload audio and text files to your agent registry to improve Persona Model Transformer (PMT) performance (responses sound more like you).
 
 ```typescript
 import fs from 'fs/promises';
 import path from 'path';
 
-// Registered your self as an agent within the Pocket Scout context
-const agentId = await scout9
-  .agentRegister({
-    firstName: 'Tony',
-    lastName: 'Sopranos',
-    title: 'Boss',
-
-    // A brief description of yourself to set the tone
-    context: 'I\'m Tony. Look, this life, it ain\'t for the faint-hearted. I got responsibilities - to my family and my crew. Loyalty, respect, that\'s everything. When I deal with my associates, I\'m direct. I expect them to come to me straight, no BS. Some might call me tough, even ruthless, but it\'s the world we\'re in. You show weakness, you\'re done. I\'ve got a code, though. If you\'re loyal to me, I\'ll have your back. But cross me? That\'s something you\'ll regret. It\'s business, but it\'s also personal. We\'re a family.',
-
-    // Must provide one of the following...
-    forwardPhone: '+15555555544', // my personal phone number to get notified of in coming messages
-    forwardEmail: 'tonyboss@gmail.com', // my personal email to get notified of in coming messages
-
-
-    /**
-     * (optional) either a provided Scout9 phone number or your personal
-     * ⚠️ Note: If a personal number, you'll be asked to download the Pocket Scout app to enable Pocket Scout auto responses
-     */
-    programmablePhoneNumber: '+15555555555',
-
-    /**
-     * (optional) either a provided Scout9 email or your personal
-     * ⚠️ Note: If a personal email, you'll be asked to authenticate your Pocket Scout onto your email account
-     */
-    programmableEmail: `tonyboss@gmail.com`,
-
-
-    /**
-     * Optional conversation data to help your Pocket Scout capture your tone
-     * See ../examples/samples to see coversation text format or enter JSON manually
-     */
-    conversations: [
-      await scout9.fileCreate(await fs.readFile('./conversation1.txt'), 'conversation with Chris')
-        .then(res => res.data.id),
-      await scout9.fileCreate(await fs.readFile('./conversation2.txt'), 'conversation with Paulie')
-        .then(res => res.data.id),
-    ],
-
-    /**
-     * (optional) audio data to help your Pocket Scout capture your tone
-     * (Eventually your Pocket Scout can use this to generate voice responses, but for now its more of a way to capture your tone/character)
-     */
-    audio: [
-      await scout9.fileCreate(await fs.readFile('./audio.mp3'),
-        'Secret Audio of me talking to Dr. Melfi (no one can know about this)').then(res => res.data.id),
-    ]
-  })
-  .then((res) => res.data.id);
+const textConvo1 = await scout9.agents.transcripts.upload(
+  agentId,
+  await fs.readFile('./conversation1.txt'),
+  'conversation with Chris'
+);
+const textConvo2 = await scout9.agents.transcripts.upload(
+  agentId,
+  await fs.readFile('./conversation2.txt'),
+  'conversation with Paulie'
+);
+const audioConvo1 = await scout9.agents.audio.upload(
+  agentId,
+  await fs.readFile('./audio.mp3'),
+  'Secret Audio of me talking to Dr. Melfi (no one can know about this)'
+);
 ```
+
+
 
 ## Step 2: Register customers
 
-You can register customers by adding their email or phone.
-
-**⚠️ Note:** If you are using a provided Scout9 email or phone number, customers must opt-in to receive messages or
-initiate conversations with you.
+Customers are automatically added in your account when they contact any of your masked contacts. However, you can programmatically register customers by adding their email or phone.
 
 ```typescript
-// Create 1 customer
-const customerId = await scout9.createCustomer({
+await scout9.customers.create({
   firstName: 'Hi',
   lastName: 'Jack',
   email: 'hi@example.com',
-  phone: '+15555555555',
-})
-  .then((res) => res.data.id);
-
-// Or create multiple customers
-const customers: Customer[] = [
-  {
-    // scout9 internal values
-    name: 'Tony Soprano',
-    phone: null,
-    email: null,
-
-    // customer properties
-    role: 'boss',
-    customId: 'tony-soprano',
-    fun_fact: 'I love my ducks'
-  },
-  {
-    // scout9 internal values
-    name: 'Carmela Soprano',
-    phone: null,
-    email: null,
-
-    // customer properties
-    favorite_drink: 'lillet blanc',
-  },
-  {
-    name: 'Salvatore Bonpensiero',
-    firstName: 'Salvatore',
-    phone: null,
-    email: null,
-    $agent: 'skip_lipari', // agent id
-
-    // customer properties
-    rat: true,
-    location: 'New Jersey coast',
-    nickname: 'Big 🐈',
-    lastSeason: 'season 1'
-  }
-];
-await scout9.customersCreate({customers});
+  phone: '+15555555555'
+});
 ```
 
-## Step 3: Initiate a conversation
-
-Initiate a default generic conversation with an existing customer, use the optional **initialMessage** to provide some
-guidance.
-
+You can also add multiple customers
 ```typescript
-const initialMessage = `Hey there, would you like a free pizza?`;
+ // Add multiple customers
+  await scout9.customers.bulkCreate(
+    [
+      {
+        // scout9 internal values
+        name: 'Tony Soprano',
+        phone: null,
+        email: null,
 
-const conversation = await scout9.conversationCreate({
-  customer: customerId,
-  agent: agentId,
-  environment: 'phone', // This will attempt to contact via SMS
-// Add some initial contexts to the conversation to help the agent get started
-  initialContexts: [
-    'We are offering free pizzas to the first 100 hundred customers for today only',
-    'We have pepperoni, cheese, meat lovers, and vegan pizzas available',
-    'We do not have gluten free pizzas available at this time',
-    'We are only offering free pizzas, nothing else',
-    'You must pick up the free pizza at 255 W Alameda St, Tucson, AZ 85701',
-    'We close at 10pm tonight',
-    'If the customer is not interested or serious in receiving a free pizza, disengage and direct them to our website (https://azpizzatime.com) for future orders'
-  ]
+        // customer properties
+        role: 'boss',
+        customId: 'tony-soprano',
+        fun_fact: 'I love my ducks'
+      },
+      {
+        // scout9 internal values
+        name: 'Carmela Soprano',
+        phone: null,
+        email: null,
+
+        // customer properties
+        favorite_drink: 'lillet blanc'
+      },
+      {
+        name: 'Salvatore Bonpensiero',
+        firstName: 'Salvatore',
+        phone: null,
+        email: null,
+        $agent: 'skip_lipari', // agent id
+
+        // customer properties
+        rat: true,
+        location: 'New Jersey coast',
+        nickname: 'Big 🐈',
+        lastSeason: 'season 1'
+      }
+    ]
+  );
+```
+
+## Example: Schedule a conversation
+```typescript
+import moment from 'moment';
+
+
+// Schedule a new conversation with Bob at 9:00am tomorrow
+await scout9.message({
+  to: '+12345678900',
+  message: 'Hey, Bob, good morning!',
+  scheduled: moment()
+    .add(1, 'day')
+    .set({hour: 9, minutes: 0, seconds: 0})
+    .unix()
 });
 
-// Send a message
-await scout9.message({convo: conversation.data.id, message: initialMessage});
+
+// Schedule a message to an existing conversation with Bob at 9:00am tomorrow
+scout9.message({
+  convo: 'convo_122343332', 
+  message: 'Hey, Bob, good morning!',
+  scheduled: moment()
+    .add(1, 'day')
+    .set({hour: 9, minutes: 0, seconds: 0})
+    .unix()
+});
+
+
+// Or delay a message to an existing conversation with Bob 1 minute from now
+scout9.message({
+  convo: 'convo_122343332',
+  message: 'Hey, Bob, good morning!',
+  secondsDelay: 60
+});
 ```
 
-## Step 4: Test your conversation
-
-Test your conversation before you send a message.
-
-```typescript
-const initialMessage = `Hey there, would you like a free pizza?`;
-
-const conversationId = await scout9.conversationCreate({
-  customer: customerId,
-  agent: agentId,
-  environment: 'phone', // This will attempt to contact via SMS
-// Add some initial contexts to the conversation to help the agent get started
-  initialContexts: [
-    'We are offering free pizzas to the first 100 hundred customers for today only',
-    'We have pepperoni, cheese, meat lovers, and vegan pizzas available',
-    'We do not have gluten free pizzas available at this time',
-    'We are only offering free pizzas, nothing else',
-    'You must pick up the free pizza at 255 W Alameda St, Tucson, AZ 85701',
-    'We close at 10pm tonight',
-    'If the customer is not interested or serious in receiving a free pizza, disengage and direct them to our website (https://azpizzatime.com) for future orders'
-  ]
-}).then((res) => res.data.id);
-
-const anticipatedCustomerResponses = [
-  'Yes please!',
-  'No thanks',
-  'What kind of pizza are we talking about?',
-  'I\'m vegan, do you have vegan pizza?',
-  'I hate you, stop texting me',
-  'I love you, keep texting me',
-];
-for (const customerResponse of anticipatedCustomerResponses) {
-  const generatedResponse = await scout9.generate({
-    convo: conversationId,
-    mocks: {
-      messages: [
-        {
-          role: 'customer',
-          content: customerResponse
-        }
-      ]
-    }
-  })
-    .then((res) => res.data.content);
-
-  console.log(`\n\tCustomer: "${customerResponse}"\n\tAgent: "${generatedResponse}"\n`);
-}
-
-console.log(`Looks good 👍 - sending messing to customer`);
-await scout9.message({convo: conversation.data.id, message: initialMessage});
-```
-
-## Step 5: View your conversation
+## Example view messages
 
 Messages and customer responses can be viewed in the [Scout9 UI](https://scout9.vercel.app/). You can also
 configure webhooks in the account portal to listen to incoming messages on your own server.
 
 ```typescript
-const messages = await scout9.messages(conversationId);
+const conversationId = 'convo_122343332';
+const messages = await scout9.conversation.messages(conversationId);
 console.log(`Retrieved ${messages.data.length} messages from the conversation`);
 
 for (const message of messages.data) {
   console.log(`\t${message.role}: ${message.content}`);
 }
 ```
+```json
+[
+  {
+    "role": "customer",
+    "content": "Hey, Tony, good morning! I need that 'ladder' you mentioned." 
+  },
+  {
+    "role": "agent",
+    "content": "Hey, Paulie, I know exactly what you mean... Chris will have that ladder for you. Standby for his call."
+  },
+  {
+    "role": "customer",
+    "content": "Yeah, thanks Ton"
+  }
+]
+```
 
-## Advanced Examples
+## Example: Schedule an advanced conversation
 
-### Schedule a conversation
-
-See [simple-schedule-conversation.ts](../../examples-archived/simple-schedule-conversation.ts) on how to test a conversation before its
-created.
+If you need the conversation to have some additional context, you can add initial contexts to a newly created conversation. Otherwise sending the message and automatically creating a conversation to the default context.
 
 ```typescript
-const initialMessage = `Hey there, would you like a free pizza?`;
+const customerId = '1233993';
+const agentId = '10029292';
 
-const conversation = await scout9.scheduleConversation({
-  customer: customerId,
-  agent: agentId,
-  environment: 'phone', // This will attempt to contact via SMS
-  // Add some initial contexts to the conversation to help the agent get started
+// Create a conversation with some additional context to drive the conversation
+const {id: convoId} = await scout9.conversation.create({
+  $customer: customerId,
+  $agent: agentId,
+  environment: "phone",
   initialContexts: [
     'We are offering free pizzas to the first 100 hundred customers for today only',
     'We have pepperoni, cheese, meat lovers, and vegan pizzas available',
@@ -253,118 +231,55 @@ const conversation = await scout9.scheduleConversation({
     'If the customer is not interested or serious in receiving a free pizza, disengage and direct them to our website (https://azpizzatime.com) for future orders'
   ]
 });
+
+// Schedule message to 9:00 am tomorrow
+await scout9.message({
+  convo: convoId,
+  message: 'Hey Bob, would you like a free pizza?',
+  scheduled: moment()
+    .add(1, 'day')
+    .set({hour: 9, minutes: 0, seconds: 0})
+    .unix()
+});
 ```
 
-### Define workflows
+## Example: Respond to a customer
 
-Conversations by default use a generic **workflow** procedure that has a stated goal to guide your Pocket Scout in a
-conversation. Initiate a conversation with a clear specific objective using the **workflow** api.
-
-See [full workflow example](../../examples-archived/create-workflow.ts)
+If a customer triggers one of your active **workflows**, then by default your application will respond to the customer.
+If you respond manually, then the Application will stop responding to the customer for the entire conversation.
 
 ```typescript
-const workflow: CreateWorkflowRequest = {
-  name: 'Order Pizza',
-
-  // Define the goal of the workflow
-  context: 'When a customer wants to order a pizza, I will determine what pizza they need and when, then determine if it needs to be picked up or delivered to their address.',
-
-  // fields follow this boolean structure -> (a || b) && (c || d), if true then the context will be inserted into the conversation.
-  fields: contextFields,
-
-  // Custom context and how this workflow will be triggered from a customer conversation
-  initiators: {
-    // We need to describe the fields that we want to collect from the customer in this workflow
-    // entity fields such as firstName, address, location, etc are built in and will be provided by default
-    entities: customEntities,
-    documents: workflowTriggerStatements
-  },
-};
-
-const workflowId = await scout9.workflowCreate(workflow).then(res => res.data.id);
-
-console.log(`Created workflow with id: ${workflowId}`);
+await scout9.message.send({convo: conversationId, message: 'Hey there, would you like a free pizza?'});
 ```
 
-Use the `.fields` property to guide the conversation to accomplish the goal. In this example we ask the user for the
-pizza size, sauce, toppings, when, delivery or take out, and if delivery then the address.
+[//]: # (## Available Platforms)
 
-```typescript
-const contextFields: ConversationContextField[] = [
-  {
-    id: 'determineSize',
-    context: 'Determine what size pizza the customer wants, we have small, medium, and large',
-    conditions: [
-      {
-        conditions: [
-          {
-            key: 'pizzaSize', // If we don't know the pizzaSize, then insert this context
-            operator: 'notExists',
-            value: true
-          }
-        ]
-      }
-    ]
-  },
-  // ... other field definitions
-]
-```
+[//]: # ()
+[//]: # (Customers can interact with you on any of the connected platforms)
 
-In the `.initiators.entities` we can define custom fields that the Pocket Scout can search for and store in the
-conversation
+[//]: # ()
+[//]: # (| Platforms    | Supported    |                                                                                                                                                    |)
 
-In this example we include a custom entity field `pizzaSize` which can be described as a small or personal pizza.
+[//]: # (|--------------|--------------|----------------------------------------------------------------------------------------------------------------------------------------------------|)
 
-```typescript
-const customEntities = [
-  {
-    utteranceId: 'pizzaSize',
-    option: 'small',
-    languages: ['en'],
-    text: [
-      'small',
-      'personal',
-      'individual',
-      '6-inch',
-      '8-inch',
-    ]
-  },
-  // ... other custom entities or pizza sizes
-]
-```
+[//]: # (| Android      | ⚠️ &#40;pending&#41; | &#40;free&#41; An android app is in development to enable your Pocket Scout to respond to SMS text                                                         |)
 
-Then we need some statements that can trigger the workflow and context fields that get stored in `.initiators.documents`.
+[//]: # (| iOS          | ⚠️ &#40;pending&#41; | &#40;free&#41; An ios app is in development to enable your Pocket Scout to respond to iMessages                                                            |)
 
-```typescript
- const workflowTriggerStatements = [
-  {text: 'I would like to order a %pizzaSize%  %pizzaType%', id: 'request'},
-  // ... more examples that might trigger the workflow
-];
-```
+[//]: # (| Web          | ✅            | &#40;free&#41; We generate conversation links for you and your customers to quickly connect, conversations expire in 1 day                                 |)
 
-### Respond to a customer
+[//]: # (| Gmail        | ✅            | &#40;free&#41; Provide Scout9 authorization access to your gmail account for read/write capabilities so your Pocket Scout can respond to emails            |)
 
-If a customer triggers one of your active **workflows**, then by default your Pocket Scout will respond to the customer.
-If you respond manually, then the Pocket Scout will stop responding to the customer for the entire conversation.
+[//]: # (| Outlook      | ⚠️ &#40;pending&#41; | &#40;free&#41; Provide Scout9 authorization access to your outlook account for read/write capabilities so your Pocket Scout can respond to emails          |)
 
-```typescript
-await scout9.message({convo: conversationId, message: 'Hey there, would you like a free pizza?'});
-```
+[//]: # (| Native Email | ❌            | For security and privacy concerns we currently cannot support native email systems at this time                                                    |)
 
-## Available Platforms
+[//]: # (| Discord      | ⚠️ &#40;pending&#41; | &#40;free&#41; Download the Pocket Scout Discord bot and configure workflows to respond to messages accordingly                                            |)
 
-Customers can interact with you (and your Pocket Scout) on any of the connected platforms
+[//]: # (| Slack        | ⚠️ &#40;pending&#41; | &#40;free&#41; Download the Pocket Scout Slack agent and configure workflows to respond to messages accordingly                                            |)
 
-| Platforms    | Supported    |                                                                                                                                                    |
-|--------------|--------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
-| Android      | ⚠️ (pending) | (free) An android app is in development to enable your Pocket Scout to respond to SMS text                                                         |
-| iOS          | ⚠️ (pending) | (free) An ios app is in development to enable your Pocket Scout to respond to iMessages                                                            |
-| Web          | ✅            | (free) We generate conversation links for you and your customers to quickly connect, conversations expire in 1 day                                 |
-| Gmail        | ✅            | (free) Provide Scout9 authorization access to your gmail account for read/write capabilities so your Pocket Scout can respond to emails            |
-| Outlook      | ⚠️ (pending) | (free) Provide Scout9 authorization access to your outlook account for read/write capabilities so your Pocket Scout can respond to emails          |
-| Native Email | ❌            | For security and privacy concerns we currently cannot support native email systems at this time                                                    |
-| Discord      | ⚠️ (pending) | (free) Download the Pocket Scout Discord bot and configure workflows to respond to messages accordingly                                            |
-| Slack        | ⚠️ (pending) | (free) Download the Pocket Scout Slack agent and configure workflows to respond to messages accordingly                                            |
-| Teams        | ⚠️ (pending) | (free) Download the Pocket Scout Teams add-on                                                                                                      |
-| Scout9 Phone | ✅            | $5/month we provide a generated phone number you can use for your Pocket Scout to text, messages will be relayed back to your personal phone number |
-| Scout9 Email | ✅            | $5/month We provide a generated email with your name (e.g. patrick.opie@scout9.com) you can use for your Pocket Scout                              |
+[//]: # (| Teams        | ⚠️ &#40;pending&#41; | &#40;free&#41; Download the Pocket Scout Teams add-on                                                                                                      |)
+
+[//]: # (| Scout9 Phone | ✅            | $5/month we provide a generated phone number you can use for your Pocket Scout to text, messages will be relayed back to your personal phone number |)
+
+[//]: # (| Scout9 Email | ✅            | $5/month We provide a generated email with your name &#40;e.g. patrick.opie@scout9.com&#41; you can use for your Pocket Scout                              |)

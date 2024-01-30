@@ -16,7 +16,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Scout9Api = exports.Scout9ApiFactory = exports.Scout9ApiFp = exports.Scout9ApiAxiosParamCreator = exports.CustomContextApi = exports.CustomContextApiFactory = exports.CustomContextApiFp = exports.CustomContextApiAxiosParamCreator = exports.WorkflowResponseSlotForwardOneOfModeEnum = exports.PurposeEnum = exports.PmtConfigModelEnum = exports.PmtConfigEngineEnum = exports.MessageGetResponseInnerRoleEnum = exports.MessageCreateRequestRoleEnum = exports.MessageBaseRoleEnum = exports.MessageRoleEnum = exports.LlmConfigOneOf2EngineEnum = exports.LlmConfigOneOf1EngineEnum = exports.LlmConfigOneOfModelEnum = exports.LlmConfigOneOfEngineEnum = exports.ListApiOperationsResponseInnerMethodEnum = exports.GetApiOperationResponseMethodEnum = exports.ForwardRequestLatestMessageRoleEnum = exports.ForwardRequestForwardOneOfModeEnum = exports.ExistenceOperator = exports.EqualityOperator = exports.ConversationEnvironment = exports.ConversationContextFieldConditionOperatorEnum = exports.ApiOperationMethodEnum = void 0;
+exports.Scout9Api = exports.Scout9ApiFactory = exports.Scout9ApiFp = exports.Scout9ApiAxiosParamCreator = exports.DefaultApi = exports.DefaultApiFactory = exports.DefaultApiFp = exports.DefaultApiAxiosParamCreator = exports.CustomContextApi = exports.CustomContextApiFactory = exports.CustomContextApiFp = exports.CustomContextApiAxiosParamCreator = exports.WorkflowResponseSlotForwardOneOfModeEnum = exports.PurposeEnum = exports.PmtConfigModelEnum = exports.PmtConfigEngineEnum = exports.MessageGetResponseInnerRoleEnum = exports.MessageCreateRequestRoleEnum = exports.MessageBaseRoleEnum = exports.MessageRoleEnum = exports.LlmConfigOneOf2EngineEnum = exports.LlmConfigOneOf1EngineEnum = exports.LlmConfigOneOfModelEnum = exports.LlmConfigOneOfEngineEnum = exports.ListApiOperationsResponseInnerMethodEnum = exports.GetApiOperationResponseMethodEnum = exports.ForwardRequestLatestMessageRoleEnum = exports.ForwardRequestForwardOneOfModeEnum = exports.ExistenceOperator = exports.EqualityOperator = exports.ConversationEnvironment = exports.ConversationContextFieldConditionOperatorEnum = exports.ApiOperationMethodEnum = void 0;
 const axios_1 = __importDefault(require("axios"));
 // Some imports not used depending on template conditions
 // @ts-ignore
@@ -282,6 +282,106 @@ class CustomContextApi extends base_1.BaseAPI {
     }
 }
 exports.CustomContextApi = CustomContextApi;
+/**
+ * DefaultApi - axios parameter creator
+ * @export
+ */
+const DefaultApiAxiosParamCreator = function (configuration) {
+    return {
+        /**
+         *
+         * @summary This is used for the generator to incldue PurposeEnum, because for whatever reason, query params are not included in the generator.
+         * @param {PingRequest} pingRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        ping: async (pingRequest, options = {}) => {
+            // verify required parameter 'pingRequest' is not null or undefined
+            (0, common_1.assertParamExists)('ping', 'pingRequest', pingRequest);
+            const localVarPath = `/v1-utils-ping`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options };
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
+            localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(pingRequest, localVarRequestOptions, configuration);
+            return {
+                url: (0, common_1.toPathString)(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    };
+};
+exports.DefaultApiAxiosParamCreator = DefaultApiAxiosParamCreator;
+/**
+ * DefaultApi - functional programming interface
+ * @export
+ */
+const DefaultApiFp = function (configuration) {
+    const localVarAxiosParamCreator = (0, exports.DefaultApiAxiosParamCreator)(configuration);
+    return {
+        /**
+         *
+         * @summary This is used for the generator to incldue PurposeEnum, because for whatever reason, query params are not included in the generator.
+         * @param {PingRequest} pingRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async ping(pingRequest, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.ping(pingRequest, options);
+            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+        },
+    };
+};
+exports.DefaultApiFp = DefaultApiFp;
+/**
+ * DefaultApi - factory interface
+ * @export
+ */
+const DefaultApiFactory = function (configuration, basePath, axios) {
+    const localVarFp = (0, exports.DefaultApiFp)(configuration);
+    return {
+        /**
+         *
+         * @summary This is used for the generator to incldue PurposeEnum, because for whatever reason, query params are not included in the generator.
+         * @param {PingRequest} pingRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        ping(pingRequest, options) {
+            return localVarFp.ping(pingRequest, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+exports.DefaultApiFactory = DefaultApiFactory;
+/**
+ * DefaultApi - object-oriented interface
+ * @export
+ * @class DefaultApi
+ * @extends {BaseAPI}
+ */
+class DefaultApi extends base_1.BaseAPI {
+    /**
+     *
+     * @summary This is used for the generator to incldue PurposeEnum, because for whatever reason, query params are not included in the generator.
+     * @param {PingRequest} pingRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    ping(pingRequest, options) {
+        return (0, exports.DefaultApiFp)(this.configuration).ping(pingRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+exports.DefaultApi = DefaultApi;
 /**
  * Scout9Api - axios parameter creator
  * @export
@@ -1664,12 +1764,13 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
          * @summary Upload a file that contains document(s) to be used across various endpoints/features. Currently, the size of all the files uploaded by one organization can be up to 1 GB. Please contact us if you need to increase the storage limit.
          * @param {File} file
          * @param {PurposeEnum} [purpose]
+         * @param {string} [context] Additional information about this file
          * @param {string} [entity] The entity id, if not provided the entity id becomes the provided file name
          * @param {string} [$agent] The agent that this file belongs to. Only used for entity.audio and entity.transcript files.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        fileUpload: async (file, purpose, entity, $agent, options = {}) => {
+        fileUpload: async (file, purpose, context, entity, $agent, options = {}) => {
             // verify required parameter 'file' is not null or undefined
             (0, common_1.assertParamExists)('fileUpload', 'file', file);
             const localVarPath = `/v1-utils-file`;
@@ -1688,6 +1789,9 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
             }
             if (purpose !== undefined) {
                 localVarFormParams.append('purpose', new Blob([JSON.stringify(purpose)], { type: "application/json", }));
+            }
+            if (context !== undefined) {
+                localVarFormParams.append('context', context);
             }
             if (entity !== undefined) {
                 localVarFormParams.append('entity', entity);
@@ -2558,13 +2662,14 @@ const Scout9ApiFp = function (configuration) {
          * @summary Upload a file that contains document(s) to be used across various endpoints/features. Currently, the size of all the files uploaded by one organization can be up to 1 GB. Please contact us if you need to increase the storage limit.
          * @param {File} file
          * @param {PurposeEnum} [purpose]
+         * @param {string} [context] Additional information about this file
          * @param {string} [entity] The entity id, if not provided the entity id becomes the provided file name
          * @param {string} [$agent] The agent that this file belongs to. Only used for entity.audio and entity.transcript files.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async fileUpload(file, purpose, entity, $agent, options) {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.fileUpload(file, purpose, entity, $agent, options);
+        async fileUpload(file, purpose, context, entity, $agent, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.fileUpload(file, purpose, context, entity, $agent, options);
             return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
         },
         /**
@@ -3162,13 +3267,14 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
          * @summary Upload a file that contains document(s) to be used across various endpoints/features. Currently, the size of all the files uploaded by one organization can be up to 1 GB. Please contact us if you need to increase the storage limit.
          * @param {File} file
          * @param {PurposeEnum} [purpose]
+         * @param {string} [context] Additional information about this file
          * @param {string} [entity] The entity id, if not provided the entity id becomes the provided file name
          * @param {string} [$agent] The agent that this file belongs to. Only used for entity.audio and entity.transcript files.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        fileUpload(file, purpose, entity, $agent, options) {
-            return localVarFp.fileUpload(file, purpose, entity, $agent, options).then((request) => request(axios, basePath));
+        fileUpload(file, purpose, context, entity, $agent, options) {
+            return localVarFp.fileUpload(file, purpose, context, entity, $agent, options).then((request) => request(axios, basePath));
         },
         /**
          *
@@ -3798,14 +3904,15 @@ class Scout9Api extends base_1.BaseAPI {
      * @summary Upload a file that contains document(s) to be used across various endpoints/features. Currently, the size of all the files uploaded by one organization can be up to 1 GB. Please contact us if you need to increase the storage limit.
      * @param {File} file
      * @param {PurposeEnum} [purpose]
+     * @param {string} [context] Additional information about this file
      * @param {string} [entity] The entity id, if not provided the entity id becomes the provided file name
      * @param {string} [$agent] The agent that this file belongs to. Only used for entity.audio and entity.transcript files.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
-    fileUpload(file, purpose, entity, $agent, options) {
-        return (0, exports.Scout9ApiFp)(this.configuration).fileUpload(file, purpose, entity, $agent, options).then((request) => request(this.axios, this.basePath));
+    fileUpload(file, purpose, context, entity, $agent, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).fileUpload(file, purpose, context, entity, $agent, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      *

@@ -14,8 +14,8 @@ export * from './api';
 export * from './configuration';
 export * from './webhooks';
 import { AxiosResponse } from 'axios';
-import type { Agent, Conversation, Customer, ForwardRequest, ForwardResponse, GenerateRequestOneOf, Message, MessageCreateRequestRoleEnum, MessageCreateResponse, OperationBulkResponse, OperationDocResponse, PurchasePhoneRequest, PurchasePhoneResponse, WorkflowEvent, PurposeEnum } from './api';
-import { ConversationEnvironment, ListFilesResponseInner, Scout9Api } from './api';
+import type { Agent, Conversation, Customer, ForwardRequest, ForwardResponse, GenerateRequestOneOf, Message, MessageCreateRequestRoleEnum, MessageCreateResponse, OperationBulkResponse, OperationDocResponse, PurchasePhoneRequest, PurchasePhoneResponse, WorkflowEvent, PurposeEnum, ConversationEnvironment, ListFilesResponseInner } from './api';
+import { Scout9Api } from './api';
 export type WhereFilterOp = '<' | '<=' | '==' | '!=' | '>=' | '>' | 'array-contains' | 'in' | 'not-in' | 'array-contains-any';
 export type S9File = ListFilesResponseInner;
 export type QueryPayload = {
@@ -29,6 +29,8 @@ export type MessageInputExistingConversation = {
     message: string;
     role?: MessageCreateRequestRoleEnum;
     html?: string;
+    scheduled?: number;
+    secondsDelay?: number;
 };
 export type MessageInputNewConversation = {
     /**
@@ -38,8 +40,9 @@ export type MessageInputNewConversation = {
     /**
      * Either agent id, agent forward phone #, programmable phone #, forward email, or programmable email address. If the
      * contact is valid, it will auto resolve the correct agent.
+     * @default to owner of account
      */
-    from: string;
+    from?: string;
     /**
      * Overrides auto detected environment
      */
@@ -47,6 +50,8 @@ export type MessageInputNewConversation = {
     message: string;
     role?: MessageCreateRequestRoleEnum;
     html?: string;
+    scheduled?: number;
+    secondsDelay?: number;
 };
 export type MessageInput = MessageInputExistingConversation | MessageInputNewConversation;
 export default function (apiKey: string): {
@@ -77,15 +82,15 @@ export default function (apiKey: string): {
         })[]) => Promise<OperationBulkResponse>;
         transcripts: {
             list: (agentId?: string) => Promise<ListFilesResponseInner[]>;
-            retrieve: (agentId: string, fileId: string) => Promise<AxiosResponse<File, any>>;
-            remove: (agentId: string, fileId: string) => Promise<AxiosResponse<OperationDocResponse, any>>;
-            upload: (agentId: string, file: File | Buffer | Blob, fileId?: string) => Promise<AxiosResponse<import("./api").Scout9File, any>>;
+            retrieve: (agentId: string, fileId: string) => Promise<File>;
+            remove: (agentId: string, fileId: string) => Promise<OperationDocResponse>;
+            upload: (agentId: string, file: File | Buffer | Blob, context?: string, fileId?: string) => Promise<import("./api").Scout9File | null>;
         };
         audio: {
             list: (agentId?: string) => Promise<ListFilesResponseInner[]>;
-            retrieve: (agentId: string, fileId: string) => Promise<AxiosResponse<File, any>>;
-            remove: (agentId: string, fileId: string) => Promise<AxiosResponse<OperationDocResponse, any>>;
-            upload: (agentId: string, file: File | Buffer | Blob, fileId?: string) => Promise<AxiosResponse<import("./api").Scout9File, any>>;
+            retrieve: (agentId: string, fileId: string) => Promise<ListFilesResponseInner | null>;
+            remove: (agentId: string, fileId: string) => Promise<OperationDocResponse>;
+            upload: (agentId: string, file: File | Buffer | Blob, context?: string, fileId?: string) => Promise<import("./api").Scout9File | null>;
         };
     };
     conversation: {
@@ -98,18 +103,11 @@ export default function (apiKey: string): {
         update: (id: string, data: Partial<Conversation>) => Promise<OperationDocResponse>;
         forward: (conversationId: string, options?: Pick<ForwardRequest, 'forward' | 'latestMessage' | 'convo'>) => Promise<ForwardResponse>;
         generate: (conversationId: string, mockData?: GenerateRequestOneOf) => Promise<AxiosResponse<import("./api").GenerateResponse, any>>;
-        message: (conversationId: string, message: string, role?: MessageCreateRequestRoleEnum, html?: string) => Promise<MessageCreateResponse>;
-        messages: {
-            send: (input: MessageInput) => Promise<MessageCreateResponse>;
-            list: (conversationId: string) => Promise<Message[]>;
-        };
+        message: (input: MessageInput) => Promise<MessageCreateResponse>;
+        messages: (conversationId: string) => Promise<Message[]>;
     };
-    message: {
-        send: (input: MessageInput) => Promise<MessageCreateResponse>;
-    };
-    messages: {
-        list: (conversationId: string) => Promise<Message[]>;
-    };
+    message: (input: MessageInput) => Promise<MessageCreateResponse>;
+    messages: (conversationId: string) => Promise<Message[]>;
     customers: {
         retrieve: (idOrEmailOrPhone: string) => Promise<Customer>;
         list: (query: QueryPayload) => Promise<(Customer & {
@@ -125,7 +123,7 @@ export default function (apiKey: string): {
         }[]) => Promise<OperationBulkResponse>;
     };
     utils: {
-        fileUpload: (file: File | Blob | Buffer, purpose?: PurposeEnum | undefined, entity?: string | undefined, $agent?: string | undefined, options?: import("axios").AxiosRequestConfig<any> | undefined) => Promise<AxiosResponse<import("./api").Scout9File, any>>;
+        fileUpload: (file: File | Blob | Buffer, purpose?: PurposeEnum | undefined, context?: string | undefined, entity?: string | undefined, $agent?: string | undefined, options?: import("axios").AxiosRequestConfig<any> | undefined) => Promise<AxiosResponse<import("./api").FileUpload200Response, any>>;
         files: (purpose: string, agent?: string | undefined, options?: import("axios").AxiosRequestConfig<any> | undefined) => Promise<AxiosResponse<ListFilesResponseInner[], any>>;
     };
     v1: Scout9Api;
