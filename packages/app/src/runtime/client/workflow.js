@@ -27,17 +27,23 @@ export const ConversationSchema = z.object({
   }).optional(),
 });
 
-export const WorkflowEventSchema = {
+export const IntentWorkflowEventSchema = z.object({
+ current: z.string().nullable(),
+ flow: z.array(z.string()),
+ initial: z.string().nullable()
+})
+
+export const WorkflowEventSchema = z.object({
   messages: z.array(MessageSchema),
   conversation: ConversationSchema,
   context: z.any(),
   message: MessageSchema,
   agent: agentConfigurationSchema,
   customer: customerSchema,
-  intent: z.string(),
+  intent: IntentWorkflowEventSchema,
   stagnationCount: z.number(),
   note: z.string({description: 'Any developer notes to provide'}).optional()
-}
+})
 
 const Primitive = z.union([z.string(), z.number(), z.boolean()]);
 // Assuming ConversationContext is already defined as a Zod schema

@@ -133,6 +133,21 @@ declare module '@scout9/app' {
 	content: string;
 	name?: string;
 	time: string;
+
+	/**
+	 * The context generated from the message
+	 */
+	context?: any;
+
+	/**
+	 * Detected intent
+	 */
+	intent: string | null;
+
+	/**
+	 * Confidence score of the assigned intent
+	 */
+	intentScore: number | null;
   }
 
   export interface Customer {
@@ -174,6 +189,9 @@ declare module '@scout9/app' {
 	audioRef?: any[];
   }
 
+  /**
+   * The input event provided to the application
+   */
   export interface WorkflowEvent {
 	messages: Message[];
 	conversation: Conversation;
@@ -181,7 +199,11 @@ declare module '@scout9/app' {
 	message: Message;
 	agent: Omit<Agent, 'transcripts' | 'audioRef' | 'includedLocations' | 'excludedLocations' | 'model' | 'context'>;
 	customer: Customer;
-	intent: string;
+	intent: {
+	  current: string | null;
+	  flow: string[];
+	  initial: string | null;
+	};
 	stagnationCount: number;
   }
 

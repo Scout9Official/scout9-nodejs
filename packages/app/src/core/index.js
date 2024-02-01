@@ -25,7 +25,8 @@ async function platformApi(url, options = {}, retries = 0) {
     method: 'GET',
     ...options,
     headers: {
-      'Authorization': process.env.SCOUT9_API_KEY || ''
+      'Authorization': process.env.SCOUT9_API_KEY || '',
+      ...(options.headers || {}),
     }
   }).then((res) => {
     if (res.status === 504) {
@@ -93,7 +94,9 @@ function zipDirectory(source, out) {
 
 async function deployZipDirectory(zipFilePath, config) {
   const form = new FormData();
-  // application/gzip
+  if (!fss.existsSync(zipFilePath)) {
+    throw new Error(`Missing required zip file ${zipFilePath}`);
+  }
   const blob = new Blob([await fs.readFile(zipFilePath)], {type: 'application/gzip'});
   form.set('file', blob, path.basename(zipFilePath), {contentType: 'application/gzip'});
   // const blob = new Blob([await fs.readFile(zipFilePath)], {type: 'application/zip'});
@@ -102,10 +105,13 @@ async function deployZipDirectory(zipFilePath, config) {
 
   // @TODO append signature secret header
   // const url = 'http://localhost:3000/api/b/platform/upload';
-  const url = 'https://scout9.vercel.app/api/b/platform/upload';
+  const url = 'https://us-central1-jumpstart.cloudfunctions.net/v1-utils-platform-upload';
   const response = await platformApi(url, {
     method: 'POST',
-    body: form
+    body: form,
+    headers: {
+      'Authorization': 'Bearer ' + process.env.SCOUT9_API_KEY || '',
+    }
   });
   if (!response.ok) {
     throw new Error(`${url} responded with ${response.status}: ${response.statusText}`);
@@ -115,7 +121,7 @@ async function deployZipDirectory(zipFilePath, config) {
 }
 
 async function downloadAndUnpackZip(outputDir) {
-  const downloadLocalResponse = await platformApi(`https://scout9.vercel.app/api/b/platform/download`);
+  const downloadLocalResponse = await platformApi(`https://scout9.com/api/b/platform/download`);
   if (!downloadLocalResponse.ok) {
     throw new Error(`Error downloading project file ${downloadLocalResponse.statusText}`);
   }
@@ -183,10 +189,10 @@ async function buildApp(cwd, src, dest, config) {
     ...config
   };
   for (const agent of redactedConfig.agents) {
-    agent.forwardEmail = 'REDACTED';
-    agent.forwardPhone = 'REDACTED';
-    agent.programmableEmail = 'REDACTED';
-    agent.programmablePhoneNumber = 'REDACTED';
+    // agent.forwardEmail = 'REDACTED';
+    // agent.forwardPhone = 'REDACTED';
+    // agent.programmableEmail = 'REDACTED';
+    // agent.programmablePhoneNumber = 'REDACTED';
   }
   await fs.writeFile(path.resolve(dest, 'config.js'), `export default ${JSON.stringify(redactedConfig, null, 2)}`);
 
@@ -214,8 +220,7 @@ async function buildApp(cwd, src, dest, config) {
 
 // For dev server, downloads the dev app if it doesn't exist
 async function downloadDevApp(destination, version) {
-  const url = `https://scout9.vercel.app/api/b/platform/dev?v=${version}`;
-  // const url = 'http://localhost:3000/api/b/platform/upload';
+  const url = `https://scout9.com/api/b/platform/dev?v=${version}`;
   const downloadLocalResponse = await platformApi(url);
   if (!downloadLocalResponse.ok) {
     throw new Error(`Error downloading scout9 dev app project file ${downloadLocalResponse.statusText}`);
@@ -384,7 +389,7 @@ export async function sync({cwd = process.cwd(), src = 'src', logger = new Progr
   if (!process.env.SCOUT9_API_KEY) {
     throw new Error('Missing required environment variable "SCOUT9_API_KEY"');
   }
-  const {entities, agents} = await platformApi(`https://scout9.vercel.app/api/b/platform/sync`).then((res) => {
+  const {entities, agents} = await platformApi(`https://scout9.com/api/b/platform/sync`).then((res) => {
     if (res.status !== 200) {
       throw new Error(`Server responded with ${res.status}: ${res.statusText}`);
     }

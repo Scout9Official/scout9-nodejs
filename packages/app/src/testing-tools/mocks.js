@@ -41,7 +41,11 @@ export const createMockWorkflowEvent = (
     stagnationCount: 0,
     customer: createMockCustomer(),
     agent: createMockAgent(),
-    intent,
+    intent: typeof intent === 'string' ? {
+      current: intent,
+      flow: [],
+      initial: intent
+    } : intent,
   }
 }
 
