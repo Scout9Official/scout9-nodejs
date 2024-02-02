@@ -7,6 +7,7 @@ import { config as dotenv } from 'dotenv';
 import { Configuration, Scout9Api } from '@scout9/admin';
 import path from 'node:path';
 import fs from 'node:fs';
+import https from 'node:https';
 import { fileURLToPath } from 'node:url';
 import projectApp from './src/app.js';
 import config from './config.js';
@@ -100,6 +101,54 @@ const handleError = (e, res = undefined) => {
   }
 };
 
+const makeRequest = async (options, maxRedirects = 10) => {
+  return new Promise((resolve, reject) => {
+
+    if (maxRedirects < 0) {
+      reject(new Error('Too many redirects'));
+      return;
+    }
+
+    const req = https.request(options, (res) => {
+      console.log(`STATUS: ${res.statusCode}`);
+      if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
+        // Handle redirect
+        console.log(`Redirecting to ${res.headers.location}`);
+        const newUrl = new URL(res.headers.location);
+        const newOptions = {
+          hostname: newUrl.hostname,
+          port: newUrl.port || 443,
+          path: newUrl.pathname,
+          method: 'GET', // Usually redirects are GET, adjust if necessary
+          headers: options.headers // Reuse original headers
+          // Add any other necessary options here
+        };
+        // Recursive call to handle redirect
+        resolve(makeRequest(newOptions, maxRedirects - 1));
+      } else {
+        let data = '';
+        res.setEncoding('utf8');
+        res.on('data', (chunk) => data += chunk);
+        res.on('end', () => {
+          try {
+            resolve(JSON.parse(data));
+          } catch (e) {
+            reject(e);
+          }
+        });
+      }
+    });
+
+    req.on('error', (e) => {
+      reject(e);
+    });
+
+    req.end();
+
+  });
+};
+
+
 const app = polka();
 
 app.use(bodyParser.json());
@@ -126,8 +175,19 @@ app.post(dev ? '/dev/workflow' : '/', async (req, res) => {
 if (dev) {
 
   app.get('/dev/config', async (req, res, next) => {
+
+    // Retrieve auth token
+    const {token} = await makeRequest({
+      hostname: 'us-central1-jumpstart.cloudfunctions.net',
+      port: 443,
+      path: '/v1-utils-platform-token',
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + process.env.SCOUT9_API_KEY
+      }
+    });
     res.writeHead(200, {'Content-Type': 'application/json'});
-    res.end(JSON.stringify(config));
+    res.end(JSON.stringify({token, ...config}));
     try {
       if (!cache.isTested()) {
         const testableEntities = config.entities.filter(e => e?.definitions?.length > 0 || e?.training?.length > 0);

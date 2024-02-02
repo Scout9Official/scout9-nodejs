@@ -4730,6 +4730,18 @@ export interface ParseRequest {
  */
 export interface ParseResponse {
   /**
+   * The intent of the message
+   * @type {string}
+   * @memberof ParseResponse
+   */
+  'intent': string;
+  /**
+   * The confidence score of the intent
+   * @type {number}
+   * @memberof ParseResponse
+   */
+  'intentScore': number;
+  /**
    * Context that is derived from the message
    * @type {{ [key: string]: any; }}
    * @memberof ParseResponse

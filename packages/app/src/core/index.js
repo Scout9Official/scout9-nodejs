@@ -150,6 +150,8 @@ async function downloadAndUnpackZip(outputDir) {
  * @returns {Promise<void>}
  */
 async function buildApp(cwd, src, dest, config) {
+  // Remove existing directory
+  await fs.rm(dest, { recursive: true, force: true });
   // Ensures directory exists
   await fs.mkdir(dest, {recursive: true});
 
@@ -352,11 +354,17 @@ export async function deploy(
   config
 ) {
 
+  // Check if app looks good
+  await getApp({cwd, src});
+
   await buildApp(cwd, src, dest, config);
   logger.info(`App built ${dest}`);
 
   const destPaths = dest.split('/');
   const zipFilePath = path.resolve(dest, `${destPaths[destPaths.length - 1]}.tar.gz`);
+  if (fss.existsSync(zipFilePath)) {
+    fss.unlinkSync(zipFilePath);
+  }
   await zipDirectory(dest, zipFilePath);
 
   logger.info('Project zipped successfully.', zipFilePath);

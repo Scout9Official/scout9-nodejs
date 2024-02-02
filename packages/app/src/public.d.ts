@@ -129,6 +129,8 @@ export interface Conversation {
 }
 
 export interface Message {
+  id: string;
+
   role: 'customer' | 'agent' | 'system';
   content: string;
   name?: string;

@@ -129,6 +129,8 @@ declare module '@scout9/app' {
   }
 
   export interface Message {
+	id: string;
+
 	role: 'customer' | 'agent' | 'system';
 	content: string;
 	name?: string;
