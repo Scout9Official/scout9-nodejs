@@ -64,6 +64,9 @@ declare module '@scout9/app' {
 	}
   }
 
+  /**
+   * Entity config the user provides
+   */
   export interface EntityBuildConfig {
 	definitions?: {
 	  utterance?: string;
@@ -82,11 +85,24 @@ declare module '@scout9/app' {
 	}[];
   }
 
-  export type EntitiesBuildConfig = ({
+  /**
+   * What gets exported to the scout9 backend, properties are constructed by @scout/app build
+   */
+  export interface ExportedEntityBuildConfig extends EntityBuildConfig {
 	entities: string[];
 	entity: string;
-	id: string;
-  } & EntityBuildConfig)[];
+	// id: string;
+	api: {
+	  QUERY?: boolean;
+	  GET?: boolean;
+	  POST?: boolean;
+	  PUT?: boolean;
+	  PATCH?: boolean;
+	  DELETE?: boolean;
+	} | null;
+  }
+
+  export type EntitiesBuildConfig = ExportedEntityBuildConfig[];
 
   export type WorkflowBuildConfig = {
 	entities: string[];
@@ -278,8 +294,8 @@ declare module '@scout9/app' {
   export type ApiFunction<Params = Record<string, string>, Response = any> = (params: ApiFunctionParams<Params>) => Promise<EventResponse<Response>>;
   export type QueryApiFunction<Params = Record<string, string>, Response = any> = (params: ApiFunctionParams<Params>) => Promise<EventResponse<Response>>;
   export type GetApiFunction<Params = Record<string, string>, Response = any> = (params: ApiFunctionParams<Params>) => Promise<EventResponse<Response>>;
-  export type PostApiFunction<Params = Record<string, string>, Response = any> = (params: ApiFunctionParams<Params>) => Promise<EventResponse<Response>>;
-  export type PutApiFunction<Params = Record<string, string>, Response = any> = (params: ApiFunctionParams<Params>) => Promise<EventResponse<Response>>;
+  export type PostApiFunction<Params = Record<string, string>, RequestBody = any, Response = any> = (params: ApiFunctionParams<Params> & {body: Partial<RequestBody>}) => Promise<EventResponse<Response>>;
+  export type PutApiFunction<Params = Record<string, string>, RequestBody = any, Response = any> = (params: ApiFunctionParams<Params> & {body: Partial<RequestBody>}) => Promise<EventResponse<Response>>;
   export type PatchApiFunction<Params = Record<string, string>, RequestBody = any, Response = any> = (params: ApiFunctionParams<Params> & {body: Partial<RequestBody>}) => Promise<EventResponse<Response>>;
   export type DeleteApiFunction<Params = Record<string, string>, Response = any> = (params: ApiFunctionParams<Params>) => Promise<EventResponse<Response>>;
 }

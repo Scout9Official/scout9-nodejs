@@ -2508,6 +2508,50 @@ export interface EntitiesBuildConfigInner {
 /**
  *
  * @export
+ * @interface EntityApiOutput
+ */
+export interface EntityApiOutput {
+  /**
+   *
+   * @type {number}
+   * @memberof EntityApiOutput
+   */
+  'ms': number;
+  /**
+   *
+   * @type {object}
+   * @memberof EntityApiOutput
+   */
+  'data'?: object;
+}
+/**
+ *
+ * @export
+ * @interface EntityApiRequest
+ */
+export interface EntityApiRequest {
+  /**
+   *
+   * @type {string}
+   * @memberof EntityApiRequest
+   */
+  'entity': string;
+  /**
+   *
+   * @type {{ [key: string]: string; }}
+   * @memberof EntityApiRequest
+   */
+  'params': { [key: string]: string; };
+  /**
+   *
+   * @type {object}
+   * @memberof EntityApiRequest
+   */
+  'payload'?: object;
+}
+/**
+ *
+ * @export
  * @interface EntityBuildConfig
  */
 export interface EntityBuildConfig {

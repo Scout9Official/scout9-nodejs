@@ -8,9 +8,10 @@ import { Configuration, Scout9Api } from '@scout9/admin';
 import path from 'node:path';
 import fs from 'node:fs';
 import https from 'node:https';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import projectApp from './src/app.js';
 import config from './config.js';
+import { EventResponse } from '@scout9/app';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -169,6 +170,119 @@ app.post(dev ? '/dev/workflow' : '/', async (req, res) => {
     handleError(e, res);
   }
 });
+
+function isSurroundedByBrackets(str) {
+  return /^\[.*\]$/.test(str);
+}
+function resolveEntity(entity, method) {
+  const entityField = config.entities.find(e => e.entity === entity);
+  if (!entityField) {
+    throw new Error(`Invalid entity: not found`);
+  }
+  const {api, entities} = entityField;
+  if (!api && !api[method]) {
+    throw new Error(`Invalid entity: no API`);
+  }
+  if (!entities) {
+    throw new Error(`Invalid entity: no path`);
+  }
+  return entityField;
+}
+
+async function resolveEntityApi(entity, method) {
+  const paramEntity = isSurroundedByBrackets(entity);
+  if (method === 'GET' && !paramEntity) {
+    method = 'QUERY';
+  }
+  const methods = ['GET', 'UPDATE', 'QUERY', 'PUT', 'PATCH', 'DELETE'];
+  if (!methods.includes(method)) {
+    throw new Error(`Invalid method: ${method}`);
+  }
+  const {api, entities} = resolveEntity(entity, method);
+  const mod = await import(pathToFileURL( path.resolve(__dirname,`./src/entities/${entities.join('/')}/api.js`)).href)
+    .catch((e) => {
+      switch (e.code) {
+        case 'ERR_MODULE_NOT_FOUND':
+          console.error(e);
+          throw new Error(`Invalid entity: no API method`);
+        default:
+          console.error(e);
+          throw new Error(`Invalid entity: Internal system error`);
+      }
+    });
+  if (mod[method]) {
+    return mod[method];
+  }
+
+  if (method === 'QUERY' && mod["GET"]) {
+    return mod["GET"];
+  }
+
+  throw new Error(`Invalid entity: no API method`);
+
+}
+
+function extractParamsFromPath(path) {
+  const segments = path.split('/').filter(Boolean); // Split and remove empty segments
+  let params = {};
+  const dataStructure = config.entities;
+
+  // Assuming the structure starts with "/entity/"
+  segments.shift(); // remove the "entity" segment
+
+  let lastEntity;
+  let lastSegment;
+  segments.forEach(segment => {
+    const isEntity = dataStructure.some(d => d.entity === segment || d.entity === `[${segment}]`);
+    if (isEntity) {
+      lastEntity = segment;
+      lastSegment = segment;
+    } else if (lastEntity) {
+      const entityDefinition = dataStructure.find(d => {
+        const index = d.entities.indexOf(lastEntity);
+        return index > -1 && index === (d.entities.length - 2)
+      });
+      if (entityDefinition) {
+        const paramName = entityDefinition.entity.replace(/[\[\]]/g, ''); // Remove brackets to get the param name
+        params[paramName] = segment;
+        lastSegment = entityDefinition.entity;
+      }
+      lastEntity = null; // Reset for next potential entity-instance pair
+    }
+  });
+
+  return {params, lastEntity, lastSegment};
+}
+
+async function runEntityApi(req, res) {
+  try {
+    // polka doesn't support wildcards
+    const {params, lastSegment} = extractParamsFromPath(req.url);
+    const api = await resolveEntityApi(lastSegment, req.method.toUpperCase());
+    const response = await api({params, searchParams: req?.query || {}, body: req?.body || undefined})
+    if (response instanceof EventResponse && !!response.data) {
+      res.writeHead(response.status || 200, {'Content-Type': 'application/json'});
+      res.end(JSON.stringify(response.data));
+    } else {
+      throw new Error(`Invalid response: not an EventResponse`);
+    }
+  } catch (e) {
+    console.error(e);
+    res.writeHead(500, {'Content-Type': 'application/json'});
+    res.end(JSON.stringify({error: e.message}));
+  }
+}
+
+app.get('/entity/:entity', runEntityApi);
+app.put('/entity/:entity', runEntityApi);
+app.patch('/entity/:entity', runEntityApi);
+app.post('/entity/:entity', runEntityApi);
+app.delete('/entity/:entity', runEntityApi);
+app.get('/entity/:entity/*', runEntityApi);
+app.put('/entity/:entity/*', runEntityApi);
+app.patch('/entity/:entity/*', runEntityApi);
+app.post('/entity/:entity/*', runEntityApi);
+app.delete('/entity/:entity/*', runEntityApi);
 
 
 // For local development: parse a message

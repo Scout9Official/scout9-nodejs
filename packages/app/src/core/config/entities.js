@@ -1,5 +1,6 @@
 import { globSync } from 'glob';
 import path from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import {
   entitiesRootProjectConfigurationSchema,
   entityApiConfigurationSchema,
@@ -12,10 +13,7 @@ async function loadEntityApiConfig(cwd, filePath) {
   const dir = path.dirname(filePath);
   const extension = path.extname(filePath);
   const apiFilePath = path.resolve(dir, `api${extension}`);
-  const root = cwd.split('/').pop();
-  const x = apiFilePath.replace(cwd, '').split('/').slice(1).join('/');
-
-  const mod = await requireOptionalProjectFile(x);
+  const mod = await requireOptionalProjectFile(apiFilePath);
 
   if (mod) {
     const config = {};
@@ -94,7 +92,7 @@ export default async function loadEntitiesConfig(
     const entityProjectConfig = {
       ...entityConfig,
       entity: parents[0],
-      entities: parents,
+      entities: parents.reverse(),
       api
     };
     entityRootProjectConfigurationSchema.parse(entityProjectConfig);

@@ -1,1 +1,2 @@
-export * from './crm.js';
+import DefaultCRM from './crm.js';
+export default DefaultCRM;

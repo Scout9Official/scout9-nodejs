@@ -37,7 +37,7 @@ export default async function loadWorkflowsConfig(
       /** @type {WorkflowBuildConfig} */
       const workflowConfig = {
         entity: parents[0],
-        entities: parents,
+        entities: parents.reverse(),
       }
       WorkflowConfigurationSchema.parse(workflowConfig);
 

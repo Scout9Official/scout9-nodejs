@@ -14,11 +14,14 @@ export async function requireProjectFile(filePath) {
 }
 
 export async function requireOptionalProjectFile(filePath) {
-  try {
-    return importFile(filePath).catch(() => null);
-  } catch (e) {
-    return null;
-  }
+  return importFile(filePath).catch((e) => {
+    switch (e.code) {
+      case 'ERR_MODULE_NOT_FOUND':
+        return null;
+      default:
+        throw e;
+    }
+  });
 }
 
 

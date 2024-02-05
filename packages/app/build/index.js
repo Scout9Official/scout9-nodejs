@@ -2,7 +2,7 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-var index = require('./index-aa9766fa.js');
+var index = require('./index-a30671e6.js');
 require('fs');
 require('events');
 require('path');
