@@ -27,7 +27,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.toQuery = void 0;
+exports.Scout9Admin = exports.toQuery = void 0;
 __exportStar(require("./api"), exports);
 __exportStar(require("./configuration"), exports);
 __exportStar(require("./webhooks"), exports);
@@ -60,9 +60,9 @@ async function sendMessage(_scout9, input) {
 function resolve(res) {
     return res.data;
 }
-function default_1(apiKey) {
-    const configuration = new configuration_1.Configuration({ apiKey });
-    const scout9 = new api_1.Scout9Api(configuration);
+function Scout9Admin(apiKey, basePath, axiosInstance) {
+    const configuration = new configuration_1.Configuration({ apiKey, basePath });
+    const scout9 = new api_1.Scout9Api(configuration, basePath, axiosInstance);
     return {
         app: {
             run: async (event) => scout9.runPlatform(event),
@@ -75,6 +75,8 @@ function default_1(apiKey) {
                 }
             }
         },
+        parse: scout9.parse,
+        generate: scout9.generate,
         agents: {
             retrieve: async (id) => scout9.agent(id).then((resolve)),
             list: async (query) => scout9.agents((0, exports.toQuery)(query)).then((resolve)),
@@ -169,4 +171,5 @@ function default_1(apiKey) {
         v1: scout9
     };
 }
-exports.default = default_1;
+exports.Scout9Admin = Scout9Admin;
+exports.default = Scout9Admin;

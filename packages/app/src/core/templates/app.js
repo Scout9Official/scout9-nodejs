@@ -5,18 +5,18 @@ import bodyParser from 'body-parser';
 import colors from 'kleur';
 import { config as dotenv } from 'dotenv';
 import { Configuration, Scout9Api } from '@scout9/admin';
+import { EventResponse } from '@scout9/app';
 import path from 'node:path';
 import fs from 'node:fs';
 import https from 'node:https';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import projectApp from './src/app.js';
 import config from './config.js';
-import { EventResponse } from '@scout9/app';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const dev = process.env.DEV_MODE === "true" || process.env.TEST_MODE === "true";
+const dev = process.env.DEV_MODE === 'true' || process.env.TEST_MODE === 'true';
 
 class ServerCache {
   constructor(filePath = path.resolve(__dirname, './server.cache.json')) {
@@ -67,8 +67,6 @@ const configuration = new Configuration({
 const scout9 = new Scout9Api(configuration);
 const cache = new ServerCache();
 cache.reset();
-
-
 
 
 const handleError = (e, res = undefined) => {
@@ -174,6 +172,7 @@ app.post(dev ? '/dev/workflow' : '/', async (req, res) => {
 function isSurroundedByBrackets(str) {
   return /^\[.*\]$/.test(str);
 }
+
 function resolveEntity(entity, method) {
   const entityField = config.entities.find(e => e.entity === entity);
   if (!entityField) {
@@ -199,10 +198,11 @@ async function resolveEntityApi(entity, method) {
     throw new Error(`Invalid method: ${method}`);
   }
   const {api, entities} = resolveEntity(entity, method);
-  const mod = await import(pathToFileURL( path.resolve(__dirname,`./src/entities/${entities.join('/')}/api.js`)).href)
+  const mod = await import(pathToFileURL(path.resolve(__dirname, `./src/entities/${entities.join('/')}/api.js`)).href)
     .catch((e) => {
       switch (e.code) {
         case 'ERR_MODULE_NOT_FOUND':
+        case 'MODULE_NOT_FOUND':
           console.error(e);
           throw new Error(`Invalid entity: no API method`);
         default:
@@ -214,8 +214,8 @@ async function resolveEntityApi(entity, method) {
     return mod[method];
   }
 
-  if (method === 'QUERY' && mod["GET"]) {
-    return mod["GET"];
+  if (method === 'QUERY' && mod['GET']) {
+    return mod['GET'];
   }
 
   throw new Error(`Invalid entity: no API method`);
@@ -240,7 +240,7 @@ function extractParamsFromPath(path) {
     } else if (lastEntity) {
       const entityDefinition = dataStructure.find(d => {
         const index = d.entities.indexOf(lastEntity);
-        return index > -1 && index === (d.entities.length - 2)
+        return index > -1 && index === (d.entities.length - 2);
       });
       if (entityDefinition) {
         const paramName = entityDefinition.entity.replace(/[\[\]]/g, ''); // Remove brackets to get the param name
@@ -259,7 +259,11 @@ async function runEntityApi(req, res) {
     // polka doesn't support wildcards
     const {params, lastSegment} = extractParamsFromPath(req.url);
     const api = await resolveEntityApi(lastSegment, req.method.toUpperCase());
-    const response = await api({params, searchParams: req?.query || {}, body: req?.body || undefined})
+    const response = await api({
+      params,
+      searchParams: req?.query || {}, body: req?.body || undefined,
+      id: params.id
+    });
     if (response instanceof EventResponse && !!response.data) {
       res.writeHead(response.status || 200, {'Content-Type': 'application/json'});
       res.end(JSON.stringify(response.data));
@@ -283,7 +287,6 @@ app.put('/entity/:entity/*', runEntityApi);
 app.patch('/entity/:entity/*', runEntityApi);
 app.post('/entity/:entity/*', runEntityApi);
 app.delete('/entity/:entity/*', runEntityApi);
-
 
 // For local development: parse a message
 if (dev) {
@@ -416,7 +419,7 @@ app.listen(process.env.PORT || 8080, err => {
 /_/  |_\\__,_/\\__/\\____/  /_/ |_|\\___/ .___/_/\\__, /  (_)      
                                    /_/      /____/            
   
-`
+`;
   const protocol = process.env.PROTOCOL || 'http';
   const host = process.env.HOST || 'localhost';
   const port = process.env.PORT || 8080;
@@ -424,7 +427,8 @@ app.listen(process.env.PORT || 8080, err => {
   if (dev) {
     console.log(colors.bold(colors.green(art_scout9)));
     console.log(colors.bold(colors.cyan(art_auto_reply)));
-    console.log(`${colors.grey(`${colors.cyan('>')} Running ${colors.bold(colors.white('Scout9'))}`)} ${colors.bold(colors.red(colors.bgBlack('auto-reply')))} ${colors.grey('dev environment on')} ${fullUrl}`);
+    console.log(`${colors.grey(`${colors.cyan('>')} Running ${colors.bold(colors.white('Scout9'))}`)} ${colors.bold(
+      colors.red(colors.bgBlack('auto-reply')))} ${colors.grey('dev environment on')} ${fullUrl}`);
   } else {
     console.log(`Running Scout9 auto-reply app on ${fullUrl}`);
   }
@@ -434,11 +438,13 @@ app.listen(process.env.PORT || 8080, err => {
   }
 
   if (!process.env.SCOUT9_API_KEY) {
-    console.log(colors.red('Missing SCOUT9_API_KEY environment variable, your auto reply application may not work without it.'));
+    console.log(colors.red(
+      'Missing SCOUT9_API_KEY environment variable, your auto reply application may not work without it.'));
   }
 
   if (process.env.SCOUT9_API_KEY === '<insert-scout9-api-key>') {
-    console.log(`${colors.red('SCOUT9_API_KEY has not been set in your .env file.')} ${colors.grey('You can find your API key in the Scout9 dashboard.')} ${colors.bold(colors.cyan('https://scout9.com'))}`);
+    console.log(`${colors.red('SCOUT9_API_KEY has not been set in your .env file.')} ${colors.grey(
+      'You can find your API key in the Scout9 dashboard.')} ${colors.bold(colors.cyan('https://scout9.com'))}`);
   }
 
 });

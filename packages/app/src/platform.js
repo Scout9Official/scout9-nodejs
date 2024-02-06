@@ -4,6 +4,9 @@ import { build as _build, deploy as _deploy, run as _run, runConfig as _runConfi
 import { loadConfig, loadEnvConfig } from './core/config/index.js';
 import { coalesceToError, ProgressLogger } from './utils/index.js';
 
+/**
+ * Collection of Scout9 Platform commands
+ */
 export const Scout9Platform = {
   /**
    * @param {{cwd: string; mode: 'development' | 'production'; src: string}} - build options
@@ -122,6 +125,8 @@ export const Scout9Platform = {
       throw e;
     }
   },
+
+
   handleError: function (e) {
     const error = coalesceToError(e);
 

@@ -27,6 +27,9 @@ export const sendEvent = run;
  * @returns {EventResponse<T>}
  */
 export function json(data, init) {
+  if (data instanceof Promise) {
+    throw new Error(`json() does not expect a Promise. Use json(await promise) instead`);
+  }
   // TODO deprecate this in favour of `Response.json` when it's
   // more widely supported
   const body = JSON.stringify(data);

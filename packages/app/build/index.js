@@ -2,7 +2,7 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-var index = require('./index-a30671e6.js');
+var index = require('./index-1f6236cf.js');
 require('fs');
 require('events');
 require('path');
@@ -44,5 +44,6 @@ exports.createMockCustomer = index.createMockCustomer;
 exports.createMockMessage = index.createMockMessage;
 exports.createMockWorkflowEvent = index.createMockWorkflowEvent;
 exports.json = index.json;
+exports.mimicCustomerMessage = index.mimicCustomerMessage;
 exports.run = index.run;
 exports.sendEvent = index.sendEvent;

@@ -142,6 +142,17 @@ declare module '@scout9/app' {
 	  subject?: string;
 	  platformEmailThreadId?: string;
 	};
+	locked?: boolean;
+	lockAttempts?: number;
+	/**
+	 * Detected intent
+	 */
+	intent?: string | null;
+
+	/**
+	 * Confidence score of the assigned intent
+	 */
+	intentScore?: number | null;
   }
 
   export interface Message {
@@ -160,12 +171,12 @@ declare module '@scout9/app' {
 	/**
 	 * Detected intent
 	 */
-	intent: string | null;
+	intent?: string | null;
 
 	/**
 	 * Confidence score of the assigned intent
 	 */
-	intentScore: number | null;
+	intentScore?: number | null;
   }
 
   export interface Customer {
@@ -244,7 +255,9 @@ declare module '@scout9/app' {
 	resetIntent?: boolean;
   }
 
-  export type WorkflowResponse<Type> = WorkflowResponseSlot<Type> | WorkflowResponseSlot<Type>[];
+  export type WorkflowResponse<Type = any> = WorkflowResponseSlot<Type> | WorkflowResponseSlot<Type>[];
+
+  export type WorkflowFunction<Type = any> = (event: WorkflowEvent) => Promise<WorkflowResponse<Type>> | WorkflowResponse<Type>;
 
   export function json<Type = any>(data: Type, init?: ResponseInit): Promise<EventResponse<Type>>;
 
@@ -291,6 +304,7 @@ declare module '@scout9/app' {
 	searchParams: {[key: string]: string | string[] };
 	params: Params;
   }
+  // export type ApiEntityFunctionParams<Params = Record<string, string>> = ApiFunctionParams<Params> & {id: string};
   export type ApiFunction<Params = Record<string, string>, Response = any> = (params: ApiFunctionParams<Params>) => Promise<EventResponse<Response>>;
   export type QueryApiFunction<Params = Record<string, string>, Response = any> = (params: ApiFunctionParams<Params>) => Promise<EventResponse<Response>>;
   export type GetApiFunction<Params = Record<string, string>, Response = any> = (params: ApiFunctionParams<Params>) => Promise<EventResponse<Response>>;
@@ -298,6 +312,29 @@ declare module '@scout9/app' {
   export type PutApiFunction<Params = Record<string, string>, RequestBody = any, Response = any> = (params: ApiFunctionParams<Params> & {body: Partial<RequestBody>}) => Promise<EventResponse<Response>>;
   export type PatchApiFunction<Params = Record<string, string>, RequestBody = any, Response = any> = (params: ApiFunctionParams<Params> & {body: Partial<RequestBody>}) => Promise<EventResponse<Response>>;
   export type DeleteApiFunction<Params = Record<string, string>, Response = any> = (params: ApiFunctionParams<Params>) => Promise<EventResponse<Response>>;
+
+
+  export type mimicCustomerMessage = (input: {
+	message: string;
+	messages?: Message[];
+	workflowFn: WorkflowFunction;
+	customer?: Customer;
+	context?: any;
+	/**
+	 * Agent or persona id
+	 */
+	persona?: string;
+
+	conversation?: Conversation;
+
+	cwd?: string;
+	src?: string;
+	mode?: 'development' | 'production';
+  }) => Promise<{
+	messages: Message[];
+	conversation: Conversation;
+	context: any;
+  }>
 }
 
 //# sourceMappingURL=index.d.ts.map

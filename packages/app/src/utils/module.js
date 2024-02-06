@@ -17,6 +17,7 @@ export async function requireOptionalProjectFile(filePath) {
   return importFile(filePath).catch((e) => {
     switch (e.code) {
       case 'ERR_MODULE_NOT_FOUND':
+      case 'MODULE_NOT_FOUND':
         return null;
       default:
         throw e;

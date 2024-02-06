@@ -13,7 +13,7 @@
 export * from './api';
 export * from './configuration';
 export * from './webhooks';
-import { AxiosResponse } from 'axios';
+import { AxiosInstance, AxiosResponse } from 'axios';
 import type { Agent, Conversation, Customer, ForwardRequest, ForwardResponse, GenerateRequestOneOf, Message, MessageCreateRequestRoleEnum, MessageCreateResponse, OperationBulkResponse, OperationDocResponse, PurchasePhoneRequest, PurchasePhoneResponse, WorkflowEvent, PurposeEnum, ConversationEnvironment, ListFilesResponseInner } from './api';
 import { Scout9Api } from './api';
 export type WhereFilterOp = '<' | '<=' | '==' | '!=' | '>=' | '>' | 'array-contains' | 'in' | 'not-in' | 'array-contains-any';
@@ -54,7 +54,7 @@ export type MessageInputNewConversation = {
     secondsDelay?: number;
 };
 export type MessageInput = MessageInputExistingConversation | MessageInputNewConversation;
-export default function (apiKey: string): {
+export declare function Scout9Admin(apiKey: string, basePath?: string, axiosInstance?: AxiosInstance): {
     app: {
         run: (event: WorkflowEvent) => Promise<AxiosResponse<import("./api").WorkflowResponse, any>>;
         config: () => Promise<any>;
@@ -66,6 +66,8 @@ export default function (apiKey: string): {
             };
         };
     };
+    parse: (parseRequest: import("./api").ParseRequest, options?: import("axios").AxiosRequestConfig<any> | undefined) => Promise<AxiosResponse<import("./api").ParseResponse, any>>;
+    generate: (generateRequest: import("./api").GenerateRequest, options?: import("axios").AxiosRequestConfig<any> | undefined) => Promise<AxiosResponse<import("./api").GenerateResponse, any>>;
     agents: {
         retrieve: (id: string) => Promise<Agent | null>;
         list: (query: QueryPayload) => Promise<(Agent & {
@@ -128,3 +130,4 @@ export default function (apiKey: string): {
     };
     v1: Scout9Api;
 };
+export default Scout9Admin;

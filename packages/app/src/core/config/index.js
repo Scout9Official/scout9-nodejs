@@ -29,7 +29,7 @@ export function loadEnvConfig({cwd = process.cwd(), cb = (msg) => {}} = {}) {
 }
 
 /**
- * @param {{cwd: string; src: string; logger: ProgressLogger; cb: (message: string) => void}} - build options
+ * @param {{cwd: string; src: string; logger?: ProgressLogger; cb?: (message: string) => void}} - build options
  * @returns {Promise<Scout9ProjectBuildConfig>}
  */
 export async function loadConfig({cwd = process.cwd(), src = 'src', logger = new ProgressLogger(), cb = (msg) => {}} = {}) {

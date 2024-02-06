@@ -17,7 +17,7 @@ export * from './api';
 export * from './configuration';
 export * from './webhooks';
 
-import { AxiosResponse } from 'axios';
+import { AxiosInstance, AxiosResponse } from 'axios';
 import type {
   Agent,
   Conversation,
@@ -123,11 +123,10 @@ function resolve<Type = any>(res: AxiosResponse<Type, any>) {
 }
 
 
-export default function (apiKey: string) {
-  const configuration = new Configuration({apiKey});
-  const scout9 = new Scout9Api(configuration);
+export function Scout9Admin(apiKey: string, basePath?: string, axiosInstance?: AxiosInstance) {
+  const configuration = new Configuration({apiKey, basePath});
+  const scout9 = new Scout9Api(configuration, basePath, axiosInstance);
   return {
-
     app: {
       run: async (event: WorkflowEvent) => scout9.runPlatform(event),
       config: async () => scout9.runPlatformConfig().then(resolve<any>),
@@ -139,6 +138,8 @@ export default function (apiKey: string) {
         }
       }
     },
+    parse: scout9.parse,
+    generate: scout9.generate,
 
     agents: {
       retrieve: async (id: string) => scout9.agent(id).then(resolve<Agent | null>),
@@ -253,3 +254,5 @@ export default function (apiKey: string) {
     v1: scout9
   };
 }
+
+export default Scout9Admin;
