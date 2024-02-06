@@ -1,4 +1,4 @@
-import { Scout9Admin } from '@scout9/admin';
+import { Scout9Admin, Scout9Api, Configuration } from '@scout9/admin';
 import { createMockConversation } from './mocks.js';
 import { loadConfig } from '../core/config/index.js';
 
@@ -38,7 +38,10 @@ export async function mimicCustomerMessage(
   callback = (msg) => {}
 ) {
   const config = await loadConfig({cwd, src, mode});
-  const scout9 = Scout9Admin(process.env.SCOUT9_API_KEY);
+  const configuration = new Configuration({ apiKey: process.env.SCOUT9_API_KEY });
+  const scout9 = new Scout9Api(configuration);
+  // const config = await loadConfig({cwd, src, mode});
+  // const scout9 = Scout9Admin(process.env.SCOUT9_API_KEY);
   if (!conversation) {
     conversation = createMockConversation();
   }
