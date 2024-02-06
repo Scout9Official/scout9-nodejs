@@ -264,7 +264,7 @@ async function runEntityApi(req, res) {
       searchParams: req?.query || {}, body: req?.body || undefined,
       id: params.id
     });
-    if (response instanceof EventResponse && !!response.data) {
+    if (response instanceof EventResponse && !!response.body) {
       res.writeHead(response.status || 200, {'Content-Type': 'application/json'});
       res.end(JSON.stringify(response.data));
     } else {
