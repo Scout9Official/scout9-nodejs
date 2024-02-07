@@ -13,7 +13,6 @@ export class Scout9Test {
    * @param {any | undefined} context - prior conversation context
    * @param {string | undefined} persona id to use
    * @param {import('@scout9/app').Conversation | undefined} conversation - existing conversation
-   * @param {import('@scout9/app').Message[] | undefined} messages - previous messages
    * @param {string | undefined} cwd
    * @param {string | undefined} src
    * @param {string | undefined} mode
@@ -31,9 +30,9 @@ export class Scout9Test {
     mode: 'production'
   }) {
     this.messages = [];
-    this.cwd = cwd;
-    this.src = src;
-    this.mode = mode;
+    this._cwd = cwd;
+    this._src = src;
+    this._mode = mode;
     this.context = context || {};
     this.conversation = createMockConversation();
     if (!customer) {
@@ -53,30 +52,29 @@ export class Scout9Test {
   }
 
   async load() {
-    const paths = globSync(`${this.src}/app.{ts,cjs,mjs,js}`, {cwd: this.cwd, absolute: true});
+    const paths = globSync(`${this._src}/app.{ts,cjs,mjs,js}`, {cwd: this._cwd, absolute: true});
     if (paths.length === 0) {
-      throw new Error(`Missing main project entry file ${this.src}/app.{js|ts|cjs|mjs}`);
+      throw new Error(`Missing main project entry file ${this._src}/app.{js|ts|cjs|mjs}`);
     } else if (paths.length > 1) {
-      throw new Error(`Multiple main project entry files found ${this.src}/app.{js|ts|cjs|mjs}`);
+      throw new Error(`Multiple main project entry files found ${this._src}/app.{js|ts|cjs|mjs}`);
     }
     const [appFilePath] = paths;
     await requireProjectFile(appFilePath)
       .then(mod => {
-        this.workflowFn = mod.default;
+        this._workflowFn = mod.default;
       });
-    await loadConfig({cwd: this.cwd, src: this.src, mode: this.mode})
+    await loadConfig({cwd: this._cwd, src: this._src, mode: this._mode})
       .then((_config) => {
-        this.config = _config;
-        this.configuration = new Configuration({apiKey: process.env.SCOUT9_API_KEY});
-        this.scout9 = new Scout9Api(this.configuration);
+        this._config = _config;
+        this._scout9 = new Scout9Api(new Configuration({apiKey: process.env.SCOUT9_API_KEY}));
         if (!this._personaId) {
-          this._personaId = (this.config.persona || this.config.agents)?.[0]?.id;
+          this._personaId = (this._config.persona || this._config.agents)?.[0]?.id;
           if (!this._personaId) {
             throw new Error(`No persona found in config, please specify a persona id`);
           }
         }
         this.conversation.$agent = this._personaId;
-        this.persona = (this.config.persona || this.config.agents).find(p => p.id === this._personaId);
+        this.persona = (this._config.persona || this._config.agents).find(p => p.id === this._personaId);
         this.context.agent = this.persona;
       });
     this._loaded = true;
@@ -112,10 +110,10 @@ export class Scout9Test {
       await this.load();
     }
     let _message;
-    const parsePayload = await this.scout9.parse({
+    const parsePayload = await this._scout9.parse({
       message,
       language,
-      entities: this.config.entities
+      entities: this._config.entities
     }).then((_res => _res.data));
     if (!this.messages.find(m => m.content === message)) {
       _message =  {
@@ -164,7 +162,7 @@ export class Scout9Test {
     if (!this._loaded) {
       await this.load();
     }
-    const slots = await this.workflowFn({
+    const slots = await this._workflowFn({
       messages: this.messages,
       conversation: this.conversation,
       context: this.context,
@@ -250,9 +248,10 @@ export class Scout9Test {
           const index = this.messages.findIndex(m => m.id === instructionId);
           if (index > -1) {
             this.messages.splice(index, 1);
-          } else {
-            console.log('instruction not found', instructionId);
           }
+          // else {
+          //   console.log('instruction not found', instructionId);
+          // }
         }
       }
 
@@ -305,12 +304,12 @@ export class Scout9Test {
       throw new Error('Conversation is locked, cannot generate a response');
     }
     try {
-      const generatePayload = await this.scout9.generate({
+      const generatePayload = await this._scout9.generate({
         messages: this.messages,
         persona: this.persona,
         context: this.context,
-        llm: this.config.llm,
-        pmt: this.config.pmt
+        llm: this._config.llm,
+        pmt: this._config.pmt
       }).then((_res => _res.data));
 
       _generate = generatePayload;
