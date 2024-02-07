@@ -8,9 +8,9 @@ import path from 'node:path';
     process.env.DEV_MODE = "true";
     await Scout9Platform.build({cwd: process.cwd(), mode: 'development', src: 'src-test', dest: dest});
 
-    const modulePath = fileURLToPath(import.meta.url);
-    const cwd = path.dirname(modulePath);
-    const filePath = path.join(cwd, dest, 'app.js');
-    await import(pathToFileURL(filePath));
+    // const modulePath = fileURLToPath(import.meta.url);
+    // const cwd = path.dirname(modulePath);
+    // const filePath = path.join(cwd, dest, 'app.js');
+    // await import(pathToFileURL(filePath));
     // await import(`${process.cwd()}/${dest}/app.js`);
 })();

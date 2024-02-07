@@ -52,7 +52,7 @@ class ServerCache {
   }
 
   _save(override) {
-    fs.writeFileSync(this.filePath, JSON.stringify(override || this._cache || {tested: false}, null, 2));
+    fs.writeFileSync(this.filePath, JSON.stringify(override || this._cache || {tested: false}));
   }
 }
 
@@ -87,6 +87,8 @@ const handleError = (e, res = undefined) => {
     }
     if (response?.data) {
       message = response.data;
+    } else if (response?.body) {
+      message = response.body;
     }
   }
   console.log(colors.red(`${colors.bold(`${code} Error`)}: ${message}`));
@@ -266,7 +268,7 @@ async function runEntityApi(req, res) {
     });
     if (response instanceof EventResponse && !!response.body) {
       res.writeHead(response.status || 200, {'Content-Type': 'application/json'});
-      res.end(JSON.stringify(response.data));
+      res.end(JSON.stringify(response.body));
     } else {
       throw new Error(`Invalid response: not an EventResponse`);
     }

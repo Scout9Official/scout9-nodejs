@@ -1,11 +1,10 @@
 import { globSync } from 'glob';
 import path from 'node:path';
-import { fileURLToPath, pathToFileURL } from 'node:url';
 import {
-  entitiesRootProjectConfigurationSchema,
-  entityApiConfigurationSchema,
-  entityConfigurationSchema,
-  entityRootProjectConfigurationSchema
+    entitiesRootProjectConfigurationSchema,
+    entityApiConfigurationSchema,
+    entityConfigurationSchema,
+    entityRootProjectConfigurationSchema
 } from '../../runtime/index.js';
 import { checkVariableType, requireOptionalProjectFile, requireProjectFile } from '../../utils/index.js';
 
@@ -96,8 +95,33 @@ export default async function loadEntitiesConfig(
       api
     };
     entityRootProjectConfigurationSchema.parse(entityProjectConfig);
-
-    config.push(entityProjectConfig);
+    const existingIndex = config.findIndex(c => c.entity === entityProjectConfig.entity);
+    if (existingIndex > -1) {
+      if (config[existingIndex].entities.length !== entityProjectConfig.entities.length) {
+        throw new Error(`Invalid entity configuration at "${filePath}", entity name mismatch`);
+      }
+        config[existingIndex] = {
+          ...config[existingIndex],
+          definitions: [
+              ...(config[existingIndex].definitions),
+                ...(entityProjectConfig.definitions || [])
+          ],
+          training: [
+            ...(config[existingIndex].training),
+            ...(entityProjectConfig.training || [])
+          ],
+          tests: [
+            ...(config[existingIndex].tests),
+            ...(entityProjectConfig.tests || [])
+          ],
+            api: (!config[existingIndex].api && !entityProjectConfig.api) ? null : {
+            ...(config[existingIndex].api || {}),
+            ...(entityProjectConfig.api || {})
+          }
+        }
+    } else {
+      config.push(entityProjectConfig);
+    }
   }
 
   if (!config.some(c => c.entity === 'customers')) {

@@ -282,6 +282,9 @@ export class EventResponse<Type = any> {
    */
   body: object;
 
+  // Alias to body
+  readonly data: object;
+
   /**
    * Initialization options for the response.
    */

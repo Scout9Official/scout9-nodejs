@@ -1,7 +1,7 @@
 {
   "name": "@scout9/app",
-  "version": "1.0.0-alpha.0.1.46",
-  "description": "Build and deploy your Scout9 app for SMS auto reply",
+  "version": "1.0.0-alpha.0.1.49",
+  "description": "Build and deploy your Scout9 app for SMS auto replies",
   "publishConfig": {
     "access": "public"
   },
@@ -60,7 +60,7 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "@scout9/admin": "^1.0.0-alpha.0.0.28",
+    "@scout9/admin": "^1.0.0-alpha.0.0.30",
     "@scout9/crm": "^1.0.0-alpha.0.0.4",
     "archiver": "^6.0.1",
     "body-parser": "^1.20.2",
@@ -68,6 +68,7 @@
     "decompress": "^4.2.1",
     "dotenv": "^16.3.1",
     "glob": "^10.3.10",
+    "graphql-request": "^6.1.0",
     "kleur": "^4.1.5",
     "log-update": "^6.0.0",
     "moment": "^2.29.4",

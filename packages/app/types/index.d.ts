@@ -282,6 +282,9 @@ declare module '@scout9/app' {
 	 */
 	body: object;
 
+	// Alias to body
+	readonly data: object;
+
 	/**
 	 * Initialization options for the response.
 	 */

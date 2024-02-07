@@ -178,6 +178,11 @@ export class EventResponse {
   get response() {
     return Response.json(this.body, this.init);
   }
+
+  get data() {
+    return this.body;
+  }
+
 }
 
 
