@@ -27,10 +27,7 @@ declare module '@scout9/app' {
 		| 'gpt-3.5-turbo-0613'
 		| 'gpt-3.5-turbo-16k-0613';
 	} | {
-	  engine: 'llama',
-	  model: string;
-	} | {
-	  engine: 'bard',
+	  engine: 'bard' | 'gemini' | 'llama',
 	  model: string;
 	},
 	/**

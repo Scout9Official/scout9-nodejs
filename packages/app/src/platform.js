@@ -50,7 +50,8 @@ export const Scout9Platform = {
       logger.log(`Deploying project...`);
       const {contacts} = await _deploy({cwd, src, dest, logger}, config);
       messages.map(logger.info);
-      logger.success(`Deploy Complete\n\nApplication will be live for the following channels in a few moments:\n${contacts}`);
+      logger.success(`Deploy Complete\n\n`);
+      logger.write(`\tApplication will be live for the following channels in a few moments:\n${contacts}`);
       logger.done();
       return config;
     } catch (e) {

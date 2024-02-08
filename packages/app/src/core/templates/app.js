@@ -62,7 +62,7 @@ const configFilePath = path.resolve(process.cwd(), './.env');
 dotenv({path: configFilePath});
 
 const configuration = new Configuration({
-  apiKey: process.env.SCOUT9_API_KEY
+  apiKey: process.env.SCOUT9_API_KEY || ''
 });
 const scout9 = new Scout9Api(configuration);
 const cache = new ServerCache();
@@ -439,7 +439,7 @@ app.listen(process.env.PORT || 8080, err => {
     console.log(colors.red('Missing .env file, your auto reply application may not work without it.'));
   }
 
-  if (!process.env.SCOUT9_API_KEY) {
+  if (dev && !process.env.SCOUT9_API_KEY) {
     console.log(colors.red(
       'Missing SCOUT9_API_KEY environment variable, your auto reply application may not work without it.'));
   }
