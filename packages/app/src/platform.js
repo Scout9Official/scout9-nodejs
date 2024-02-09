@@ -20,7 +20,7 @@ export const Scout9Platform = {
       logger.success('Config Loaded');
       logger.log(`Syncing project...`);
       const result = await _sync({cwd, src, logger}, config);
-      messages.map(logger.info);
+      messages.map((m) => logger.info(m));
       logger.success('Sync Complete');
       logger.done();
       logger.info()
@@ -49,7 +49,7 @@ export const Scout9Platform = {
       // await _build({cwd, src, dest, mode, logger}, config);
       logger.log(`Deploying project...`);
       const {contacts} = await _deploy({cwd, src, dest, logger}, config);
-      messages.map(logger.info);
+      messages.map((m) => logger.info(m));
       logger.success(`Deploy Complete\n\n`);
       logger.write(`\tApplication will be live for the following channels in a few moments:\n${contacts}`);
       logger.done();
@@ -67,13 +67,13 @@ export const Scout9Platform = {
     const logger = new ProgressLogger();
     const messages = [];
     try {
-      logger.log(`Loading config...`);
+      logger.log(`Loading test data...`);
       const config = await loadConfig({cwd, src, logger, cb: (m) => messages.push(m)});
-      logger.success('Config Loaded');
+      logger.success('Test data loaded');
       logger.log(`Testing project...`);
       await _test({cwd, src, dest, logger}, config);
-      messages.map(logger.info);
-      logger.success(`Test Complete`);
+      messages.map((m) => logger.info(m));
+      logger.success(`Test complete`);
       logger.done();
       return config;
     } catch (e) {
@@ -94,7 +94,7 @@ export const Scout9Platform = {
       logger.success('Config Loaded');
       logger.log(`Building project...`);
       await _build({cwd, src, dest, mode, logger}, config);
-      messages.map(logger.info);
+      messages.map((m) => logger.info(m));
       logger.success('Build Complete');
       logger.done();
       return config;
