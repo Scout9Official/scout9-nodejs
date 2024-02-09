@@ -83,7 +83,7 @@ prog
 
 prog
     .command('deploy')
-    .describe('Deploy your scout9 auto reply app')
+    .describe('Deploy your scout9 app')
     .option('--mode', 'Specify a mode for loading environment variables', 'production')
     .option('--src', 'Project source code folder', 'src')
     .option('--dest', 'Project local destination', './build')
@@ -100,6 +100,26 @@ prog
             handle_error(e);
         }
     });
+
+prog
+  .command('test')
+  .describe('Test your scout9 app')
+  .option('--mode', 'Specify a mode for loading environment variables', 'production')
+  .option('--src', 'Project source code folder', 'src')
+  .option('--dest', 'Project local destination', './build')
+  .action(async ({mode, src, dest}) => {
+    if (!fs.existsSync('.env')) {
+      console.warn(`Missing ${path.resolve('.env')} — skipping`);
+      return;
+    }
+    mode = coerceMode(mode);
+    try {
+      await Scout9Platform.test({cwd: process.cwd(), mode: coerceMode(mode), src, dest});
+      process.exit(0);
+    } catch (e) {
+      handle_error(e);
+    }
+  });
 
 prog
     .command('dev')

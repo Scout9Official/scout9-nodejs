@@ -5,12 +5,11 @@
 export default function Agents() {
   return [
     {
-      id: 'agent-1',
+      id: 'persona-1',
       firstName: 'Agent',
       lastName: 'Smith',
       forwardPhone: '+15555555555',
       forwardEmail: '',
-      programmablePhoneNumber: '+15555555555',
     }
   ];
 }

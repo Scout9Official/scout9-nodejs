@@ -6,6 +6,7 @@
     "deploy": "scout9 deploy",
     "build": "scout9 build",
     "dev": "scout9 dev",
+    "test": "scout9 test",
     "start": "npm run dev"
   },
   "dependencies": {

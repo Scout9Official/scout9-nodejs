@@ -1,6 +1,6 @@
 import colors from 'kleur';
 import { z } from 'zod';
-import { build as _build, deploy as _deploy, run as _run, runConfig as _runConfig, sync as _sync } from './core/index.js';
+import { build as _build, deploy as _deploy, run as _run, runConfig as _runConfig, sync as _sync, test as _test } from './core/index.js';
 import { loadConfig, loadEnvConfig } from './core/config/index.js';
 import { coalesceToError, ProgressLogger } from './utils/index.js';
 
@@ -52,6 +52,28 @@ export const Scout9Platform = {
       messages.map(logger.info);
       logger.success(`Deploy Complete\n\n`);
       logger.write(`\tApplication will be live for the following channels in a few moments:\n${contacts}`);
+      logger.done();
+      return config;
+    } catch (e) {
+      logger.done();
+      this.handleError(e);
+    }
+  },
+  /**
+   * Tests the project
+   * @param {{cwd: string; mode: 'development' | 'production'; src: string, dest: string}} - build options
+   */
+  test: async function ({cwd = process.cwd(), src = './src', dest = '/tmp/project', mode = 'production'} = {}) {
+    const logger = new ProgressLogger();
+    const messages = [];
+    try {
+      logger.log(`Loading config...`);
+      const config = await loadConfig({cwd, src, logger, cb: (m) => messages.push(m)});
+      logger.success('Config Loaded');
+      logger.log(`Testing project...`);
+      await _test({cwd, src, dest, logger}, config);
+      messages.map(logger.info);
+      logger.success(`Test Complete`);
       logger.done();
       return config;
     } catch (e) {
