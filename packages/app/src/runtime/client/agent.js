@@ -26,6 +26,19 @@ export const customerSchema = z.object({
 
 export const agentConfigurationSchema = z.object({
   id: zId('Agent ID', z.string({description: 'Unique ID for agent'})),
+
+  // deployed?: {
+  //   web?: string;
+  //   phone?: string;
+  //   email?: string;
+  // };
+
+  deployed: z.object({
+    web: z.string({description: 'Web URL for agent'}).optional(),
+    phone: z.string({description: 'Phone number for agent'}).optional(),
+    email: z.string({description: 'Email address for agent'}).optional()
+  }).optional(),
+
   firstName: z.string({description: 'Agent first name'}).optional(),
   lastName: z.string({description: 'Agent last name'}).optional(),
   inactive: z.boolean({description: 'Agent is inactive'}).optional(),

@@ -259,6 +259,7 @@ export default class ProjectFiles {
       relativeFileSourcePatternWithoutExe: 'entities/customers/[customer]/api',
       templateBuilder: projectTemplates.entities.customer
     });
+    this.logger = logger;
   }
 
   /**
@@ -292,7 +293,13 @@ export default class ProjectFiles {
     // Validate the config
     const result = Scout9ProjectBuildConfigSchema.safeParse(projectConfig);
     if (!result.success) {
+      result.error.source = `${this.src}/index.js`;
       throw result.error;
+    }
+
+    // Log
+    for (const entityConfig of projectConfig.entities) {
+      this.logger.info(`Loaded entity ${entityConfig.entity}`);
     }
 
     return projectConfig;

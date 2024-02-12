@@ -269,7 +269,7 @@ export async function getAgentContacts() {
         if (agent.programmableEmail) {
           output += `\t\t- ${agent.programmableEmail}\n`;
         }
-        output += `\t\t- https://scout9.com/a/${res[1].id}/${agent.id || agent.$id}\n`;
+        output += `\t\t- https://scout9.com/${res[1].id}/${agent.id || agent.$id}\n`;
         return output;
       }).join('\n');
     })
@@ -446,7 +446,7 @@ export async function test(
  *
  * @param {{cwd: string; src: string; projectFiles: ProjectFiles; logger: ProgressLogger}} options
  * @param {Scout9ProjectBuildConfig} config
- * @returns {Promise<{success: boolean}>}
+ * @returns {Promise<{success: boolean; config: Scout9ProjectBuildConfig}>}
  */
 export async function sync({cwd = process.cwd(), src = 'src', projectFiles = new ProjectFiles({src, autoSave: true, cwd}), logger = new ProgressLogger()} = {}, config) {
   if (!process.env.SCOUT9_API_KEY) {
@@ -470,5 +470,5 @@ export async function sync({cwd = process.cwd(), src = 'src', projectFiles = new
         logger.info(message);
     }
   });
-  return {success: true};
+  return {success: true, config};
 }

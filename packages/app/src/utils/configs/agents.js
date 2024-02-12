@@ -28,6 +28,7 @@ export function validateAgentConfig(agents) {
 
   const result = agentsConfigurationSchema.safeParse(agents);
   if (!result.success) {
+    result.error.source = `src/entities/agents.js|ts`;
     throw result.error;
   }
   return agents;

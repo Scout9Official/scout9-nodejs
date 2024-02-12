@@ -4,6 +4,7 @@ import { build as _build, deploy as _deploy, run as _run, runConfig as _runConfi
 import { loadConfig, loadEnvConfig } from './core/config/index.js';
 import { coalesceToError, ProgressLogger } from './utils/index.js';
 import ProjectFiles from './utils/project.js';
+import { logUserValidationError, report } from './report.js';
 
 /**
  * Collection of Scout9 Platform commands
@@ -23,13 +24,10 @@ export const Scout9Platform = {
       logger.log(`Syncing project...`);
       const result = await _sync({cwd, src, logger, projectFiles}, config);
       logger.success('Sync Complete');
-      logger.done();
-      logger.info()
+      report(config, logger);
       messages.forEach((m) => logger.info(m));
-      return {
-        config,
-        sync: result
-      };
+      logger.done();
+      return result;
     } catch (e) {
       logger.done();
       this.handleError(e);
@@ -154,19 +152,24 @@ export const Scout9Platform = {
   handleError: function (e) {
     const error = coalesceToError(e);
 
-    if (error.name === 'SyntaxError') throw error;
+    switch (error.name) {
+      case 'SyntaxError':
+        throw error;
+      case 'ZodError':
+        logUserValidationError(error, error.source || 'src/index.js|ts');
+        break;
+      default:
+        console.error(colors.bold().red(`> ${error.message}`));
+        if (error instanceof z.ZodError) {
+          console.error(error.issues.map(i => colors.red(`${colors.bold(`\tZod Error (${i.code}): `)}"${i.message}" ${JSON.stringify(
+            i.path)}`)).join('\n'));
+          console.error(colors.gray(JSON.stringify(error.format(), null, 2)));
+        }
 
-    console.error(colors.bold().red(`> ${error.message}`));
-    if (error instanceof z.ZodError) {
-      console.error(error.issues.map(i => colors.red(`${colors.bold(`\tZod Error (${i.code}): `)}"${i.message}" ${JSON.stringify(
-        i.path)}`)).join('\n'));
-      console.error(colors.gray(JSON.stringify(error.format(), null, 2)));
+        if (error.stack) {
+          console.error(colors.gray(error.stack.split('\n').slice(0).join('\n')));
+        }
     }
-
-    if (error.stack) {
-      console.error(colors.gray(error.stack.split('\n').slice(0).join('\n')));
-    }
-
     process.exit(1);
   }
 };

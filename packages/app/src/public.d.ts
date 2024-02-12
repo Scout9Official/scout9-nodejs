@@ -197,7 +197,14 @@ export interface Customer {
 }
 
 export interface Agent {
+  // Generated Info
   id: string;
+  deployed?: {
+    web?: string;
+    phone?: string;
+    email?: string;
+  };
+
   firstName?: string;
   lastName?: string;
   inactive?: boolean;
@@ -213,6 +220,8 @@ export interface Agent {
   model?: 'Scout9' | 'bard' | 'openai';
   transcripts?: Message[][];
   audioRef?: any[];
+
+
 }
 
 /**

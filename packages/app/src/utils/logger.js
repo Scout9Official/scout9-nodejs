@@ -50,6 +50,10 @@ export class ProgressLogger {
     return this.write('\t - ' + colors.italic(colors.gray(message)));
   }
 
+  primary(message, ...args) {
+    return this.write(`${colors.cyan(message)}`);
+  }
+
   success(message, ...args) {
     return this.write(`✅  ${colors.green(message)}`);
   }

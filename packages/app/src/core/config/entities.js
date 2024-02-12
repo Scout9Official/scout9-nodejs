@@ -7,6 +7,7 @@ import {
     entityRootProjectConfigurationSchema
 } from '../../runtime/index.js';
 import { checkVariableType, requireOptionalProjectFile, requireProjectFile } from '../../utils/index.js';
+import { logUserValidationError } from '../../report.js';
 
 async function loadEntityApiConfig(cwd, filePath) {
   const dir = path.dirname(filePath);
@@ -80,6 +81,7 @@ export default async function loadEntitiesConfig(
       // Validate entity configuration
       const result = entityConfigurationSchema.safeParse(entityConfig, {path: ['entities', config.length]});
       if (!result.success) {
+        logUserValidationError(result.error, filePath);
         throw result.error;
       }
     } else if (isSpecial && (fileName === 'index' || fileName === 'config')) {

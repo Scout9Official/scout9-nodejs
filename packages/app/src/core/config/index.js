@@ -8,6 +8,7 @@ import loadWorkflowsConfig from './workflow.js';
 import { Scout9ProjectBuildConfigSchema } from '../../runtime/index.js';
 import { ProgressLogger } from '../../utils/index.js';
 import ProjectFiles from '../../utils/project.js';
+import { logUserValidationError } from '../../report.js';
 
 
 export function loadEnvConfig({
@@ -62,6 +63,7 @@ export async function loadConfig({
   // Validate the config
   const result = Scout9ProjectBuildConfigSchema.safeParse(projectConfig);
   if (!result.success) {
+    result.error.source = `${src}/index.js`;
     throw result.error;
   }
 

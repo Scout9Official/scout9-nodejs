@@ -1,10 +1,10 @@
 import { globSync } from 'glob';
 import path from 'node:path';
 import {
-    entitiesRootProjectConfigurationSchema,
-    entityApiConfigurationSchema,
-    entityConfigurationSchema,
-    entityRootProjectConfigurationSchema
+  entitiesRootProjectConfigurationSchema,
+  entityApiConfigurationSchema,
+  entityConfigurationSchema,
+  entityRootProjectConfigurationSchema
 } from '../../runtime/index.js';
 import { checkVariableType, requireOptionalProjectFile, requireProjectFile } from '../module.js';
 
@@ -85,6 +85,7 @@ export default async function loadEntitiesConfig(
       // Validate entity configuration
       const result = entityConfigurationSchema.safeParse(entityConfig, {path: ['entities', config.length]});
       if (!result.success) {
+        result.error.source = filePath;
         throw result.error;
       }
     } else if (isSpecial && (fileName === 'index' || fileName === 'config')) {

@@ -197,7 +197,14 @@ declare module '@scout9/app' {
   }
 
   export interface Agent {
+	// Generated Info
 	id: string;
+	deployed?: {
+	  web?: string;
+	  phone?: string;
+	  email?: string;
+	};
+
 	firstName?: string;
 	lastName?: string;
 	inactive?: boolean;
@@ -213,6 +220,8 @@ declare module '@scout9/app' {
 	model?: 'Scout9' | 'bard' | 'openai';
 	transcripts?: Message[][];
 	audioRef?: any[];
+
+
   }
 
   /**

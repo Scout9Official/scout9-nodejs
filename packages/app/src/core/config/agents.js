@@ -52,6 +52,7 @@ export default async function loadAgentConfig({cwd = process.cwd(), src = 'src',
 
   const result = agentsConfigurationSchema.safeParse(agents);
   if (!result.success) {
+    result.error.source = paths[0];
     throw result.error;
   }
   return agents;
