@@ -9,36 +9,13 @@ import { Configuration, Scout9Api } from '@scout9/admin';
 import { checkVariableType, ProgressLogger, requireProjectFile } from '../utils/index.js';
 import decompress from 'decompress';
 import { loadUserPackageJson } from './config/project.js';
+import { platformApi } from './data.js';
+import { syncData } from './sync.js';
+import ProjectFiles from '../utils/project.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-
-async function platformApi(url, options = {}, retries = 0) {
-  if (retries > 3) {
-    throw new Error(`Request timed out, try again later`);
-  }
-  if (!process.env.SCOUT9_API_KEY) {
-    throw new Error('Missing required environment variable "SCOUT9_API_KEY"');
-  }
-  return fetch(url, {
-    method: 'GET',
-    ...options,
-    headers: {
-      'Authorization': process.env.SCOUT9_API_KEY || '',
-      ...(options.headers || {})
-    }
-  }).then((res) => {
-    if (res.status === 504) {
-      return new Promise((resolve, reject) => {
-        setTimeout(() => {
-          resolve(platformApi(url, options, retries + 1));
-        }, 3000);
-      });
-    }
-    return Promise.resolve(res);
-  });
-}
 
 /**
  * @returns {Promise<string>} - the output directory
@@ -451,6 +428,11 @@ export async function test(
 
   const tests = testableEntities.reduce((accumulator, entity) => accumulator += (entity?.tests || []).length, 0);
 
+  if (tests === 0) {
+    logger.warn('No tests found for any entities, skipping test run');
+    return;
+  }
+
   // @TODO format errors
   logger.log(`Running ${tests} entity test cases...`);
   await new Scout9Api(new Configuration({apiKey: process.env.SCOUT9_API_KEY || ''})).parse({
@@ -467,98 +449,13 @@ export async function test(
  * @returns {Promise<{success: boolean}>}
  */
 export async function sync({cwd = process.cwd(), src = 'src', logger = new ProgressLogger()} = {}, config) {
-  logger.log('Fetching project data...');
   if (!process.env.SCOUT9_API_KEY) {
     throw new Error('Missing required environment variable "SCOUT9_API_KEY"');
   }
-  const {entities, agents} = await platformApi(`https://scout9.com/api/b/platform/sync`).then((res) => {
-    if (res.status !== 200) {
-      throw new Error(`Server responded with ${res.status}: ${res.statusText}`);
-    }
-    return res.json();
-  })
-    .catch((err) => {
-      err.message = `Error fetching entities and agents: ${err.message}`;
-      throw err;
-    });
-
-  // Merge
-  config.agents = agents.reduce((accumulator, agent) => {
-    // Check if agent already exists
-    const existingAgentIndex = accumulator.findIndex(a => a.id === agent.id);
-    if (existingAgentIndex === -1) {
-      accumulator.push(agent);
-    } else {
-      // Merge agent
-      accumulator[existingAgentIndex] = {
-        ...accumulator[existingAgentIndex],
-        ...agent
-      };
-    }
-    return accumulator;
-  }, config.agents);
-
-  // Remove agents that are not on the server
-  config.agents = config.agents.filter(agent => agents.find(a => a.id === agent.id));
-
-  config.entities = entities.reduce((accumulator, entity) => {
-    // Check if agent already exists
-    const existingEntityIndex = accumulator.findIndex(a => a.id === entity.id);
-    if (existingEntityIndex === -1) {
-      accumulator.push(entity);
-    } else {
-      // Merge agent
-      accumulator[existingEntityIndex] = {
-        ...accumulator[existingEntityIndex],
-        ...entity
-      };
-    }
-    return accumulator;
-  }, config.entities);
-
-
-  // Write to src/agents
-  const paths = globSync(`${src}/entities/agents/{index,config}.{ts,js}`, {cwd, absolute: true});
-  if (paths.length === 0) {
-    throw new Error(`Missing required agents entity file, rerun "scout9 sync" to fix`);
-  }
-  if (paths.length > 1) {
-    throw new Error(`Multiple agents entity files found, rerun "scout9 sync" to fix`);
-  }
-  const [filePath] = paths;
-
-  await fs.writeFile(filePath, `
-/**
- * Required core entity type: Agents represents you and your team
- * @returns {Array<Agent>}
- */
-export default function Agents() {
-  return ${JSON.stringify(config.agents, null, 2)};
-}
-`);
-  logger.log(`Updated ${filePath}`);
-
-  for (const entity of config.entities) {
-    const {entity: _entity, entities, api, id, ...rest} = entity;
-    if ((rest.training?.length || 0) === 0) {
-      continue;
-    }
-    if ((rest.definitions?.length || 0) === 0) {
-      continue;
-    }
-    const fileContent = `
-/**
- * ${rest.description || 'Example entity to help us differentiate if a user wants a delivery or pickup order'}
- * @returns {IEntityBuildConfig}
- */
-export default async function ${_entity}Entity() {
-  return ${JSON.stringify(rest, null, 2)};
-}
-`;
-    const isConfigNamed = fss.existsSync(`${cwd}/${src}/entities/${_entity}/config.js`);
-    await fs.writeFile(`${cwd}/${src}/entities/${_entity}/${isConfigNamed ? 'config' : 'index'}.js`, fileContent);
-    logger.log(`Updated ${cwd}/${src}/entities/${_entity}/index.js`);
-  }
-
+  logger.log('Fetching project data...');
+  const projectFiles = new ProjectFiles({cwd, src, autoSave: true});
+  config = await syncData(config);
+  logger.log(`Syncing project`);
+  await projectFiles.sync(config, logger);
   return {success: true};
 }

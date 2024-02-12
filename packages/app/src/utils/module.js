@@ -1,6 +1,6 @@
 import { pathToFileURL } from 'node:url';
 
-async function importFile(filePath) {
+export async function importFile(filePath) {
   const fileUrl = pathToFileURL(filePath);
   return import(fileUrl.href);
 }
