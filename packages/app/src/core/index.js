@@ -444,18 +444,31 @@ export async function test(
 
 /**
  *
- * @param {{cwd: string; src: string; logger: ProgressLogger}} options
+ * @param {{cwd: string; src: string; projectFiles: ProjectFiles; logger: ProgressLogger}} options
  * @param {Scout9ProjectBuildConfig} config
  * @returns {Promise<{success: boolean}>}
  */
-export async function sync({cwd = process.cwd(), src = 'src', logger = new ProgressLogger()} = {}, config) {
+export async function sync({cwd = process.cwd(), src = 'src', projectFiles = new ProjectFiles({src, autoSave: true, cwd}), logger = new ProgressLogger()} = {}, config) {
   if (!process.env.SCOUT9_API_KEY) {
     throw new Error('Missing required environment variable "SCOUT9_API_KEY"');
   }
   logger.log('Fetching project data...');
-  const projectFiles = new ProjectFiles({cwd, src, autoSave: true});
   config = await syncData(config);
   logger.log(`Syncing project`);
-  await projectFiles.sync(config, logger);
+  await projectFiles.sync(config, (message, type) => {
+    switch (type) {
+      case 'info':
+        logger.info(message);
+        break;
+      case 'warn':
+        logger.warn(message);
+        break;
+      case 'error':
+        logger.error(message);
+        break;
+      default:
+        logger.info(message);
+    }
+  });
   return {success: true};
 }

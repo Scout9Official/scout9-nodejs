@@ -37,10 +37,7 @@ export default {
     engine: ${config?.pmt?.engine ? `'${config.pmt.engine}'` : `'scout9'`},
     model: ${config?.pmt?.model ? `'${config.pmt.model}'` : `'orin-2.2'`},
   },
-  organization: {
-    name: ${config?.organization?.name ? `'${config.organization.name}'` : `'Organization Name'`},
-    description: ${config?.organization?.description ? `'${config.organization.description}'` : `'Organization Description'`},
-  },
+  organization: ${config?.organization ? JSON.stringify(config.organization, null, 2) : `{name: 'Organization Name'}`},
   initialContext: ${config?.initialContext ? JSON.stringify(config.initialContext, null, 2) : `[]`}
 }
   `;

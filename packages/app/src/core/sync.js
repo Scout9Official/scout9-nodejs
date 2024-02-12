@@ -8,7 +8,7 @@ export async function syncData(config) {
   if (!process.env.SCOUT9_API_KEY) {
     throw new Error('Missing required environment variable "SCOUT9_API_KEY"');
   }
-  const {entities, agents} = await platformApi(`https://scout9.com/api/b/platform/sync`).then((res) => {
+  const result = await platformApi(`https://scout9.com/api/b/platform/sync`).then((res) => {
     if (res.status !== 200) {
       throw new Error(`Server responded with ${res.status}: ${res.statusText}`);
     }
@@ -18,6 +18,8 @@ export async function syncData(config) {
       err.message = `Error fetching entities and agents: ${err.message}`;
       throw err;
     });
+
+  const { agents, entities, organization, initialContext } = result;
 
   // Merge
   config.agents = agents.reduce((accumulator, agent) => {
@@ -56,6 +58,14 @@ export async function syncData(config) {
 
   // Remove entities that are not on the server
   config.entities = config.entities.filter(entity => entities.find(a => a.id === entity.id));
+  config.organization = {
+    ...(config?.organization || {}),
+    ...(organization || {})
+  };
+  config.initialContext = {
+    ...(config?.initialContext) || [],
+    ...(initialContext || [])
+  };
 
   return config;
 }

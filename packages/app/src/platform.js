@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { build as _build, deploy as _deploy, run as _run, runConfig as _runConfig, sync as _sync, test as _test } from './core/index.js';
 import { loadConfig, loadEnvConfig } from './core/config/index.js';
 import { coalesceToError, ProgressLogger } from './utils/index.js';
+import ProjectFiles from './utils/project.js';
 
 /**
  * Collection of Scout9 Platform commands
@@ -15,16 +16,16 @@ export const Scout9Platform = {
     const logger = new ProgressLogger();
     const messages = [];
     try {
-      logger.log(`Loading config...`);
-      const config = await loadConfig({cwd, src, logger, cb: (m) => messages.push(m)});
-      logger.success('Config Loaded');
+      logger.log(`Loading Local Config...`);
+      const projectFiles = new ProjectFiles({cwd, src, autoSave: true, logger});
+      const config = await projectFiles.load();
+      logger.success('Local Config Loaded');
       logger.log(`Syncing project...`);
-      const result = await _sync({cwd, src, logger}, config);
-      messages.map((m) => logger.info(m));
+      const result = await _sync({cwd, src, logger, projectFiles}, config);
       logger.success('Sync Complete');
       logger.done();
       logger.info()
-      messages.forEach(console.log);
+      messages.forEach((m) => logger.info(m));
       return {
         config,
         sync: result
@@ -49,7 +50,7 @@ export const Scout9Platform = {
       // await _build({cwd, src, dest, mode, logger}, config);
       logger.log(`Deploying project...`);
       const {contacts} = await _deploy({cwd, src, dest, logger}, config);
-      messages.map((m) => logger.info(m));
+      messages.forEach((m) => logger.info(m));
       logger.success(`Deploy Complete\n\n`);
       logger.write(`\tApplication will be live for the following channels in a few moments:\n${contacts}`);
       logger.done();
@@ -72,7 +73,7 @@ export const Scout9Platform = {
       logger.success('Test data loaded');
       logger.log(`Testing project...`);
       await _test({cwd, src, dest, logger}, config);
-      messages.map((m) => logger.info(m));
+      messages.forEach((m) => logger.info(m));
       logger.success(`Test complete`);
       logger.done();
       return config;
@@ -94,7 +95,7 @@ export const Scout9Platform = {
       logger.success('Config Loaded');
       logger.log(`Building project...`);
       await _build({cwd, src, dest, mode, logger}, config);
-      messages.map((m) => logger.info(m));
+      messages.forEach((m) => logger.info(m));
       logger.success('Build Complete');
       logger.done();
       return config;
