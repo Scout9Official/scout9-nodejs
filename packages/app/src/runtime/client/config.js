@@ -58,6 +58,7 @@ export const Scout9ProjectBuildConfigSchema = z.object({
   organization: z.object({
     name: z.string(),
     description: z.string(),
+    dashboard: z.string().optional(),
     logo: z.string().optional(),
     icon: z.string().optional(),
     logos: z.string().optional(),

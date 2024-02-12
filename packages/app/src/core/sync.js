@@ -62,10 +62,10 @@ export async function syncData(config) {
     ...(config?.organization || {}),
     ...(organization || {})
   };
-  config.initialContext = {
-    ...(config?.initialContext) || [],
-    ...(initialContext || [])
-  };
+  config.initialContext = [
+    ...(Array.isArray(config?.initialContext)  ? config.initialContext : []),
+    ...(Array.isArray(initialContext) ? initialContext : [])
+  ];
 
   return config;
 }

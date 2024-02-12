@@ -1,4 +1,4 @@
-import { red, cyan, green, grey, bold, italic, yellow } from 'kleur/colors';
+import { red, cyan, green, grey, bold, italic, magenta, yellow } from 'kleur/colors';
 import { ProgressLogger } from './utils/index.js';
 
 /**
@@ -38,61 +38,77 @@ export function logUserValidationError(
  */
 export function report(config, logger) {
   logger.primary(`Scout9 App For: ${config.organization.name} ${config.tag}`);
-  logger.log(`LLM Engine: ${config.llm.engine} - ${config.llm.model}`);
-  logger.log(`PMT Engine: ${config.pmt.engine} - ${config.pmt.model}`);
-  logger.log(`Max Lock Attempts: ${config?.maxLockAttempts || 3}`);
-  logger.log(`Initial Context:\n\t${(config?.initialContext || []).join('\n\t')}`);
-  logger.primary(`${config.agents.length} Persona${config.agents.length > 1 ? 's' : ''}\n\n`);
+  if (config.organization?.dashboard) {
+    logger.info(`Dashboard: ${cyan(config.organization.dashboard)}`);
+  }
+  logger.info(`LLM Engine: ${config.llm.engine} - ${config.llm.model}`);
+  logger.info(`PMT Engine: ${config.pmt.engine} - ${config.pmt.model}`);
+  logger.info(`Max Lock Attempts: ${config?.maxLockAttempts || 3}`);
+  logger.info(`Initial Context:\n\t${(config?.initialContext || []).join('\n\t')}`);
+  // logger.primary(`${config.agents.length} Persona${config.agents.length > 1 ? 's' : ''}\n\n`);
   for (const agent of config.agents) {
-    logger.primary(`${agent.firstName} ${agent.lastName} - ${agent.context}`);
+    logger.primary(`${grey('Persona: ')}${agent.firstName}${agent.lastName ? ' ' + agent.lastName : ''}`);
+    logger.info(`Context: "${italic(agent.context)}"`);
     let phone = agent.deployed?.phone || agent?.programmablePhoneNumber || '';
     phone = phone ? green(phone) : '';
-    const phoneForward = agent.forwardPhone ? cyan(agent.forwardPhone) + ' (forward)' : red('No Forward Configured');
+    const phoneForward = agent.forwardPhone ? cyan(agent.forwardPhone) : red('Not Configured');
 
-    const web = agent?.deployed?.web ? cyan(agent.deployed.web) : red('None Configured');
+    const web = agent?.deployed?.web ? cyan(agent.deployed.web) : red('Not Configured');
     let email = agent.deployed?.email || agent?.programmableEmail || '';
     email = email ? green(email) : red('None Configured');
-    const emailForward = agent.forwardEmail ? cyan(agent.forwardEmail) + ' (forward)' : red('No Forward Configured');
+    const emailForward = agent.forwardEmail ? cyan(agent.forwardEmail) : red('Not Configured');
     logger.info(`Web: ${web}`);
     if (phone) {
-      logger.info(`${phone} --> ${phoneForward}`);
+      logger.info(`Phone: ${phone} --> ${italic('forwards to')} ${phoneForward}`);
     }
     if (email) {
-      logger.info(`${email} --> ${emailForward}`);
+      logger.info(`Email: ${email} --> ${italic('forwards to')} ${emailForward}`);
     }
-    logger.info('\n\n');
   }
-  logger.primary(`\n\n${config.entities.length} ${config.entities.length > 1 ? 'Entities' : 'Entity'}\n\n`);
+  // logger.primary(`\n\n${config.entities.length} ${config.entities.length > 1 ? 'Entities' : 'Entity'}\n\n`);
 
   for (const entityConfig of config.entities) {
     const {entity, api, entities, training, tests, definitions} = entityConfig;
-    logger.primary(`${entity}`);
+    const parents = entities.slice(0, -1).join('/')
+    logger.primary(`${grey('Entity: ')}${parents}${magenta(entity)}`);
     if (definitions && definitions.length > 0) {
-      logger.info(`Definitions: ${definitions.length}`);
+      logger.info(`${cyan(definitions.length)} definition${definitions.length > 1 ? 's' : ''}`);
     }
     if (training && training.length > 0) {
-      logger.info(`Training: ${training.length}`);
+      logger.info(`${cyan(training.length)} training phrase${training.length > 1 ? 's' : ''}`);
     }
     if (tests && tests.length > 0) {
-      logger.info(`Tests: ${tests.length}`);
+      logger.info(`${cyan(tests.length)} test${tests.length > 1 ? 's' : ''}`);
+    }
+    if (!api) {
+      logger.info(`${cyan('0')} api's exported`);
     }
     if (api?.QUERY) {
-      logger.info(`QUERY: ${api.QUERY ? green('on') : red('off')}`);
+      logger.info(`${cyan('QUERY')}: ${api.QUERY ? green('on') : red('off')}`);
     }
     if (api?.GET) {
-      logger.info(`GET: ${api.GET ? green('on') : red('off')}`);
+      logger.info(`${cyan('GET')}: ${api.GET ? green('on') : red('off')}`);
     }
     if (api?.POST) {
-      logger.info(`POST: ${api.POST ? green('on') : red('off')}`);
+      logger.info(`${cyan('POST')}: ${api.POST ? green('on') : red('off')}`);
     }
     if (api?.PUT) {
-      logger.info(`PUT: ${api.PUT ? green('on') : red('off')}`);
+      logger.info(`${cyan('PUT')}: ${api.PUT ? green('on') : red('off')}`);
     }
     if (api?.PATCH) {
-      logger.info(`PATCH: ${api.PATCH ? green('on') : red('off')}`);
+      logger.info(`${cyan('PATCH')}: ${api.PATCH ? green('on') : red('off')}`);
     }
     if (api?.DELETE) {
-      logger.info(`DELETE: ${api.DELETE ? green('on') : red('off')}`);
+      logger.info(`${cyan('DELETE')}: ${api.DELETE ? green('on') : red('off')}`);
+    }
+  }
+
+  for (const workflowConfig of config.workflows) {
+    const {entity, api, entities } = workflowConfig;
+    const parents = entities.slice(0, -1).join('/')
+    logger.primary(`${grey('Workflow: ')}${parents}${magenta(entity)}`);
+    if (!api) {
+      logger.info(`${cyan('0')} api's exported`);
     }
   }
 

@@ -299,7 +299,7 @@ export default class ProjectFiles {
 
     // Log
     for (const entityConfig of projectConfig.entities) {
-      this.logger.info(`Loaded entity ${entityConfig.entity}`);
+      this.logger.info(`Loaded entity ${entityConfig.entities.join('/')}`);
     }
 
     return projectConfig;

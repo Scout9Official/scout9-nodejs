@@ -52,6 +52,7 @@ export interface Scout9ProjectConfig {
   organization: {
     name: string;
     description: string;
+    dashboard?: string;
     logo?: string;
     icon?: string;
     logos?: string;
