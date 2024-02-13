@@ -161,6 +161,9 @@ export interface Message {
   name?: string;
   time: string;
 
+  scheduled?: string;
+  delayInSeconds?: number;
+
   /**
    * The context generated from the message
    */

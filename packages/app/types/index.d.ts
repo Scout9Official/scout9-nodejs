@@ -52,6 +52,7 @@ declare module '@scout9/app' {
 	organization: {
 	  name: string;
 	  description: string;
+	  dashboard?: string;
 	  logo?: string;
 	  icon?: string;
 	  logos?: string;
@@ -160,6 +161,9 @@ declare module '@scout9/app' {
 	name?: string;
 	time: string;
 
+	scheduled?: string;
+	delayInSeconds?: number;
+
 	/**
 	 * The context generated from the message
 	 */
@@ -227,10 +231,10 @@ declare module '@scout9/app' {
   /**
    * The input event provided to the application
    */
-  export interface WorkflowEvent {
+  export interface WorkflowEvent<Type = any> {
 	messages: Message[];
 	conversation: Conversation;
-	context: any;
+	context: Partial<Type>;
 	message: Message;
 	agent: Omit<Agent, 'transcripts' | 'audioRef' | 'includedLocations' | 'excludedLocations' | 'model' | 'context'>;
 	customer: Customer;
@@ -251,7 +255,13 @@ declare module '@scout9/app' {
 	forward?: string | boolean | {
 	  to?: string;
 	  mode?: 'after-reply' | 'immediately';
+
+	  /**
+	   * Note to provide to the agent
+	   */
+	  note?: string;
 	};
+	forwardNote?: string;
 	instructions?: string | string[] | Instruction | Instruction[];
 	removeInstructions?: string[];
 	message?: string;
@@ -344,6 +354,123 @@ declare module '@scout9/app' {
 	conversation: Conversation;
 	context: any;
   }>
+}
+
+declare module '@scout9/app/testing-tools' {
+	import type { Scout9Api } from '@scout9/admin';
+	export function createMockAgent(firstName?: string, lastName?: string): import('@scout9/app').Agent;
+	export function createMockCustomer(firstName?: string, lastName?: string): import('@scout9/app').Customer;
+	export function createMockMessage(content: any, role?: string, time?: string): import('@scout9/app').Message;
+	export function createMockConversation(environment?: string, $agent?: string, $customer?: string): import('@scout9/app').Conversation;
+	export function createMockWorkflowEvent(message: any, intent: any): import('@scout9/app').WorkflowEvent;
+	/// <reference types="types/index.js" />
+	export namespace Spirits {
+		function customer(input: ConversationData & CustomerSpiritCallbacks): Promise<ConversationEvent>;
+	}
+	export class Scout9Test {
+		/**
+		 * Mimics a customer message to your app (useful for testing)
+		 * @param context - prior conversation context
+		 * @param persona id to use
+		 * @param conversation - existing conversation
+		 * */
+		constructor({ persona, customer, context, cwd, src, mode }?: import('@scout9/app').Customer | undefined);
+		messages: any[];
+		_cwd: any;
+		_src: any;
+		_mode: any;
+		context: any;
+		conversation: import("@scout9/app").Conversation;
+		customer: any;
+		_personaId: any;
+		load(): Promise<void>;
+		_workflowFn: any;
+		_config: any;
+		_scout9: Scout9Api | undefined;
+		persona: any;
+		_loaded: boolean | undefined;
+		/**
+		 * Send a message as a customer to your app
+		 * @param message - message to send
+		 * */
+		send(message: string): Promise<ConversationEvent>;
+		get _noNewContext(): boolean;
+		get _recentUserMessage(): any;
+		get _userMessages(): any[];
+		_lockConversation(): void;
+		_incrementLockAttempt(): void;
+		
+		private _addInstruction;
+	}
+	export type Document = {
+		id: string;
+	};
+	/**
+	 * Represents a change with before and after states of a given type.
+	 */
+	export type Change<Type> = {
+		/**
+		 * - The state before the change.
+		 */
+		before: Type;
+		/**
+		 * - The state after the change.
+		 */
+		after: Type;
+	};
+	export type ConversationData = {
+		/**
+		 * - used to define generation and extract persona metadata
+		 */
+		config: import('@scout9/app').Scout9ProjectBuildConfig;
+		conversation: import('@scout9/app').Conversation;
+		messages: Array<import('@scout9/app').Message>;
+		/**
+		 * - the message sent by the customer (should exist in messages)
+		 */
+		message: import('@scout9/app').Message;
+		customer: import('@scout9/app').Customer;
+		context: any;
+	};
+	export type ParseOutput = {
+		messages: Array<import('@scout9/app').Message>;
+		conversation: import('@scout9/app').Conversation;
+		message: import('@scout9/app').Message;
+		context: any;
+	};
+	export type WorkflowOutput = {
+		slots: Array<import('@scout9/app').WorkflowResponseSlot>;
+		messages: Array<import('@scout9/app').Message>;
+		conversation: import('@scout9/app').Conversation;
+		context: any;
+	};
+	export type GenerateOutput = {
+		generate: import('@scout9/admin').GenerateResponse | undefined;
+		messages: Array<import('@scout9/app').Message>;
+		conversation: import('@scout9/app').Conversation;
+		context: any;
+	};
+	export type ParseFun = (message: string, language: string | undefined) => Promise<import('@scout9/admin').ParseResponse>;
+	export type WorkflowFun = (event: import('@scout9/app').WorkflowEvent) => Promise<import('@scout9/app').WorkflowResponse>;
+	export type GenerateFun = (data: import('@scout9/admin').GenerateRequest) => Promise<import('@scout9/admin').GenerateResponse>;
+	export type IdGeneratorFun = (prefix: any) => string;
+	export type statusCallback = (message: string, type: 'info' | 'warn' | 'error' | 'success' | undefined) => void;
+	export type CustomerSpiritCallbacks = {
+		parser: ParseFun;
+		workflow: WorkflowFun;
+		generator: GenerateFun;
+		idGenerator: IdGeneratorFun;
+		progress: statusCallback | undefined;
+	};
+	export type ConversationEvent = {
+		conversation: Change<import('@scout9/app').Conversation> & {
+			forwardNote?: string;
+			forward?: import('@scout9/app').WorkflowResponseSlot['forward'];
+		};
+		messages: Change<Array<import('@scout9/app').Message>>;
+		context: Change<Object>;
+		message: Change<import('@scout9/app').Message>;
+	};
 }
 
 //# sourceMappingURL=index.d.ts.map

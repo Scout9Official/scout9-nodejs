@@ -4,10 +4,15 @@ import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
 
 export default {
-  input: './src/index.js', // Your main JS file
+  // input: ['./src/index.js', './src/testing-tools/index.js'], // Your main JS file
+  input: {
+    index: './src/index.js',
+    'testing-tools': './src/testing-tools/index.js'
+  },
   output: {
-    dir: 'build',
-    format: 'cjs' // Bundle format: 'iife' for browser, 'cjs' for Node, etc.
+    dir: 'dist',
+    format: 'cjs', // Bundle format: 'iife' for browser, 'cjs' for Node, etc.
+    entryFileNames: '[name].js'
   },
   plugins: [
     resolve(), // Resolves node modules

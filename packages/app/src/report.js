@@ -112,4 +112,6 @@ export function report(config, logger) {
     }
   }
 
+  logger.primary(`Run ${cyan('scout9 dev')} to test your project locally`);
+
 }

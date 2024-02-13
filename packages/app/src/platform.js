@@ -48,6 +48,7 @@ export const Scout9Platform = {
       // await _build({cwd, src, dest, mode, logger}, config);
       logger.log(`Deploying project...`);
       const {contacts} = await _deploy({cwd, src, dest, logger}, config);
+      report(config, logger);
       messages.forEach((m) => logger.info(m));
       logger.success(`Deploy Complete\n\n`);
       logger.write(`\tApplication will be live for the following channels in a few moments:\n${contacts}`);
@@ -71,6 +72,7 @@ export const Scout9Platform = {
       logger.success('Test data loaded');
       logger.log(`Testing project...`);
       await _test({cwd, src, dest, logger}, config);
+      report(config, logger);
       messages.forEach((m) => logger.info(m));
       logger.success(`Test complete`);
       logger.done();
@@ -93,6 +95,7 @@ export const Scout9Platform = {
       logger.success('Config Loaded');
       logger.log(`Building project...`);
       await _build({cwd, src, dest, mode, logger}, config);
+      report(config, logger);
       messages.forEach((m) => logger.info(m));
       logger.success('Build Complete');
       logger.done();
