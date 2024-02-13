@@ -7,7 +7,7 @@ function agentsTemplate({agents, exe = 'js'}) {
   return `
 /**
  * Required core entity type: Agents represents you and your team
- * @returns {Array<import('@scout9/app')Agent>}
+ * @returns {Array<import('@scout9/app').Agent>}
  */
 export default function Agents() {
   return ${JSON.stringify(agents, null, 2)};

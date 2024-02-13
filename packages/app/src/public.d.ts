@@ -228,10 +228,10 @@ export interface Agent {
 /**
  * The input event provided to the application
  */
-export interface WorkflowEvent {
+export interface WorkflowEvent<Type = any> {
   messages: Message[];
   conversation: Conversation;
-  context: any;
+  context: Partial<Type>;
   message: Message;
   agent: Omit<Agent, 'transcripts' | 'audioRef' | 'includedLocations' | 'excludedLocations' | 'model' | 'context'>;
   customer: Customer;
@@ -252,7 +252,13 @@ export interface WorkflowResponseSlot<Type = any> {
   forward?: string | boolean | {
     to?: string;
     mode?: 'after-reply' | 'immediately';
+
+    /**
+     * Note to provide to the agent
+     */
+    note?: string;
   };
+  forwardNote?: string;
   instructions?: string | string[] | Instruction | Instruction[];
   removeInstructions?: string[];
   message?: string;

@@ -1,4 +1,4 @@
-import { red, cyan, green, grey, bold, italic, magenta, yellow } from 'kleur/colors';
+import { red, cyan, green, dim, white, grey, bold, italic, magenta, yellow } from 'kleur/colors';
 import { ProgressLogger } from './utils/index.js';
 
 /**
@@ -37,29 +37,29 @@ export function logUserValidationError(
  * @param {ProgressLogger} logger
  */
 export function report(config, logger) {
-  logger.primary(`Scout9 App For: ${config.organization.name} ${config.tag}`);
+  logger.primary(`${white('Scout9 App For:')} ${cyan(config.organization.name)} ${magenta(config.tag)}`);
   if (config.organization?.dashboard) {
     logger.info(`Dashboard: ${cyan(config.organization.dashboard)}`);
   }
-  logger.info(`LLM Engine: ${config.llm.engine} - ${config.llm.model}`);
-  logger.info(`PMT Engine: ${config.pmt.engine} - ${config.pmt.model}`);
-  logger.info(`Max Lock Attempts: ${config?.maxLockAttempts || 3}`);
-  logger.info(`Initial Context:\n\t${(config?.initialContext || []).join('\n\t')}`);
+  logger.info(`LLM Engine: ${cyan(config.llm.engine)} ${magenta(config.llm.model)}`);
+  logger.info(`PMT Engine: ${cyan(config.pmt.engine)} ${magenta(config.pmt.model)}`);
+  logger.info(`Max Lock Attempts: ${cyan(config?.maxLockAttempts || 3)}`);
+  logger.info(`Initial Context:\n\t\t${(config?.initialContext || []).map(i => `${white('-')} ${magenta('"')}${italic(i)}${magenta('"')}`).join('\n\t\t')}`);
   // logger.primary(`${config.agents.length} Persona${config.agents.length > 1 ? 's' : ''}\n\n`);
   for (const agent of config.agents) {
     logger.primary(`${grey('Persona: ')}${agent.firstName}${agent.lastName ? ' ' + agent.lastName : ''}`);
-    logger.info(`Context: "${italic(agent.context)}"`);
+    logger.info(`Context: ${magenta('"')}${italic(agent.context)}${magenta('"')}`);
     let phone = agent.deployed?.phone || agent?.programmablePhoneNumber || '';
-    phone = phone ? green(phone) : '';
-    const phoneForward = agent.forwardPhone ? cyan(agent.forwardPhone) : red('Not Configured');
+    phone = phone ? cyan(phone) : '';
+    const phoneForward = agent.forwardPhone ? magenta(agent.forwardPhone) : red('Not Configured');
 
     const web = agent?.deployed?.web ? cyan(agent.deployed.web) : red('Not Configured');
     let email = agent.deployed?.email || agent?.programmableEmail || '';
-    email = email ? green(email) : red('None Configured');
-    const emailForward = agent.forwardEmail ? cyan(agent.forwardEmail) : red('Not Configured');
+    email = email ? cyan(email) : red('None Configured');
+    const emailForward = agent.forwardEmail ? magenta(agent.forwardEmail) : red('Not Configured');
     logger.info(`Web: ${web}`);
     if (phone) {
-      logger.info(`Phone: ${phone} --> ${italic('forwards to')} ${phoneForward}`);
+      logger.info(`Phone: ${phone} --> ${italic('forwards to')} ${dim(phoneForward)}`);
     }
     if (email) {
       logger.info(`Email: ${email} --> ${italic('forwards to')} ${emailForward}`);
