@@ -363,10 +363,6 @@ declare module '@scout9/app/testing-tools' {
 	export function createMockMessage(content: any, role?: string, time?: string): import('@scout9/app').Message;
 	export function createMockConversation(environment?: string, $agent?: string, $customer?: string): import('@scout9/app').Conversation;
 	export function createMockWorkflowEvent(message: any, intent: any): import('@scout9/app').WorkflowEvent;
-	/// <reference types="types/index.js" />
-	export namespace Spirits {
-		function customer(input: ConversationData & CustomerSpiritCallbacks): Promise<ConversationEvent>;
-	}
 	export class Scout9Test {
 		/**
 		 * Mimics a customer message to your app (useful for testing)
@@ -401,6 +397,9 @@ declare module '@scout9/app/testing-tools' {
 		_incrementLockAttempt(): void;
 		
 		private _addInstruction;
+	}
+	export namespace Spirits {
+		function customer(input: ConversationData & CustomerSpiritCallbacks): Promise<ConversationEvent>;
 	}
 	export type Document = {
 		id: string;
@@ -454,13 +453,88 @@ declare module '@scout9/app/testing-tools' {
 	export type WorkflowFun = (event: import('@scout9/app').WorkflowEvent) => Promise<import('@scout9/app').WorkflowResponse>;
 	export type GenerateFun = (data: import('@scout9/admin').GenerateRequest) => Promise<import('@scout9/admin').GenerateResponse>;
 	export type IdGeneratorFun = (prefix: any) => string;
-	export type statusCallback = (message: string, type: 'info' | 'warn' | 'error' | 'success' | undefined) => void;
+	export type StatusCallback = (message: string, level: 'info' | 'warn' | 'error' | 'success' | undefined, type: string, payload: any) => void;
 	export type CustomerSpiritCallbacks = {
 		parser: ParseFun;
 		workflow: WorkflowFun;
 		generator: GenerateFun;
 		idGenerator: IdGeneratorFun;
-		progress: statusCallback | undefined;
+		progress: StatusCallback | undefined;
+	};
+	export type ConversationEvent = {
+		conversation: Change<import('@scout9/app').Conversation> & {
+			forwardNote?: string;
+			forward?: import('@scout9/app').WorkflowResponseSlot['forward'];
+		};
+		messages: Change<Array<import('@scout9/app').Message>>;
+		context: Change<Object>;
+		message: Change<import('@scout9/app').Message>;
+	};
+}
+
+declare module '@scout9/app/spirits' {
+	export namespace Spirits {
+		function customer(input: ConversationData & CustomerSpiritCallbacks): Promise<ConversationEvent>;
+	}
+	export type Document = {
+		id: string;
+	};
+	/**
+	 * Represents a change with before and after states of a given type.
+	 */
+	export type Change<Type> = {
+		/**
+		 * - The state before the change.
+		 */
+		before: Type;
+		/**
+		 * - The state after the change.
+		 */
+		after: Type;
+	};
+	export type ConversationData = {
+		/**
+		 * - used to define generation and extract persona metadata
+		 */
+		config: import('@scout9/app').Scout9ProjectBuildConfig;
+		conversation: import('@scout9/app').Conversation;
+		messages: Array<import('@scout9/app').Message>;
+		/**
+		 * - the message sent by the customer (should exist in messages)
+		 */
+		message: import('@scout9/app').Message;
+		customer: import('@scout9/app').Customer;
+		context: any;
+	};
+	export type ParseOutput = {
+		messages: Array<import('@scout9/app').Message>;
+		conversation: import('@scout9/app').Conversation;
+		message: import('@scout9/app').Message;
+		context: any;
+	};
+	export type WorkflowOutput = {
+		slots: Array<import('@scout9/app').WorkflowResponseSlot>;
+		messages: Array<import('@scout9/app').Message>;
+		conversation: import('@scout9/app').Conversation;
+		context: any;
+	};
+	export type GenerateOutput = {
+		generate: import('@scout9/admin').GenerateResponse | undefined;
+		messages: Array<import('@scout9/app').Message>;
+		conversation: import('@scout9/app').Conversation;
+		context: any;
+	};
+	export type ParseFun = (message: string, language: string | undefined) => Promise<import('@scout9/admin').ParseResponse>;
+	export type WorkflowFun = (event: import('@scout9/app').WorkflowEvent) => Promise<import('@scout9/app').WorkflowResponse>;
+	export type GenerateFun = (data: import('@scout9/admin').GenerateRequest) => Promise<import('@scout9/admin').GenerateResponse>;
+	export type IdGeneratorFun = (prefix: any) => string;
+	export type StatusCallback = (message: string, level: 'info' | 'warn' | 'error' | 'success' | undefined, type: string, payload: any) => void;
+	export type CustomerSpiritCallbacks = {
+		parser: ParseFun;
+		workflow: WorkflowFun;
+		generator: GenerateFun;
+		idGenerator: IdGeneratorFun;
+		progress: StatusCallback | undefined;
 	};
 	export type ConversationEvent = {
 		conversation: Change<import('@scout9/app').Conversation> & {

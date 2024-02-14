@@ -1,4 +1,4 @@
-node_modules
+node_modules/
 scripts
 package-lock.json
 .env

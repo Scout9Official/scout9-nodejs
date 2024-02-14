@@ -7,7 +7,8 @@ export default {
   // input: ['./src/index.js', './src/testing-tools/index.js'], // Your main JS file
   input: {
     index: './src/index.js',
-    'testing-tools': './src/testing-tools/index.js'
+    'testing-tools': './src/testing-tools/index.js',
+    'spirits': './src/testing-tools/spirits.js',
   },
   output: {
     dir: 'dist',
