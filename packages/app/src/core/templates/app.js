@@ -296,7 +296,7 @@ if (dev) {
   app.get('/dev/config', async (req, res, next) => {
 
     // Retrieve auth token
-    const {token} = await makeRequest({
+    const {token, id} = await makeRequest({
       hostname: 'us-central1-jumpstart.cloudfunctions.net',
       port: 443,
       path: '/v1-utils-platform-token',
@@ -306,7 +306,7 @@ if (dev) {
       }
     });
     res.writeHead(200, {'Content-Type': 'application/json'});
-    res.end(JSON.stringify({token, ...config}));
+    res.end(JSON.stringify({token, id, ...config}));
     try {
       if (!cache.isTested()) {
         const testableEntities = config.entities.filter(e => e?.definitions?.length > 0 || e?.training?.length > 0);

@@ -61,7 +61,7 @@
 
 /**
  * @callback GenerateFun
- * @param {import('@scout9/admin').GenerateRequest} data - data to generate from
+ * @param {import('@scout9/admin').GenerateRequestOneOf} data - data to generate from
  * @returns {Promise<import('@scout9/admin').GenerateResponse>}
  */
 
@@ -74,8 +74,8 @@
  * @callback StatusCallback
  * @param {string} message
  * @param {'info' | 'warn' | 'error' | 'success' | undefined} level
- * @param {string} type
- * @param {any} payload
+ * @param {string | undefined} type
+ * @param {any | undefined} payload
  * @returns {void}
  */
 
@@ -120,18 +120,6 @@ export const Spirits = {
         let {conversation, messages, context, message} = input;
 
         // 0. Setup Helpers
-        const updateMessages = (previousMessages, newMessages) => {
-            return newMessages.reduce((accumulator, newMessage) => {
-                const index = accumulator.findIndex(m => m.id === newMessage.id);
-                if (index > -1) {
-                    accumulator[index] = newMessage;
-                } else {
-                    accumulator.push(newMessage);
-                }
-                return accumulator;
-            }, [...previousMessages]);
-        }
-
         const updateConversation = (previousConversation, conversationUpdates) => {
             progress('Update conversation', 'info', 'UPDATE_CONVERSATION', conversationUpdates);
             return {
@@ -155,10 +143,6 @@ export const Spirits = {
         const recentUserMessage = (_messages) => {
             const _userMessages = userMessages(_messages);
             return _userMessages[_userMessages.length - 1];
-        }
-
-        const getNoNewContext = (_messages) => {
-            return Object.keys((recentUserMessage(_messages)?.context || {})).length === 0 || false;
         }
 
         const lockConversation = (_conversation) => {
@@ -202,7 +186,7 @@ export const Spirits = {
             } else {
                 // Handle repeated instruction
                 // Increment lock attempt if instructions are repeated and we haven't already incremented lock attempt (for example if a forward is provided)
-                if (previousLockAttempt === (this.conversation.lockAttempts || 0)) {
+                if (previousLockAttempt === (conversation.lockAttempts || 0)) {
                     _conversation = incrementLockAttempt(_conversation, _config);
                     changedConversation = true;
                 }
@@ -258,7 +242,7 @@ export const Spirits = {
         message.intent = parsePayload.intent;
         message.intentScore = parsePayload.intentScore;
         message.context = parsePayload.context;
-        const index = this.messages.findIndex(m => m.content === message.content || m.id === message.id);
+        const index = messages.findIndex(m => m.content === message.content || m.id === message.id);
         if (index === -1) {
             const _message = {
                 id: idGenerator('customer'),
@@ -415,7 +399,7 @@ export const Spirits = {
                 };
                 if (scheduled) {
                     manualMessageObj.time = new Date(scheduled * 1000).toISOString();
-                    manualMessageObj.scheduled = manualMessage.time;
+                    manualMessageObj.scheduled = manualMessageObj.time;
                 } else if (secondsDelay) {
                     const now = new Date();
                     now.setSeconds(now.getSeconds() + secondsDelay);
@@ -449,7 +433,7 @@ export const Spirits = {
         // 4. Generate response
         if (!conversation.locked) {
             try {
-                progress('Generating response', 'info');
+                progress('Parsing message', 'info', 'SET_PROCESSING', 'system');
                 const generatorPayload = await generator({
                     messages,
                     persona,
@@ -457,9 +441,9 @@ export const Spirits = {
                     llm: config.llm,
                     pmt: config.pmt,
                 });
-                progress('Generated response', 'success');
+                progress('Generated response', 'success', undefined, undefined);
                 // Check if already had message
-                const agentMessages = this.messages.filter(m => m.role === 'agent');
+                const agentMessages = messages.filter(m => m.role === 'agent');
                 const lastAgentMessage = agentMessages[agentMessages.length - 1];
                 if (lastAgentMessage && lastAgentMessage.content === generatorPayload.message) {
                     conversation = lockConversation(conversation);
@@ -473,11 +457,12 @@ export const Spirits = {
                     progress('Added agent message', 'info', 'ADD_MESSAGE', messages[messages.length - 1]);
                 }
             } catch (e) {
-                progress(`Error generating response: ${e.message}`, 'error');
                 console.error(`Locking conversation, error generating response: ${e.message}`);
                 conversation = lockConversation(conversation);
             }
         }
+
+        progress('Parsing message', 'info', 'SET_PROCESSING', null);
 
         return {
             conversation: {
@@ -492,7 +477,7 @@ export const Spirits = {
             },
             message: {
                 before: messageBefore,
-                after: parse.message
+                after: message
             },
             context: {
                 before: contextBefore,

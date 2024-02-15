@@ -451,9 +451,9 @@ declare module '@scout9/app/testing-tools' {
 	};
 	export type ParseFun = (message: string, language: string | undefined) => Promise<import('@scout9/admin').ParseResponse>;
 	export type WorkflowFun = (event: import('@scout9/app').WorkflowEvent) => Promise<import('@scout9/app').WorkflowResponse>;
-	export type GenerateFun = (data: import('@scout9/admin').GenerateRequest) => Promise<import('@scout9/admin').GenerateResponse>;
+	export type GenerateFun = (data: import('@scout9/admin').GenerateRequestOneOf) => Promise<import('@scout9/admin').GenerateResponse>;
 	export type IdGeneratorFun = (prefix: any) => string;
-	export type StatusCallback = (message: string, level: 'info' | 'warn' | 'error' | 'success' | undefined, type: string, payload: any) => void;
+	export type StatusCallback = (message: string, level: 'info' | 'warn' | 'error' | 'success' | undefined, type: string | undefined, payload: any | undefined) => void;
 	export type CustomerSpiritCallbacks = {
 		parser: ParseFun;
 		workflow: WorkflowFun;
@@ -526,9 +526,9 @@ declare module '@scout9/app/spirits' {
 	};
 	export type ParseFun = (message: string, language: string | undefined) => Promise<import('@scout9/admin').ParseResponse>;
 	export type WorkflowFun = (event: import('@scout9/app').WorkflowEvent) => Promise<import('@scout9/app').WorkflowResponse>;
-	export type GenerateFun = (data: import('@scout9/admin').GenerateRequest) => Promise<import('@scout9/admin').GenerateResponse>;
+	export type GenerateFun = (data: import('@scout9/admin').GenerateRequestOneOf) => Promise<import('@scout9/admin').GenerateResponse>;
 	export type IdGeneratorFun = (prefix: any) => string;
-	export type StatusCallback = (message: string, level: 'info' | 'warn' | 'error' | 'success' | undefined, type: string, payload: any) => void;
+	export type StatusCallback = (message: string, level: 'info' | 'warn' | 'error' | 'success' | undefined, type: string | undefined, payload: any | undefined) => void;
 	export type CustomerSpiritCallbacks = {
 		parser: ParseFun;
 		workflow: WorkflowFun;
