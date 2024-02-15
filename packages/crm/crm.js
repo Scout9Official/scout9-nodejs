@@ -50,7 +50,7 @@ export default class Scout9CRM {
   /**
    * Add one or more customers
    * @param {(import('@scout9/admin').Customer | Array<import('@scout9/admin').Customer>)} customerOrCustomers
-   * @returns {Promise<import('@scout9/admin').CreateCustomersResponse | import('@scout9/admin').CreateCustomerResponse>}
+   * @returns {Promise<import('@scout9/admin').CreateCustomersResponse | import('@scout9/admin').CustomerCreateResponse>}
    */
   async add(customerOrCustomers) {
     if (Array.isArray(customerOrCustomers)) {
@@ -68,7 +68,7 @@ export default class Scout9CRM {
   /**
    * Update one or more customers
    * @param {(Partial<import('@scout9/admin').Customer> & {$id: string; name: string}) | Array<(Partial<import('@scout9/admin').Customer> & {$id: string; name: string})>} updateOrUpdates
-   * @returns {Promise<import('@scout9/admin').UpdateCustomersResponse | import('@scout9/admin').UpdateCustomerResponse>}
+   * @returns {Promise<import('@scout9/admin').UpdateCustomersResponse | import('@scout9/admin').CustomerUpdateResponse>}
    */
   async update(updateOrUpdates) {
     if (Array.isArray(updateOrUpdates)) {
@@ -91,7 +91,7 @@ export default class Scout9CRM {
   /**
    * Remove one or more customers
    * @param {string | string[]} idOrIds
-   * @returns {Promise<import('@scout9/admin').DeleteCustomersResponse | import('@scout9/admin').DeleteCustomerResponse>}
+   * @returns {Promise<import('@scout9/admin').DeleteCustomersResponse | import('@scout9/admin').CustomerDeleteResponse>}
    */
   async remove(idOrIds) {
     if (Array.isArray(idOrIds)) {
