@@ -53,11 +53,13 @@ export const createMockConversation = (environment = 'phone', $agent = 'default'
 }
 
 /**
+ * @param {string} message
+ * @param {string | import('@scout9/app').WorkflowEvent['intent'] | null} intent
  * @returns {import('@scout9/app').WorkflowEvent}
  */
 export const createMockWorkflowEvent = (
   message,
-  intent,
+  intent = null,
 ) => {
   return {
     messages: [],
@@ -70,7 +72,7 @@ export const createMockWorkflowEvent = (
       current: intent,
       flow: [],
       initial: intent
-    } : intent,
+    } : typeof intent === 'object' ? intent : null,
     stagnationCount: 0,
   }
 }

@@ -137,6 +137,9 @@ async function buildApp(cwd, src, dest, config) {
 
     const dir = await fs.readdir(source, {withFileTypes: true});
     for (const dirent of dir) {
+      if (dirent.name.includes('.spec') || dirent.name.includes('.test')) {
+        continue; // Skip this file or directory
+      }
       const sourcePath = path.resolve(source, dirent.name);
       const destinationPath = path.resolve(destination, dirent.name);
 
@@ -162,6 +165,9 @@ async function buildApp(cwd, src, dest, config) {
 
   // Copy app.js
   await fs.copyFile(appTemplateJsPath, path.resolve(dest, 'app.js'));
+
+  // Copy .env file
+  await fs.copyFile(path.resolve(cwd, '.env'), path.resolve(dest, '.env'));
 
   // Copy config.js - redact any sensitive information // @TODO use security encoder
   const redactedConfig = {

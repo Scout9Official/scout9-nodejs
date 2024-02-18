@@ -142,6 +142,8 @@ export interface Conversation {
   };
   locked?: boolean;
   lockAttempts?: number;
+  forwardedTo?: string; // personaId/phone/email
+  forwarded?: string; // ISO 8601
   /**
    * Detected intent
    */
@@ -224,9 +226,9 @@ export interface Agent {
   model?: 'Scout9' | 'bard' | 'openai';
   transcripts?: Message[][];
   audioRef?: any[];
-
-
 }
+
+export type Persona = Agent;
 
 /**
  * The input event provided to the application

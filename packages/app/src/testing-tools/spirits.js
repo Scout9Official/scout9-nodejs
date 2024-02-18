@@ -300,6 +300,7 @@ export const Spirits = {
             stagnationCount: conversation.lockAttempts || 0
         }).then((res) => Array.isArray(res) ? res : [res]);
         const hasNoInstructions = slots.every(s => !s.instructions || (Array.isArray(s) && s.instructions.length === 0));
+        const hasNoCustomMessage = slots.every(s => !s.message);
         const previousLockAttempt = conversation.lockAttempts || 0; // Used to track
 
         if (hasNoInstructions && noNewContext) {
@@ -331,6 +332,7 @@ export const Spirits = {
                 _forward = forward;
                 _forwardNote = forwardNote;
                 if (typeof forward === 'string') {
+                    updateConversation(conversation, {forwarded: forward});
                     messages.push({
                         id: idGenerator('sys'),
                         role: 'system',
@@ -339,6 +341,7 @@ export const Spirits = {
                     });
                     progress(`Forwarded to "${forward}"`, 'info', 'ADD_MESSAGE', messages[messages.length - 1]);
                 } else if (typeof forward === 'boolean') {
+                    updateConversation(conversation, {forwarded: conversation.$agent});
                     messages.push({
                         id: idGenerator('sys'),
                         role: 'system',
@@ -346,6 +349,7 @@ export const Spirits = {
                         time: new Date().toISOString()
                     });
                     progress(`Forwarded to agent`, 'info', 'ADD_MESSAGE', messages[messages.length - 1]);
+
                 } else {
                     messages.push({
                         id: idGenerator('sys'),
@@ -354,6 +358,7 @@ export const Spirits = {
                         time: new Date().toISOString()
                     });
                     progress(`Forwarded to "${forward.to}" ${forward.mode ? ' (' + forward.mode + ')' : ''}`, 'info', 'ADD_MESSAGE', messages[messages.length - 1]);
+                    updateConversation(conversation, {forwarded: forward.to});
                 }
             }
 
@@ -429,36 +434,39 @@ export const Spirits = {
             progress('Reset conversation intent', 'info', 'UPDATE_CONVERSATION', {intent: null, intentScore: null, locked: false, lockAttempts: 0});
         }
 
-
         // 4. Generate response
-        if (!conversation.locked) {
-            try {
-                progress('Parsing message', 'info', 'SET_PROCESSING', 'system');
-                const generatorPayload = await generator({
-                    messages,
-                    persona,
-                    context,
-                    llm: config.llm,
-                    pmt: config.pmt,
-                });
-                progress('Generated response', 'success', undefined, undefined);
-                // Check if already had message
-                const agentMessages = messages.filter(m => m.role === 'agent');
-                const lastAgentMessage = agentMessages[agentMessages.length - 1];
-                if (lastAgentMessage && lastAgentMessage.content === generatorPayload.message) {
-                    conversation = lockConversation(conversation);
-                } else {
-                    messages.push({
-                        id: idGenerator('agent'),
-                        role: 'agent',
-                        content: generatorPayload.message,
-                        time: new Date().toISOString()
+        // If conversation previously locked, don't generate
+        if (!input.conversation.locked) {
+            // If conversation is newly locked, don't generate, unless instructions were provided and no custom messages were provided
+            if ((!conversation.locked || !hasNoInstructions) && !!hasNoCustomMessage) {
+                try {
+                    progress('Parsing message', 'info', 'SET_PROCESSING', 'system');
+                    const generatorPayload = await generator({
+                        messages,
+                        persona,
+                        context,
+                        llm: config.llm,
+                        pmt: config.pmt,
                     });
-                    progress('Added agent message', 'info', 'ADD_MESSAGE', messages[messages.length - 1]);
+                    progress('Generated response', 'success', undefined, undefined);
+                    // Check if already had message
+                    const agentMessages = messages.filter(m => m.role === 'agent');
+                    const lastAgentMessage = agentMessages[agentMessages.length - 1];
+                    if (lastAgentMessage && lastAgentMessage.content === generatorPayload.message) {
+                        conversation = lockConversation(conversation);
+                    } else {
+                        messages.push({
+                            id: idGenerator('agent'),
+                            role: 'agent',
+                            content: generatorPayload.message,
+                            time: new Date().toISOString()
+                        });
+                        progress('Added agent message', 'info', 'ADD_MESSAGE', messages[messages.length - 1]);
+                    }
+                } catch (e) {
+                    console.error(`Locking conversation, error generating response: ${e.message}`);
+                    conversation = lockConversation(conversation);
                 }
-            } catch (e) {
-                console.error(`Locking conversation, error generating response: ${e.message}`);
-                conversation = lockConversation(conversation);
             }
         }
 

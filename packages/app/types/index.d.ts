@@ -142,6 +142,8 @@ declare module '@scout9/app' {
 	};
 	locked?: boolean;
 	lockAttempts?: number;
+	forwardedTo?: string; // personaId/phone/email
+	forwarded?: string; // ISO 8601
 	/**
 	 * Detected intent
 	 */
@@ -224,9 +226,9 @@ declare module '@scout9/app' {
 	model?: 'Scout9' | 'bard' | 'openai';
 	transcripts?: Message[][];
 	audioRef?: any[];
-
-
   }
+
+  export type Persona = Agent;
 
   /**
    * The input event provided to the application
@@ -357,12 +359,14 @@ declare module '@scout9/app' {
 }
 
 declare module '@scout9/app/testing-tools' {
-	import type { Scout9Api } from '@scout9/admin';
 	export function createMockAgent(firstName?: string, lastName?: string): import('@scout9/app').Agent;
 	export function createMockCustomer(firstName?: string, lastName?: string): import('@scout9/app').Customer;
 	export function createMockMessage(content: any, role?: string, time?: string): import('@scout9/app').Message;
 	export function createMockConversation(environment?: string, $agent?: string, $customer?: string): import('@scout9/app').Conversation;
-	export function createMockWorkflowEvent(message: any, intent: any): import('@scout9/app').WorkflowEvent;
+	export function createMockWorkflowEvent(message: string, intent?: string | import('@scout9/app').WorkflowEvent['intent'] | null): import('@scout9/app').WorkflowEvent;
+	/**
+	 * Testing tool kit, used to handle Scout9 operations such as parsing, workflow, and generating responses
+	 */
 	export class Scout9Test {
 		/**
 		 * Mimics a customer message to your app (useful for testing)
@@ -371,32 +375,64 @@ declare module '@scout9/app/testing-tools' {
 		 * @param conversation - existing conversation
 		 * */
 		constructor({ persona, customer, context, cwd, src, mode }?: import('@scout9/app').Customer | undefined);
-		messages: any[];
-		_cwd: any;
-		_src: any;
-		_mode: any;
+		
+		customer: import('@scout9/app').Customer;
+		
+		persona: import('@scout9/app').Persona;
+		
+		conversation: import('@scout9/app').Conversation;
+		
+		messages: import('@scout9/app').Message[];
+		
 		context: any;
-		conversation: import("@scout9/app").Conversation;
-		customer: any;
-		_personaId: any;
+		
+		private _config;
+		
+		private _workflowFn;
+		
+		private _scout9;
+		
+		private _cwd;
+		
+		private _src;
+		
+		private _mode;
+		
+		private _loaded;
+		
+		private _personaId;
 		load(): Promise<void>;
-		_workflowFn: any;
-		_config: any;
-		_scout9: Scout9Api | undefined;
-		persona: any;
-		_loaded: boolean | undefined;
+		/**
+		 * Teardown the test environment
+		 */
+		teardown(): void;
 		/**
 		 * Send a message as a customer to your app
 		 * @param message - message to send
 		 * */
 		send(message: string): Promise<ConversationEvent>;
-		get _noNewContext(): boolean;
-		get _recentUserMessage(): any;
-		get _userMessages(): any[];
-		_lockConversation(): void;
-		_incrementLockAttempt(): void;
-		
-		private _addInstruction;
+		/**
+		 * Parse user message
+		 * @param message - message string to parse
+		 * @param language - language to parse in, defaults to "en" for english
+		 * */
+		parse(message: string, language?: string | undefined): Promise<import('@scout9/admin').ParseResponse>;
+		/**
+		 * Runs your local app workflow
+		 * @param message - the message to run through the workflow
+		 * @param event - additional event data
+		 * */
+		workflow(message: string, event?: Omit<Partial<import('@scout9/app').WorkflowEvent>, 'message'> | undefined): Promise<import('@scout9/app').WorkflowResponse>;
+		/**
+		 * Generate a response to the user from the given or registered persona's voice in relation to the current conversation's context.
+		 * @param {Object} input - Generation input, defaults to test registered data such as existing messages, context, and persona information.
+		 * */
+		generate({ personaId, conversation, messages, context }?: {
+			personaId?: string | undefined;
+			conversation?: Partial<import("@scout9/admin").ConversationCreateRequest> | undefined;
+			messages?: import("@scout9/app").Message[] | undefined;
+			context?: any;
+		} | undefined): Promise<import('@scout9/admin').GenerateResponse>;
 	}
 	export namespace Spirits {
 		function customer(input: ConversationData & CustomerSpiritCallbacks): Promise<ConversationEvent>;

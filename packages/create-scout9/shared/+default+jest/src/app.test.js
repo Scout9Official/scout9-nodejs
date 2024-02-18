@@ -1,16 +1,14 @@
-import Scout9App from './app.js';
-import { createMockWorkflowEvent } from '@scout9/app';
+import { Scout9Test } from '@scout9/app/testing-tools';
 
 describe('Scout9App', () => {
 
   it('Should try to ask customer what type of pizza they want', async () => {
-    const event = createMockWorkflowEvent('Hey I would like a pizza', 'pizzaOrder');
+    const test = new Scout9Test();
+    await test.load();
 
-    // Alternatively you can run the app using sendEvent
-    // const response = await sendEvent(event);
+    await test.send('Hey I would like a pizza');
 
-    const response = await Scout9App(event);
-    expect(response.instructions).toEqual('Figure out what pizza sizes, toppings are needed for order');
+    expect(test.messages[1].content).toEqual('Figure out what pizza sizes, toppings are needed for order');
   });
 
 });

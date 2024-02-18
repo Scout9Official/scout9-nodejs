@@ -70,7 +70,7 @@ export function report(config, logger) {
   for (const entityConfig of config.entities) {
     const {entity, api, entities, training, tests, definitions} = entityConfig;
     const parents = entities.slice(0, -1).join('/')
-    logger.primary(`${grey('Entity: ')}${parents}${magenta(entity)}`);
+    logger.primary(`${grey('Entity: ')}${parents}/${magenta(entity)}`);
     if (definitions && definitions.length > 0) {
       logger.info(`${cyan(definitions.length)} definition${definitions.length > 1 ? 's' : ''}`);
     }
@@ -106,7 +106,7 @@ export function report(config, logger) {
   for (const workflowConfig of config.workflows) {
     const {entity, api, entities } = workflowConfig;
     const parents = entities.slice(0, -1).join('/')
-    logger.primary(`${grey('Workflow: ')}${parents}${magenta(entity)}`);
+    logger.primary(`${grey('Workflow: ')}${parents}/${magenta(entity)}`);
     if (!api) {
       logger.info(`${cyan('0')} api's exported`);
     }

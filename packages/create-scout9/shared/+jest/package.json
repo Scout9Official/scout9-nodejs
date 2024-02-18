@@ -6,6 +6,8 @@
     "jest": "^29.7.0"
   },
   "scripts": {
-    "test": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest && scout9 test"
+    "test:unit": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest",
+    "test": "scout9 test",
+    "pretest": "npm run test:unit"
   }
 }
