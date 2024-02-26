@@ -233,7 +233,7 @@ export interface Agent {
   excludedLocations?: string[];
   model?: 'Scout9' | 'bard' | 'openai';
   transcripts?: Message[][];
-  audioRef?: any[];
+  audios?: any[];
 }
 
 export type Persona = Agent;
@@ -246,7 +246,7 @@ export interface WorkflowEvent<Type = any> {
   conversation: Conversation;
   context: Partial<Type>;
   message: Message;
-  agent: Omit<Agent, 'transcripts' | 'audioRef' | 'includedLocations' | 'excludedLocations' | 'model' | 'context'>;
+  agent: Omit<Agent, 'transcripts' | 'audios' | 'includedLocations' | 'excludedLocations' | 'model' | 'context'>;
   customer: Customer;
   intent: {
     current: string | null;

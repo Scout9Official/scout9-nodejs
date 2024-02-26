@@ -4,6 +4,7 @@ import colors from 'kleur';
 import { globSync } from 'glob';
 import { checkVariableType, requireProjectFile } from '../../utils/index.js';
 import { agentsConfigurationSchema } from '../../runtime/index.js';
+import { Configuration, Scout9Api } from '@scout9/admin';
 
 /**
  *
@@ -26,23 +27,59 @@ async function toBuffer(imgBufferOrFilepath) {
  * @param {string} [inputs.cwd]
  * @param {string} [inputs.dest]
  * @param {string} inputs.fileName
- * @param {string | Buffer} inputs.img
+ * @param {string | Buffer} inputs.file
  * @returns {Promise<string>}
  */
-async function writeImgToLocal({cwd = process.cwd(), dest = '/tmp/project', img, fileName} = {}) {
+async function writeFileToLocal({cwd = process.cwd(), dest = '/tmp/project', file, fileName} = {}) {
   // Ensure folder exists
-  const imgFolder = path.resolve(cwd, dest);
-  await fs.mkdir(path.dirname(imgFolder), {recursive: true});
-  const imgPath = path.resolve(imgFolder, fileName);
-  await fs.writeFile(imgPath, await toBuffer(img));
-  return imgPath;
+  const fileFolder = path.resolve(cwd, dest);
+  const filePath = path.resolve(fileFolder, fileName);
+  await fs.mkdir(path.dirname(filePath), {recursive: true});
+  await fs.writeFile(filePath, await toBuffer(file));
+  return filePath;
 }
 
-async function writeImgToServer({img, fileName}) {
-
+async function writeImgToServer({img, fileName, agentId}) {
+  const {url} = (await (new Scout9Api(new Configuration({apiKey: process.env.S9_API_KEY}))).agentProfileUpload(
+    agentId,
+    img
+  ).then(res => res.data));
+  if (!url) {
+    throw new Error(`Failed to upload agent image`);
+  }
+  return url;
 }
 
-export default async function loadAgentConfig({cwd = process.cwd(), dest = '/tmp/project', deploying = false, src = 'src', cb = (message) => {}} = {}) {
+async function writeTranscriptsToServer({transcripts, agentId}) {
+  const {urls} = (await (new Scout9Api(new Configuration({apiKey: process.env.S9_API_KEY}))).agentTranscriptUpload(
+    agentId,
+    transcripts
+  ).then(res => res.data));
+  if (!urls) {
+    throw new Error(`Failed to upload agent image`);
+  }
+  return urls;
+}
+
+async function writeAudiosToServer({audios, agentId}) {
+  const {urls} = (await (new Scout9Api(new Configuration({apiKey: process.env.S9_API_KEY}))).agentTranscriptUpload(
+    agentId,
+    audios
+  ).then(res => res.data));
+  if (!urls) {
+    throw new Error(`Failed to upload agent image`);
+  }
+  return urls;
+}
+
+export default async function loadAgentConfig({
+  cwd = process.cwd(),
+  dest = '/tmp/project',
+  deploying = false,
+  src = 'src',
+  cb = (message) => {
+  }
+} = {}) {
   const paths = globSync(`${src}/entities/agents/{index,config}.{ts,js}`, {cwd, absolute: true});
   if (paths.length === 0) {
     throw new Error(`Missing required agents entity file, rerun "scout9 sync" to fix`);
@@ -74,11 +111,14 @@ export default async function loadAgentConfig({cwd = process.cwd(), dest = '/tmp
   // Send warnings if not properly registered
   for (const agent of agents) {
     if (!agent.forwardPhone && !agent.forwardEmail) {
-      throw new Error(`src/entities/agents.js|ts: must provide either a ".forwardPhone" or ".forwardEmail" to ${agent.firstName || JSON.stringify(agent)}.`)
+      throw new Error(`src/entities/agents.js|ts: must provide either a ".forwardPhone" or ".forwardEmail" to ${agent.firstName || JSON.stringify(
+        agent)}.`);
     }
     if (!agent.programmablePhoneNumber) {
       const userName = agent.firstName ? `${agent.firstName}${agent.lastName ? ' ' + agent.lastName : ''}` : agent.forwardPhone;
-      cb(`⚠️${colors.yellow('Warning')}: ${userName} does not have a masked phone number to do auto replies. You can register one at ${colors.cyan('https://scout9.com/b')} under ${colors.green('users')} > ${colors.green(userName)}. Then run ${colors.cyan('scout9 sync')} to update.`);
+      cb(`⚠️${colors.yellow('Warning')}: ${userName} does not have a masked phone number to do auto replies. You can register one at ${colors.cyan(
+        'https://scout9.com/b')} under ${colors.green('users')} > ${colors.green(userName)}. Then run ${colors.cyan(
+        'scout9 sync')} to update.`);
     }
     if (agent.forwardPhone && agents.filter(a => a.forwardPhone && (a.forwardPhone === agent.forwardPhone)).length > 1) {
       throw new Error(`src/entities/agents.js|ts: ".forwardPhone: ${agent.forwardPhone}" can only be associated to one agent within your project`);
@@ -87,15 +127,125 @@ export default async function loadAgentConfig({cwd = process.cwd(), dest = '/tmp
       throw new Error(`src/entities/agents.js|ts: ".forwardEmail: ${agent.forwardEmail}" can only be associated to one agent within your project`);
     }
 
+    // Handle agent image changes
     if (agent.img) {
       if (typeof agent.img === 'string') {
-
+        if (!agent.img.startsWith('https://storage.googleapis.com')) {
+          if (deploying) {
+            cb(`📸 Uploading ${agent.firstName || 'agent'}'s profile image...`);
+            agent.img = await writeImgToServer({
+              img: agent.img,
+              fileName: `${agent.firstName || 'agent'}.png`,
+              agentId: agent.id
+            });
+          } else {
+            agent.img = await writeFileToLocal({
+              img: agent.img,
+              fileName: `${agent.firstName || 'agent'}.png`,
+              cwd,
+              dest
+            });
+          }
+        }
+      } else if (Buffer.isBuffer(agent.img)) {
+        if (deploying) {
+          cb(`📸 Uploading ${agent.firstName || 'agent'}'s profile image...`);
+          agent.img = await writeImgToServer({
+            img: agent.img,
+            fileName: `${agent.firstName || 'agent'}.png`,
+            agentId: agent.id
+          });
+        } else {
+          agent.img = await writeFileToLocal({
+            img: agent.img,
+            fileName: `${agent.firstName || 'agent'}.png`,
+            cwd,
+            dest
+          });
+        }
       } else {
-
+        throw new Error(`Invalid img type: ${typeof agent.img}`);
       }
     }
-  }
 
+
+    // Handle transcripts
+    if ((agent?.transcripts || []).length > 0) {
+      const deployedTranscripts = [];
+      const pendingTranscripts = [];
+      for (const transcript of agent.transcripts) {
+        if (typeof transcript === 'string') {
+          if (!transcript.startsWith('https://storage.googleapis.com')) {
+            pendingTranscripts.push(await fs.readFile(transcript));
+          } else {
+            deployedTranscripts.push(transcript);
+          }
+        } else if (Buffer.isBuffer(transcript)) {
+          pendingTranscripts.push(transcript);
+        } else {
+          throw new Error(`Invalid transcript type: ${typeof transcript}`);
+        }
+      }
+
+      let urls = [];
+      if (deploying) {
+        urls = await writeTranscriptsToServer({transcripts: pendingTranscripts, agentId: agent.id});
+      } else {
+        for (let i = 0; i < pendingTranscripts.length; i++) {
+          const transcript = pendingTranscripts[i];
+          urls.push(await writeFileToLocal({
+            file: transcript,
+            fileName: `transcript_${i + deployedTranscripts.length}`,
+            cwd,
+            dest
+          }));
+        }
+      }
+
+      agent.transcripts = [
+        ...deployedTranscripts,
+        ...urls
+      ];
+    }
+
+    if ((agent?.audios || []).length > 0) {
+      const deployedAudios = [];
+      const pendingAudios = [];
+      for (const audio of audios) {
+        if (typeof audio === 'string') {
+          if (!audio.startsWith('https://storage.googleapis.com')) {
+            pendingAudios.push(await fs.readFile(audio));
+          } else {
+            deployedAudios.push(audio);
+          }
+        } else if (Buffer.isBuffer(audio)) {
+          pendingAudios.push(audio);
+        } else {
+          throw new Error(`Invalid audio type: ${typeof audio}`);
+        }
+      }
+
+      let urls = [];
+      if (deploying) {
+        urls = await writeAudiosToServer({audios: pendingAudios, agentId: agent.id});
+      } else {
+        for (let i = 0; i < pendingAudios.length; i++) {
+          const audio = pendingAudios[i];
+          urls.push(await writeFileToLocal({
+            file: audio,
+            fileName: `audio_${i + deployedAudios.length}`,
+            cwd,
+            dest
+          }));
+        }
+      }
+
+      agent.audios = [
+        ...deployedAudios,
+        ...urls
+      ];
+    }
+  }
   const result = agentsConfigurationSchema.safeParse(agents);
   if (!result.success) {
     result.error.source = paths[0];

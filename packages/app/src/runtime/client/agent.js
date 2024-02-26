@@ -53,6 +53,6 @@ export const agentConfigurationSchema = z.object({
   excludedLocations: z.array(z.string({description: 'Locations the agent is excluded from'})).optional(),
   model: z.enum(['Scout9', 'bard', 'openai']).optional().default('openai'),
   transcripts: z.array(z.array(MessageSchema)).optional(),
-  audioRef: z.array(z.any()).optional()
+  audios: z.array(z.any()).optional()
 });
 export const agentsConfigurationSchema = z.array(agentConfigurationSchema);
