@@ -146,6 +146,7 @@ declare module '@scout9/app' {
 	forwardedTo?: string; // personaId/phone/email
 	forwarded?: string; // ISO 8601
 	forwardNote?: string;
+
 	/**
 	 * Detected intent
 	 */
@@ -213,6 +214,11 @@ declare module '@scout9/app' {
 	  email?: string;
 	};
 
+	/**
+	 * Profile image path
+	 */
+	img?: string | Buffer;
+
 	firstName?: string;
 	lastName?: string;
 	inactive?: boolean;
@@ -227,7 +233,7 @@ declare module '@scout9/app' {
 	excludedLocations?: string[];
 	model?: 'Scout9' | 'bard' | 'openai';
 	transcripts?: Message[][];
-	audioRef?: any[];
+	audios?: any[];
   }
 
   export type Persona = Agent;
@@ -240,7 +246,7 @@ declare module '@scout9/app' {
 	conversation: Conversation;
 	context: Partial<Type>;
 	message: Message;
-	agent: Omit<Agent, 'transcripts' | 'audioRef' | 'includedLocations' | 'excludedLocations' | 'model' | 'context'>;
+	agent: Omit<Agent, 'transcripts' | 'audios' | 'includedLocations' | 'excludedLocations' | 'model' | 'context'>;
 	customer: Customer;
 	intent: {
 	  current: string | null;
