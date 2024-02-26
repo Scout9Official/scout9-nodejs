@@ -1,4 +1,5 @@
 import { Configuration, Scout9Api } from '@scout9/admin';
+import {grey, italic, bgWhite, black} from 'kleur/colors';
 import { createMockConversation, createMockWorkflowEvent } from './mocks.js';
 import { loadConfig } from '../core/config/index.js';
 import { requireProjectFile } from '../utils/index.js';
@@ -42,19 +43,19 @@ export class Scout9Test {
    * @private
    * @type {import('scout9/app').Scout9ProjectBuildConfig | null}
    */
-  _config = null;
+  _project = null;
 
   /**
    * @private
    * @type {import('@scout9/app').WorkflowFunction | null}
    */
-  _workflowFn = null;
+  _app = null;
 
   /**
    * @private
    * @type {import('@scout9/admin').Scout9Api | null}
    */
-  _scout9 = null;
+  _api = null;
 
   /**
    * @private
@@ -84,22 +85,30 @@ export class Scout9Test {
 
   /**
    * Mimics a customer message to your app (useful for testing)
-   * @param {import('@scout9/app').Customer | undefined} customer
-   * @param {any | undefined} context - prior conversation context
-   * @param {string | undefined} persona id to use
-   * @param {import('@scout9/app').Conversation | undefined} conversation - existing conversation
-   * @param {string | undefined} cwd
-   * @param {string | undefined} src
-   * @param {string | undefined} mode
+   * @param props - the Scout9Test properties
+   * @param {import('@scout9/app').Customer | undefined} [props.customer] - customer to use
+   * @param {any | undefined} [props.context] - prior conversation context
+   * @param {string | undefined} [props.persona] id to use
+   * @param {import('@scout9/app').Conversation | undefined} [props.conversation] - existing conversation
+   * @param {string | undefined} [props.cwd]
+   * @param {string | undefined} [props.src]
+   * @param {string | undefined} [props.mode]
+   * @param {import('@scout9/admin').Scout9Api} [props.api]
+   * @param {import('@scout9/app').WorkflowFunction} [props.app]
+   * @param {import('scout9/app').Scout9ProjectBuildConfig} [props.project]
    */
   constructor(
     {
       persona,
       customer,
       context,
+      conversation = createMockConversation(),
       cwd = process.cwd(),
       src = 'src',
-      mode = 'production'
+      mode = 'production',
+      api,
+      app,
+      project
     } = {
       cwd: process.cwd(),
       src: 'src',
@@ -111,7 +120,16 @@ export class Scout9Test {
     this._src = src;
     this._mode = mode;
     this.context = context || {};
-    this.conversation = createMockConversation();
+    this.conversation = conversation;
+    if (api) {
+      this._api = api;
+    }
+    if (app) {
+      this._app = app;
+    }
+    if (project) {
+      this._project = project;
+    }
     if (!customer) {
       customer = {
         id: 'mock_customer_' + Math.random().toString(36).slice(2, 11),
@@ -128,32 +146,39 @@ export class Scout9Test {
     this._personaId = persona;
   }
 
-  async load() {
-    const paths = globSync(`${this._src}/app.{ts,cjs,mjs,js}`, {cwd: this._cwd, absolute: true});
-    if (paths.length === 0) {
-      throw new Error(`Missing main project entry file ${this._src}/app.{js|ts|cjs|mjs}`);
-    } else if (paths.length > 1) {
-      throw new Error(`Multiple main project entry files found ${this._src}/app.{js|ts|cjs|mjs}`);
+  /**
+   * Loads the test environment
+   * @param {boolean} [override] - defaults to false, if true, it will override the current loaded state such as the scout9 api, workflow function, and project config
+   * @returns {Promise<void>}
+   */
+  async load(override = false) {
+
+    // Load app (if not already loaded or override true)
+    if (override || !this._app) {
+      this._app = await this._loadApp();
     }
-    const [appFilePath] = paths;
-    await requireProjectFile(appFilePath)
-      .then(mod => {
-        this._workflowFn = mod.default;
-      });
-    await loadConfig({cwd: this._cwd, src: this._src, mode: this._mode})
-      .then((_config) => {
-        this._config = _config;
-        this._scout9 = new Scout9Api(new Configuration({apiKey: process.env.SCOUT9_API_KEY}));
-        if (!this._personaId) {
-          this._personaId = (this._config.persona || this._config.agents)?.[0]?.id;
-          if (!this._personaId) {
-            throw new Error(`No persona found in config, please specify a persona id`);
-          }
-        }
-        this.conversation.$agent = this._personaId;
-        this.persona = (this._config.persona || this._config.agents).find(p => p.id === this._personaId);
-        this.context.agent = this.persona;
-      });
+
+    // Load app configuration (if not already loaded or override true)
+    if (override || !this._project) {
+      this._project = await loadConfig({cwd: this._cwd, src: this._src, mode: this._mode})
+    }
+
+    if (override || !this._api) {
+      this._api = new Scout9Api(new Configuration({apiKey: process.env.SCOUT9_API_KEY}));
+    }
+
+    if (!this._personaId) {
+      this._personaId = (this._project.persona || this._project.agents)?.[0]?.id;
+      if (!this._personaId) {
+        throw new Error(`No persona found in config, please specify a persona id`);
+      }
+    }
+    this.conversation.$agent = this._personaId;
+    this.persona = (this._project.persona || this._project.agents).find(p => p.id === this._personaId);
+    if (!this.persona) {
+      throw new Error(`Could not find persona with id: ${this._personaId}, ensure your project is sync'd by running "scout9 sync" or you are using the correct persona id`);
+    }
+    this.context.agent = this.persona;
     this._loaded = true;
   }
 
@@ -162,20 +187,40 @@ export class Scout9Test {
    */
   teardown() {
     this._loaded = false;
-    this._scout9 = null;
-    this._config = null;
-    this._workflowFn = null;
+    this._api = null;
+    this._project = null;
+    this._app = null;
   }
 
   /**
    * Send a message as a customer to your app
    * @param {string} message - message to send
+   * @param {import('@scout9/app/testing-tools').StatusCallback | boolean} [progress] - progress callback, if true, will log progress, can override with your own callback. If not provided, no logs will be added.
    * @returns {Promise<ConversationEvent>}
    */
-  async send(message) {
+  async send(message, progress = false) {
     if (!this._loaded) {
       await this.load();
     }
+
+    const defaultProgressLogger = (message, level = 'info', type = '') => {
+      const typeStdout = type ? italic(bgWhite(' ' + black(type) + ' ')) : '';
+      const messageStdout = grey(message);
+      (console.hasOwnProperty(level) ? console[level] : console.log)(`\t${typeStdout ? typeStdout + ' ' : ''}${messageStdout}`);
+    }
+
+    // If custom logger provided, use it, otherwise use default logger
+    let progressInput = typeof progress === 'function' ? progress : defaultProgressLogger;
+
+    // If progress turned off, use a no-op function
+    if (typeof progress === 'boolean') {
+      if (!!progress) {
+        progressInput = defaultProgressLogger; // use default logger
+      } else {
+        progressInput = () => {}; // use no-op
+      }
+    }
+
     const _message = {
       id: 'user_mock_' + Math.random().toString(36).slice(2, 11),
       role: 'customer',
@@ -185,23 +230,24 @@ export class Scout9Test {
     this.messages.push(_message);
     const result = await Spirits.customer({
       customer: this.customer,
-      config: this._config,
+      config: this._project,
       parser: async (_msg, _lng) => {
         // @TODO can't do this for HUGE data sets
-        const detectableEntities = this._config.entities.filter(e => e.training?.length > 0 && e.definitions?.length > 0);
-        return this._scout9.parse({
+        const detectableEntities = this._project.entities.filter(e => e.training?.length > 0 && e.definitions?.length > 0);
+        return this._api.parse({
           message: _msg,
           language: _lng,
           entities: detectableEntities
         }).then((_res => _res.data));
       },
       workflow: async (event) => {
-        return this._workflowFn(event);
+        return this._app(event);
       },
       generator: (request) => {
-        return this._scout9.generate(request).then((_res => _res.data));
+        return this._api.generate(request).then((_res => _res.data));
       },
       idGenerator: (prefix) => prefix + '_' + Math.random().toString(36).slice(2, 11),
+      progress: progressInput,
       message: _message,
       context: this.context,
       messages: this.messages,
@@ -225,6 +271,7 @@ export class Scout9Test {
         this.conversation.forwardedTo = 'Invalid Forward';
       }
       this.conversation.forwarded = new Date().toString();
+      this.conversation.forwardNote = result.conversation.forwardNote || '';
       this.conversation.locked = true;
     }
 
@@ -242,13 +289,13 @@ export class Scout9Test {
    * @returns {Promise<import('@scout9/admin').ParseResponse>}
    */
   async parse(message, language = 'en') {
-    if (!this._config) {
+    if (!this._project) {
       throw new Error(`Config is not defined`);
     }
-    return this._scout9.parse({
+    return this._api.parse({
       message,
       language,
-      entities: this._config.entities
+      entities: this._project.entities
     }).then((_res => _res.data));
   }
 
@@ -259,13 +306,13 @@ export class Scout9Test {
    * @returns {Promise<import('@scout9/app').WorkflowResponse>}
    */
   async workflow(message, event = {}) {
-    if (!this._workflowFn) {
+    if (!this._app) {
       throw new Error(`Workflow function is not loaded or found - make sure to run ".load()" before calling ".workflow()"`);
     }
     if (event.hasOwnProperty('message')) {
       console.warn(`WARNING: inserting a "event.message" will overwrite your "message" argument`);
     }
-    return this._workflowFn({
+    return this._app({
       ...createMockWorkflowEvent(message),
       ...event
     });
@@ -281,17 +328,17 @@ export class Scout9Test {
    * @returns {Promise<import('@scout9/admin').GenerateResponse>}
    */
   async generate({personaId = this._personaId, conversation = {}, messages = this.messages, context = this.context}) {
-    if (!this._scout9) {
+    if (!this._api) {
       throw new Error(`Scout9 API is not loaded or found - make sure to run ".load()" before calling ".generate()"`);
     }
-    if (!this._config) {
+    if (!this._project) {
       throw new Error(`Config is not defined - make sure to run ".load()" before calling ".generate()"`);
     }
-    const persona = (this._config.persona || this._config.agents).find(p => p.id === personaId);
+    const persona = (this._project.persona || this._project.agents).find(p => p.id === personaId);
     if (!persona) {
       throw new Error(`Could not find persona with id: ${personaId}, ensure your project is sync'd by running "scout9 sync"`);
     }
-    return this._scout9.generate({
+    return this._api.generate({
       convo: {
         $customer: this.customer.id,
         environment: this.conversation.environment,
@@ -302,9 +349,24 @@ export class Scout9Test {
       messages,
       context,
       persona,
-      llm: this._config.llm,
-      pmt: this._config.pmt
+      llm: this._project.llm,
+      pmt: this._project.pmt
     }).then((_res => _res.data));
+  }
+
+  /**
+   * @private
+   */
+  async _loadApp() {
+    const paths = globSync(`${this._src}/app.{ts,cjs,mjs,js}`, {cwd: this._cwd, absolute: true});
+    if (paths.length === 0) {
+      throw new Error(`Missing main project entry file ${this._src}/app.{js|ts|cjs|mjs}`);
+    } else if (paths.length > 1) {
+      throw new Error(`Multiple main project entry files found ${this._src}/app.{js|ts|cjs|mjs}`);
+    }
+    const [appFilePath] = paths;
+    return requireProjectFile(appFilePath)
+      .then(mod => mod.default);
   }
 
 }

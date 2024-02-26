@@ -115,6 +115,71 @@ export interface AgentDeleteResponse {
 /**
  *
  * @export
+ * @interface AgentFileManifest
+ */
+export interface AgentFileManifest {
+    /**
+     *
+     * @type {AgentFileManifestImg}
+     * @memberof AgentFileManifest
+     */
+    'img'?: AgentFileManifestImg;
+    /**
+     * Sample audio files that help build out your agent to mimic your voice
+     * @type {Array<AgentFileManifestAudiosInner>}
+     * @memberof AgentFileManifest
+     */
+    'audios'?: Array<AgentFileManifestAudiosInner>;
+    /**
+     * Sample conversations that help build out your agent to mimic your responses
+     * @type {Array<AgentFileManifestTranscriptsInner>}
+     * @memberof AgentFileManifest
+     */
+    'transcripts'?: Array<AgentFileManifestTranscriptsInner>;
+}
+/**
+ * @type AgentFileManifestAudiosInner
+ * @export
+ */
+export type AgentFileManifestAudiosInner = File | string;
+/**
+ * @type AgentFileManifestImg
+ * @export
+ */
+export type AgentFileManifestImg = File | string;
+/**
+ * @type AgentFileManifestTranscriptsInner
+ * @export
+ */
+export type AgentFileManifestTranscriptsInner = File | string;
+/**
+ *
+ * @export
+ * @interface AgentFiles
+ */
+export interface AgentFiles {
+    /**
+     * Profile image file id of the agent
+     * @type {string}
+     * @memberof AgentFiles
+     */
+    'img'?: string;
+    /**
+     * Transcript file ids of the agent
+     * @type {Array<string>}
+     * @memberof AgentFiles
+     */
+    'transcripts'?: Array<string>;
+    /**
+     * Audio file ids of the agent
+     * @type {Array<string>}
+     * @memberof AgentFiles
+     */
+    'audios'?: Array<string>;
+}
+/**
+ *
+ * @export
  * @interface AgentWithFiles
  */
 export interface AgentWithFiles {
@@ -276,6 +341,44 @@ export interface ConditionLogic {
      * @memberof ConditionLogic
      */
     'condition': Condition;
+}
+/**
+ *
+ * @export
+ * @interface Config200Response
+ */
+export interface Config200Response {
+    /**
+     *
+     * @type {LlmConfig}
+     * @memberof Config200Response
+     */
+    'llm': LlmConfig;
+    /**
+     *
+     * @type {PmtConfig}
+     * @memberof Config200Response
+     */
+    'pmt': PmtConfig;
+    /**
+     *
+     * @type {Array<EntitiesBuildConfigInner>}
+     * @memberof Config200Response
+     */
+    'entities': Array<EntitiesBuildConfigInner>;
+}
+/**
+ *
+ * @export
+ * @interface Config200ResponseAllOf
+ */
+export interface Config200ResponseAllOf {
+    /**
+     *
+     * @type {Array<EntitiesBuildConfigInner>}
+     * @memberof Config200ResponseAllOf
+     */
+    'entities': Array<EntitiesBuildConfigInner>;
 }
 /**
  *
@@ -1757,7 +1860,7 @@ export interface CreateFileRequestWithStringPurpose {
      * @type {File}
      * @memberof CreateFileRequestWithStringPurpose
      */
-    'file': File | Buffer | Blob;
+    'file': File;
     /**
      *
      * @type {string}
@@ -2449,12 +2552,6 @@ export interface EntitiesBuildConfigInner {
     'entity'?: string;
     /**
      *
-     * @type {string}
-     * @memberof EntitiesBuildConfigInner
-     */
-    'id'?: string;
-    /**
-     *
      * @type {Array<EntityBuildConfigDefinitionsInner>}
      * @memberof EntitiesBuildConfigInner
      */
@@ -2475,48 +2572,29 @@ export interface EntitiesBuildConfigInner {
 /**
  *
  * @export
- * @interface EntityApiOutput
+ * @interface Entity
  */
-export interface EntityApiOutput {
-    /**
-     *
-     * @type {number}
-     * @memberof EntityApiOutput
-     */
-    'ms': number;
-    /**
-     *
-     * @type {object}
-     * @memberof EntityApiOutput
-     */
-    'data'?: object;
-}
-/**
- *
- * @export
- * @interface EntityApiRequest
- */
-export interface EntityApiRequest {
+export interface Entity {
     /**
      *
      * @type {string}
-     * @memberof EntityApiRequest
+     * @memberof Entity
      */
-    'entity': string;
+    'type': string;
     /**
      *
-     * @type {{ [key: string]: string; }}
-     * @memberof EntityApiRequest
+     * @type {string}
+     * @memberof Entity
      */
-    'params': {
-        [key: string]: string;
+    'id': string;
+    /**
+     *
+     * @type {{ [key: string]: any; }}
+     * @memberof Entity
+     */
+    'data': {
+        [key: string]: any;
     };
-    /**
-     *
-     * @type {object}
-     * @memberof EntityApiRequest
-     */
-    'payload'?: object;
 }
 /**
  *
@@ -2624,6 +2702,21 @@ export interface EntityBuildConfigTrainingInner {
      * @memberof EntityBuildConfigTrainingInner
      */
     'intent'?: string;
+}
+/**
+ *
+ * @export
+ * @interface EntityData
+ */
+export interface EntityData {
+    /**
+     * Data of the entity
+     * @type {{ [key: string]: any; }}
+     * @memberof EntityData
+     */
+    'data'?: {
+        [key: string]: any;
+    };
 }
 /**
  *
@@ -2961,6 +3054,30 @@ export interface GenerateResponse {
      * @memberof GenerateResponse
      */
     'ms': number;
+    /**
+     * Whether the message should be sent to the customer after generating
+     * @type {boolean}
+     * @memberof GenerateResponse
+     */
+    'send'?: boolean;
+    /**
+     * Any errors that occurred during generation
+     * @type {string}
+     * @memberof GenerateResponse
+     */
+    'error'?: string;
+    /**
+     * Whether the conversation should be forwarded to the agent after sending message
+     * @type {boolean}
+     * @memberof GenerateResponse
+     */
+    'forward'?: boolean;
+    /**
+     * reason for forwarding the conversation
+     * @type {string}
+     * @memberof GenerateResponse
+     */
+    'forwardNote'?: string;
 }
 /**
  *
@@ -3028,6 +3145,24 @@ export interface GetAgentResponse {
      * @memberof GetAgentResponse
      */
     'context'?: AgentContext;
+    /**
+     * Profile image file id of the agent
+     * @type {string}
+     * @memberof GetAgentResponse
+     */
+    'img'?: string;
+    /**
+     * Transcript file ids of the agent
+     * @type {Array<string>}
+     * @memberof GetAgentResponse
+     */
+    'transcripts'?: Array<string>;
+    /**
+     * Audio file ids of the agent
+     * @type {Array<string>}
+     * @memberof GetAgentResponse
+     */
+    'audios'?: Array<string>;
     /**
      * The ID of the agent
      * @type {string}
@@ -4673,11 +4808,11 @@ export interface ParseRequest {
      */
     'language'?: string;
     /**
-     * If provided, this will override the organizations saved entities (used for app development)
-     * @type {Array<Array<EntitiesBuildConfigInner>>}
+     *
+     * @type {Array<EntitiesBuildConfigInner>}
      * @memberof ParseRequest
      */
-    'entities'?: Array<Array<EntitiesBuildConfigInner>>;
+    'entities'?: Array<EntitiesBuildConfigInner>;
 }
 /**
  * The parsed message
@@ -4690,13 +4825,13 @@ export interface ParseResponse {
      * @type {string}
      * @memberof ParseResponse
      */
-    'intent': string;
+    'intent'?: string;
     /**
      * The confidence score of the intent
      * @type {number}
      * @memberof ParseResponse
      */
-    'intentScore': number;
+    'intentScore'?: number;
     /**
      * Context that is derived from the message
      * @type {{ [key: string]: any; }}
@@ -6921,69 +7056,20 @@ export declare class CustomContextApi extends BaseAPI {
     contextTest(contextTestRequest: ContextTestRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ContextTestResponse, any>>;
 }
 /**
- * DefaultApi - axios parameter creator
- * @export
- */
-export declare const DefaultApiAxiosParamCreator: (configuration?: Configuration) => {
-    /**
-     *
-     * @summary This is used for the generator to incldue PurposeEnum, because for whatever reason, query params are not included in the generator.
-     * @param {PingRequest} pingRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    ping: (pingRequest: PingRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-};
-/**
- * DefaultApi - functional programming interface
- * @export
- */
-export declare const DefaultApiFp: (configuration?: Configuration) => {
-    /**
-     *
-     * @summary This is used for the generator to incldue PurposeEnum, because for whatever reason, query params are not included in the generator.
-     * @param {PingRequest} pingRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    ping(pingRequest: PingRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PingRequest>>;
-};
-/**
- * DefaultApi - factory interface
- * @export
- */
-export declare const DefaultApiFactory: (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) => {
-    /**
-     *
-     * @summary This is used for the generator to incldue PurposeEnum, because for whatever reason, query params are not included in the generator.
-     * @param {PingRequest} pingRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    ping(pingRequest: PingRequest, options?: any): AxiosPromise<PingRequest>;
-};
-/**
- * DefaultApi - object-oriented interface
- * @export
- * @class DefaultApi
- * @extends {BaseAPI}
- */
-export declare class DefaultApi extends BaseAPI {
-    /**
-     *
-     * @summary This is used for the generator to incldue PurposeEnum, because for whatever reason, query params are not included in the generator.
-     * @param {PingRequest} pingRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof DefaultApi
-     */
-    ping(pingRequest: PingRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<PingRequest, any>>;
-}
-/**
  * Scout9Api - axios parameter creator
  * @export
  */
 export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration) => {
+    /**
+     *
+     * @summary Create a new entity
+     * @param {string} type
+     * @param {string} id The unique identifier of the entity
+     * @param {EntityData} entityData
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    addEntity: (type: string, id: string, entityData: EntityData, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
      * @summary Gets a agent
@@ -7049,6 +7135,13 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
      * @throws {RequiredError}
      */
     agentsUpdate: (updateAgentsRequest: UpdateAgentsRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Get the current project configuration
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    config: (options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
      * @summary Gets a context. Don\'t use, create your context entities within your Scout9 application.
@@ -7334,6 +7427,24 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
      */
     customersUpdate: (updateCustomersRequest: UpdateCustomersRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
+     * Deletes an entity with the specified type and ID.
+     * @summary Delete an entity
+     * @param {string} type
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteEntity: (type: string, id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
+     * @summary Get an entity by type and ID
+     * @param {string} type The type of the entity to fetch
+     * @param {string} id The unique identifier of the entity
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    entity: (type: string, id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
      *
      * @summary Returns a file
      * @param {string} purpose File categorical purpose
@@ -7364,7 +7475,7 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    fileUpload: (file: File | Buffer | Blob, purpose?: PurposeEnum, context?: string, entity?: string, $agent?: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    fileUpload: (file: File, purpose?: PurposeEnum, context?: string, entity?: string, $agent?: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
      * @summary Returns a list of files that belong to the user\'s organization.
@@ -7434,12 +7545,30 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
     parse: (parseRequest: ParseRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
+     * @summary This is used for the generator to include PurposeEnum, because for whatever reason, query params are not included in the generator.
+     * @param {PingRequest} pingRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    ping: (pingRequest: PingRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
      * @summary Purchase phone for a given agent.
      * @param {PurchasePhoneRequest} [purchasePhoneRequest] If no agent id is provided, the phone will be purchased for the owner of the API key.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     purchasePhone: (purchasePhoneRequest?: PurchasePhoneRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     * Replaces an existing entity with the specified type and ID with a new entity.
+     * @summary Replace an existing entity
+     * @param {string} type
+     * @param {string} id
+     * @param {EntityData} entityData
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    replaceEntity: (type: string, id: string, entityData: EntityData, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
      * @summary Runs your auto-reply app on the Scout9 platform.
@@ -7455,12 +7584,32 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
      * @throws {RequiredError}
      */
     runPlatformConfig: (options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     * Updates an existing entity with the specified type and ID.
+     * @summary Update an existing entity
+     * @param {string} type
+     * @param {string} id
+     * @param {EntityData} entityData
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateEntity: (type: string, id: string, entityData: EntityData, options?: AxiosRequestConfig) => Promise<RequestArgs>;
 };
 /**
  * Scout9Api - functional programming interface
  * @export
  */
 export declare const Scout9ApiFp: (configuration?: Configuration) => {
+    /**
+     *
+     * @summary Create a new entity
+     * @param {string} type
+     * @param {string} id The unique identifier of the entity
+     * @param {EntityData} entityData
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    addEntity(type: string, id: string, entityData: EntityData, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Entity>>;
     /**
      *
      * @summary Gets a agent
@@ -7526,6 +7675,13 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
      * @throws {RequiredError}
      */
     agentsUpdate(updateAgentsRequest: UpdateAgentsRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateAgentsResponse>>;
+    /**
+     *
+     * @summary Get the current project configuration
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    config(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Config200Response>>;
     /**
      *
      * @summary Gets a context. Don\'t use, create your context entities within your Scout9 application.
@@ -7811,6 +7967,24 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
      */
     customersUpdate(updateCustomersRequest: UpdateCustomersRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateCustomersResponse>>;
     /**
+     * Deletes an entity with the specified type and ID.
+     * @summary Delete an entity
+     * @param {string} type
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteEntity(type: string, id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>>;
+    /**
+     *
+     * @summary Get an entity by type and ID
+     * @param {string} type The type of the entity to fetch
+     * @param {string} id The unique identifier of the entity
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    entity(type: string, id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Entity>>;
+    /**
      *
      * @summary Returns a file
      * @param {string} purpose File categorical purpose
@@ -7841,7 +8015,7 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    fileUpload(file: File | Buffer | Blob, purpose?: PurposeEnum, context?: string, entity?: string, $agent?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FileUpload200Response>>;
+    fileUpload(file: File, purpose?: PurposeEnum, context?: string, entity?: string, $agent?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FileUpload200Response>>;
     /**
      *
      * @summary Returns a list of files that belong to the user\'s organization.
@@ -7911,12 +8085,30 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
     parse(parseRequest: ParseRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ParseResponse>>;
     /**
      *
+     * @summary This is used for the generator to include PurposeEnum, because for whatever reason, query params are not included in the generator.
+     * @param {PingRequest} pingRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    ping(pingRequest: PingRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PingRequest>>;
+    /**
+     *
      * @summary Purchase phone for a given agent.
      * @param {PurchasePhoneRequest} [purchasePhoneRequest] If no agent id is provided, the phone will be purchased for the owner of the API key.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     purchasePhone(purchasePhoneRequest?: PurchasePhoneRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PurchasePhoneResponse>>;
+    /**
+     * Replaces an existing entity with the specified type and ID with a new entity.
+     * @summary Replace an existing entity
+     * @param {string} type
+     * @param {string} id
+     * @param {EntityData} entityData
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    replaceEntity(type: string, id: string, entityData: EntityData, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Entity>>;
     /**
      *
      * @summary Runs your auto-reply app on the Scout9 platform.
@@ -7934,12 +8126,32 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
     runPlatformConfig(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<{
         [key: string]: any;
     }>>;
+    /**
+     * Updates an existing entity with the specified type and ID.
+     * @summary Update an existing entity
+     * @param {string} type
+     * @param {string} id
+     * @param {EntityData} entityData
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateEntity(type: string, id: string, entityData: EntityData, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Entity>>;
 };
 /**
  * Scout9Api - factory interface
  * @export
  */
 export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) => {
+    /**
+     *
+     * @summary Create a new entity
+     * @param {string} type
+     * @param {string} id The unique identifier of the entity
+     * @param {EntityData} entityData
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    addEntity(type: string, id: string, entityData: EntityData, options?: any): AxiosPromise<Entity>;
     /**
      *
      * @summary Gets a agent
@@ -8005,6 +8217,13 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
      * @throws {RequiredError}
      */
     agentsUpdate(updateAgentsRequest: UpdateAgentsRequest, options?: any): AxiosPromise<UpdateAgentsResponse>;
+    /**
+     *
+     * @summary Get the current project configuration
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    config(options?: any): AxiosPromise<Config200Response>;
     /**
      *
      * @summary Gets a context. Don\'t use, create your context entities within your Scout9 application.
@@ -8290,6 +8509,24 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
      */
     customersUpdate(updateCustomersRequest: UpdateCustomersRequest, options?: any): AxiosPromise<UpdateCustomersResponse>;
     /**
+     * Deletes an entity with the specified type and ID.
+     * @summary Delete an entity
+     * @param {string} type
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteEntity(type: string, id: string, options?: any): AxiosPromise<void>;
+    /**
+     *
+     * @summary Get an entity by type and ID
+     * @param {string} type The type of the entity to fetch
+     * @param {string} id The unique identifier of the entity
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    entity(type: string, id: string, options?: any): AxiosPromise<Entity>;
+    /**
      *
      * @summary Returns a file
      * @param {string} purpose File categorical purpose
@@ -8320,7 +8557,7 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    fileUpload(file: File | Buffer | Blob, purpose?: PurposeEnum, context?: string, entity?: string, $agent?: string, options?: any): AxiosPromise<FileUpload200Response>;
+    fileUpload(file: File, purpose?: PurposeEnum, context?: string, entity?: string, $agent?: string, options?: any): AxiosPromise<FileUpload200Response>;
     /**
      *
      * @summary Returns a list of files that belong to the user\'s organization.
@@ -8390,12 +8627,30 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
     parse(parseRequest: ParseRequest, options?: any): AxiosPromise<ParseResponse>;
     /**
      *
+     * @summary This is used for the generator to include PurposeEnum, because for whatever reason, query params are not included in the generator.
+     * @param {PingRequest} pingRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    ping(pingRequest: PingRequest, options?: any): AxiosPromise<PingRequest>;
+    /**
+     *
      * @summary Purchase phone for a given agent.
      * @param {PurchasePhoneRequest} [purchasePhoneRequest] If no agent id is provided, the phone will be purchased for the owner of the API key.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     purchasePhone(purchasePhoneRequest?: PurchasePhoneRequest, options?: any): AxiosPromise<PurchasePhoneResponse>;
+    /**
+     * Replaces an existing entity with the specified type and ID with a new entity.
+     * @summary Replace an existing entity
+     * @param {string} type
+     * @param {string} id
+     * @param {EntityData} entityData
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    replaceEntity(type: string, id: string, entityData: EntityData, options?: any): AxiosPromise<Entity>;
     /**
      *
      * @summary Runs your auto-reply app on the Scout9 platform.
@@ -8413,14 +8668,35 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
     runPlatformConfig(options?: any): AxiosPromise<{
         [key: string]: any;
     }>;
+    /**
+     * Updates an existing entity with the specified type and ID.
+     * @summary Update an existing entity
+     * @param {string} type
+     * @param {string} id
+     * @param {EntityData} entityData
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateEntity(type: string, id: string, entityData: EntityData, options?: any): AxiosPromise<Entity>;
 };
 /**
- * Scout9Api - object-oriented interface
+ * Scout9ApiGenerated - object-oriented interface
  * @export
- * @class Scout9Api
+ * @class Scout9ApiGenerated
  * @extends {BaseAPI}
  */
-export declare class Scout9Api extends BaseAPI {
+export declare class Scout9ApiGenerated extends BaseAPI {
+    /**
+     *
+     * @summary Create a new entity
+     * @param {string} type
+     * @param {string} id The unique identifier of the entity
+     * @param {EntityData} entityData
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    addEntity(type: string, id: string, entityData: EntityData, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<Entity, any>>;
     /**
      *
      * @summary Gets a agent
@@ -8494,6 +8770,14 @@ export declare class Scout9Api extends BaseAPI {
      * @memberof Scout9Api
      */
     agentsUpdate(updateAgentsRequest: UpdateAgentsRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateAgentsResponse, any>>;
+    /**
+     *
+     * @summary Get the current project configuration
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    config(options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<Config200Response, any>>;
     /**
      *
      * @summary Gets a context. Don\'t use, create your context entities within your Scout9 application.
@@ -8813,6 +9097,26 @@ export declare class Scout9Api extends BaseAPI {
      */
     customersUpdate(updateCustomersRequest: UpdateCustomersRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateCustomersResponse, any>>;
     /**
+     * Deletes an entity with the specified type and ID.
+     * @summary Delete an entity
+     * @param {string} type
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    deleteEntity(type: string, id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<void, any>>;
+    /**
+     *
+     * @summary Get an entity by type and ID
+     * @param {string} type The type of the entity to fetch
+     * @param {string} id The unique identifier of the entity
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    entity(type: string, id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<Entity, any>>;
+    /**
      *
      * @summary Returns a file
      * @param {string} purpose File categorical purpose
@@ -8846,7 +9150,7 @@ export declare class Scout9Api extends BaseAPI {
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
-    fileUpload(file: File | Buffer | Blob, purpose?: PurposeEnum, context?: string, entity?: string, $agent?: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<FileUpload200Response, any>>;
+    fileUpload(file: File, purpose?: PurposeEnum, context?: string, entity?: string, $agent?: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<FileUpload200Response, any>>;
     /**
      *
      * @summary Returns a list of files that belong to the user\'s organization.
@@ -8924,6 +9228,15 @@ export declare class Scout9Api extends BaseAPI {
     parse(parseRequest: ParseRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ParseResponse, any>>;
     /**
      *
+     * @summary This is used for the generator to include PurposeEnum, because for whatever reason, query params are not included in the generator.
+     * @param {PingRequest} pingRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    ping(pingRequest: PingRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<PingRequest, any>>;
+    /**
+     *
      * @summary Purchase phone for a given agent.
      * @param {PurchasePhoneRequest} [purchasePhoneRequest] If no agent id is provided, the phone will be purchased for the owner of the API key.
      * @param {*} [options] Override http request option.
@@ -8931,6 +9244,17 @@ export declare class Scout9Api extends BaseAPI {
      * @memberof Scout9Api
      */
     purchasePhone(purchasePhoneRequest?: PurchasePhoneRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<PurchasePhoneResponse, any>>;
+    /**
+     * Replaces an existing entity with the specified type and ID with a new entity.
+     * @summary Replace an existing entity
+     * @param {string} type
+     * @param {string} id
+     * @param {EntityData} entityData
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    replaceEntity(type: string, id: string, entityData: EntityData, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<Entity, any>>;
     /**
      *
      * @summary Runs your auto-reply app on the Scout9 platform.
@@ -8949,5 +9273,49 @@ export declare class Scout9Api extends BaseAPI {
      */
     runPlatformConfig(options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<{
         [key: string]: any;
+    }, any>>;
+    /**
+     * Updates an existing entity with the specified type and ID.
+     * @summary Update an existing entity
+     * @param {string} type
+     * @param {string} id
+     * @param {EntityData} entityData
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    updateEntity(type: string, id: string, entityData: EntityData, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<Entity, any>>;
+}
+/**
+ * Scout9Api - object-oriented interface
+ * @export
+ * @class Scout9Api
+ * @extends {Scout9ApiGenerated}
+ */
+export declare class Scout9Api extends Scout9ApiGenerated {
+    organizationLogo(file: Blob | File | Buffer): Promise<import("axios").AxiosResponse<{
+        url?: string | undefined;
+        success: boolean;
+        error?: string | undefined;
+    }, any>>;
+    organizationIcon(file: Blob | File | Buffer): Promise<import("axios").AxiosResponse<{
+        url?: string | undefined;
+        success: boolean;
+        error?: string | undefined;
+    }, any>>;
+    agentProfileUpload(agentId: string, file: Blob | File | Buffer): Promise<import("axios").AxiosResponse<{
+        url?: string | undefined;
+        success: boolean;
+        error?: string | undefined;
+    }, any>>;
+    agentTranscriptUpload(agentId: string, transcripts: (Blob | File | Buffer)[]): Promise<import("axios").AxiosResponse<{
+        urls?: string[] | undefined;
+        success: boolean;
+        error?: string | undefined;
+    }, any>>;
+    agentAudioUpload(agentId: string, audios: (Blob | File | Buffer)[]): Promise<import("axios").AxiosResponse<{
+        urls?: string[] | undefined;
+        success: boolean;
+        error?: string | undefined;
     }, any>>;
 }

@@ -16,7 +16,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Scout9Api = exports.Scout9ApiFactory = exports.Scout9ApiFp = exports.Scout9ApiAxiosParamCreator = exports.DefaultApi = exports.DefaultApiFactory = exports.DefaultApiFp = exports.DefaultApiAxiosParamCreator = exports.CustomContextApi = exports.CustomContextApiFactory = exports.CustomContextApiFp = exports.CustomContextApiAxiosParamCreator = exports.WorkflowResponseSlotForwardOneOfModeEnum = exports.PurposeEnum = exports.PmtConfigModelEnum = exports.PmtConfigEngineEnum = exports.MessageGetResponseInnerRoleEnum = exports.MessageCreateRequestRoleEnum = exports.MessageBaseRoleEnum = exports.MessageRoleEnum = exports.LlmConfigOneOf2EngineEnum = exports.LlmConfigOneOf1EngineEnum = exports.LlmConfigOneOfModelEnum = exports.LlmConfigOneOfEngineEnum = exports.ListApiOperationsResponseInnerMethodEnum = exports.GetApiOperationResponseMethodEnum = exports.ForwardRequestLatestMessageRoleEnum = exports.ForwardRequestForwardOneOfModeEnum = exports.ExistenceOperator = exports.EqualityOperator = exports.ConversationEnvironment = exports.ConversationContextFieldConditionOperatorEnum = exports.ApiOperationMethodEnum = void 0;
+exports.Scout9Api = exports.Scout9ApiGenerated = exports.Scout9ApiFactory = exports.Scout9ApiFp = exports.Scout9ApiAxiosParamCreator = exports.CustomContextApi = exports.CustomContextApiFactory = exports.CustomContextApiFp = exports.CustomContextApiAxiosParamCreator = exports.WorkflowResponseSlotForwardOneOfModeEnum = exports.PurposeEnum = exports.PmtConfigModelEnum = exports.PmtConfigEngineEnum = exports.MessageGetResponseInnerRoleEnum = exports.MessageCreateRequestRoleEnum = exports.MessageBaseRoleEnum = exports.MessageRoleEnum = exports.LlmConfigOneOf2EngineEnum = exports.LlmConfigOneOf1EngineEnum = exports.LlmConfigOneOfModelEnum = exports.LlmConfigOneOfEngineEnum = exports.ListApiOperationsResponseInnerMethodEnum = exports.GetApiOperationResponseMethodEnum = exports.ForwardRequestLatestMessageRoleEnum = exports.ForwardRequestForwardOneOfModeEnum = exports.ExistenceOperator = exports.EqualityOperator = exports.ConversationEnvironment = exports.ConversationContextFieldConditionOperatorEnum = exports.ApiOperationMethodEnum = void 0;
 const axios_1 = __importDefault(require("axios"));
 // Some imports not used depending on template conditions
 // @ts-ignore
@@ -283,22 +283,30 @@ class CustomContextApi extends base_1.BaseAPI {
 }
 exports.CustomContextApi = CustomContextApi;
 /**
- * DefaultApi - axios parameter creator
+ * Scout9Api - axios parameter creator
  * @export
  */
-const DefaultApiAxiosParamCreator = function (configuration) {
+const Scout9ApiAxiosParamCreator = function (configuration) {
     return {
         /**
          *
-         * @summary This is used for the generator to incldue PurposeEnum, because for whatever reason, query params are not included in the generator.
-         * @param {PingRequest} pingRequest
+         * @summary Create a new entity
+         * @param {string} type
+         * @param {string} id The unique identifier of the entity
+         * @param {EntityData} entityData
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        ping: async (pingRequest, options = {}) => {
-            // verify required parameter 'pingRequest' is not null or undefined
-            (0, common_1.assertParamExists)('ping', 'pingRequest', pingRequest);
-            const localVarPath = `/v1-utils-ping`;
+        addEntity: async (type, id, entityData, options = {}) => {
+            // verify required parameter 'type' is not null or undefined
+            (0, common_1.assertParamExists)('addEntity', 'type', type);
+            // verify required parameter 'id' is not null or undefined
+            (0, common_1.assertParamExists)('addEntity', 'id', id);
+            // verify required parameter 'entityData' is not null or undefined
+            (0, common_1.assertParamExists)('addEntity', 'entityData', entityData);
+            const localVarPath = `/v1-entity/{type}/{id}`
+                .replace(`{${"type"}}`, encodeURIComponent(String(type)))
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -312,82 +320,12 @@ const DefaultApiAxiosParamCreator = function (configuration) {
             (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
-            localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(pingRequest, localVarRequestOptions, configuration);
+            localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(entityData, localVarRequestOptions, configuration);
             return {
                 url: (0, common_1.toPathString)(localVarUrlObj),
                 options: localVarRequestOptions,
             };
         },
-    };
-};
-exports.DefaultApiAxiosParamCreator = DefaultApiAxiosParamCreator;
-/**
- * DefaultApi - functional programming interface
- * @export
- */
-const DefaultApiFp = function (configuration) {
-    const localVarAxiosParamCreator = (0, exports.DefaultApiAxiosParamCreator)(configuration);
-    return {
-        /**
-         *
-         * @summary This is used for the generator to incldue PurposeEnum, because for whatever reason, query params are not included in the generator.
-         * @param {PingRequest} pingRequest
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async ping(pingRequest, options) {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.ping(pingRequest, options);
-            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
-        },
-    };
-};
-exports.DefaultApiFp = DefaultApiFp;
-/**
- * DefaultApi - factory interface
- * @export
- */
-const DefaultApiFactory = function (configuration, basePath, axios) {
-    const localVarFp = (0, exports.DefaultApiFp)(configuration);
-    return {
-        /**
-         *
-         * @summary This is used for the generator to incldue PurposeEnum, because for whatever reason, query params are not included in the generator.
-         * @param {PingRequest} pingRequest
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        ping(pingRequest, options) {
-            return localVarFp.ping(pingRequest, options).then((request) => request(axios, basePath));
-        },
-    };
-};
-exports.DefaultApiFactory = DefaultApiFactory;
-/**
- * DefaultApi - object-oriented interface
- * @export
- * @class DefaultApi
- * @extends {BaseAPI}
- */
-class DefaultApi extends base_1.BaseAPI {
-    /**
-     *
-     * @summary This is used for the generator to incldue PurposeEnum, because for whatever reason, query params are not included in the generator.
-     * @param {PingRequest} pingRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof DefaultApi
-     */
-    ping(pingRequest, options) {
-        return (0, exports.DefaultApiFp)(this.configuration).ping(pingRequest, options).then((request) => request(this.axios, this.basePath));
-    }
-}
-exports.DefaultApi = DefaultApi;
-/**
- * Scout9Api - axios parameter creator
- * @export
- */
-const Scout9ApiAxiosParamCreator = function (configuration) {
-    return {
         /**
          *
          * @summary Gets a agent
@@ -627,6 +565,31 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
             localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(updateAgentsRequest, localVarRequestOptions, configuration);
+            return {
+                url: (0, common_1.toPathString)(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
+         * @summary Get the current project configuration
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        config: async (options = {}) => {
+            const localVarPath = `/v1-config`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options };
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
             return {
                 url: (0, common_1.toPathString)(localVarUrlObj),
                 options: localVarRequestOptions,
@@ -1680,6 +1643,72 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
             };
         },
         /**
+         * Deletes an entity with the specified type and ID.
+         * @summary Delete an entity
+         * @param {string} type
+         * @param {string} id
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteEntity: async (type, id, options = {}) => {
+            // verify required parameter 'type' is not null or undefined
+            (0, common_1.assertParamExists)('deleteEntity', 'type', type);
+            // verify required parameter 'id' is not null or undefined
+            (0, common_1.assertParamExists)('deleteEntity', 'id', id);
+            const localVarPath = `/v1-entity/{type}/{id}`
+                .replace(`{${"type"}}`, encodeURIComponent(String(type)))
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options };
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
+            return {
+                url: (0, common_1.toPathString)(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
+         * @summary Get an entity by type and ID
+         * @param {string} type The type of the entity to fetch
+         * @param {string} id The unique identifier of the entity
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        entity: async (type, id, options = {}) => {
+            // verify required parameter 'type' is not null or undefined
+            (0, common_1.assertParamExists)('entity', 'type', type);
+            // verify required parameter 'id' is not null or undefined
+            (0, common_1.assertParamExists)('entity', 'id', id);
+            const localVarPath = `/v1-entity/{type}/{id}`
+                .replace(`{${"type"}}`, encodeURIComponent(String(type)))
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options };
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
+            return {
+                url: (0, common_1.toPathString)(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          *
          * @summary Returns a file
          * @param {string} purpose File categorical purpose
@@ -2065,6 +2094,36 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         },
         /**
          *
+         * @summary This is used for the generator to include PurposeEnum, because for whatever reason, query params are not included in the generator.
+         * @param {PingRequest} pingRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        ping: async (pingRequest, options = {}) => {
+            // verify required parameter 'pingRequest' is not null or undefined
+            (0, common_1.assertParamExists)('ping', 'pingRequest', pingRequest);
+            const localVarPath = `/v1-utils-ping`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options };
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
+            localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(pingRequest, localVarRequestOptions, configuration);
+            return {
+                url: (0, common_1.toPathString)(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
          * @summary Purchase phone for a given agent.
          * @param {PurchasePhoneRequest} [purchasePhoneRequest] If no agent id is provided, the phone will be purchased for the owner of the API key.
          * @param {*} [options] Override http request option.
@@ -2086,6 +2145,44 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
             localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(purchasePhoneRequest, localVarRequestOptions, configuration);
+            return {
+                url: (0, common_1.toPathString)(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Replaces an existing entity with the specified type and ID with a new entity.
+         * @summary Replace an existing entity
+         * @param {string} type
+         * @param {string} id
+         * @param {EntityData} entityData
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        replaceEntity: async (type, id, entityData, options = {}) => {
+            // verify required parameter 'type' is not null or undefined
+            (0, common_1.assertParamExists)('replaceEntity', 'type', type);
+            // verify required parameter 'id' is not null or undefined
+            (0, common_1.assertParamExists)('replaceEntity', 'id', id);
+            // verify required parameter 'entityData' is not null or undefined
+            (0, common_1.assertParamExists)('replaceEntity', 'entityData', entityData);
+            const localVarPath = `/v1-entity/{type}/{id}`
+                .replace(`{${"type"}}`, encodeURIComponent(String(type)))
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options };
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
+            localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(entityData, localVarRequestOptions, configuration);
             return {
                 url: (0, common_1.toPathString)(localVarUrlObj),
                 options: localVarRequestOptions,
@@ -2146,6 +2243,44 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * Updates an existing entity with the specified type and ID.
+         * @summary Update an existing entity
+         * @param {string} type
+         * @param {string} id
+         * @param {EntityData} entityData
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateEntity: async (type, id, entityData, options = {}) => {
+            // verify required parameter 'type' is not null or undefined
+            (0, common_1.assertParamExists)('updateEntity', 'type', type);
+            // verify required parameter 'id' is not null or undefined
+            (0, common_1.assertParamExists)('updateEntity', 'id', id);
+            // verify required parameter 'entityData' is not null or undefined
+            (0, common_1.assertParamExists)('updateEntity', 'entityData', entityData);
+            const localVarPath = `/v1-entity/{type}/{id}`
+                .replace(`{${"type"}}`, encodeURIComponent(String(type)))
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options };
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
+            localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(entityData, localVarRequestOptions, configuration);
+            return {
+                url: (0, common_1.toPathString)(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     };
 };
 exports.Scout9ApiAxiosParamCreator = Scout9ApiAxiosParamCreator;
@@ -2156,6 +2291,19 @@ exports.Scout9ApiAxiosParamCreator = Scout9ApiAxiosParamCreator;
 const Scout9ApiFp = function (configuration) {
     const localVarAxiosParamCreator = (0, exports.Scout9ApiAxiosParamCreator)(configuration);
     return {
+        /**
+         *
+         * @summary Create a new entity
+         * @param {string} type
+         * @param {string} id The unique identifier of the entity
+         * @param {EntityData} entityData
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async addEntity(type, id, entityData, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.addEntity(type, id, entityData, options);
+            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+        },
         /**
          *
          * @summary Gets a agent
@@ -2243,6 +2391,16 @@ const Scout9ApiFp = function (configuration) {
          */
         async agentsUpdate(updateAgentsRequest, options) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.agentsUpdate(updateAgentsRequest, options);
+            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+        },
+        /**
+         *
+         * @summary Get the current project configuration
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async config(options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.config(options);
             return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
         },
         /**
@@ -2632,6 +2790,30 @@ const Scout9ApiFp = function (configuration) {
             return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
         },
         /**
+         * Deletes an entity with the specified type and ID.
+         * @summary Delete an entity
+         * @param {string} type
+         * @param {string} id
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteEntity(type, id, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteEntity(type, id, options);
+            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+        },
+        /**
+         *
+         * @summary Get an entity by type and ID
+         * @param {string} type The type of the entity to fetch
+         * @param {string} id The unique identifier of the entity
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async entity(type, id, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.entity(type, id, options);
+            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+        },
+        /**
          *
          * @summary Returns a file
          * @param {string} purpose File categorical purpose
@@ -2765,6 +2947,17 @@ const Scout9ApiFp = function (configuration) {
         },
         /**
          *
+         * @summary This is used for the generator to include PurposeEnum, because for whatever reason, query params are not included in the generator.
+         * @param {PingRequest} pingRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async ping(pingRequest, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.ping(pingRequest, options);
+            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+        },
+        /**
+         *
          * @summary Purchase phone for a given agent.
          * @param {PurchasePhoneRequest} [purchasePhoneRequest] If no agent id is provided, the phone will be purchased for the owner of the API key.
          * @param {*} [options] Override http request option.
@@ -2772,6 +2965,19 @@ const Scout9ApiFp = function (configuration) {
          */
         async purchasePhone(purchasePhoneRequest, options) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.purchasePhone(purchasePhoneRequest, options);
+            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+        },
+        /**
+         * Replaces an existing entity with the specified type and ID with a new entity.
+         * @summary Replace an existing entity
+         * @param {string} type
+         * @param {string} id
+         * @param {EntityData} entityData
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async replaceEntity(type, id, entityData, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.replaceEntity(type, id, entityData, options);
             return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
         },
         /**
@@ -2795,6 +3001,19 @@ const Scout9ApiFp = function (configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.runPlatformConfig(options);
             return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
         },
+        /**
+         * Updates an existing entity with the specified type and ID.
+         * @summary Update an existing entity
+         * @param {string} type
+         * @param {string} id
+         * @param {EntityData} entityData
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateEntity(type, id, entityData, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateEntity(type, id, entityData, options);
+            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+        },
     };
 };
 exports.Scout9ApiFp = Scout9ApiFp;
@@ -2805,6 +3024,18 @@ exports.Scout9ApiFp = Scout9ApiFp;
 const Scout9ApiFactory = function (configuration, basePath, axios) {
     const localVarFp = (0, exports.Scout9ApiFp)(configuration);
     return {
+        /**
+         *
+         * @summary Create a new entity
+         * @param {string} type
+         * @param {string} id The unique identifier of the entity
+         * @param {EntityData} entityData
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        addEntity(type, id, entityData, options) {
+            return localVarFp.addEntity(type, id, entityData, options).then((request) => request(axios, basePath));
+        },
         /**
          *
          * @summary Gets a agent
@@ -2885,6 +3116,15 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
          */
         agentsUpdate(updateAgentsRequest, options) {
             return localVarFp.agentsUpdate(updateAgentsRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
+         * @summary Get the current project configuration
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        config(options) {
+            return localVarFp.config(options).then((request) => request(axios, basePath));
         },
         /**
          *
@@ -3239,6 +3479,28 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
             return localVarFp.customersUpdate(updateCustomersRequest, options).then((request) => request(axios, basePath));
         },
         /**
+         * Deletes an entity with the specified type and ID.
+         * @summary Delete an entity
+         * @param {string} type
+         * @param {string} id
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteEntity(type, id, options) {
+            return localVarFp.deleteEntity(type, id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
+         * @summary Get an entity by type and ID
+         * @param {string} type The type of the entity to fetch
+         * @param {string} id The unique identifier of the entity
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        entity(type, id, options) {
+            return localVarFp.entity(type, id, options).then((request) => request(axios, basePath));
+        },
+        /**
          *
          * @summary Returns a file
          * @param {string} purpose File categorical purpose
@@ -3361,6 +3623,16 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
         },
         /**
          *
+         * @summary This is used for the generator to include PurposeEnum, because for whatever reason, query params are not included in the generator.
+         * @param {PingRequest} pingRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        ping(pingRequest, options) {
+            return localVarFp.ping(pingRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
          * @summary Purchase phone for a given agent.
          * @param {PurchasePhoneRequest} [purchasePhoneRequest] If no agent id is provided, the phone will be purchased for the owner of the API key.
          * @param {*} [options] Override http request option.
@@ -3368,6 +3640,18 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
          */
         purchasePhone(purchasePhoneRequest, options) {
             return localVarFp.purchasePhone(purchasePhoneRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Replaces an existing entity with the specified type and ID with a new entity.
+         * @summary Replace an existing entity
+         * @param {string} type
+         * @param {string} id
+         * @param {EntityData} entityData
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        replaceEntity(type, id, entityData, options) {
+            return localVarFp.replaceEntity(type, id, entityData, options).then((request) => request(axios, basePath));
         },
         /**
          *
@@ -3388,16 +3672,41 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
         runPlatformConfig(options) {
             return localVarFp.runPlatformConfig(options).then((request) => request(axios, basePath));
         },
+        /**
+         * Updates an existing entity with the specified type and ID.
+         * @summary Update an existing entity
+         * @param {string} type
+         * @param {string} id
+         * @param {EntityData} entityData
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateEntity(type, id, entityData, options) {
+            return localVarFp.updateEntity(type, id, entityData, options).then((request) => request(axios, basePath));
+        },
     };
 };
 exports.Scout9ApiFactory = Scout9ApiFactory;
 /**
- * Scout9Api - object-oriented interface
+ * Scout9ApiGenerated - object-oriented interface
  * @export
- * @class Scout9Api
+ * @class Scout9ApiGenerated
  * @extends {BaseAPI}
  */
-class Scout9Api extends base_1.BaseAPI {
+class Scout9ApiGenerated extends base_1.BaseAPI {
+    /**
+     *
+     * @summary Create a new entity
+     * @param {string} type
+     * @param {string} id The unique identifier of the entity
+     * @param {EntityData} entityData
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    addEntity(type, id, entityData, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).addEntity(type, id, entityData, options).then((request) => request(this.axios, this.basePath));
+    }
     /**
      *
      * @summary Gets a agent
@@ -3486,6 +3795,16 @@ class Scout9Api extends base_1.BaseAPI {
      */
     agentsUpdate(updateAgentsRequest, options) {
         return (0, exports.Scout9ApiFp)(this.configuration).agentsUpdate(updateAgentsRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     *
+     * @summary Get the current project configuration
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    config(options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).config(options).then((request) => request(this.axios, this.basePath));
     }
     /**
      *
@@ -3874,6 +4193,30 @@ class Scout9Api extends base_1.BaseAPI {
         return (0, exports.Scout9ApiFp)(this.configuration).customersUpdate(updateCustomersRequest, options).then((request) => request(this.axios, this.basePath));
     }
     /**
+     * Deletes an entity with the specified type and ID.
+     * @summary Delete an entity
+     * @param {string} type
+     * @param {string} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    deleteEntity(type, id, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).deleteEntity(type, id, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     *
+     * @summary Get an entity by type and ID
+     * @param {string} type The type of the entity to fetch
+     * @param {string} id The unique identifier of the entity
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    entity(type, id, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).entity(type, id, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
      *
      * @summary Returns a file
      * @param {string} purpose File categorical purpose
@@ -4007,6 +4350,17 @@ class Scout9Api extends base_1.BaseAPI {
     }
     /**
      *
+     * @summary This is used for the generator to include PurposeEnum, because for whatever reason, query params are not included in the generator.
+     * @param {PingRequest} pingRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    ping(pingRequest, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).ping(pingRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     *
      * @summary Purchase phone for a given agent.
      * @param {PurchasePhoneRequest} [purchasePhoneRequest] If no agent id is provided, the phone will be purchased for the owner of the API key.
      * @param {*} [options] Override http request option.
@@ -4015,6 +4369,19 @@ class Scout9Api extends base_1.BaseAPI {
      */
     purchasePhone(purchasePhoneRequest, options) {
         return (0, exports.Scout9ApiFp)(this.configuration).purchasePhone(purchasePhoneRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     * Replaces an existing entity with the specified type and ID with a new entity.
+     * @summary Replace an existing entity
+     * @param {string} type
+     * @param {string} id
+     * @param {EntityData} entityData
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    replaceEntity(type, id, entityData, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).replaceEntity(type, id, entityData, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      *
@@ -4036,6 +4403,121 @@ class Scout9Api extends base_1.BaseAPI {
      */
     runPlatformConfig(options) {
         return (0, exports.Scout9ApiFp)(this.configuration).runPlatformConfig(options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     * Updates an existing entity with the specified type and ID.
+     * @summary Update an existing entity
+     * @param {string} type
+     * @param {string} id
+     * @param {EntityData} entityData
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    updateEntity(type, id, entityData, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).updateEntity(type, id, entityData, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+exports.Scout9ApiGenerated = Scout9ApiGenerated;
+/**
+ * Scout9Api - object-oriented interface
+ * @export
+ * @class Scout9Api
+ * @extends {Scout9ApiGenerated}
+ */
+class Scout9Api extends Scout9ApiGenerated {
+    organizationLogo(file) {
+        (0, common_1.assertParamExists)('organizationLogo', 'file', file);
+        const formData = new ((this.configuration && this.configuration.formDataCtor) || FormData)();
+        if (Buffer.isBuffer(file)) {
+            file = new Blob([file], { type: "application/octet-stream" });
+        }
+        formData.append('file', file, file?.name || 'logo');
+        return this.axios.request({
+            method: 'POST',
+            url: `${this.configuration?.basePath || base_1.BASE_PATH}/v1-organizationLogo`,
+            data: formData,
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'Authorization': 'Bearer ' + this.configuration?.apiKey || '',
+            }
+        });
+    }
+    organizationIcon(file) {
+        (0, common_1.assertParamExists)('organizationLogo', 'file', file);
+        const formData = new ((this.configuration && this.configuration.formDataCtor) || FormData)();
+        if (Buffer.isBuffer(file)) {
+            file = new Blob([file], { type: "application/octet-stream" });
+        }
+        formData.append('file', file, file?.name || 'icon');
+        return this.axios.request({
+            method: 'POST',
+            url: `${this.configuration?.basePath || base_1.BASE_PATH}/v1-organizationIcon`,
+            data: formData,
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'Authorization': 'Bearer ' + this.configuration?.apiKey || '',
+            }
+        });
+    }
+    agentProfileUpload(agentId, file) {
+        (0, common_1.assertParamExists)('agentProfileUpload', 'agentId', agentId);
+        (0, common_1.assertParamExists)('agentProfileUpload', 'file', file);
+        const formData = new ((this.configuration && this.configuration.formDataCtor) || FormData)();
+        if (Buffer.isBuffer(file)) {
+            file = new Blob([file], { type: "application/octet-stream" });
+        }
+        formData.append('file', file, file?.name || 'profile');
+        formData.append('agentId', agentId);
+        return this.axios.request({
+            method: 'POST',
+            url: `${this.configuration?.basePath || base_1.BASE_PATH}/v1-agentImg`,
+            data: formData,
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'Authorization': 'Bearer ' + this.configuration?.apiKey || '',
+            }
+        });
+    }
+    agentTranscriptUpload(agentId, transcripts) {
+        (0, common_1.assertParamExists)('agentProfileUpload', 'agentId', agentId);
+        (0, common_1.assertParamExists)('agentProfileUpload', 'transcripts', transcripts);
+        const formData = new ((this.configuration && this.configuration.formDataCtor) || FormData)();
+        transcripts.forEach((file, i) => {
+            if (Buffer.isBuffer(file)) {
+                file = new Blob([file], { type: "text/plain" });
+            }
+            formData.append(`transcripts[${i}]`, file, file?.name || 'transcript' + i);
+        });
+        return this.axios.request({
+            method: 'POST',
+            url: `${this.configuration?.basePath || base_1.BASE_PATH}/v1-agentTranscripts`,
+            data: formData,
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'Authorization': 'Bearer ' + this.configuration?.apiKey || '',
+            }
+        });
+    }
+    agentAudioUpload(agentId, audios) {
+        (0, common_1.assertParamExists)('agentProfileUpload', 'agentId', agentId);
+        (0, common_1.assertParamExists)('agentProfileUpload', 'audios', audios);
+        const formData = new ((this.configuration && this.configuration.formDataCtor) || FormData)();
+        audios.forEach((file, i) => {
+            if (Buffer.isBuffer(file)) {
+                file = new Blob([file], { type: "application/octet-stream" });
+            }
+            formData.append(`audios[${i}]`, file, file?.name || 'audio' + i);
+        });
+        return this.axios.request({
+            method: 'POST',
+            url: `${this.configuration?.basePath || base_1.BASE_PATH}/v1-agentAudios`,
+            data: formData,
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'Authorization': 'Bearer ' + this.configuration?.apiKey || '',
+            }
+        });
     }
 }
 exports.Scout9Api = Scout9Api;

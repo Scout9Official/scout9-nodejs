@@ -440,7 +440,7 @@ export async function test(
   }
 
   // @TODO format errors
-  logger.log(`Running ${tests} entity test cases...`);
+  logger.log(`Running ${tests} entity test points...`);
   await new Scout9Api(new Configuration({apiKey: process.env.SCOUT9_API_KEY || ''})).parse({
     message: 'Dummy message to parse',
     language: 'en',

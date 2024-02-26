@@ -141,9 +141,12 @@ export interface Conversation {
     platformEmailThreadId?: string;
   };
   locked?: boolean;
+  lockedReason?: string;
   lockAttempts?: number;
   forwardedTo?: string; // personaId/phone/email
   forwarded?: string; // ISO 8601
+  forwardNote?: string;
+
   /**
    * Detected intent
    */
@@ -210,6 +213,11 @@ export interface Agent {
     phone?: string;
     email?: string;
   };
+
+  /**
+   * Profile image path
+   */
+  img?: string | Buffer;
 
   firstName?: string;
   lastName?: string;

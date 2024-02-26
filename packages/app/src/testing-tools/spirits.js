@@ -73,9 +73,9 @@
 /**
  * @callback StatusCallback
  * @param {string} message
- * @param {'info' | 'warn' | 'error' | 'success' | undefined} level
- * @param {string | undefined} type
- * @param {any | undefined} payload
+ * @param {'info' | 'warn' | 'error' | 'success' | undefined} [level]
+ * @param {string | undefined} [type]
+ * @param {any | undefined} [payload]
  * @returns {void}
  */
 
@@ -85,7 +85,7 @@
  * @property {WorkflowFun} workflow
  * @property {GenerateFun} generator
  * @property {IdGeneratorFun} idGenerator
- * @property {StatusCallback | undefined} progress
+ * @property {StatusCallback | undefined} [progress]
  */
 
 /**
@@ -145,8 +145,8 @@ export const Spirits = {
             return _userMessages[_userMessages.length - 1];
         }
 
-        const lockConversation = (_conversation) => {
-            return updateConversation(_conversation, {locked: true});
+        const lockConversation = (_conversation, reason) => {
+            return updateConversation(_conversation, {locked: true, lockedReason: conversation.lockedReason || reason || 'Unknown'});
         }
 
         const incrementLockAttempt = (_conversation, _config) => {
@@ -239,8 +239,12 @@ export const Spirits = {
         // 2. Parse the message
         progress('Parsing message', 'info', 'SET_PROCESSING', 'user');
         const parsePayload = await parser(message.content, 'en');
-        message.intent = parsePayload.intent;
-        message.intentScore = parsePayload.intentScore;
+        if (parsePayload.intent) {
+            message.intent = parsePayload.intent;
+        }
+        if (typeof parsePayload.intentScore === 'number') {
+            message.intentScore = parsePayload.intentScore;
+        }
         message.context = parsePayload.context;
         const index = messages.findIndex(m => m.content === message.content || m.id === message.id);
         if (index === -1) {
@@ -250,25 +254,33 @@ export const Spirits = {
                 content: message,
                 context: parsePayload.context,
                 time: new Date().toISOString(),
-                intent: parsePayload.intent,
-                intentScore: parsePayload.intentScore
             };
+            if (parsePayload.intent) {
+                _message.intent = parsePayload.intent;
+            }
+            if (typeof parsePayload.intentScore === 'number') {
+                _message.intentScore = parsePayload.intentScore;
+            }
             message = _message;
             messages.push(_message);
             progress('Added message', 'info', 'ADD_MESSAGE', _message);
         } else {
             messages[index].context = parsePayload.context;
-            messages[index].intent = parsePayload.intent;
-            messages[index].intentScore = parsePayload.intentScore;
+            if (parsePayload.intent) {
+                messages[index].intent = parsePayload.intent;
+            }
+            if (typeof parsePayload.intentScore === 'number') {
+                messages[index].intentScore = parsePayload.intentScore;
+            }
             message = messages[index];
             progress('Parsed message', 'success', 'UPDATE_MESSAGE', message);
         }
         // If this is the first user message, then update conversations intent
         const previousUserMessages = messages.filter(m => m.role === 'customer' && m.content !== message.content);
-        if (!conversation.intent || previousUserMessages.length === 0) {
+        if (!conversation.intent || previousUserMessages.length === 0 && parsePayload.intent) {
             conversation.intent = parsePayload.intent;
-            conversation.intentScore = parsePayload.intentScore;
-            progress('Updated conversation intent', 'info', 'UPDATE_CONVERSATION', {intent: parsePayload.intent, intentScore: parsePayload.intentScore});
+            conversation.intentScore = parsePayload?.intentScore || 0;
+            progress('Updated conversation intent', 'info', 'UPDATE_CONVERSATION', {intent: parsePayload.intent, intentScore: parsePayload?.intentScore || 0});
         }
         const oldKeyCount = Object.keys(context).length;
         context = updateContext(context, parsePayload.context);
@@ -313,7 +325,8 @@ export const Spirits = {
 
         let resettedIntent = false;
         let _forward;
-        let _forwardNote
+        let _forwardNote;
+
         for (const {
             forward,
             forwardNote,
@@ -328,7 +341,7 @@ export const Spirits = {
 
             // Forward to agent or other agent
             if (forward) {
-                conversation = lockConversation(conversation);
+                conversation = lockConversation(conversation, 'App instructed forward');
                 _forward = forward;
                 _forwardNote = forwardNote;
                 if (typeof forward === 'string') {
@@ -448,24 +461,41 @@ export const Spirits = {
                         llm: config.llm,
                         pmt: config.pmt,
                     });
-                    progress('Generated response', 'success', undefined, undefined);
-                    // Check if already had message
-                    const agentMessages = messages.filter(m => m.role === 'agent');
-                    const lastAgentMessage = agentMessages[agentMessages.length - 1];
-                    if (lastAgentMessage && lastAgentMessage.content === generatorPayload.message) {
-                        conversation = lockConversation(conversation);
+                    if (!generatorPayload.send) {
+                        progress('Generated response', 'failed', undefined, {error: generatorPayload.error || 'Unknown Reason'});
+                        console.error(`Locking conversation, api returned send false: ${generatorPayload.message}`, generatorPayload.error || 'Unknown Reason');
+                        conversation = lockConversation(conversation, 'API: ' + generatorPayload.error || 'Unknown Reason');
                     } else {
-                        messages.push({
-                            id: idGenerator('agent'),
-                            role: 'agent',
-                            content: generatorPayload.message,
-                            time: new Date().toISOString()
-                        });
-                        progress('Added agent message', 'info', 'ADD_MESSAGE', messages[messages.length - 1]);
+                        progress('Generated response', 'success', undefined, undefined);
+                        // Check if already had message
+                        const agentMessages = messages.filter(m => m.role === 'agent');
+                        const lastAgentMessage = agentMessages[agentMessages.length - 1];
+                        if (lastAgentMessage && lastAgentMessage.content === generatorPayload.message) {
+                            // Error should not have happened
+                            conversation = lockConversation(conversation, 'Duplicate message');
+                        } else {
+                            messages.push({
+                                id: idGenerator('agent'),
+                                role: 'agent',
+                                content: generatorPayload.message,
+                                time: new Date().toISOString()
+                            });
+                            progress('Added agent message', 'info', 'ADD_MESSAGE', messages[messages.length - 1]);
+                        }
+
+                        // Check if conversation was marked for forward (generator message still allowed to be sent)
+                        if (generatorPayload.forward) {
+                            conversation = lockConversation(conversation, 'API: ' + generatorPayload.forwardNote || 'Forwarded by API');
+                            if (!_forward) {
+                                _forward = generatorPayload.forward;
+                                _forwardNote = generatorPayload.forwardNote;
+                            }
+                        }
                     }
+
                 } catch (e) {
                     console.error(`Locking conversation, error generating response: ${e.message}`);
-                    conversation = lockConversation(conversation);
+                    conversation = lockConversation(conversation, 'API: ' + e.message);
                 }
             }
         }
@@ -477,7 +507,7 @@ export const Spirits = {
                 before: conversationBefore,
                 after: conversation,
                 forward: _forward || null,
-                forwardNote: _forwardNote || ''
+                forwardNote: _forwardNote || '',
             },
             messages: {
                 before: messagesBefore,

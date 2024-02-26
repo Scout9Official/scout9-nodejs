@@ -125,7 +125,7 @@ export declare function Scout9Admin(apiKey: string, basePath?: string, axiosInst
         }[]) => Promise<OperationBulkResponse>;
     };
     utils: {
-        fileUpload: (file: File | Blob | Buffer, purpose?: PurposeEnum | undefined, context?: string | undefined, entity?: string | undefined, $agent?: string | undefined, options?: import("axios").AxiosRequestConfig<any> | undefined) => Promise<AxiosResponse<import("./api").FileUpload200Response, any>>;
+        fileUpload: (file: File, purpose?: PurposeEnum | undefined, context?: string | undefined, entity?: string | undefined, $agent?: string | undefined, options?: import("axios").AxiosRequestConfig<any> | undefined) => Promise<AxiosResponse<import("./api").FileUpload200Response, any>>;
         files: (purpose: string, agent?: string | undefined, options?: import("axios").AxiosRequestConfig<any> | undefined) => Promise<AxiosResponse<ListFilesResponseInner[], any>>;
     };
     v1: Scout9Api;

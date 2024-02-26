@@ -141,9 +141,11 @@ declare module '@scout9/app' {
 	  platformEmailThreadId?: string;
 	};
 	locked?: boolean;
+	lockedReason?: string;
 	lockAttempts?: number;
 	forwardedTo?: string; // personaId/phone/email
 	forwarded?: string; // ISO 8601
+	forwardNote?: string;
 	/**
 	 * Detected intent
 	 */
@@ -370,11 +372,25 @@ declare module '@scout9/app/testing-tools' {
 	export class Scout9Test {
 		/**
 		 * Mimics a customer message to your app (useful for testing)
-		 * @param context - prior conversation context
-		 * @param persona id to use
-		 * @param conversation - existing conversation
-		 * */
-		constructor({ persona, customer, context, cwd, src, mode }?: import('@scout9/app').Customer | undefined);
+		 * @param props - the Scout9Test properties
+		 * @param props.customer - customer to use
+		 * @param props.context - prior conversation context
+		 * @param props.persona id to use
+		 * @param props.conversation - existing conversation
+		 * 
+		 */
+		constructor({ persona, customer, context, conversation, cwd, src, mode, api, app, project }?: {
+			cwd?: string;
+			src?: string;
+			mode?: string;
+			persona: any;
+			customer: any;
+			context: any;
+			conversation?: import("@scout9/app").Conversation | undefined;
+			api: any;
+			app: any;
+			project: any;
+		});
 		
 		customer: import('@scout9/app').Customer;
 		
@@ -386,11 +402,11 @@ declare module '@scout9/app/testing-tools' {
 		
 		context: any;
 		
-		private _config;
+		private _project;
 		
-		private _workflowFn;
+		private _app;
 		
-		private _scout9;
+		private _api;
 		
 		private _cwd;
 		
@@ -401,7 +417,11 @@ declare module '@scout9/app/testing-tools' {
 		private _loaded;
 		
 		private _personaId;
-		load(): Promise<void>;
+		/**
+		 * Loads the test environment
+		 * @param override - defaults to false, if true, it will override the current loaded state such as the scout9 api, workflow function, and project config
+		 * */
+		load(override?: boolean | undefined): Promise<void>;
 		/**
 		 * Teardown the test environment
 		 */
@@ -409,8 +429,9 @@ declare module '@scout9/app/testing-tools' {
 		/**
 		 * Send a message as a customer to your app
 		 * @param message - message to send
+		 * @param progress - progress callback, if true, will log progress, can override with your own callback. If not provided, no logs will be added.
 		 * */
-		send(message: string): Promise<ConversationEvent>;
+		send(message: string, progress?: boolean | import("@scout9/app/testing-tools").StatusCallback | undefined): Promise<ConversationEvent>;
 		/**
 		 * Parse user message
 		 * @param message - message string to parse
@@ -433,6 +454,8 @@ declare module '@scout9/app/testing-tools' {
 			messages?: import("@scout9/app").Message[] | undefined;
 			context?: any;
 		} | undefined): Promise<import('@scout9/admin').GenerateResponse>;
+		
+		private _loadApp;
 	}
 	export namespace Spirits {
 		function customer(input: ConversationData & CustomerSpiritCallbacks): Promise<ConversationEvent>;
@@ -489,13 +512,13 @@ declare module '@scout9/app/testing-tools' {
 	export type WorkflowFun = (event: import('@scout9/app').WorkflowEvent) => Promise<import('@scout9/app').WorkflowResponse>;
 	export type GenerateFun = (data: import('@scout9/admin').GenerateRequestOneOf) => Promise<import('@scout9/admin').GenerateResponse>;
 	export type IdGeneratorFun = (prefix: any) => string;
-	export type StatusCallback = (message: string, level: 'info' | 'warn' | 'error' | 'success' | undefined, type: string | undefined, payload: any | undefined) => void;
+	export type StatusCallback = (message: string, level?: 'info' | 'warn' | 'error' | 'success' | undefined, type?: string | undefined, payload?: any | undefined) => void;
 	export type CustomerSpiritCallbacks = {
 		parser: ParseFun;
 		workflow: WorkflowFun;
 		generator: GenerateFun;
 		idGenerator: IdGeneratorFun;
-		progress: StatusCallback | undefined;
+		progress?: StatusCallback | undefined;
 	};
 	export type ConversationEvent = {
 		conversation: Change<import('@scout9/app').Conversation> & {
@@ -564,13 +587,13 @@ declare module '@scout9/app/spirits' {
 	export type WorkflowFun = (event: import('@scout9/app').WorkflowEvent) => Promise<import('@scout9/app').WorkflowResponse>;
 	export type GenerateFun = (data: import('@scout9/admin').GenerateRequestOneOf) => Promise<import('@scout9/admin').GenerateResponse>;
 	export type IdGeneratorFun = (prefix: any) => string;
-	export type StatusCallback = (message: string, level: 'info' | 'warn' | 'error' | 'success' | undefined, type: string | undefined, payload: any | undefined) => void;
+	export type StatusCallback = (message: string, level?: 'info' | 'warn' | 'error' | 'success' | undefined, type?: string | undefined, payload?: any | undefined) => void;
 	export type CustomerSpiritCallbacks = {
 		parser: ParseFun;
 		workflow: WorkflowFun;
 		generator: GenerateFun;
 		idGenerator: IdGeneratorFun;
-		progress: StatusCallback | undefined;
+		progress?: StatusCallback | undefined;
 	};
 	export type ConversationEvent = {
 		conversation: Change<import('@scout9/app').Conversation> & {

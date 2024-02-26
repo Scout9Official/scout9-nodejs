@@ -43,7 +43,7 @@ export const Scout9Platform = {
     const messages = [];
     try {
       logger.log(`Loading config...`);
-      const config = await loadConfig({cwd, src, logger, cb: (m) => messages.push(m)});
+      const config = await loadConfig({cwd, src, deploying: true, dest, logger, cb: (m) => messages.push(m)});
       logger.success('Config Loaded');
       // await _build({cwd, src, dest, mode, logger}, config);
       logger.log(`Deploying project...`);

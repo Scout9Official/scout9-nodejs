@@ -1,6 +1,6 @@
 {
   "name": "@scout9/app",
-  "version": "1.0.0-alpha.0.1.67",
+  "version": "1.0.0-alpha.0.1.68",
   "description": "Build and deploy your Scout9 app for SMS auto replies",
   "publishConfig": {
     "access": "public"
@@ -72,7 +72,7 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "@scout9/admin": "^1.0.0-alpha.0.0.30",
+    "@scout9/admin": "^1.0.0-alpha.0.0.35",
     "@scout9/crm": "^1.0.0-alpha.0.0.4",
     "archiver": "^6.0.1",
     "body-parser": "^1.20.2",

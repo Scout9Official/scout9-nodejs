@@ -35,11 +35,11 @@ export function loadEnvConfig({
 
 /**
  * @deprecated use "new ProjectFiles(...).load()" instead
- * @param {{cwd: string; src: string; logger?: ProgressLogger; cb?: (message: string) => void}} - build options
+ * @param {{cwd: string; src: string; logger?: ProgressLogger; deploying?: boolean; cb?: (message: string) => void}} - build options
  * @returns {Promise<Scout9ProjectBuildConfig>}
  */
 export async function loadConfig({
-  cwd = process.cwd(), src = 'src', logger = new ProgressLogger(), cb = (msg) => {
+  cwd = process.cwd(), src = 'src', dest = '/tmp/project', deploying = false, logger = new ProgressLogger(), cb = (msg) => {
   }
 } = {}) {
   // Load globals
@@ -47,7 +47,7 @@ export async function loadConfig({
 
   const baseProjectConfig = await loadProjectConfig({cwd, src, logger, cb});
   const entitiesConfig = await loadEntitiesConfig({cwd, src, logger, cb});
-  const agentsConfig = await loadAgentConfig({cwd, src, logger, cb});
+  const agentsConfig = await loadAgentConfig({cwd, src, logger, cb, deploying, dest});
   const workflowsConfig = await loadWorkflowsConfig({cwd, src, logger, cb});
 
   /**

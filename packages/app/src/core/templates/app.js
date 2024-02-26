@@ -178,6 +178,7 @@ function isSurroundedByBrackets(str) {
 function resolveEntity(entity, method) {
   const entityField = config.entities.find(e => e.entity === entity);
   if (!entityField) {
+    console.error(`Invalid entity: "${entity}" not found within [${config.entities.map(e => e.entity).join(', ')}]`);
     throw new Error(`Invalid entity: not found`);
   }
   const {api, entities} = entityField;
