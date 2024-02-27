@@ -12,6 +12,7 @@ import { loadUserPackageJson } from './config/project.js';
 import { platformApi } from './data.js';
 import { syncData } from './sync.js';
 import ProjectFiles from '../utils/project.js';
+import { projectTemplates } from '../utils/project-templates.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -132,7 +133,9 @@ async function buildApp(cwd, src, dest, config) {
   // Ensures directory exists
   await fs.mkdir(dest, {recursive: true});
 
-  const copyDirectory = async (source, destination) => {
+  const root = src.replace(process.cwd(), '');
+
+  const copyDirectory = async (source, destination, permittedExtensions) => {
     await fs.mkdir(destination, {recursive: true});
 
     const dir = await fs.readdir(source, {withFileTypes: true});
@@ -140,12 +143,31 @@ async function buildApp(cwd, src, dest, config) {
       if (dirent.name.includes('.spec') || dirent.name.includes('.test')) {
         continue; // Skip this file or directory
       }
+
       const sourcePath = path.resolve(source, dirent.name);
       const destinationPath = path.resolve(destination, dirent.name);
 
-      dirent.isDirectory() ?
-        await copyDirectory(sourcePath, destinationPath) :
-        await fs.copyFile(sourcePath, destinationPath);
+      if (dirent.isDirectory()) {
+        await copyDirectory(sourcePath, destinationPath, permittedExtensions);
+      } else {
+        if (permittedExtensions && permittedExtensions.length > 0) {
+          const fileExtension = path.extname(dirent.name).replace('.', '');
+          if (!permittedExtensions.includes(fileExtension)) {
+            // console.log(`Skipping ${dirent.name} because it's not in the permitted extensions list`);
+            continue;
+          }
+        }
+        if (sourcePath.includes('entities/agents/index') || sourcePath.includes('entities/agents/config')) {
+          // Special case where we have to paste the agent raw data to avoid uploading large audio/txt files
+          await fs.writeFile(destinationPath, projectTemplates.entities.agents({agents: config.agents, ext: path.extname(destinationPath)}));
+        } else if (sourcePath.includes(`${root}/index`)) {
+          await fs.writeFile(destinationPath, projectTemplates.root({config, ext: path.extname(destinationPath)}));
+        } else {
+          await fs.copyFile(sourcePath, destinationPath);
+        }
+
+      }
+
     }
   };
 
@@ -154,7 +176,7 @@ async function buildApp(cwd, src, dest, config) {
   const templatePackagePath = path.resolve(__dirname, './templates/template-package.json');
 
   // Copy src directory
-  await copyDirectory(srcDir, path.resolve(dest, 'src'));
+  await copyDirectory(srcDir, path.resolve(dest, 'src'),  ['js', 'ts', 'cjs', 'mjs', 'json', 'env']);
 
   // Copy user target package.json, first load app.js dependencies/scripts and append to target package.json
   const packageTemplate = JSON.parse(await fs.readFile(new URL(templatePackagePath, import.meta.url), 'utf-8'));

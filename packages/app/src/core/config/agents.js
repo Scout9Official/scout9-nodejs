@@ -2,47 +2,27 @@ import path from 'node:path';
 import fs from 'node:fs/promises';
 import colors from 'kleur';
 import { globSync } from 'glob';
+import { Configuration, Scout9Api } from '@scout9/admin';
 import { checkVariableType, requireProjectFile } from '../../utils/index.js';
 import { agentsConfigurationSchema } from '../../runtime/index.js';
-import { Configuration, Scout9Api } from '@scout9/admin';
+import { audioExtensions } from '../../utils/audio-type.js';
+import { fileTypeFromBuffer } from '../../utils/file-type.js';
+import { videoExtensions } from '../../utils/video-type.js';
+import { projectTemplates } from '../../utils/project-templates.js';
+import { toBuffer, writeFileToLocal } from '../../utils/file.js';
+import imageBuffer from '../../utils/image-buffer.js';
+import audioBuffer from '../../utils/audio-buffer.js';
+
 
 /**
- *
- * @param {string | Buffer} imgBufferOrFilepath
- * @returns {Promise<Buffer>}
- */
-async function toBuffer(imgBufferOrFilepath) {
-  if (typeof imgBufferOrFilepath === 'string') {
-    // Read file
-    return fs.readFile(imgBufferOrFilepath);
-  } else if (Buffer.isBuffer(imgBufferOrFilepath)) {
-    return imgBufferOrFilepath;
-  } else {
-    throw new Error(`Invalid img type: ${typeof imgBufferOrFilepath}`);
-  }
-}
-
-/**
- * @param inputs
- * @param {string} [inputs.cwd]
- * @param {string} [inputs.dest]
- * @param {string} inputs.fileName
- * @param {string | Buffer} inputs.file
+ * @param {string | Buffer} img
+ * @param agentId
  * @returns {Promise<string>}
  */
-async function writeFileToLocal({cwd = process.cwd(), dest = '/tmp/project', file, fileName} = {}) {
-  // Ensure folder exists
-  const fileFolder = path.resolve(cwd, dest);
-  const filePath = path.resolve(fileFolder, fileName);
-  await fs.mkdir(path.dirname(filePath), {recursive: true});
-  await fs.writeFile(filePath, await toBuffer(file));
-  return filePath;
-}
-
-async function writeImgToServer({img, fileName, agentId}) {
-  const {url} = (await (new Scout9Api(new Configuration({apiKey: process.env.S9_API_KEY}))).agentProfileUpload(
+async function writeImgToServer({img, agentId}) {
+  const {url} = (await (new Scout9Api(new Configuration({apiKey: process.env.SCOUT9_API_KEY}))).agentProfileUpload(
     agentId,
-    img
+    await imageBuffer(img)
   ).then(res => res.data));
   if (!url) {
     throw new Error(`Failed to upload agent image`);
@@ -51,7 +31,13 @@ async function writeImgToServer({img, fileName, agentId}) {
 }
 
 async function writeTranscriptsToServer({transcripts, agentId}) {
-  const {urls} = (await (new Scout9Api(new Configuration({apiKey: process.env.S9_API_KEY}))).agentTranscriptUpload(
+  for (let i = 0; i < transcripts.length; i++) {
+    const result = await fileTypeFromBuffer(transcripts[i]);
+    if (!result || result.ext !== 'txt' || result.mime !== 'text/plain') {
+      throw new Error(`Invalid transcript type: ${result?.mime || 'N/A'}, expected text/plain (.txt file, got ${result?.ext || 'Missing ext'})`);
+    }
+  }
+  const {urls} = (await (new Scout9Api(new Configuration({apiKey: process.env.SCOUT9_API_KEY}))).agentTranscriptUpload(
     agentId,
     transcripts
   ).then(res => res.data));
@@ -62,9 +48,14 @@ async function writeTranscriptsToServer({transcripts, agentId}) {
 }
 
 async function writeAudiosToServer({audios, agentId}) {
-  const {urls} = (await (new Scout9Api(new Configuration({apiKey: process.env.S9_API_KEY}))).agentTranscriptUpload(
+  const buffers = [];
+  for (let i = 0; i < audios.length; i++) {
+    const {buffer} = await audioBuffer(audios[i], true);
+    buffers.push(buffer);
+  }
+  const {urls} = (await (new Scout9Api(new Configuration({apiKey: process.env.SCOUT9_API_KEY}))).agentTranscriptUpload(
     agentId,
-    audios
+    buffers
   ).then(res => res.data));
   if (!urls) {
     throw new Error(`Failed to upload agent image`);
@@ -88,10 +79,12 @@ export default async function loadAgentConfig({
     throw new Error(`Multiple agents entity files found, rerun "scout9 sync" to fix`);
   }
 
+  const sourceFile = paths[0];
+
   /**
    * @type {Array<Agent> | function(): Array<Agent> | function(): Promise<Array<Agent>>}
    */
-  const mod = await requireProjectFile(paths[0]).then(mod => mod.default);
+  const mod = await requireProjectFile(sourceFile).then(mod => mod.default);
 
   // @type {Array<Agent>}
   let agents = [];
@@ -107,6 +100,8 @@ export default async function loadAgentConfig({
     default:
       throw new Error(`Invalid entity type (${entityType}) returned at "${path}"`);
   }
+
+  let serverDeployed = false; // Track whether we deployed to server, so that we can sync code base
 
   // Send warnings if not properly registered
   for (const agent of agents) {
@@ -131,37 +126,47 @@ export default async function loadAgentConfig({
     if (agent.img) {
       if (typeof agent.img === 'string') {
         if (!agent.img.startsWith('https://storage.googleapis.com')) {
+          // Got string file, must either be a URL or a local file path
           if (deploying) {
-            cb(`📸 Uploading ${agent.firstName || 'agent'}'s profile image...`);
             agent.img = await writeImgToServer({
               img: agent.img,
-              fileName: `${agent.firstName || 'agent'}.png`,
               agentId: agent.id
             });
+            cb(`✅ Uploaded ${agent.firstName || 'agent'}'s profile image to ${agent.img}`);
+            serverDeployed = true;
           } else {
             agent.img = await writeFileToLocal({
-              img: agent.img,
-              fileName: `${agent.firstName || 'agent'}.png`,
-              cwd,
-              dest
+              file: agent.img,
+              fileName: `${agent.firstName || 'agent'}.png`
+            }).then(({uri, isImage}) => {
+              if (!isImage) {
+                throw new Error(`Invalid image type: ${typeof agent.img}`);
+              }
+              return uri;
             });
+            cb(`✅ Copied ${agent.firstName || 'agent'}'s profile image to ${agent.img}`);
           }
         }
       } else if (Buffer.isBuffer(agent.img)) {
         if (deploying) {
-          cb(`📸 Uploading ${agent.firstName || 'agent'}'s profile image...`);
           agent.img = await writeImgToServer({
             img: agent.img,
             fileName: `${agent.firstName || 'agent'}.png`,
             agentId: agent.id
           });
+          cb(`✅ Uploaded ${agent.firstName || 'agent'}'s profile image to ${agent.img}`);
+          serverDeployed = true;
         } else {
           agent.img = await writeFileToLocal({
-            img: agent.img,
-            fileName: `${agent.firstName || 'agent'}.png`,
-            cwd,
-            dest
+            file: agent.img,
+            fileName: `${agent.firstName || 'agent'}.png`
+          }).then(({uri, isImage}) => {
+            if (!isImage) {
+              throw new Error(`Invalid image type: ${typeof agent.img}`);
+            }
+            return uri;
           });
+          cb(`✅ Copied ${agent.firstName || 'agent'}'s profile image to ${agent.img}`);
         }
       } else {
         throw new Error(`Invalid img type: ${typeof agent.img}`);
@@ -181,6 +186,10 @@ export default async function loadAgentConfig({
             deployedTranscripts.push(transcript);
           }
         } else if (Buffer.isBuffer(transcript)) {
+          const txtResult = await fileTypeFromBuffer(transcript);
+          if (txtResult?.ext !== 'txt' || txtResult?.mime !== 'text/plain') {
+            throw new Error(`Invalid transcript type: ${txtResult?.mime || 'N/A'}, expected text/plain (.txt file, got ${txtResult?.ext || 'Missing ext'})`);
+          }
           pendingTranscripts.push(transcript);
         } else {
           throw new Error(`Invalid transcript type: ${typeof transcript}`);
@@ -190,16 +199,23 @@ export default async function loadAgentConfig({
       let urls = [];
       if (deploying) {
         urls = await writeTranscriptsToServer({transcripts: pendingTranscripts, agentId: agent.id});
+        cb(`✅ Uploaded ${agent.firstName || 'agent'}'s transcripts to ${urls}`);
+        serverDeployed = true;
       } else {
         for (let i = 0; i < pendingTranscripts.length; i++) {
           const transcript = pendingTranscripts[i];
           urls.push(await writeFileToLocal({
-            file: transcript,
-            fileName: `transcript_${i + deployedTranscripts.length}`,
-            cwd,
-            dest
-          }));
+              file: transcript,
+              fileName: `transcript_${i + deployedTranscripts.length}.txt`
+            }).then(({uri, mime, ext}) => {
+              if (mime !== 'text/plain') {
+                throw new Error(`Invalid transcript type: ${mime}, expected text/plain (.txt file, got ${ext})`);
+              }
+              return uri;
+            })
+          );
         }
+        cb(`✅ Copied ${agent.firstName || 'agent'}'s transcripts to ${urls}`);
       }
 
       agent.transcripts = [
@@ -211,15 +227,30 @@ export default async function loadAgentConfig({
     if ((agent?.audios || []).length > 0) {
       const deployedAudios = [];
       const pendingAudios = [];
-      for (const audio of audios) {
+      for (const audio of agent.audios) {
         if (typeof audio === 'string') {
           if (!audio.startsWith('https://storage.googleapis.com')) {
-            pendingAudios.push(await fs.readFile(audio));
+            // If not on GCS, then it must be a local file path or remote URL
+            pendingAudios.push(await toBuffer(audio).then(({buffer, ext, mime, isAudio, isVideo}) => {
+              if (!isAudio && !isVideo) {
+                throw new Error(`Invalid audio/video type: ${mime}, expected audio/* or video/* got ${ext}`);
+              }
+              return buffer;
+            }));
           } else {
+            // Already deployed, append string URL
             deployedAudios.push(audio);
           }
         } else if (Buffer.isBuffer(audio)) {
-          pendingAudios.push(audio);
+          const fileType = await fileTypeFromBuffer(audio);
+          if (!fileType) {
+            throw new Error(`Invalid audio type: ${typeof audio}`);
+          }
+          if (videoExtensions.has(fileType.ext) || audioExtensions.has(fileType.ext)) {
+            pendingAudios.push(audio);
+          } else {
+            throw new Error(`Invalid audio/video type: ${fileType.mime}, expected audio/* or video/*, got ${fileType.ext}`);
+          }
         } else {
           throw new Error(`Invalid audio type: ${typeof audio}`);
         }
@@ -228,14 +259,19 @@ export default async function loadAgentConfig({
       let urls = [];
       if (deploying) {
         urls = await writeAudiosToServer({audios: pendingAudios, agentId: agent.id});
+        cb(`✅ Uploaded ${agent.firstName || 'agent'}'s audios to ${urls}`);
+        serverDeployed = true;
       } else {
         for (let i = 0; i < pendingAudios.length; i++) {
           const audio = pendingAudios[i];
           urls.push(await writeFileToLocal({
             file: audio,
-            fileName: `audio_${i + deployedAudios.length}`,
-            cwd,
-            dest
+            fileName: `audio_${i + deployedAudios.length}`
+          }).then(({uri, mime, ext, isAudio, isVideo}) => {
+            if (!isAudio && !isVideo) {
+              throw new Error(`Invalid audio/video type: ${mime}, expected audio/* or video/* got ${ext}`);
+            }
+            return uri;
           }));
         }
       }
@@ -246,10 +282,23 @@ export default async function loadAgentConfig({
       ];
     }
   }
+
   const result = agentsConfigurationSchema.safeParse(agents);
   if (!result.success) {
     result.error.source = paths[0];
     throw result.error;
   }
+
+  if (serverDeployed) {
+    cb(`Syncing ${sourceFile} with latest server changes`);
+    await fs.writeFile(sourceFile, projectTemplates.entities.agents({agents, ext: path.extname(sourceFile)}));
+    // const update = await p.confirm({
+    //   message: `Changes uploaded, sync local entities/agents file?`,
+    //   initialValue: true
+    // });
+    // if (update) {
+    // }
+  }
+
   return agents;
 }

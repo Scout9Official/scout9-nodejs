@@ -4419,6 +4419,7 @@ class Scout9ApiGenerated extends base_1.BaseAPI {
     }
 }
 exports.Scout9ApiGenerated = Scout9ApiGenerated;
+const stream_1 = require("stream");
 /**
  * Scout9Api - object-oriented interface
  * @export
@@ -4430,9 +4431,15 @@ class Scout9Api extends Scout9ApiGenerated {
         (0, common_1.assertParamExists)('organizationLogo', 'file', file);
         const formData = new ((this.configuration && this.configuration.formDataCtor) || FormData)();
         if (Buffer.isBuffer(file)) {
-            file = new Blob([file], { type: "application/octet-stream" });
+            // Convert Buffer to Blob
+            file = new Blob([file], { type: 'application/octet-stream' });
+            // Convert Blob to Stream
+            const fileStream = stream_1.Readable.from(file.stream());
+            formData.append('file', fileStream, 'logo');
         }
-        formData.append('file', file, file?.name || 'logo');
+        else {
+            formData.append('file', file, file?.name || 'logo');
+        }
         return this.axios.request({
             method: 'POST',
             url: `${this.configuration?.basePath || base_1.BASE_PATH}/v1-organizationLogo`,
@@ -4447,9 +4454,15 @@ class Scout9Api extends Scout9ApiGenerated {
         (0, common_1.assertParamExists)('organizationLogo', 'file', file);
         const formData = new ((this.configuration && this.configuration.formDataCtor) || FormData)();
         if (Buffer.isBuffer(file)) {
-            file = new Blob([file], { type: "application/octet-stream" });
+            // Convert Buffer to Blob
+            file = new Blob([file], { type: 'application/octet-stream' });
+            // Convert Blob to Stream
+            const fileStream = stream_1.Readable.from(file.stream());
+            formData.append('file', fileStream, 'icon');
         }
-        formData.append('file', file, file?.name || 'icon');
+        else {
+            formData.append('file', file, file?.name || 'icon');
+        }
         return this.axios.request({
             method: 'POST',
             url: `${this.configuration?.basePath || base_1.BASE_PATH}/v1-organizationIcon`,
@@ -4465,9 +4478,15 @@ class Scout9Api extends Scout9ApiGenerated {
         (0, common_1.assertParamExists)('agentProfileUpload', 'file', file);
         const formData = new ((this.configuration && this.configuration.formDataCtor) || FormData)();
         if (Buffer.isBuffer(file)) {
+            // Convert Buffer to Blob
             file = new Blob([file], { type: "application/octet-stream" });
+            // Convert Blob to Stream
+            const fileStream = stream_1.Readable.from(file.stream());
+            formData.append('file', fileStream, 'profile');
         }
-        formData.append('file', file, file?.name || 'profile');
+        else {
+            formData.append('file', file, file?.name || 'profile');
+        }
         formData.append('agentId', agentId);
         return this.axios.request({
             method: 'POST',
@@ -4485,9 +4504,15 @@ class Scout9Api extends Scout9ApiGenerated {
         const formData = new ((this.configuration && this.configuration.formDataCtor) || FormData)();
         transcripts.forEach((file, i) => {
             if (Buffer.isBuffer(file)) {
+                // Convert Buffer to Blob
                 file = new Blob([file], { type: "text/plain" });
+                // Convert Blob to Stream
+                const fileStream = stream_1.Readable.from(file.stream());
+                formData.append(`transcripts[${i}]`, fileStream, file?.name || 'transcript' + i);
             }
-            formData.append(`transcripts[${i}]`, file, file?.name || 'transcript' + i);
+            else {
+                formData.append(`transcripts[${i}]`, file, file?.name || 'transcript' + i);
+            }
         });
         return this.axios.request({
             method: 'POST',
@@ -4505,9 +4530,15 @@ class Scout9Api extends Scout9ApiGenerated {
         const formData = new ((this.configuration && this.configuration.formDataCtor) || FormData)();
         audios.forEach((file, i) => {
             if (Buffer.isBuffer(file)) {
+                // Convert Buffer to Blob
                 file = new Blob([file], { type: "application/octet-stream" });
+                // Convert Blob to Stream
+                const fileStream = stream_1.Readable.from(file.stream());
+                formData.append(`audios[${i}]`, fileStream, file?.name || 'audio' + i);
             }
-            formData.append(`audios[${i}]`, file, file?.name || 'audio' + i);
+            else {
+                formData.append(`audios[${i}]`, file, file?.name || 'audio' + i);
+            }
         });
         return this.axios.request({
             method: 'POST',

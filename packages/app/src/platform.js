@@ -1,6 +1,13 @@
 import colors from 'kleur';
 import { z } from 'zod';
-import { build as _build, deploy as _deploy, run as _run, runConfig as _runConfig, sync as _sync, test as _test } from './core/index.js';
+import {
+  build as _build,
+  deploy as _deploy,
+  run as _run,
+  runConfig as _runConfig,
+  sync as _sync,
+  test as _test
+} from './core/index.js';
 import { loadConfig, loadEnvConfig } from './core/config/index.js';
 import { coalesceToError, ProgressLogger } from './utils/index.js';
 import ProjectFiles from './utils/project.js';
@@ -91,7 +98,11 @@ export const Scout9Platform = {
     const messages = [];
     try {
       logger.log(`Loading config...`);
-      const config = await loadConfig({cwd, src, mode, logger, cb: (m) => messages.push(m)});
+      const config = await loadConfig({
+        cwd, src, mode, logger, cb: (m) => {
+          logger.info(m);
+        }
+      });
       logger.success('Config Loaded');
       logger.log(`Building project...`);
       await _build({cwd, src, dest, mode, logger}, config);
@@ -106,7 +117,7 @@ export const Scout9Platform = {
     }
   },
 
-  runConfig: async function ({cwd = process.cwd(), src  = './src', mode = 'production'} = {}) {
+  runConfig: async function ({cwd = process.cwd(), src = './src', mode = 'production'} = {}) {
     const logger = new ProgressLogger();
     try {
       logger.log(`Loading config`);
@@ -115,7 +126,7 @@ export const Scout9Platform = {
       return _runConfig({cwd, src, mode, logger})
         .catch(e => {
           logger.done();
-          throw e
+          throw e;
         });
     } catch (e) {
       logger.done();
@@ -142,7 +153,7 @@ export const Scout9Platform = {
       return _run(event, {cwd, src, mode, logger})
         .catch(e => {
           logger.done();
-          throw e
+          throw e;
         });
     } catch (e) {
       logger.done();

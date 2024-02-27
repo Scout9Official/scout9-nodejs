@@ -110,18 +110,30 @@ function Scout9Admin(apiKey, basePath, axiosInstance) {
                     ...a
                 }))
             }).then((resolve)),
-            transcripts: {
-                list: async (agentId) => scout9.files('agent-transcript', agentId).then((resolve)),
-                retrieve: async (agentId, fileId) => scout9.file('agent-transcript', fileId, agentId).then(resolve),
-                remove: async (agentId, fileId) => scout9.fileRemove('agent-transcript', fileId, agentId).then(resolve),
-                upload: async (agentId, file, context, fileId) => scout9.fileUpload(file, 'agent-transcript', context, fileId, agentId).then(res => res.data.files?.[0] || null),
-            },
-            audio: {
-                list: async (agentId) => scout9.files('agent-audio', agentId).then((resolve)),
-                retrieve: async (agentId, fileId) => scout9.file('agent-audio', fileId, agentId).then((resolve)),
-                remove: async (agentId, fileId) => scout9.fileRemove('agent-audio', fileId, agentId).then(resolve),
-                upload: async (agentId, file, context, fileId) => scout9.fileUpload(file, 'agent-audio', context, fileId, agentId).then(res => res.data.files?.[0] || null),
-            }
+            // transcripts: {
+            //   list: async (agentId?: string) => scout9.files('agent-transcript', agentId).then(resolve<S9File[]>),
+            //   retrieve: async (agentId: string, fileId: string,) => scout9.file('agent-transcript', fileId, agentId).then(resolve),
+            //   remove: async (agentId: string, fileId: string) => scout9.fileRemove('agent-transcript', fileId, agentId).then(resolve),
+            //   upload: async (agentId: string, file: File | Buffer | Blob, context?: string, fileId?: string) => scout9.fileUpload(
+            //     file,
+            //     'agent-transcript',
+            //     context,
+            //     fileId,
+            //     agentId
+            //   ).then(res => res.data.files?.[0] || null),
+            // },
+            // audio: {
+            //   list: async (agentId?: string) => scout9.files('agent-audio', agentId).then(resolve<S9File[]>),
+            //   retrieve: async (agentId: string, fileId: string,) => scout9.file('agent-audio', fileId, agentId).then(resolve<S9File | null>),
+            //   remove: async (agentId: string, fileId: string) => scout9.fileRemove('agent-audio', fileId, agentId).then(resolve),
+            //   upload: async (agentId: string, file: File | Buffer | Blob, context?: string, fileId?: string) => scout9.fileUpload(
+            //     file,
+            //     'agent-audio',
+            //     context,
+            //     fileId,
+            //     agentId
+            //   ).then(res => res.data.files?.[0] || null),
+            // }
         },
         conversation: {
             retrieve: async (id) => scout9.conversation(id).then((resolve)),

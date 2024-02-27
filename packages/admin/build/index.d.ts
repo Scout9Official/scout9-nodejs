@@ -9,7 +9,6 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-/// <reference types="node" />
 export * from './api';
 export * from './configuration';
 export * from './webhooks';
@@ -82,18 +81,6 @@ export declare function Scout9Admin(apiKey: string, basePath?: string, axiosInst
         bulkUpdate: (data: (Partial<Agent> & {
             id: string;
         })[]) => Promise<OperationBulkResponse>;
-        transcripts: {
-            list: (agentId?: string) => Promise<ListFilesResponseInner[]>;
-            retrieve: (agentId: string, fileId: string) => Promise<File>;
-            remove: (agentId: string, fileId: string) => Promise<OperationDocResponse>;
-            upload: (agentId: string, file: File | Buffer | Blob, context?: string, fileId?: string) => Promise<import("./api").Scout9File | null>;
-        };
-        audio: {
-            list: (agentId?: string) => Promise<ListFilesResponseInner[]>;
-            retrieve: (agentId: string, fileId: string) => Promise<ListFilesResponseInner | null>;
-            remove: (agentId: string, fileId: string) => Promise<OperationDocResponse>;
-            upload: (agentId: string, file: File | Buffer | Blob, context?: string, fileId?: string) => Promise<import("./api").Scout9File | null>;
-        };
     };
     conversation: {
         retrieve: (id: string) => Promise<Conversation | null>;

@@ -11807,6 +11807,7 @@ export class Scout9ApiGenerated extends BaseAPI {
 
 
 
+import { Readable } from 'stream';
 
 
 
@@ -11819,15 +11820,22 @@ export class Scout9ApiGenerated extends BaseAPI {
 export class Scout9Api extends Scout9ApiGenerated {
 
   public organizationLogo(file: Blob | File | Buffer) {
-    assertParamExists('organizationLogo', 'file', file)
+    assertParamExists('organizationLogo', 'file', file);
     const formData: FormData = new ((this.configuration && this.configuration.formDataCtor) || FormData)();
 
     if (Buffer.isBuffer(file)) {
-      file = new Blob([file as Buffer], { type: "application/octet-stream" });
-    }
-    formData.append('file', file as any, (file as File)?.name || 'logo');
+      // Convert Buffer to Blob
+      file = new Blob([file], {type: 'application/octet-stream'});
 
-    return this.axios.request<{url?: string; success: boolean; error?: string}>({
+      // Convert Blob to Stream
+      const fileStream = Readable.from((file as any).stream());
+
+      formData.append('file', fileStream as any, 'logo');
+    } else {
+      formData.append('file', file, (file as File)?.name || 'logo');
+    }
+
+    return this.axios.request<{ url?: string; success: boolean; error?: string }>({
       method: 'POST',
       url: `${this.configuration?.basePath || BASE_PATH}/v1-organizationLogo`,
       data: formData,
@@ -11839,15 +11847,21 @@ export class Scout9Api extends Scout9ApiGenerated {
   }
 
   public organizationIcon(file: Blob | File | Buffer) {
-    assertParamExists('organizationLogo', 'file', file)
+    assertParamExists('organizationLogo', 'file', file);
     const formData: FormData = new ((this.configuration && this.configuration.formDataCtor) || FormData)();
 
     if (Buffer.isBuffer(file)) {
-      file = new Blob([file as Buffer], { type: "application/octet-stream" });
-    }
-    formData.append('file', file as any, (file as File)?.name || 'icon');
+      // Convert Buffer to Blob
+      file = new Blob([file], {type: 'application/octet-stream'});
 
-    return this.axios.request<{url?: string; success: boolean; error?: string}>({
+      // Convert Blob to Stream
+      const fileStream = Readable.from((file as any).stream());
+
+      formData.append('file', fileStream as any, 'icon');
+    } else {
+      formData.append('file', file, (file as File)?.name || 'icon');
+    }
+    return this.axios.request<{ url?: string; success: boolean; error?: string }>({
       method: 'POST',
       url: `${this.configuration?.basePath || BASE_PATH}/v1-organizationIcon`,
       data: formData,
@@ -11864,12 +11878,19 @@ export class Scout9Api extends Scout9ApiGenerated {
     const formData: FormData = new ((this.configuration && this.configuration.formDataCtor) || FormData)();
 
     if (Buffer.isBuffer(file)) {
-      file = new Blob([file as Buffer], { type: "application/octet-stream" });
+      // Convert Buffer to Blob
+      file = new Blob([file], { type: "application/octet-stream" });
+
+      // Convert Blob to Stream
+      const fileStream = Readable.from((file as any).stream());
+
+      formData.append('file', fileStream as any, 'profile');
+    } else {
+      formData.append('file', file, (file as File)?.name || 'profile');
     }
-    formData.append('file', file as any, (file as File)?.name || 'profile');
     formData.append('agentId', agentId);
 
-    return this.axios.request<{url?: string; success: boolean; error?: string}>({
+    return this.axios.request<{ url?: string; success: boolean; error?: string }>({
       method: 'POST',
       url: `${this.configuration?.basePath || BASE_PATH}/v1-agentImg`,
       data: formData,
@@ -11887,12 +11908,19 @@ export class Scout9Api extends Scout9ApiGenerated {
 
     transcripts.forEach((file, i) => {
       if (Buffer.isBuffer(file)) {
-        file = new Blob([file as Buffer], { type: "text/plain" });
+        // Convert Buffer to Blob
+        file = new Blob([file], { type: "text/plain" });
+
+        // Convert Blob to Stream
+        const fileStream = Readable.from((file as any).stream());
+
+        formData.append(`transcripts[${i}]`,  fileStream as any, (file as File)?.name || 'transcript' + i);
+      } else {
+        formData.append(`transcripts[${i}]`, file, (file as File)?.name || 'transcript' + i);
       }
-      formData.append(`transcripts[${i}]`, file as any, (file as File)?.name || 'transcript' + i);
     });
 
-    return this.axios.request<{urls?: string[]; success: boolean; error?: string}>({
+    return this.axios.request<{ urls?: string[]; success: boolean; error?: string }>({
       method: 'POST',
       url: `${this.configuration?.basePath || BASE_PATH}/v1-agentTranscripts`,
       data: formData,
@@ -11910,12 +11938,19 @@ export class Scout9Api extends Scout9ApiGenerated {
 
     audios.forEach((file, i) => {
       if (Buffer.isBuffer(file)) {
-        file = new Blob([file as Buffer], { type: "application/octet-stream" });
+        // Convert Buffer to Blob
+        file = new Blob([file], { type: "application/octet-stream" });
+
+        // Convert Blob to Stream
+        const fileStream = Readable.from((file as any).stream());
+
+        formData.append(`audios[${i}]`,  fileStream as any, (file as File)?.name || 'audio' + i);
+      } else {
+        formData.append(`audios[${i}]`, file, (file as File)?.name || 'audio' + i);
       }
-      formData.append(`audios[${i}]`, file as any, (file as File)?.name || 'audio' + i);
     });
 
-    return this.axios.request<{urls?: string[]; success: boolean; error?: string}>({
+    return this.axios.request<{ urls?: string[]; success: boolean; error?: string }>({
       method: 'POST',
       url: `${this.configuration?.basePath || BASE_PATH}/v1-agentAudios`,
       data: formData,
