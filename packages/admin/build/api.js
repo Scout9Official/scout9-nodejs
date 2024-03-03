@@ -4473,8 +4473,8 @@ class Scout9Api extends Scout9ApiGenerated {
             }
         });
     }
-    agentProfileUpload(agentId, file) {
-        (0, common_1.assertParamExists)('agentProfileUpload', 'agentId', agentId);
+    agentProfileUpload(agentId = '', file) {
+        // assertParamExists('agentProfileUpload', 'agentId', agentId);
         (0, common_1.assertParamExists)('agentProfileUpload', 'file', file);
         const formData = new ((this.configuration && this.configuration.formDataCtor) || FormData)();
         if (Buffer.isBuffer(file)) {
@@ -4487,7 +4487,9 @@ class Scout9Api extends Scout9ApiGenerated {
         else {
             formData.append('file', file, file?.name || 'profile');
         }
-        formData.append('agentId', agentId);
+        if (agentId) {
+            formData.append('agentId', agentId);
+        }
         return this.axios.request({
             method: 'POST',
             url: `${this.configuration?.basePath || base_1.BASE_PATH}/v1-agentImg`,
@@ -4498,10 +4500,13 @@ class Scout9Api extends Scout9ApiGenerated {
             }
         });
     }
-    agentTranscriptUpload(agentId, transcripts) {
-        (0, common_1.assertParamExists)('agentProfileUpload', 'agentId', agentId);
+    agentTranscriptUpload(agentId = '', transcripts) {
+        // assertParamExists('agentProfileUpload', 'agentId', agentId);
         (0, common_1.assertParamExists)('agentProfileUpload', 'transcripts', transcripts);
         const formData = new ((this.configuration && this.configuration.formDataCtor) || FormData)();
+        if (agentId) {
+            formData.append('agentId', agentId);
+        }
         transcripts.forEach((file, i) => {
             if (Buffer.isBuffer(file)) {
                 // Convert Buffer to Blob
@@ -4524,10 +4529,13 @@ class Scout9Api extends Scout9ApiGenerated {
             }
         });
     }
-    agentAudioUpload(agentId, audios) {
-        (0, common_1.assertParamExists)('agentProfileUpload', 'agentId', agentId);
+    agentAudioUpload(agentId = '', audios) {
+        // assertParamExists('agentProfileUpload', 'agentId', agentId);
         (0, common_1.assertParamExists)('agentProfileUpload', 'audios', audios);
         const formData = new ((this.configuration && this.configuration.formDataCtor) || FormData)();
+        if (agentId) {
+            formData.append('agentId', agentId);
+        }
         audios.forEach((file, i) => {
             if (Buffer.isBuffer(file)) {
                 // Convert Buffer to Blob

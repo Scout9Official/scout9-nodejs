@@ -1,6 +1,6 @@
 {
   "name": "@scout9/app",
-  "version": "1.0.0-alpha.0.1.74",
+  "version": "1.0.0-alpha.0.1.77",
   "description": "Build and deploy your Scout9 app for SMS auto replies",
   "publishConfig": {
     "access": "public"
@@ -10,7 +10,7 @@
     "url": "git://github.com/Scout9Official/scout9-nodejs.git"
   },
   "scripts": {
-    "test": "node test.js",
+    "test": "node ./src/cli.js deploy",
     "postinstall": "node postinstall.js",
     "prepublishOnly": "npm run build",
     "generate:types": "node scripts/generate-dts.js",
@@ -72,7 +72,7 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "@scout9/admin": "^1.0.0-alpha.0.0.36",
+    "@scout9/admin": "^1.0.0-alpha.0.0.39",
     "@scout9/crm": "^1.0.0-alpha.0.0.4",
     "archiver": "^6.0.1",
     "body-parser": "^1.20.2",

@@ -12,6 +12,7 @@ import { projectTemplates } from '../../utils/project-templates.js';
 import { toBuffer, writeFileToLocal } from '../../utils/file.js';
 import imageBuffer from '../../utils/image-buffer.js';
 import audioBuffer from '../../utils/audio-buffer.js';
+import { yellow } from 'kleur/colors';
 
 
 /**
@@ -22,7 +23,7 @@ import audioBuffer from '../../utils/audio-buffer.js';
 async function writeImgToServer({img, agentId}) {
   const {url} = (await (new Scout9Api(new Configuration({apiKey: process.env.SCOUT9_API_KEY}))).agentProfileUpload(
     agentId,
-    await imageBuffer(img)
+    await imageBuffer(img).then(r => r.buffer)
   ).then(res => res.data));
   if (!url) {
     throw new Error(`Failed to upload agent image`);
@@ -106,8 +107,7 @@ export default async function loadAgentConfig({
   // Send warnings if not properly registered
   for (const agent of agents) {
     if (!agent.forwardPhone && !agent.forwardEmail) {
-      throw new Error(`src/entities/agents.js|ts: must provide either a ".forwardPhone" or ".forwardEmail" to ${agent.firstName || JSON.stringify(
-        agent)}.`);
+      cb(yellow(`⚠️src/entities/agents.js|ts: neither a ".forwardPhone" or ".forwardEmail" to ${agent.firstName || JSON.stringify(agent)} - messages cannot be forward to you.`));
     }
     if (!agent.programmablePhoneNumber) {
       const userName = agent.firstName ? `${agent.firstName}${agent.lastName ? ' ' + agent.lastName : ''}` : agent.forwardPhone;
@@ -116,10 +116,10 @@ export default async function loadAgentConfig({
         'scout9 sync')} to update.`);
     }
     if (agent.forwardPhone && agents.filter(a => a.forwardPhone && (a.forwardPhone === agent.forwardPhone)).length > 1) {
-      throw new Error(`src/entities/agents.js|ts: ".forwardPhone: ${agent.forwardPhone}" can only be associated to one agent within your project`);
+      cb(yellow(`⚠️ src/entities/agents.js|ts: ".forwardPhone: ${agent.forwardPhone}" should only be associated to one agent within your project`));
     }
     if (agent.forwardEmail && agents.filter(a => a.forwardEmail && (a.forwardEmail === agent.forwardEmail)).length > 1) {
-      throw new Error(`src/entities/agents.js|ts: ".forwardEmail: ${agent.forwardEmail}" can only be associated to one agent within your project`);
+      cb(yellow(`⚠️ src/entities/agents.js|ts: ".forwardEmail: ${agent.forwardEmail}" can only be associated to one agent within your project`));
     }
 
     // Handle agent image changes

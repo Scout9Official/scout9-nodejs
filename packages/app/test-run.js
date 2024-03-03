@@ -7,7 +7,7 @@ const cwd = path.dirname(modulePath);
 (async () => {
 
   try {
-    const runConfigResult = await Scout9Platform.runConfig({
+    const runConfigResult = await Scout9Platform.config({
       cwd: process.cwd(),
       mode: 'development',
       folder: 'src-test'

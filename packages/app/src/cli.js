@@ -86,15 +86,16 @@ prog
     .describe('Deploy your scout9 app')
     .option('--mode', 'Specify a mode for loading environment variables', 'production')
     .option('--src', 'Project source code folder', 'src')
+    .option('--sync, -s', 'Syncs project after deploying (overwriting code)', true)
     .option('--dest', 'Project local destination', './build')
-    .action(async ({mode, src, dest}) => {
+    .action(async ({mode, src, dest, sync}) => {
         if (!fs.existsSync('.env')) {
             console.warn(`Missing ${path.resolve('.env')} — skipping`);
             return;
         }
         mode = coerceMode(mode);
         try {
-            await Scout9Platform.deploy({cwd: process.cwd(), mode: coerceMode(mode), src, dest});
+            await Scout9Platform.deploy({cwd: process.cwd(), mode: coerceMode(mode), src, dest, sync});
             process.exit(0);
         } catch (e) {
             handle_error(e);
@@ -144,5 +145,58 @@ prog
         }
     });
 
+prog
+    .command('config')
+    .describe('Prints the project configuration')
+    .option('--mode', 'Specify a mode for loading environment variables', 'production')
+    .option('--local', 'Prints the local configuration', false)
+    .option('--src', 'Project source code folder', 'src')
+    .action(async ({mode, local, src}) => {
+        if (!fs.existsSync('.env')) {
+            console.warn(`Missing ${path.resolve('.env')} — skipping`);
+            return;
+        }
+        mode = coerceMode(mode);
+        try {
+            const config = await Scout9Platform.config({cwd: process.cwd(), mode: coerceMode(mode), src, local});
+            console.log(JSON.stringify(config, null, 2));
+            process.exit(0);
+        } catch (e) {
+            handle_error(e);
+        }
+    });
+
+prog
+    .command('run <eventPath>')
+    .describe('Runs the project locally with a given workflow event')
+    .option('--mode', 'Specify a mode for loading environment variables', 'development')
+    .option('--src', 'Project source code folder', './src')
+    .action(async (eventPath, {mode, src}) => {
+        if (!fs.existsSync('.env')) {
+            console.warn(`Missing ${path.resolve('.env')} — skipping`);
+            return;
+        }
+        mode = coerceMode(mode);
+        if (!fs.existsSync(eventPath)) {
+            console.error(`Event file not found: ${eventPath}`);
+            process.exit(1);
+        }
+        try {
+            const event = JSON.parse(fs.readFileSync(eventPath, 'utf-8'));
+            const result = await Scout9Platform.run(event, {cwd: process.cwd(), mode: coerceMode(mode), eventSource: eventPath, src});
+            console.log(JSON.stringify(result, null, 2));
+            process.exit(0);
+        } catch (e) {
+            handle_error(e);
+        }
+    });
+
+prog
+    .command('message')
+    .describe('Send a test message to an agent')
+
+
+
+// @TODO would be dope if I could test by sending a message to an agent with the cli tool
 
 prog.parse(process.argv, {unknown: (arg) => `Unknown option: ${arg}`});

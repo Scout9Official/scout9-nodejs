@@ -13,6 +13,8 @@ import { platformApi } from './data.js';
 import { syncData } from './sync.js';
 import ProjectFiles from '../utils/project.js';
 import { projectTemplates } from '../utils/project-templates.js';
+import { WorkflowEventSchema } from '../runtime/index.js';
+import { logUserValidationError } from '../report.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -312,10 +314,16 @@ export async function getAgentContacts() {
  * Runs the project in a container
  *
  * @param {WorkflowEvent} event - every workflow receives an event object
- * @param {{cwd: string; src: string; logger: ProgressLogger}} - run options
+ * @param {Object} options
+ * @param {string} options.eventSource - the source path of the event
  * @returns {Promise<WorkflowResponse<any>>}
  */
-export async function run(event, {cwd = process.cwd(), src, logger = new ProgressLogger()} = {}) {
+export async function run(event, {eventSource} = {}) {
+  const result = WorkflowEventSchema.safeParse(event);
+  if (!result.success) {
+    logUserValidationError(result.error, eventSource);
+    throw result.error;
+  }
   const configuration = new Configuration({
     apiKey: process.env.SCOUT9_API_KEY
   });
@@ -328,12 +336,18 @@ export async function run(event, {cwd = process.cwd(), src, logger = new Progres
   return response.data;
 }
 
-export async function runConfig({cwd = process.cwd(), src, logger = new ProgressLogger()} = {}) {
+/**
+ * Calls scout9 backend to get project config file
+ */
+export async function runConfig() {
+  if (!process.env.SCOUT9_API_KEY) {
+    throw new Error('Missing SCOUT9_API_KEY, please add your Scout9 API key to your .env file');
+  }
   const configuration = new Configuration({
     apiKey: process.env.SCOUT9_API_KEY
   });
   const scout9 = new Scout9Api(configuration);
-  const response = await scout9.runPlatformConfig()
+  const response = await scout9.config()
     .catch((err) => {
       err.message = `Error running platform: ${err.message}`;
       throw err;
@@ -476,13 +490,21 @@ export async function test(
  * @param {Scout9ProjectBuildConfig} config
  * @returns {Promise<{success: boolean; config: Scout9ProjectBuildConfig}>}
  */
-export async function sync({cwd = process.cwd(), src = 'src', projectFiles = new ProjectFiles({src, autoSave: true, cwd}), logger = new ProgressLogger()} = {}, config) {
+export async function sync({
+  cwd = process.cwd(), src = 'src',
+  projectFiles = new ProjectFiles({src, autoSave: true, cwd}),
+  logger = new ProgressLogger()} = {},
+  config
+) {
   if (!process.env.SCOUT9_API_KEY) {
     throw new Error('Missing required environment variable "SCOUT9_API_KEY"');
   }
   logger.log('Fetching project data...');
+  // Grabs saved server data on Scout9
   config = await syncData(config);
   logger.log(`Syncing project`);
+
+  // Uses saved server data to sync project with local data
   await projectFiles.sync(config, (message, type) => {
     switch (type) {
       case 'info':

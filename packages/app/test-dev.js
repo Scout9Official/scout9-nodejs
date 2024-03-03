@@ -6,7 +6,7 @@ import path from 'node:path';
 (async () => {
     const dest = './tmp/project';
     process.env.DEV_MODE = "true";
-    await Scout9Platform.build({cwd: process.cwd(), mode: 'development', src: 'src-test', dest: dest});
+    await Scout9Platform.deploy({cwd: process.cwd(), mode: 'development', src: 'src-test', dest: dest});
 
     // const modulePath = fileURLToPath(import.meta.url);
     // const cwd = path.dirname(modulePath);

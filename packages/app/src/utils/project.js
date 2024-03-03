@@ -24,7 +24,7 @@ class ProjectModule {
     defaultExe = '.js',
     relativeFileSourcePatternWithoutExe,
     templateBuilder,
-    logger = new ProgressLogger()
+    logger = new ProgressLogger(),
   } = {}) {
     this.cwd = cwd;
     this.autoSave = autoSave;
@@ -59,11 +59,11 @@ class ProjectModule {
       if ('message' in e && e.message.startsWith('Not Found')) {
         const _defaultFilepath = this._defaultFilepath;
         if (fs.existsSync(_defaultFilepath)) {
-          try {
-            const x = this._filepath;
-          } catch (e) {
-            //
-          }
+          // try {
+          //   const x = this._filepath;
+          // } catch (e) {
+          //   //
+          // }
           throw new Error(`Internal: "this._filepath" was unable to derive the default file path "${_defaultFilepath}`);
         }
         if (this.autoSave) {
@@ -92,8 +92,9 @@ class ProjectModule {
   }
 
   /**
+   * Writes data into a project file
    * @param {Scout9ProjectBuildConfig} config
-   * @param {boolean} ignoreModule - if true, will not require the module
+   * @param {boolean} ignoreModule - if true, will not require the module (turning this off will speed runtime)
    * @param {string | undefined} filePathOverride - if provided, will override the default file path
    * @returns {Promise<{mod?: function, exe: string; filePath: string}>}
    */
@@ -103,17 +104,20 @@ class ProjectModule {
     if (!content || typeof content !== 'string') {
       throw new Error(`Invalid templateBuilder return value for file "${filePath}"`);
     }
+
+    // @TODO why this here?
     if (filePath.endsWith('entities/api.js')) {
       throw new Error(`Invalid file path "${filePath}"`);
     }
+
     const exists = fs.existsSync(filePath);
     if (!exists) {
-      this.logger.warn(`Missing "${filePath}"`);
+      this.logger?.warn?.(`Missing "${filePath}"`);
     }
     // Ensures directory exists
     await fsp.mkdir(path.dirname(filePath), {recursive: true});
     await fsp.writeFile(filePath, content);
-    this.logger.info(`${exists ? 'Synced' : 'Created'} "${filePath}"`);
+    this.logger?.info?.(`${exists ? 'Synced' : 'Created'} "${filePath}"`);
     let mod;
     if (!ignoreModule) {
       mod = await requireProjectFile(filePath);
@@ -190,7 +194,7 @@ export default class ProjectFiles {
     autoSave = true,
     cwd = process.cwd(),
     src = './src',
-    logger = new ProgressLogger()
+    logger
   } = {}) {
     this.cwd = cwd;
     this.src = src;
@@ -299,7 +303,7 @@ export default class ProjectFiles {
 
     // Log
     for (const entityConfig of projectConfig.entities) {
-      this.logger.info(`Loaded entity ${entityConfig.entities.join('/')}`);
+      this.logger?.info?.(`Loaded entity ${entityConfig.entities.join('/')}`);
     }
 
     return projectConfig;

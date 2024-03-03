@@ -9303,17 +9303,17 @@ export declare class Scout9Api extends Scout9ApiGenerated {
         success: boolean;
         error?: string | undefined;
     }, any>>;
-    agentProfileUpload(agentId: string, file: Blob | File | Buffer): Promise<import("axios").AxiosResponse<{
+    agentProfileUpload(agentId: string | undefined, file: Blob | File | Buffer): Promise<import("axios").AxiosResponse<{
         url?: string | undefined;
         success: boolean;
         error?: string | undefined;
     }, any>>;
-    agentTranscriptUpload(agentId: string, transcripts: (Blob | File | Buffer)[]): Promise<import("axios").AxiosResponse<{
+    agentTranscriptUpload(agentId: string | undefined, transcripts: (Blob | File | Buffer)[]): Promise<import("axios").AxiosResponse<{
         urls?: string[] | undefined;
         success: boolean;
         error?: string | undefined;
     }, any>>;
-    agentAudioUpload(agentId: string, audios: (Blob | File | Buffer)[]): Promise<import("axios").AxiosResponse<{
+    agentAudioUpload(agentId: string | undefined, audios: (Blob | File | Buffer)[]): Promise<import("axios").AxiosResponse<{
         urls?: string[] | undefined;
         success: boolean;
         error?: string | undefined;

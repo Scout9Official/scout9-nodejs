@@ -17,7 +17,7 @@ import imageBuffer from '../../utils/image-buffer.js';
  * @returns {Promise<string>}
  */
 async function writeImageToServer({img, type = 'icon'}) {
-  const buffer = await imageBuffer(img, type === 'icon');
+  const buffer = await imageBuffer(img, type === 'icon').then((res => res.buffer));
   const scout9 = new Scout9Api(new Configuration({apiKey: process.env.SCOUT9_API_KEY}));
   const method = type === 'icon' ? scout9.organizationIcon : scout9.organizationLogo;
   const {url} = await method(buffer).then(res => res.data);
