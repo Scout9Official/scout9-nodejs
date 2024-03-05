@@ -24,21 +24,13 @@ export const customerSchema = z.object({
   stripeDev: z.string().nullable().optional()
 }).catchall(customerValueSchema);
 
-export const agentConfigurationSchema = z.object({
-  id: zId('Agent ID', z.string({description: 'Unique ID for agent'})),
 
-  // deployed?: {
-  //   web?: string;
-  //   phone?: string;
-  //   email?: string;
-  // };
-
+export const agentBaseConfigurationSchema = z.object({
   deployed: z.object({
     web: z.string({description: 'Web URL for agent'}).optional(),
     phone: z.string({description: 'Phone number for agent'}).optional(),
     email: z.string({description: 'Email address for agent'}).optional()
   }).optional(),
-
   firstName: z.string({description: 'Agent first name'}).optional(),
   lastName: z.string({description: 'Agent last name'}).optional(),
   inactive: z.boolean({description: 'Agent is inactive'}).optional(),
@@ -54,5 +46,11 @@ export const agentConfigurationSchema = z.object({
   model: z.enum(['Scout9', 'bard', 'openai']).optional().default('openai'),
   transcripts: z.array(z.array(MessageSchema)).optional(),
   audios: z.array(z.any()).optional()
+
 });
+export const agentConfigurationSchema = agentBaseConfigurationSchema.extend({
+  id: zId('Agent ID', z.string({description: 'Unique ID for agent'})),
+})
 export const agentsConfigurationSchema = z.array(agentConfigurationSchema);
+
+export const agentsBaseConfigurationSchema = z.array(agentBaseConfigurationSchema);

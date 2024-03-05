@@ -4,7 +4,7 @@ import colors from 'kleur';
 import { globSync } from 'glob';
 import { Configuration, Scout9Api } from '@scout9/admin';
 import { checkVariableType, requireProjectFile } from '../../utils/index.js';
-import { agentsConfigurationSchema } from '../../runtime/index.js';
+import { agentsBaseConfigurationSchema, agentsConfigurationSchema } from '../../runtime/index.js';
 import { audioExtensions } from '../../utils/audio-type.js';
 import { fileTypeFromBuffer } from '../../utils/file-type.js';
 import { videoExtensions } from '../../utils/video-type.js';
@@ -14,6 +14,20 @@ import imageBuffer from '../../utils/image-buffer.js';
 import audioBuffer from '../../utils/audio-buffer.js';
 import { yellow } from 'kleur/colors';
 
+
+async function registerAgent({agent}) {
+  if (agent.id) {
+    console.log(`Agent already registered: ${agent.id}`);
+    return agent.id;
+  }
+  const {id} = (await (new Scout9Api(new Configuration({apiKey: process.env.SCOUT9_API_KEY}))).agentRegister(
+    agent
+  ).then(res => res.data));
+  if (!id) {
+    throw new Error(`Failed to register agent`);
+  }
+  return id;
+}
 
 /**
  * @param {string | Buffer} img
@@ -106,6 +120,13 @@ export default async function loadAgentConfig({
 
   // Send warnings if not properly registered
   for (const agent of agents) {
+
+    if (!agent.id && deploying) {
+      agent.id = await registerAgent({agent});
+      cb(`✅ Registered ${agent.firstName || 'agent'} with id: ${agent.id}`);
+      serverDeployed = true;
+    }
+
     if (!agent.forwardPhone && !agent.forwardEmail) {
       cb(yellow(`⚠️src/entities/agents.js|ts: neither a ".forwardPhone" or ".forwardEmail" to ${agent.firstName || JSON.stringify(agent)} - messages cannot be forward to you.`));
     }
@@ -283,7 +304,7 @@ export default async function loadAgentConfig({
     }
   }
 
-  const result = agentsConfigurationSchema.safeParse(agents);
+  const result = (deploying ? agentsConfigurationSchema : agentsBaseConfigurationSchema).safeParse(agents);
   if (!result.success) {
     result.error.source = paths[0];
     throw result.error;
