@@ -2,7 +2,7 @@ import path from 'node:path';
 import colors from 'kleur';
 import { globSync } from 'glob';
 import { checkVariableType, requireProjectFile } from '../../utils/index.js';
-import { agentsConfigurationSchema } from '../../runtime/index.js';
+import { agentsConfigurationSchema, agentsBaseConfigurationSchema } from '../../runtime/index.js';
 
 /**
  * @param {Array<Agent>} agents
@@ -26,7 +26,7 @@ export function validateAgentConfig(agents) {
     }
   }
 
-  const result = agentsConfigurationSchema.safeParse(agents);
+  const result = agentsBaseConfigurationSchema.safeParse(agents);
   if (!result.success) {
     result.error.source = `src/entities/agents.js|ts`;
     throw result.error;

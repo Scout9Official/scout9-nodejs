@@ -16,11 +16,17 @@ import imageBuffer from '../../utils/image-buffer.js';
  * @param {'icon' | 'logo'} [input.type]
  * @returns {Promise<string>}
  */
-async function writeImageToServer({img, type = 'icon'}) {
-  const buffer = await imageBuffer(img, type === 'icon').then((res => res.buffer));
+async function writeImageToServer({img, type = 'icon', source}) {
+  const buffer = await imageBuffer(img, type === 'icon', source).then((res => res.buffer));
   const scout9 = new Scout9Api(new Configuration({apiKey: process.env.SCOUT9_API_KEY}));
-  const method = type === 'icon' ? scout9.organizationIcon : scout9.organizationLogo;
-  const {url} = await method(buffer).then(res => res.data);
+  let url;
+  if (type === 'icon') {
+    const result = await scout9.organizationIcon(buffer).then(res => res.data);
+    url = result.url;
+  } else {
+    const result = await scout9.organizationLogo(buffer).then(res => res.data);
+    url = result.url;
+  }
   if (!url) {
     throw new Error(`Failed to upload agent image or no data returned: ${url}`);
   }
@@ -71,11 +77,11 @@ export default async function loadProjectConfig({cwd = process.cwd(), deploying 
     if (typeof project.organization.logo === 'string') {
       if (!project.organization.logo.startsWith('https://storage.googleapis.com')) {
         if (deploying) {
-          project.organization.logo = await writeImageToServer({img: project.organization.logo, type: 'logo'});
+          project.organization.logo = await writeImageToServer({img: project.organization.logo, type: 'logo', source: filePath});
           cb(`✅ Uploaded logo to server: ${project.organization.logo}`);
           serverDeployed = true;
         } else {
-          project.organization.logo = await writeFileToLocal({file: project.organization.logo, fileName: 'logo'})
+          project.organization.logo = await writeFileToLocal({file: project.organization.logo, fileName: 'logo', source: filePath})
             .then(({uri, isImage}) => {
               if (!isImage) {
                 throw new Error(`Invalid image type: ${uri}`);
@@ -87,11 +93,11 @@ export default async function loadProjectConfig({cwd = process.cwd(), deploying 
       }
     } else if (Buffer.isBuffer(project.organization.logo)) {
       if (deploying) {
-        project.organization.logo = await writeImageToServer({img: project.organization.logo, type: 'logo'});
+        project.organization.logo = await writeImageToServer({img: project.organization.logo, type: 'logo', source: filePath});
         cb(`✅ Uploaded logo to server: ${project.organization.logo}`);
         serverDeployed = true;
       } else {
-        project.organization.logo = await writeFileToLocal({file: project.organization.logo, fileName: 'logo'})
+        project.organization.logo = await writeFileToLocal({file: project.organization.logo, fileName: 'logo', source: filePath})
           .then(({uri, isImage}) => {
             if (!isImage) {
               throw new Error(`Invalid image type: ${uri}`);
@@ -109,11 +115,11 @@ export default async function loadProjectConfig({cwd = process.cwd(), deploying 
     if (typeof project.organization.icon === 'string') {
       if (!project.organization.icon.startsWith('https://storage.googleapis.com')) {
         if (deploying) {
-          project.organization.icon = await writeImageToServer({img: project.organization.icon, type: 'icon'});
+          project.organization.icon = await writeImageToServer({img: project.organization.icon, type: 'icon', source: filePath});
           cb(`✅ Uploaded icon to server: ${project.organization.icon}`);
           serverDeployed = true;
         } else {
-          project.organization.icon = await writeFileToLocal({file: project.organization.icon, fileName: 'icon'})
+          project.organization.icon = await writeFileToLocal({file: project.organization.icon, fileName: 'icon', source: filePath})
             .then(({uri, isImage}) => {
               if (!isImage) {
                 throw new Error(`Invalid image type: ${uri}`);
@@ -125,11 +131,11 @@ export default async function loadProjectConfig({cwd = process.cwd(), deploying 
       }
     } else if (Buffer.isBuffer(project.organization.icon)) {
       if (deploying) {
-        project.organization.icon = await writeImageToServer({img: project.organization.icon, type: 'icon'});
+        project.organization.icon = await writeImageToServer({img: project.organization.icon, type: 'icon', source: filePath});
         cb(`✅ Uploaded icon to server: ${project.organization.icon}`);
         serverDeployed = true;
       } else {
-        project.organization.icon = await writeFileToLocal({file: project.organization.icon, fileName: 'icon'})
+        project.organization.icon = await writeFileToLocal({file: project.organization.icon, fileName: 'icon', source: filePath})
           .then(({uri, isImage}) => {
             if (!isImage) {
               throw new Error(`Invalid image type: ${uri}`);
@@ -148,7 +154,7 @@ export default async function loadProjectConfig({cwd = process.cwd(), deploying 
 
   if (serverDeployed) {
     cb(`Syncing ${filePath} with latest server changes`);
-    await fs.writeFile(filePath, projectTemplates.root({config: {tag, ...project}, exe: path.extname(filePath)}));
+    await fs.writeFile(filePath, projectTemplates.root({tag, ...project}, path.extname(filePath)));
     // const update = await p.confirm({
     //   message: `Changes uploaded, sync local entities/agents file?`,
     //   initialValue: true

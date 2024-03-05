@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { agentsConfigurationSchema } from './agent.js';
+import { agentsConfigurationSchema, agentsBaseConfigurationSchema } from './agent.js';
 import { entitiesRootProjectConfigurationSchema } from './entity.js';
 import { WorkflowsConfigurationSchema } from './workflow.js';
 
@@ -48,7 +48,7 @@ const pmtSchema = z.object({
 
 export const Scout9ProjectBuildConfigSchema = z.object({
   tag: z.string().optional(), // Defaults to scout9-app-v1.0.0
-  agents: agentsConfigurationSchema,
+  agents: agentsBaseConfigurationSchema,
   entities: entitiesRootProjectConfigurationSchema,
   workflows: WorkflowsConfigurationSchema,
   llm: z.union([llmSchema, llamaSchema, bardSchema]),

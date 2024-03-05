@@ -9,8 +9,8 @@ Try out the alpha version
 
 * Chatbots 🤮
 * One on One Communication 😎
-* Scale? 🤷‍
-* 💎 [Scout9](https://pocket-guide.vercel.app/)
+* Scale?
+* 💎 [Scout9](https://scout9.com) 💎
 
 Scout9's Persona Model Transforming (PMT) technology auto crafts messages in your voice on SMS/Email legacy channels. This technology enables you to personally connect with **thousands of customers simultaneously**.
 

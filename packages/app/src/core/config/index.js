@@ -45,10 +45,10 @@ export async function loadConfig({
   // Load globals
   loadEnvConfig({cwd, src, logger, cb});
 
-  const baseProjectConfig = await loadProjectConfig({cwd, src, logger, cb});
-  const entitiesConfig = await loadEntitiesConfig({cwd, src, logger, cb});
+  const baseProjectConfig = await loadProjectConfig({cwd, src, logger, cb, deploying});
+  const entitiesConfig = await loadEntitiesConfig({cwd, src, logger, cb, deploying});
   const agentsConfig = await loadAgentConfig({cwd, src, logger, cb, deploying, dest});
-  const workflowsConfig = await loadWorkflowsConfig({cwd, src, logger, cb});
+  const workflowsConfig = await loadWorkflowsConfig({cwd, src, logger, deploying, cb});
 
   /**
    * @type {Scout9ProjectBuildConfig}

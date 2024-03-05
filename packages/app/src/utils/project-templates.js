@@ -1,9 +1,9 @@
 /**
- * @param {Scout9ProjectBuildConfig['agents']} config
+ * @param {Scout9ProjectBuildConfig['agents']} agents
  * @param {string} exe - file extension
  * @returns {string}
  */
-function agentsTemplate({agents, exe = 'js'}) {
+function agentsTemplate(agents, exe = 'js') {
   return `
 /**
  * Required core entity type: Agents represents you and your team
@@ -15,7 +15,12 @@ export default function Agents() {
 `;
 }
 
-function rootTemplate({config, exe = 'js'}) {
+/**
+ * @param {Scout9ProjectBuildConfig} config
+ * @param {string} exe - file extension
+ * @returns {string}
+ */
+function rootTemplate(config, exe = 'js') {
   return `
 /**
  * Configuration for the Scout9 project.
@@ -59,8 +64,9 @@ export default async function Scout9App(event) {
 
 /**
  * @param {ExportedEntityBuildConfig} entity
+ * @param {string} exe - file extension
  */
-function entityTemplate({entity}) {
+function entityTemplate(entity, exe = 'js') {
   let {entity: _entity, entities, api, id, ...rest} = entity;
   if (!_entity.endsWith('Entity')) {
     _entity = `${_entity}Entity`;

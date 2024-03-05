@@ -242,7 +242,7 @@ export default class ProjectFiles {
       relativeFileSourcePatternWithoutExe: 'entities/agents/{index,config}',
       templateBuilder: (config) => {
         // console.log({config});
-        return projectTemplates.entities.agents({agents: config.agents});
+        return projectTemplates.entities.agents(config.agents);
       }
     });
     this.customers = new ProjectModule({
@@ -340,7 +340,7 @@ export default class ProjectFiles {
       const filepath = path.resolve(this.cwd, this.src, `entities/${paths}/api${this.defaultExe}`);
       if (!fs.existsSync(filepath)) {
         await fsp.mkdir(path.dirname(filepath), {recursive: true});
-        await fsp.writeFile(filepath, projectTemplates.entities.entity({entity: entityConfig}));
+        await fsp.writeFile(filepath, projectTemplates.entities.entity(entityConfig));
         cb(`Missing entity, created ${filepath}`, 'info');
       } else {
         cb(`Existing entity, ${filepath} skipped`, 'info');

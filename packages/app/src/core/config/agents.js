@@ -30,14 +30,16 @@ async function registerAgent({agent}) {
 }
 
 /**
- * @param {string | Buffer} img
- * @param agentId
+ * @param {Object} inputs
+ * @param {string | Buffer} inputs.img
+ * @param inputs.agentId
+ * @param [inputs.source='']
  * @returns {Promise<string>}
  */
-async function writeImgToServer({img, agentId}) {
+async function writeImgToServer({img, agentId, source = ''}) {
   const {url} = (await (new Scout9Api(new Configuration({apiKey: process.env.SCOUT9_API_KEY}))).agentProfileUpload(
     agentId,
-    await imageBuffer(img).then(r => r.buffer)
+    await imageBuffer(img, source).then(r => r.buffer)
   ).then(res => res.data));
   if (!url) {
     throw new Error(`Failed to upload agent image`);
@@ -45,7 +47,7 @@ async function writeImgToServer({img, agentId}) {
   return url;
 }
 
-async function writeTranscriptsToServer({transcripts, agentId}) {
+async function writeTranscriptsToServer({transcripts, agentId, source = ''}) {
   for (let i = 0; i < transcripts.length; i++) {
     const result = await fileTypeFromBuffer(transcripts[i]);
     if (!result || result.ext !== 'txt' || result.mime !== 'text/plain') {
@@ -54,7 +56,7 @@ async function writeTranscriptsToServer({transcripts, agentId}) {
   }
   const {urls} = (await (new Scout9Api(new Configuration({apiKey: process.env.SCOUT9_API_KEY}))).agentTranscriptUpload(
     agentId,
-    transcripts
+    transcripts,
   ).then(res => res.data));
   if (!urls) {
     throw new Error(`Failed to upload agent image`);
@@ -62,10 +64,10 @@ async function writeTranscriptsToServer({transcripts, agentId}) {
   return urls;
 }
 
-async function writeAudiosToServer({audios, agentId}) {
+async function writeAudiosToServer({audios, agentId, source = ''}) {
   const buffers = [];
   for (let i = 0; i < audios.length; i++) {
-    const {buffer} = await audioBuffer(audios[i], true);
+    const {buffer} = await audioBuffer(audios[i], true, source);
     buffers.push(buffer);
   }
   const {urls} = (await (new Scout9Api(new Configuration({apiKey: process.env.SCOUT9_API_KEY}))).agentTranscriptUpload(
@@ -122,7 +124,8 @@ export default async function loadAgentConfig({
   for (const agent of agents) {
 
     if (!agent.id && deploying) {
-      agent.id = await registerAgent({agent});
+      const {img, transcripts, audios, ...rest} = agent;
+      agent.id = await registerAgent({agent: rest});
       cb(`✅ Registered ${agent.firstName || 'agent'} with id: ${agent.id}`);
       serverDeployed = true;
     }
@@ -151,14 +154,16 @@ export default async function loadAgentConfig({
           if (deploying) {
             agent.img = await writeImgToServer({
               img: agent.img,
-              agentId: agent.id
+              agentId: agent.id,
+              source: sourceFile
             });
             cb(`✅ Uploaded ${agent.firstName || 'agent'}'s profile image to ${agent.img}`);
             serverDeployed = true;
           } else {
             agent.img = await writeFileToLocal({
               file: agent.img,
-              fileName: `${agent.firstName || 'agent'}.png`
+              fileName: `${agent.firstName || 'agent'}.png`,
+              source: sourceFile
             }).then(({uri, isImage}) => {
               if (!isImage) {
                 throw new Error(`Invalid image type: ${typeof agent.img}`);
@@ -173,14 +178,16 @@ export default async function loadAgentConfig({
           agent.img = await writeImgToServer({
             img: agent.img,
             fileName: `${agent.firstName || 'agent'}.png`,
-            agentId: agent.id
+            agentId: agent.id,
+            source: sourceFile
           });
           cb(`✅ Uploaded ${agent.firstName || 'agent'}'s profile image to ${agent.img}`);
           serverDeployed = true;
         } else {
           agent.img = await writeFileToLocal({
             file: agent.img,
-            fileName: `${agent.firstName || 'agent'}.png`
+            fileName: `${agent.firstName || 'agent'}.png`,
+            source: sourceFile
           }).then(({uri, isImage}) => {
             if (!isImage) {
               throw new Error(`Invalid image type: ${typeof agent.img}`);
@@ -227,7 +234,8 @@ export default async function loadAgentConfig({
           const transcript = pendingTranscripts[i];
           urls.push(await writeFileToLocal({
               file: transcript,
-              fileName: `transcript_${i + deployedTranscripts.length}.txt`
+              fileName: `transcript_${i + deployedTranscripts.length}.txt`,
+            source: sourceFile
             }).then(({uri, mime, ext}) => {
               if (mime !== 'text/plain') {
                 throw new Error(`Invalid transcript type: ${mime}, expected text/plain (.txt file, got ${ext})`);
@@ -252,7 +260,7 @@ export default async function loadAgentConfig({
         if (typeof audio === 'string') {
           if (!audio.startsWith('https://storage.googleapis.com')) {
             // If not on GCS, then it must be a local file path or remote URL
-            pendingAudios.push(await toBuffer(audio).then(({buffer, ext, mime, isAudio, isVideo}) => {
+            pendingAudios.push(await toBuffer(audio, sourceFile).then(({buffer, ext, mime, isAudio, isVideo}) => {
               if (!isAudio && !isVideo) {
                 throw new Error(`Invalid audio/video type: ${mime}, expected audio/* or video/* got ${ext}`);
               }
@@ -279,7 +287,7 @@ export default async function loadAgentConfig({
 
       let urls = [];
       if (deploying) {
-        urls = await writeAudiosToServer({audios: pendingAudios, agentId: agent.id});
+        urls = await writeAudiosToServer({audios: pendingAudios, agentId: agent.id, source: sourceFile});
         cb(`✅ Uploaded ${agent.firstName || 'agent'}'s audios to ${urls}`);
         serverDeployed = true;
       } else {
@@ -287,7 +295,8 @@ export default async function loadAgentConfig({
           const audio = pendingAudios[i];
           urls.push(await writeFileToLocal({
             file: audio,
-            fileName: `audio_${i + deployedAudios.length}`
+            fileName: `audio_${i + deployedAudios.length}`,
+            source: sourceFile
           }).then(({uri, mime, ext, isAudio, isVideo}) => {
             if (!isAudio && !isVideo) {
               throw new Error(`Invalid audio/video type: ${mime}, expected audio/* or video/* got ${ext}`);
@@ -312,7 +321,7 @@ export default async function loadAgentConfig({
 
   if (serverDeployed) {
     cb(`Syncing ${sourceFile} with latest server changes`);
-    await fs.writeFile(sourceFile, projectTemplates.entities.agents({agents, ext: path.extname(sourceFile)}));
+    await fs.writeFile(sourceFile, projectTemplates.entities.agents(agents, path.extname(sourceFile)));
     // const update = await p.confirm({
     //   message: `Changes uploaded, sync local entities/agents file?`,
     //   initialValue: true

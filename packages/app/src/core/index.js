@@ -161,9 +161,9 @@ async function buildApp(cwd, src, dest, config) {
         }
         if (sourcePath.includes('entities/agents/index') || sourcePath.includes('entities/agents/config')) {
           // Special case where we have to paste the agent raw data to avoid uploading large audio/txt files
-          await fs.writeFile(destinationPath, projectTemplates.entities.agents({agents: config.agents, ext: path.extname(destinationPath)}));
+          await fs.writeFile(destinationPath, projectTemplates.entities.agents(config.agents, path.extname(destinationPath)));
         } else if (sourcePath.includes(`${root}/index`)) {
-          await fs.writeFile(destinationPath, projectTemplates.root({config, ext: path.extname(destinationPath)}));
+          await fs.writeFile(destinationPath, projectTemplates.root(config, path.extname(destinationPath)));
         } else {
           await fs.copyFile(sourcePath, destinationPath);
         }

@@ -1,10 +1,12 @@
-import path from 'node:path';
-import os from 'node:os';
-import fs from 'node:fs/promises';
+import {extname, resolve, join, dirname, basename, parse} from 'node:path';
+import {tmpdir} from 'node:os';
+import {mkdir, readFile, writeFile} from 'node:fs/promises';
+import { constants } from 'node:fs';
 import { imageExtensions } from './image-type.js';
 import { audioExtensions } from './audio-type.js';
 import { videoExtensions } from './video-type.js';
 import { fileTypeFromBuffer } from './file-type.js';
+import { access } from 'fs/promises';
 
 /**
  * @typedef {Object} BufferResult
@@ -42,7 +44,7 @@ async function fetchFileToBuffer(url) {
   }
   return {
     buffer: response.buffer(),
-    ext: path.extname(url).slice(1),
+    ext: extname(url).slice(1),
     mime: response.headers.get('content-type')
   };
 }
@@ -60,9 +62,10 @@ async function fetchFileToBuffer(url) {
 
 /**
  * @param {string | Buffer} fileBufferOrFilepath
+ * @param {string} [source]
  * @returns {Promise<ToBufferResult>}
  */
-export async function toBuffer(fileBufferOrFilepath) {
+export async function toBuffer(fileBufferOrFilepath, source) {
   let buffer;
   let mime;
   let ext;
@@ -74,7 +77,19 @@ export async function toBuffer(fileBufferOrFilepath) {
       ext = result.ext;
       mime = result.mime;
     } else {
-      buffer = await fs.readFile(fileBufferOrFilepath);
+      if (source) {
+        let relative = resolve(dirname(source), fileBufferOrFilepath);
+        if (await access(relative, constants.R_OK).then(() => true).catch(() => false)) {
+          buffer = await readFile(relative);
+        } else if (await access(resolve(source, fileBufferOrFilepath), constants.R_OK).then(() => true).catch(() => false)) {
+          buffer = await readFile(resolve(source, fileBufferOrFilepath));
+        } else {
+          console.error(`File not found: ${fileBufferOrFilepath} in relation to source: ${source}`);
+          buffer = await readFile(fileBufferOrFilepath);
+        }
+      } else {
+        buffer = await readFile(fileBufferOrFilepath);
+      }
     }
   } else if (Buffer.isBuffer(fileBufferOrFilepath)) {
     buffer = fileBufferOrFilepath;
@@ -115,27 +130,27 @@ export async function toBuffer(fileBufferOrFilepath) {
  * @param {string | Buffer} inputs.file
  * @returns {Promise<ToBufferResult & {uri: string}>}
  */
-export async function writeFileToLocal({dest = path.resolve(os.tmpdir(), 'scout9'), file, fileName} = {}) {
+export async function writeFileToLocal({dest = resolve(tmpdir(), 'scout9'), file, fileName, source} = {}) {
   // Ensure folder exists
-  // const fileFolder = path.resolve(cwd, dest);
+  // const fileFolder = resolve(cwd, dest);
   const fileFolder = dest;
-  let filePath = path.resolve(fileFolder, fileName);
-  await fs.mkdir(path.dirname(filePath), {recursive: true});
+  let filePath = resolve(fileFolder, fileName);
+  await mkdir(dirname(filePath), {recursive: true});
 
   // Retrieve buffer and extension
-  const result = await toBuffer(file);
+  const result = await toBuffer(file, source);
   const {buffer, ext} = result;
 
   // If file path has no extension, add it or replace it with the correct one
-  if (path.extname(filePath) === '') {
+  if (extname(filePath) === '') {
     filePath = `${filePath}.${ext}`;
-  } else if (path.extname(filePath) !== ext) {
-    console.warn(`File extension mismatch: ${path.extname(filePath)} !== ${ext}, replacing to .${ext}`);
-    filePath = path.resolve(fileFolder, `${path.parse(filePath).name}.${ext}`);
+  } else if (extname(filePath) !== ext) {
+    console.warn(`File extension mismatch: ${extname(filePath)} !== ${ext}, replacing to .${ext}`);
+    filePath = resolve(fileFolder, `${parse(filePath).name}.${ext}`);
   }
 
   // Write file to disk
-  await fs.writeFile(filePath, buffer);
+  await writeFile(filePath, buffer);
 
   // Return file path
   return {uri: filePath, ...result};
