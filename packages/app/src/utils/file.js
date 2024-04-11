@@ -78,6 +78,7 @@ export async function toBuffer(fileBufferOrFilepath, source) {
       mime = result.mime;
     } else {
       if (source) {
+        // @TODO support windows
         let relative = resolve(dirname(source), fileBufferOrFilepath);
         if (await access(relative, constants.R_OK).then(() => true).catch(() => false)) {
           buffer = await readFile(relative);

@@ -4478,6 +4478,62 @@ export const LlmConfigOneOf2EngineEnum = {
 export type LlmConfigOneOf2EngineEnum = typeof LlmConfigOneOf2EngineEnum[keyof typeof LlmConfigOneOf2EngineEnum];
 
 /**
+ *
+ * @export
+ * @interface LogEntry
+ */
+export interface LogEntry {
+  /**
+   *
+   * @type {string}
+   * @memberof LogEntry
+   */
+  'id'?: string;
+  /**
+   * The timestamp of the log entry in ISO 8601 format.
+   * @type {string}
+   * @memberof LogEntry
+   */
+  'time'?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof LogEntry
+   */
+  'severity'?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof LogEntry
+   */
+  'message'?: string;
+  /**
+   *
+   * @type {{ [key: string]: any; }}
+   * @memberof LogEntry
+   */
+  'details'?: { [key: string]: any; } | null;
+}
+/**
+ *
+ * @export
+ * @interface LogResponse
+ */
+export interface LogResponse {
+  /**
+   *
+   * @type {LogEntry}
+   * @memberof LogResponse
+   */
+  'logs'?: LogEntry;
+  /**
+   * A token to retrieve the next set of logs, if any.
+   * @type {string}
+   * @memberof LogResponse
+   */
+  'nextToken'?: string | null;
+}
+/**
  * @type Logic
  * @export
  */
@@ -6813,6 +6869,44 @@ export interface UpdateWorkflowsResponse {
    * @memberof UpdateWorkflowsResponse
    */
   '$operation': string;
+}
+/**
+ *
+ * @export
+ * @interface V1UtilsPlatformLogsGet400Response
+ */
+export interface V1UtilsPlatformLogsGet400Response {
+  /**
+   *
+   * @type {string}
+   * @memberof V1UtilsPlatformLogsGet400Response
+   */
+  'status'?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof V1UtilsPlatformLogsGet400Response
+   */
+  'message'?: string;
+}
+/**
+ *
+ * @export
+ * @interface V1UtilsPlatformLogsGet500Response
+ */
+export interface V1UtilsPlatformLogsGet500Response {
+  /**
+   *
+   * @type {string}
+   * @memberof V1UtilsPlatformLogsGet500Response
+   */
+  'status'?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof V1UtilsPlatformLogsGet500Response
+   */
+  'message'?: string;
 }
 /**
  *
@@ -9605,6 +9699,46 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         options: localVarRequestOptions,
       };
     },
+    /**
+     * Returns log data for a given range, specified by start and end Unix timestamps.
+     * @summary Retrieve log data based on time range
+     * @param {number} [start]
+     * @param {number} [end]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UtilsPlatformLogsGet: async (start?: number, end?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      const localVarPath = `/v1-utils-platform-logs`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      if (start !== undefined) {
+        localVarQueryParameter['start'] = start;
+      }
+
+      if (end !== undefined) {
+        localVarQueryParameter['end'] = end;
+      }
+
+
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
   }
 };
 
@@ -10338,6 +10472,18 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
       const localVarAxiosArgs = await localVarAxiosParamCreator.updateEntity(type, id, entityData, options);
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
     },
+    /**
+     * Returns log data for a given range, specified by start and end Unix timestamps.
+     * @summary Retrieve log data based on time range
+     * @param {number} [start]
+     * @param {number} [end]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async v1UtilsPlatformLogsGet(start?: number, end?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<LogResponse>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.v1UtilsPlatformLogsGet(start, end, options);
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+    },
   }
 };
 
@@ -11007,6 +11153,17 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
      */
     updateEntity(type: string, id: string, entityData: EntityData, options?: any): AxiosPromise<Entity> {
       return localVarFp.updateEntity(type, id, entityData, options).then((request) => request(axios, basePath));
+    },
+    /**
+     * Returns log data for a given range, specified by start and end Unix timestamps.
+     * @summary Retrieve log data based on time range
+     * @param {number} [start]
+     * @param {number} [end]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    v1UtilsPlatformLogsGet(start?: number, end?: number, options?: any): AxiosPromise<LogResponse> {
+      return localVarFp.v1UtilsPlatformLogsGet(start, end, options).then((request) => request(axios, basePath));
     },
   };
 };
@@ -11802,6 +11959,19 @@ export class Scout9ApiGenerated extends BaseAPI {
    */
   public updateEntity(type: string, id: string, entityData: EntityData, options?: AxiosRequestConfig) {
     return Scout9ApiFp(this.configuration).updateEntity(type, id, entityData, options).then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   * Returns log data for a given range, specified by start and end Unix timestamps.
+   * @summary Retrieve log data based on time range
+   * @param {number} [start]
+   * @param {number} [end]
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof Scout9Api
+   */
+  public v1UtilsPlatformLogsGet(start?: number, end?: number, options?: AxiosRequestConfig) {
+    return Scout9ApiFp(this.configuration).v1UtilsPlatformLogsGet(start, end, options).then((request) => request(this.axios, this.basePath));
   }
 }
 
