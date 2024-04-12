@@ -1934,6 +1934,39 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
             };
         },
         /**
+         * Returns log data for a given range, specified by start and end Unix timestamps.
+         * @summary Retrieve platform run time logs
+         * @param {number} [start]
+         * @param {number} [end]
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        logs: async (start, end, options = {}) => {
+            const localVarPath = `/v1-utils-platform-logs`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options };
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            if (start !== undefined) {
+                localVarQueryParameter['start'] = start;
+            }
+            if (end !== undefined) {
+                localVarQueryParameter['end'] = end;
+            }
+            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
+            return {
+                url: (0, common_1.toPathString)(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Creates a new message and sends it to the conversation. If the conversation is scheduled, the message will be scheduled as well. @TODO does not support the ability to mute or delay send
          * @summary Create and send message
          * @param {MessageCreateRequest} messageCreateRequest
@@ -2276,39 +2309,6 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
             localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(entityData, localVarRequestOptions, configuration);
-            return {
-                url: (0, common_1.toPathString)(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * Returns log data for a given range, specified by start and end Unix timestamps.
-         * @summary Retrieve log data based on time range
-         * @param {number} [start]
-         * @param {number} [end]
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UtilsPlatformLogsGet: async (start, end, options = {}) => {
-            const localVarPath = `/v1-utils-platform-logs`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options };
-            const localVarHeaderParameter = {};
-            const localVarQueryParameter = {};
-            if (start !== undefined) {
-                localVarQueryParameter['start'] = start;
-            }
-            if (end !== undefined) {
-                localVarQueryParameter['end'] = end;
-            }
-            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
             return {
                 url: (0, common_1.toPathString)(localVarUrlObj),
                 options: localVarRequestOptions,
@@ -2922,6 +2922,18 @@ const Scout9ApiFp = function (configuration) {
             return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
         },
         /**
+         * Returns log data for a given range, specified by start and end Unix timestamps.
+         * @summary Retrieve platform run time logs
+         * @param {number} [start]
+         * @param {number} [end]
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async logs(start, end, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.logs(start, end, options);
+            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+        },
+        /**
          * Creates a new message and sends it to the conversation. If the conversation is scheduled, the message will be scheduled as well. @TODO does not support the ability to mute or delay send
          * @summary Create and send message
          * @param {MessageCreateRequest} messageCreateRequest
@@ -3045,18 +3057,6 @@ const Scout9ApiFp = function (configuration) {
          */
         async updateEntity(type, id, entityData, options) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.updateEntity(type, id, entityData, options);
-            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
-        },
-        /**
-         * Returns log data for a given range, specified by start and end Unix timestamps.
-         * @summary Retrieve log data based on time range
-         * @param {number} [start]
-         * @param {number} [end]
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async v1UtilsPlatformLogsGet(start, end, options) {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.v1UtilsPlatformLogsGet(start, end, options);
             return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
         },
     };
@@ -3615,6 +3615,17 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
             return localVarFp.generate(generateRequest, options).then((request) => request(axios, basePath));
         },
         /**
+         * Returns log data for a given range, specified by start and end Unix timestamps.
+         * @summary Retrieve platform run time logs
+         * @param {number} [start]
+         * @param {number} [end]
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        logs(start, end, options) {
+            return localVarFp.logs(start, end, options).then((request) => request(axios, basePath));
+        },
+        /**
          * Creates a new message and sends it to the conversation. If the conversation is scheduled, the message will be scheduled as well. @TODO does not support the ability to mute or delay send
          * @summary Create and send message
          * @param {MessageCreateRequest} messageCreateRequest
@@ -3728,17 +3739,6 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
          */
         updateEntity(type, id, entityData, options) {
             return localVarFp.updateEntity(type, id, entityData, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * Returns log data for a given range, specified by start and end Unix timestamps.
-         * @summary Retrieve log data based on time range
-         * @param {number} [start]
-         * @param {number} [end]
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        v1UtilsPlatformLogsGet(start, end, options) {
-            return localVarFp.v1UtilsPlatformLogsGet(start, end, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -4348,6 +4348,18 @@ class Scout9ApiGenerated extends base_1.BaseAPI {
         return (0, exports.Scout9ApiFp)(this.configuration).generate(generateRequest, options).then((request) => request(this.axios, this.basePath));
     }
     /**
+     * Returns log data for a given range, specified by start and end Unix timestamps.
+     * @summary Retrieve platform run time logs
+     * @param {number} [start]
+     * @param {number} [end]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    logs(start, end, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).logs(start, end, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
      * Creates a new message and sends it to the conversation. If the conversation is scheduled, the message will be scheduled as well. @TODO does not support the ability to mute or delay send
      * @summary Create and send message
      * @param {MessageCreateRequest} messageCreateRequest
@@ -4472,18 +4484,6 @@ class Scout9ApiGenerated extends base_1.BaseAPI {
      */
     updateEntity(type, id, entityData, options) {
         return (0, exports.Scout9ApiFp)(this.configuration).updateEntity(type, id, entityData, options).then((request) => request(this.axios, this.basePath));
-    }
-    /**
-     * Returns log data for a given range, specified by start and end Unix timestamps.
-     * @summary Retrieve log data based on time range
-     * @param {number} [start]
-     * @param {number} [end]
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    v1UtilsPlatformLogsGet(start, end, options) {
-        return (0, exports.Scout9ApiFp)(this.configuration).v1UtilsPlatformLogsGet(start, end, options).then((request) => request(this.axios, this.basePath));
     }
 }
 exports.Scout9ApiGenerated = Scout9ApiGenerated;

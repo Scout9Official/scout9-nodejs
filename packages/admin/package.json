@@ -1,6 +1,6 @@
 {
   "name": "@scout9/admin",
-  "version": "1.0.0-alpha.0.0.40",
+  "version": "1.0.0-alpha.0.0.41",
   "description": "",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",

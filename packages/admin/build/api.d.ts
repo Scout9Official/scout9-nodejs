@@ -927,6 +927,25 @@ export interface ConversationCreateRequest {
      * @memberof ConversationCreateRequest
      */
     'environment': ConversationEnvironment;
+    /**
+     * Appends a prefix to the conversation id, if a conversation id is prefixed with test, or dev, it will mute text messages
+     * @type {string}
+     * @memberof ConversationCreateRequest
+     */
+    'idPrefix'?: string;
+}
+/**
+ *
+ * @export
+ * @interface ConversationCreateRequestAllOf
+ */
+export interface ConversationCreateRequestAllOf {
+    /**
+     * Appends a prefix to the conversation id, if a conversation id is prefixed with test, or dev, it will mute text messages
+     * @type {string}
+     * @memberof ConversationCreateRequestAllOf
+     */
+    'idPrefix'?: string;
 }
 /**
  *
@@ -4471,6 +4490,44 @@ export type Logic = AndLogic | ConditionLogic | NotLogic | OrLogic;
 /**
  *
  * @export
+ * @interface Logs400Response
+ */
+export interface Logs400Response {
+    /**
+     *
+     * @type {string}
+     * @memberof Logs400Response
+     */
+    'status'?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof Logs400Response
+     */
+    'message'?: string;
+}
+/**
+ *
+ * @export
+ * @interface Logs500Response
+ */
+export interface Logs500Response {
+    /**
+     *
+     * @type {string}
+     * @memberof Logs500Response
+     */
+    'status'?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof Logs500Response
+     */
+    'message'?: string;
+}
+/**
+ *
+ * @export
  * @interface Message
  */
 export interface Message {
@@ -6772,44 +6829,6 @@ export interface UpdateWorkflowsResponse {
 /**
  *
  * @export
- * @interface V1UtilsPlatformLogsGet400Response
- */
-export interface V1UtilsPlatformLogsGet400Response {
-    /**
-     *
-     * @type {string}
-     * @memberof V1UtilsPlatformLogsGet400Response
-     */
-    'status'?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof V1UtilsPlatformLogsGet400Response
-     */
-    'message'?: string;
-}
-/**
- *
- * @export
- * @interface V1UtilsPlatformLogsGet500Response
- */
-export interface V1UtilsPlatformLogsGet500Response {
-    /**
-     *
-     * @type {string}
-     * @memberof V1UtilsPlatformLogsGet500Response
-     */
-    'status'?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof V1UtilsPlatformLogsGet500Response
-     */
-    'message'?: string;
-}
-/**
- *
- * @export
  * @interface Workflow
  */
 export interface Workflow {
@@ -7598,6 +7617,15 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
      */
     generate: (generateRequest: GenerateRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
+     * Returns log data for a given range, specified by start and end Unix timestamps.
+     * @summary Retrieve platform run time logs
+     * @param {number} [start]
+     * @param {number} [end]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    logs: (start?: number, end?: number, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
      * Creates a new message and sends it to the conversation. If the conversation is scheduled, the message will be scheduled as well. @TODO does not support the ability to mute or delay send
      * @summary Create and send message
      * @param {MessageCreateRequest} messageCreateRequest
@@ -7690,15 +7718,6 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
      * @throws {RequiredError}
      */
     updateEntity: (type: string, id: string, entityData: EntityData, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     * Returns log data for a given range, specified by start and end Unix timestamps.
-     * @summary Retrieve log data based on time range
-     * @param {number} [start]
-     * @param {number} [end]
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    v1UtilsPlatformLogsGet: (start?: number, end?: number, options?: AxiosRequestConfig) => Promise<RequestArgs>;
 };
 /**
  * Scout9Api - functional programming interface
@@ -8147,6 +8166,15 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
      */
     generate(generateRequest: GenerateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GenerateResponse>>;
     /**
+     * Returns log data for a given range, specified by start and end Unix timestamps.
+     * @summary Retrieve platform run time logs
+     * @param {number} [start]
+     * @param {number} [end]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    logs(start?: number, end?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<LogResponse>>;
+    /**
      * Creates a new message and sends it to the conversation. If the conversation is scheduled, the message will be scheduled as well. @TODO does not support the ability to mute or delay send
      * @summary Create and send message
      * @param {MessageCreateRequest} messageCreateRequest
@@ -8241,15 +8269,6 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
      * @throws {RequiredError}
      */
     updateEntity(type: string, id: string, entityData: EntityData, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Entity>>;
-    /**
-     * Returns log data for a given range, specified by start and end Unix timestamps.
-     * @summary Retrieve log data based on time range
-     * @param {number} [start]
-     * @param {number} [end]
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    v1UtilsPlatformLogsGet(start?: number, end?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<LogResponse>>;
 };
 /**
  * Scout9Api - factory interface
@@ -8698,6 +8717,15 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
      */
     generate(generateRequest: GenerateRequest, options?: any): AxiosPromise<GenerateResponse>;
     /**
+     * Returns log data for a given range, specified by start and end Unix timestamps.
+     * @summary Retrieve platform run time logs
+     * @param {number} [start]
+     * @param {number} [end]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    logs(start?: number, end?: number, options?: any): AxiosPromise<LogResponse>;
+    /**
      * Creates a new message and sends it to the conversation. If the conversation is scheduled, the message will be scheduled as well. @TODO does not support the ability to mute or delay send
      * @summary Create and send message
      * @param {MessageCreateRequest} messageCreateRequest
@@ -8792,15 +8820,6 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
      * @throws {RequiredError}
      */
     updateEntity(type: string, id: string, entityData: EntityData, options?: any): AxiosPromise<Entity>;
-    /**
-     * Returns log data for a given range, specified by start and end Unix timestamps.
-     * @summary Retrieve log data based on time range
-     * @param {number} [start]
-     * @param {number} [end]
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    v1UtilsPlatformLogsGet(start?: number, end?: number, options?: any): AxiosPromise<LogResponse>;
 };
 /**
  * Scout9ApiGenerated - object-oriented interface
@@ -9303,6 +9322,16 @@ export declare class Scout9ApiGenerated extends BaseAPI {
      */
     generate(generateRequest: GenerateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<GenerateResponse, any>>;
     /**
+     * Returns log data for a given range, specified by start and end Unix timestamps.
+     * @summary Retrieve platform run time logs
+     * @param {number} [start]
+     * @param {number} [end]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    logs(start?: number, end?: number, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<LogResponse, any>>;
+    /**
      * Creates a new message and sends it to the conversation. If the conversation is scheduled, the message will be scheduled as well. @TODO does not support the ability to mute or delay send
      * @summary Create and send message
      * @param {MessageCreateRequest} messageCreateRequest
@@ -9408,16 +9437,6 @@ export declare class Scout9ApiGenerated extends BaseAPI {
      * @memberof Scout9Api
      */
     updateEntity(type: string, id: string, entityData: EntityData, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<Entity, any>>;
-    /**
-     * Returns log data for a given range, specified by start and end Unix timestamps.
-     * @summary Retrieve log data based on time range
-     * @param {number} [start]
-     * @param {number} [end]
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    v1UtilsPlatformLogsGet(start?: number, end?: number, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<LogResponse, any>>;
 }
 /**
  * Scout9Api - object-oriented interface
