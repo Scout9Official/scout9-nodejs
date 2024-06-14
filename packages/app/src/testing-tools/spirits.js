@@ -156,8 +156,9 @@ export const Spirits = {
             _conversation.lockAttempts++;
             if (_conversation.lockAttempts > (_config?.maxLockAttempts || 3)) {
                 _conversation.locked = true;
+                _conversation.lockedReason = `Max lock attempts exceeded (${_conversation.lockAttempts} > ${(_config?.maxLockAttempts || 3)})`;
             }
-            progress('Incremented lock attempt', 'info', 'UPDATE_CONVERSATION', {lockAttempts: _conversation.lockAttempts, locked: _conversation.locked});
+            progress('Incremented lock attempt', 'info', 'UPDATE_CONVERSATION', {lockAttempts: _conversation.lockAttempts, locked: _conversation.locked, lockedReason: _conversation.lockedReason || ''});
             return _conversation;
         }
 
@@ -290,7 +291,8 @@ export const Spirits = {
             // Reset lock attempts
             conversation.locked = false;
             conversation.lockAttempts = 0;
-            progress('Reset lock', 'info', 'UPDATE_CONVERSATION', {locked: false, lockAttempts: 0});
+            conversation.lockedReason = '';
+            progress('Reset lock', 'info', 'UPDATE_CONVERSATION', {locked: false, lockAttempts: 0, lockedReason: ''});
         }
 
         const noNewContext = Object.keys(parsePayload.context).length === 0;
@@ -320,7 +322,8 @@ export const Spirits = {
         } else {
             conversation.lockAttempts = 0;
             conversation.locked = false;
-            progress('Reset lock', 'info', 'UPDATE_CONVERSATION', {lockAttempts: 0, locked: false});
+            conversation.lockedReason = '';
+            progress('Reset lock', 'info', 'UPDATE_CONVERSATION', {lockAttempts: 0, locked: false, lockedReason: ''});
         }
 
         let resettedIntent = false;
@@ -443,8 +446,9 @@ export const Spirits = {
             conversation.intent = null;
             conversation.intentScore = null;
             conversation.locked = false;
+            conversation.lockedReason = '';
             conversation.lockAttempts = 0;
-            progress('Reset conversation intent', 'info', 'UPDATE_CONVERSATION', {intent: null, intentScore: null, locked: false, lockAttempts: 0});
+            progress('Reset conversation intent', 'info', 'UPDATE_CONVERSATION', {intent: null, intentScore: null, locked: false, lockAttempts: 0, lockedReason: ''});
         }
 
         // 4. Generate response
