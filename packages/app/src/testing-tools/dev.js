@@ -273,7 +273,7 @@ export class Scout9Test {
       this.conversation.forwarded = new Date().toString();
       this.conversation.forwardNote = result.conversation.forwardNote || '';
       this.conversation.locked = true;
-      this.conversation.lockedReason = result.conversation.forwardNote || 'Forwarded to ' + this.conversation.forwardedTo;
+      this.conversation.lockedReason = result.conversation.forwardNote ?? ('Forwarded to ' + this.conversation.forwardedTo);
     }
 
     if (!result.messages.after.find(m => m.id === result.message.after.id)) {
