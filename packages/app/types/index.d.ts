@@ -383,7 +383,7 @@ declare module '@scout9/app/testing-tools' {
 		 * @param props.context - prior conversation context
 		 * @param props.persona id to use
 		 * @param props.conversation - existing conversation
-		 * 
+		 *
 		 */
 		constructor({ persona, customer, context, conversation, cwd, src, mode, api, app, project }?: {
 			cwd?: string;
@@ -397,31 +397,31 @@ declare module '@scout9/app/testing-tools' {
 			app: any;
 			project: any;
 		});
-		
+
 		customer: import('@scout9/app').Customer;
-		
+
 		persona: import('@scout9/app').Persona;
-		
+
 		conversation: import('@scout9/app').Conversation;
-		
+
 		messages: import('@scout9/app').Message[];
-		
+
 		context: any;
-		
+
 		private _project;
-		
+
 		private _app;
-		
+
 		private _api;
-		
+
 		private _cwd;
-		
+
 		private _src;
-		
+
 		private _mode;
-		
+
 		private _loaded;
-		
+
 		private _personaId;
 		/**
 		 * Loads the test environment
@@ -460,7 +460,7 @@ declare module '@scout9/app/testing-tools' {
 			messages?: import("@scout9/app").Message[] | undefined;
 			context?: any;
 		} | undefined): Promise<import('@scout9/admin').GenerateResponse>;
-		
+
 		private _loadApp;
 	}
 	export namespace Spirits {
@@ -535,6 +535,571 @@ declare module '@scout9/app/testing-tools' {
 		context: Change<Object>;
 		message: Change<import('@scout9/app').Message>;
 	};
+}
+
+declare module '@scout9/app/types' {
+	import { ZodString } from 'zod';
+	import type { z } from 'zod';
+	export const Scout9ProjectBuildConfigSchema: z.ZodObject<{
+		tag: z.ZodOptional<z.ZodString>;
+		agents: z.ZodArray<z.ZodObject<{
+			deployed: z.ZodOptional<z.ZodObject<{
+				web: z.ZodOptional<z.ZodString>;
+				phone: z.ZodOptional<z.ZodString>;
+				email: z.ZodOptional<z.ZodString>;
+			}, "strip", z.ZodTypeAny, {
+				web?: string | undefined;
+				phone?: string | undefined;
+				email?: string | undefined;
+			}, {
+				web?: string | undefined;
+				phone?: string | undefined;
+				email?: string | undefined;
+			}>>;
+			firstName: z.ZodOptional<z.ZodString>;
+			lastName: z.ZodOptional<z.ZodString>;
+			inactive: z.ZodOptional<z.ZodBoolean>;
+			programmablePhoneNumber: z.ZodOptional<z.ZodString>;
+			programmablePhoneNumberSid: z.ZodOptional<z.ZodString>;
+			programmableEmail: z.ZodOptional<z.ZodString>;
+			forwardEmail: z.ZodOptional<z.ZodString>;
+			forwardPhone: z.ZodOptional<z.ZodString>;
+			title: z.ZodDefault<z.ZodOptional<z.ZodString>>;
+			context: z.ZodDefault<z.ZodOptional<z.ZodString>>;
+			includedLocations: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+			excludedLocations: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+			model: z.ZodDefault<z.ZodOptional<z.ZodEnum<["Scout9", "bard", "openai"]>>>;
+			transcripts: z.ZodOptional<z.ZodArray<z.ZodArray<z.ZodObject<{
+				content: z.ZodString;
+				role: z.ZodEnum<["agent", "customer", "system"]>;
+				time: z.ZodString;
+				name: z.ZodOptional<z.ZodString>;
+			}, "strip", z.ZodTypeAny, {
+				time: string;
+				content: string;
+				role: "agent" | "customer" | "system";
+				name?: string | undefined;
+			}, {
+				time: string;
+				content: string;
+				role: "agent" | "customer" | "system";
+				name?: string | undefined;
+			}>, "many">, "many">>;
+			audios: z.ZodOptional<z.ZodArray<z.ZodAny, "many">>;
+		}, "strip", z.ZodTypeAny, {
+			title: string;
+			context: string;
+			model: "openai" | "bard" | "Scout9";
+			deployed?: {
+				web?: string | undefined;
+				phone?: string | undefined;
+				email?: string | undefined;
+			} | undefined;
+			firstName?: string | undefined;
+			lastName?: string | undefined;
+			inactive?: boolean | undefined;
+			programmablePhoneNumber?: string | undefined;
+			programmablePhoneNumberSid?: string | undefined;
+			programmableEmail?: string | undefined;
+			forwardEmail?: string | undefined;
+			forwardPhone?: string | undefined;
+			includedLocations?: string[] | undefined;
+			excludedLocations?: string[] | undefined;
+			transcripts?: {
+				time: string;
+				content: string;
+				role: "agent" | "customer" | "system";
+				name?: string | undefined;
+			}[][] | undefined;
+			audios?: any[] | undefined;
+		}, {
+			deployed?: {
+				web?: string | undefined;
+				phone?: string | undefined;
+				email?: string | undefined;
+			} | undefined;
+			firstName?: string | undefined;
+			lastName?: string | undefined;
+			inactive?: boolean | undefined;
+			programmablePhoneNumber?: string | undefined;
+			programmablePhoneNumberSid?: string | undefined;
+			programmableEmail?: string | undefined;
+			forwardEmail?: string | undefined;
+			forwardPhone?: string | undefined;
+			title?: string | undefined;
+			context?: string | undefined;
+			includedLocations?: string[] | undefined;
+			excludedLocations?: string[] | undefined;
+			model?: "openai" | "bard" | "Scout9" | undefined;
+			transcripts?: {
+				time: string;
+				content: string;
+				role: "agent" | "customer" | "system";
+				name?: string | undefined;
+			}[][] | undefined;
+			audios?: any[] | undefined;
+		}>, "many">;
+		entities: z.ZodArray<z.ZodEffects<z.ZodObject<{
+			id: any;
+			training: z.ZodOptional<z.ZodArray<z.ZodObject<{
+				intent: ZodString;
+				text: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				text: string;
+				intent?: any;
+			}, {
+				text: string;
+				intent?: any;
+			}>, "many">>;
+			tests: z.ZodOptional<z.ZodArray<z.ZodObject<{
+				text: z.ZodString;
+				expected: z.ZodObject<{
+					intent: ZodString;
+					context: z.ZodAny;
+				}, "strip", z.ZodTypeAny, {
+					intent?: any;
+					context?: any;
+				}, {
+					intent?: any;
+					context?: any;
+				}>;
+			}, "strip", z.ZodTypeAny, {
+				text: string;
+				expected: {
+					intent?: any;
+					context?: any;
+				};
+			}, {
+				text: string;
+				expected: {
+					intent?: any;
+					context?: any;
+				};
+			}>, "many">>;
+			definitions: z.ZodOptional<z.ZodArray<z.ZodObject<{
+				utterance: any;
+				value: z.ZodString;
+				text: z.ZodArray<z.ZodString, "many">;
+			}, "strip", z.ZodTypeAny, {
+				[x: string]: any;
+				utterance?: any;
+				value?: string | undefined;
+				text?: string[] | undefined;
+			}, {
+				[x: string]: any;
+				utterance?: any;
+				value?: string | undefined;
+				text?: string[] | undefined;
+			}>, "many">>;
+			entities: z.ZodArray<ZodString, "many">;
+			entity: ZodString;
+			api: z.ZodNullable<z.ZodObject<{
+				GET: z.ZodOptional<z.ZodBoolean>;
+				UPDATE: z.ZodOptional<z.ZodBoolean>;
+				QUERY: z.ZodOptional<z.ZodBoolean>;
+				PUT: z.ZodOptional<z.ZodBoolean>;
+				PATCH: z.ZodOptional<z.ZodBoolean>;
+				DELETE: z.ZodOptional<z.ZodBoolean>;
+			}, "strip", z.ZodTypeAny, {
+				GET?: boolean | undefined;
+				UPDATE?: boolean | undefined;
+				QUERY?: boolean | undefined;
+				PUT?: boolean | undefined;
+				PATCH?: boolean | undefined;
+				DELETE?: boolean | undefined;
+			}, {
+				GET?: boolean | undefined;
+				UPDATE?: boolean | undefined;
+				QUERY?: boolean | undefined;
+				PUT?: boolean | undefined;
+				PATCH?: boolean | undefined;
+				DELETE?: boolean | undefined;
+			}>>;
+		}, "strict", z.ZodTypeAny, {
+			[x: string]: any;
+			id?: any;
+			training?: {
+				text: string;
+				intent?: any;
+			}[] | undefined;
+			tests?: {
+				text: string;
+				expected: {
+					intent?: any;
+					context?: any;
+				};
+			}[] | undefined;
+			definitions?: {
+				[x: string]: any;
+				utterance?: any;
+				value?: string | undefined;
+				text?: string[] | undefined;
+			}[] | undefined;
+			entities?: ZodString[] | undefined;
+			entity?: any;
+			api?: {
+				GET?: boolean | undefined;
+				UPDATE?: boolean | undefined;
+				QUERY?: boolean | undefined;
+				PUT?: boolean | undefined;
+				PATCH?: boolean | undefined;
+				DELETE?: boolean | undefined;
+			} | null | undefined;
+		}, {
+			[x: string]: any;
+			id?: any;
+			training?: {
+				text: string;
+				intent?: any;
+			}[] | undefined;
+			tests?: {
+				text: string;
+				expected: {
+					intent?: any;
+					context?: any;
+				};
+			}[] | undefined;
+			definitions?: {
+				[x: string]: any;
+				utterance?: any;
+				value?: string | undefined;
+				text?: string[] | undefined;
+			}[] | undefined;
+			entities?: ZodString[] | undefined;
+			entity?: any;
+			api?: {
+				GET?: boolean | undefined;
+				UPDATE?: boolean | undefined;
+				QUERY?: boolean | undefined;
+				PUT?: boolean | undefined;
+				PATCH?: boolean | undefined;
+				DELETE?: boolean | undefined;
+			} | null | undefined;
+		}>, {
+			[x: string]: any;
+			id?: any;
+			training?: {
+				text: string;
+				intent?: any;
+			}[] | undefined;
+			tests?: {
+				text: string;
+				expected: {
+					intent?: any;
+					context?: any;
+				};
+			}[] | undefined;
+			definitions?: {
+				[x: string]: any;
+				utterance?: any;
+				value?: string | undefined;
+				text?: string[] | undefined;
+			}[] | undefined;
+			entities?: ZodString[] | undefined;
+			entity?: any;
+			api?: {
+				GET?: boolean | undefined;
+				UPDATE?: boolean | undefined;
+				QUERY?: boolean | undefined;
+				PUT?: boolean | undefined;
+				PATCH?: boolean | undefined;
+				DELETE?: boolean | undefined;
+			} | null | undefined;
+		}, {
+			[x: string]: any;
+			id?: any;
+			training?: {
+				text: string;
+				intent?: any;
+			}[] | undefined;
+			tests?: {
+				text: string;
+				expected: {
+					intent?: any;
+					context?: any;
+				};
+			}[] | undefined;
+			definitions?: {
+				[x: string]: any;
+				utterance?: any;
+				value?: string | undefined;
+				text?: string[] | undefined;
+			}[] | undefined;
+			entities?: ZodString[] | undefined;
+			entity?: any;
+			api?: {
+				GET?: boolean | undefined;
+				UPDATE?: boolean | undefined;
+				QUERY?: boolean | undefined;
+				PUT?: boolean | undefined;
+				PATCH?: boolean | undefined;
+				DELETE?: boolean | undefined;
+			} | null | undefined;
+		}>, "many">;
+		workflows: z.ZodArray<z.ZodObject<{
+			entities: z.ZodArray<ZodString, "many">;
+			entity: ZodString;
+		}, "strip", z.ZodTypeAny, {
+			entities: ZodString[];
+			entity?: any;
+		}, {
+			entities: ZodString[];
+			entity?: any;
+		}>, "many">;
+		llm: z.ZodUnion<[z.ZodObject<{
+			engine: z.ZodLiteral<"openai">;
+			model: z.ZodUnion<[z.ZodLiteral<"gpt-4-1106-preview">, z.ZodLiteral<"gpt-4-vision-preview">, z.ZodLiteral<"gpt-4">, z.ZodLiteral<"gpt-4-0314">, z.ZodLiteral<"gpt-4-0613">, z.ZodLiteral<"gpt-4-32k">, z.ZodLiteral<"gpt-4-32k-0314">, z.ZodLiteral<"gpt-4-32k-0613">, z.ZodLiteral<"gpt-3.5-turbo">, z.ZodLiteral<"gpt-3.5-turbo-16k">, z.ZodLiteral<"gpt-3.5-turbo-0301">, z.ZodLiteral<"gpt-3.5-turbo-0613">, z.ZodLiteral<"gpt-3.5-turbo-16k-0613">, z.ZodString]>;
+		}, "strip", z.ZodTypeAny, {
+			model: string;
+			engine: "openai";
+		}, {
+			model: string;
+			engine: "openai";
+		}>, z.ZodObject<{
+			engine: z.ZodLiteral<"llama">;
+			model: z.ZodString;
+		}, "strip", z.ZodTypeAny, {
+			model: string;
+			engine: "llama";
+		}, {
+			model: string;
+			engine: "llama";
+		}>, z.ZodObject<{
+			engine: z.ZodLiteral<"bard">;
+			model: z.ZodString;
+		}, "strip", z.ZodTypeAny, {
+			model: string;
+			engine: "bard";
+		}, {
+			model: string;
+			engine: "bard";
+		}>]>;
+		pmt: z.ZodObject<{
+			engine: z.ZodLiteral<"scout9">;
+			model: z.ZodString;
+		}, "strip", z.ZodTypeAny, {
+			model: string;
+			engine: "scout9";
+		}, {
+			model: string;
+			engine: "scout9";
+		}>;
+		initialContext: z.ZodArray<z.ZodString, "many">;
+		maxLockAttempts: z.ZodOptional<z.ZodNumber>;
+		organization: z.ZodOptional<z.ZodObject<{
+			name: z.ZodString;
+			description: z.ZodString;
+			dashboard: z.ZodOptional<z.ZodString>;
+			logo: z.ZodOptional<z.ZodString>;
+			icon: z.ZodOptional<z.ZodString>;
+			logos: z.ZodOptional<z.ZodString>;
+			website: z.ZodOptional<z.ZodString>;
+			email: z.ZodOptional<z.ZodString>;
+			phone: z.ZodOptional<z.ZodString>;
+		}, "strip", z.ZodTypeAny, {
+			name: string;
+			description: string;
+			dashboard?: string | undefined;
+			logo?: string | undefined;
+			icon?: string | undefined;
+			logos?: string | undefined;
+			website?: string | undefined;
+			email?: string | undefined;
+			phone?: string | undefined;
+		}, {
+			name: string;
+			description: string;
+			dashboard?: string | undefined;
+			logo?: string | undefined;
+			icon?: string | undefined;
+			logos?: string | undefined;
+			website?: string | undefined;
+			email?: string | undefined;
+			phone?: string | undefined;
+		}>>;
+	}, "strip", z.ZodTypeAny, {
+		agents: {
+			title: string;
+			context: string;
+			model: "openai" | "bard" | "Scout9";
+			deployed?: {
+				web?: string | undefined;
+				phone?: string | undefined;
+				email?: string | undefined;
+			} | undefined;
+			firstName?: string | undefined;
+			lastName?: string | undefined;
+			inactive?: boolean | undefined;
+			programmablePhoneNumber?: string | undefined;
+			programmablePhoneNumberSid?: string | undefined;
+			programmableEmail?: string | undefined;
+			forwardEmail?: string | undefined;
+			forwardPhone?: string | undefined;
+			includedLocations?: string[] | undefined;
+			excludedLocations?: string[] | undefined;
+			transcripts?: {
+				time: string;
+				content: string;
+				role: "agent" | "customer" | "system";
+				name?: string | undefined;
+			}[][] | undefined;
+			audios?: any[] | undefined;
+		}[];
+		entities: {
+			[x: string]: any;
+			id?: any;
+			training?: {
+				text: string;
+				intent?: any;
+			}[] | undefined;
+			tests?: {
+				text: string;
+				expected: {
+					intent?: any;
+					context?: any;
+				};
+			}[] | undefined;
+			definitions?: {
+				[x: string]: any;
+				utterance?: any;
+				value?: string | undefined;
+				text?: string[] | undefined;
+			}[] | undefined;
+			entities?: ZodString[] | undefined;
+			entity?: any;
+			api?: {
+				GET?: boolean | undefined;
+				UPDATE?: boolean | undefined;
+				QUERY?: boolean | undefined;
+				PUT?: boolean | undefined;
+				PATCH?: boolean | undefined;
+				DELETE?: boolean | undefined;
+			} | null | undefined;
+		}[];
+		initialContext: string[];
+		workflows: {
+			entities: ZodString[];
+			entity?: any;
+		}[];
+		llm: {
+			model: string;
+			engine: "openai";
+		} | {
+			model: string;
+			engine: "llama";
+		} | {
+			model: string;
+			engine: "bard";
+		};
+		pmt: {
+			model: string;
+			engine: "scout9";
+		};
+		tag?: string | undefined;
+		maxLockAttempts?: number | undefined;
+		organization?: {
+			name: string;
+			description: string;
+			dashboard?: string | undefined;
+			logo?: string | undefined;
+			icon?: string | undefined;
+			logos?: string | undefined;
+			website?: string | undefined;
+			email?: string | undefined;
+			phone?: string | undefined;
+		} | undefined;
+	}, {
+		agents: {
+			deployed?: {
+				web?: string | undefined;
+				phone?: string | undefined;
+				email?: string | undefined;
+			} | undefined;
+			firstName?: string | undefined;
+			lastName?: string | undefined;
+			inactive?: boolean | undefined;
+			programmablePhoneNumber?: string | undefined;
+			programmablePhoneNumberSid?: string | undefined;
+			programmableEmail?: string | undefined;
+			forwardEmail?: string | undefined;
+			forwardPhone?: string | undefined;
+			title?: string | undefined;
+			context?: string | undefined;
+			includedLocations?: string[] | undefined;
+			excludedLocations?: string[] | undefined;
+			model?: "openai" | "bard" | "Scout9" | undefined;
+			transcripts?: {
+				time: string;
+				content: string;
+				role: "agent" | "customer" | "system";
+				name?: string | undefined;
+			}[][] | undefined;
+			audios?: any[] | undefined;
+		}[];
+		entities: {
+			[x: string]: any;
+			id?: any;
+			training?: {
+				text: string;
+				intent?: any;
+			}[] | undefined;
+			tests?: {
+				text: string;
+				expected: {
+					intent?: any;
+					context?: any;
+				};
+			}[] | undefined;
+			definitions?: {
+				[x: string]: any;
+				utterance?: any;
+				value?: string | undefined;
+				text?: string[] | undefined;
+			}[] | undefined;
+			entities?: ZodString[] | undefined;
+			entity?: any;
+			api?: {
+				GET?: boolean | undefined;
+				UPDATE?: boolean | undefined;
+				QUERY?: boolean | undefined;
+				PUT?: boolean | undefined;
+				PATCH?: boolean | undefined;
+				DELETE?: boolean | undefined;
+			} | null | undefined;
+		}[];
+		initialContext: string[];
+		workflows: {
+			entities: ZodString[];
+			entity?: any;
+		}[];
+		llm: {
+			model: string;
+			engine: "openai";
+		} | {
+			model: string;
+			engine: "llama";
+		} | {
+			model: string;
+			engine: "bard";
+		};
+		pmt: {
+			model: string;
+			engine: "scout9";
+		};
+		tag?: string | undefined;
+		maxLockAttempts?: number | undefined;
+		organization?: {
+			name: string;
+			description: string;
+			dashboard?: string | undefined;
+			logo?: string | undefined;
+			icon?: string | undefined;
+			logos?: string | undefined;
+			website?: string | undefined;
+			email?: string | undefined;
+			phone?: string | undefined;
+		} | undefined;
+	}>;
 }
 
 declare module '@scout9/app/spirits' {

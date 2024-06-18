@@ -70,17 +70,63 @@ export const InstructionSchema = z.object({
   id: zId('Instruction ID').describe('Unique ID for the instruction, this is used to remove the instruction later'),
   content: z.string(),
 });
+
+/**
+ * If its a string, it will be sent as a static string.
+ * If it's a object or WorkflowResponseMessageAPI - it will use
+ */
+export const WorkflowResponseMessage = z.union(
+  z.string(),
+
+  /**
+   * An api call that should be called later, must return a string or {message: string}
+   */
+  WorkflowResponseMessageApiRequest
+);
+
+export const WorkflowResponseMessageApiRequest =  z.object({
+  uri: z.string(),
+  data: z.any().optional(),
+  headers: z.object({
+    [z.string()]: z.string(),
+  }).optional(),
+  method: z.enum(["GET", "POST", "PUT"]).optional()
+});
+
+/**
+ * The intended response provided by the WorkflowResponseMessageApiRequest
+ */
+export const WorkflowResponseMessageApiResponse = z.union([
+  z.string(),
+  z.object({
+    message: z.string()
+  }),
+  z.object({
+    text: z.string()
+  }),
+  z.object({
+    data: z.object({
+      message: z.string()
+    })
+  }),
+  z.object({
+    data: z.object({
+      text: z.string()
+    })
+  })
+]);
+
 export const WorkflowResponseSlotSchema = z.object({
   forward: ForwardSchema.optional(),
   instructions: z.union([z.string(), InstructionSchema, z.array(z.string()), z.array(InstructionSchema)]).optional(),
   removeInstructions: z.array(z.string()).optional(),
   message: z.string().optional(),
+  // message: WorkflowResponseMessage.optional(),
   secondsDelay: z.number().optional(),
   scheduled: z.number().optional(),
   contextUpsert: ConversationContext.optional(),
   resetIntent: z.boolean().optional(),
 });
-
 
 export const WorkflowResponseSchema = z.union([
   WorkflowResponseSlotSchema,
