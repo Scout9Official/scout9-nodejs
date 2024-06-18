@@ -1,9 +1,8 @@
 import { z } from 'zod';
 
 /**
- *
  * @param {string} name
- * @returns {ZodString}
+ * @returns {import('zod').ZodString}
  */
 export function zId(name) {
   return z.string().regex(/^[A-Za-z0-9\-_\[\]]+$/, {

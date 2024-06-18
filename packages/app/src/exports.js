@@ -4,6 +4,7 @@ import { EventResponse } from './runtime/index.js';
 export { EventResponse } from './runtime/index.js';
 // export * from './types';
 export * from './testing-tools/index.js';
+export * from './runtime/client/index.js';
 
 /**
  * @param {WorkflowEvent} event - every workflow receives an event object
