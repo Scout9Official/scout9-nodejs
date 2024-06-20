@@ -1,8 +1,17 @@
 import { z } from 'zod';
+import { zId } from './utils.js';
 
+/**
+ * @typedef {import('zod').infer<typeof MessageSchema>} IMessage
+ */
 export const MessageSchema = z.object({
-  content: z.string(),
+  id: zId('Message ID', {description: 'Unique ID for the message'}),
   role: z.enum(['agent', 'customer', 'system']),
-  time: z.string(),
-  name: z.string().optional()
+  content: z.string(),
+  time: z.string({description: 'Datetime ISO 8601 timestamp'}),
+  name: z.string().optional(),
+  scheduled: z.string({description: 'Datetime ISO 8601 timestamp'}).optional(),
+  context: z.any({description: 'The context generated from the message'}).optional(),
+  intent: z.string({description: 'Detected intent'}).optional().nullable(),
+  intentScore: z.number({description: 'Confidence score of the assigned intent'}).nullable().optional(),
 });

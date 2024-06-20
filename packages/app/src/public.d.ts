@@ -1,6 +1,7 @@
 
 /**
  * Represents the configuration provided in src/index.{js | ts} in a project
+ * @deprecated use IScout9ProjectConfig
  */
 export interface Scout9ProjectConfig {
 
@@ -64,6 +65,7 @@ export interface Scout9ProjectConfig {
 
 /**
  * Entity config the user provides
+ * @deprecated use IEntityConfiguration
  */
 export interface EntityBuildConfig {
   definitions?: {
@@ -85,6 +87,7 @@ export interface EntityBuildConfig {
 
 /**
  * What gets exported to the scout9 backend, properties are constructed by @scout/app build
+ * @deprecated use IEntityRootProjectConfiguration instead
  */
 export interface ExportedEntityBuildConfig extends EntityBuildConfig {
   entities: string[];
@@ -100,15 +103,27 @@ export interface ExportedEntityBuildConfig extends EntityBuildConfig {
   } | null;
 }
 
+/**
+ * @deprecated use IEntitiesRootProjectConfiguration instead
+ */
 export type EntitiesBuildConfig = ExportedEntityBuildConfig[];
 
+/**
+ * @deprecated use IWorkflowConfiguration instead
+ */
 export type WorkflowBuildConfig = {
   entities: string[];
   entity: string;
 }
+
+/**
+ * @deprecated use IWorkflowsConfiguration instead
+ */
 export type WorkflowsBuildConfig = WorkflowBuildConfig[];
+
 /**
  * Including the provided project config, this is the manifest for all entities and workflows to be managed in build
+ * @deprecated IScout9ProjectBuildConfig
  */
 export interface Scout9ProjectBuildConfig extends Scout9ProjectConfig {
   agents: Agent[];
@@ -131,6 +146,9 @@ export interface RunOptions {
   mode?: 'remote' | 'local';
 }
 
+/**
+ * @deprecated use IConversation
+ */
 export interface Conversation {
   $agent: string;
   $customer: string;
@@ -158,6 +176,9 @@ export interface Conversation {
   intentScore?: number | null;
 }
 
+/**
+ * @deprecated use IMessage
+ */
 export interface Message {
   id: string;
 
@@ -185,6 +206,9 @@ export interface Message {
   intentScore?: number | null;
 }
 
+/**
+ * @deprecated use ICustomer
+ */
 export interface Customer {
   id: string;
   name: string;
@@ -205,6 +229,9 @@ export interface Customer {
   [key: string]: any;
 }
 
+/**
+ * @deprecated use IAgent
+ */
 export interface Agent {
   // Generated Info
   id: string;
@@ -236,10 +263,14 @@ export interface Agent {
   audios?: any[];
 }
 
+/**
+ * @deprecated use IPersona
+ */
 export type Persona = Agent;
 
 /**
  * The input event provided to the application
+ * @deprecated use IWorkflowEvent
  */
 export interface WorkflowEvent<Type = any> {
   messages: Message[];
@@ -256,11 +287,17 @@ export interface WorkflowEvent<Type = any> {
   stagnationCount: number;
 }
 
+/**
+ * @deprecated use IInstruction
+ */
 export interface Instruction {
   id: string;
   content: string;
 }
 
+/**
+ * @deprecated use IWorkflowResponseSlot
+ */
 export interface WorkflowResponseSlot<Type = any> {
   forward?: string | boolean | {
     to?: string;
@@ -281,86 +318,12 @@ export interface WorkflowResponseSlot<Type = any> {
   resetIntent?: boolean;
 }
 
+/**
+ * @deprecated use IWorkflowResponse
+ */
 export type WorkflowResponse<Type = any> = WorkflowResponseSlot<Type> | WorkflowResponseSlot<Type>[];
 
+/**
+ * @deprecated use IWorkflowFunction
+ */
 export type WorkflowFunction<Type = any> = (event: WorkflowEvent) => Promise<WorkflowResponse<Type>> | WorkflowResponse<Type>;
-
-export declare function json<Type = any>(data: Type, init?: ResponseInit): Promise<EventResponse<Type>>;
-
-export declare function run<Type = any>(event: WorkflowEvent, options?: RunOptions): Promise<WorkflowResponse<Type>>;
-
-export declare function sendEvent<Type = any>(event: WorkflowEvent, options?: RunOptions): Promise<WorkflowResponse<Type>>;
-
-export declare function build(options?: BuildOptions): Promise<Scout9ProjectBuildConfig>;
-
-export declare function deploy(options?: DeployOptions): Promise<Scout9ProjectBuildConfig>;
-
-export class EventResponse<Type = any> {
-  /**
-   * Static method to create an EventResponse object.
-   * @param body The body of the response, expected to be an object.
-   * @param options Additional options for the response.
-   */
-  static json<Type = any>(body: object, options?: ResponseInit): EventResponse<Type>;
-
-  /**
-   * The body of the response.
-   */
-  body: object;
-
-  // Alias to body
-  readonly data: object;
-
-  /**
-   * Initialization options for the response.
-   */
-  init?: ResponseInit;
-
-  /**
-   * Creates an instance of EventResponse.
-   * @param body The body of the response, expected to be an object.
-   * @param init Initialization options for the response.
-   */
-  constructor(body: Type, init?: ResponseInit);
-
-  /**
-   * Returns a Response object with JSON body.
-   */
-  readonly response: Response;
-}
-
-export type ApiFunctionParams<Params = Record<string, string>> = {
-  searchParams: {[key: string]: string | string[] };
-  params: Params;
-}
-// export type ApiEntityFunctionParams<Params = Record<string, string>> = ApiFunctionParams<Params> & {id: string};
-export type ApiFunction<Params = Record<string, string>, Response = any> = (params: ApiFunctionParams<Params>) => Promise<EventResponse<Response>>;
-export type QueryApiFunction<Params = Record<string, string>, Response = any> = (params: ApiFunctionParams<Params>) => Promise<EventResponse<Response>>;
-export type GetApiFunction<Params = Record<string, string>, Response = any> = (params: ApiFunctionParams<Params>) => Promise<EventResponse<Response>>;
-export type PostApiFunction<Params = Record<string, string>, RequestBody = any, Response = any> = (params: ApiFunctionParams<Params> & {body: Partial<RequestBody>}) => Promise<EventResponse<Response>>;
-export type PutApiFunction<Params = Record<string, string>, RequestBody = any, Response = any> = (params: ApiFunctionParams<Params> & {body: Partial<RequestBody>}) => Promise<EventResponse<Response>>;
-export type PatchApiFunction<Params = Record<string, string>, RequestBody = any, Response = any> = (params: ApiFunctionParams<Params> & {body: Partial<RequestBody>}) => Promise<EventResponse<Response>>;
-export type DeleteApiFunction<Params = Record<string, string>, Response = any> = (params: ApiFunctionParams<Params>) => Promise<EventResponse<Response>>;
-
-
-export type mimicCustomerMessage = (input: {
-  message: string;
-  messages?: Message[];
-  workflowFn: WorkflowFunction;
-  customer?: Customer;
-  context?: any;
-  /**
-   * Agent or persona id
-   */
-  persona?: string;
-
-  conversation?: Conversation;
-
-  cwd?: string;
-  src?: string;
-  mode?: 'development' | 'production';
-}) => Promise<{
-  messages: Message[];
-  conversation: Conversation;
-  context: any;
-}>

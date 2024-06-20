@@ -1,6 +1,7 @@
 declare module '@scout9/app' {
   /**
    * Represents the configuration provided in src/index.{js | ts} in a project
+   * @deprecated use IScout9ProjectConfig
    */
   export interface Scout9ProjectConfig {
 
@@ -64,6 +65,7 @@ declare module '@scout9/app' {
 
   /**
    * Entity config the user provides
+   * @deprecated use IEntityConfiguration
    */
   export interface EntityBuildConfig {
 	definitions?: {
@@ -85,6 +87,7 @@ declare module '@scout9/app' {
 
   /**
    * What gets exported to the scout9 backend, properties are constructed by @scout/app build
+   * @deprecated use IEntityRootProjectConfiguration instead
    */
   export interface ExportedEntityBuildConfig extends EntityBuildConfig {
 	entities: string[];
@@ -100,15 +103,27 @@ declare module '@scout9/app' {
 	} | null;
   }
 
+  /**
+   * @deprecated use IEntitiesRootProjectConfiguration instead
+   */
   export type EntitiesBuildConfig = ExportedEntityBuildConfig[];
 
+  /**
+   * @deprecated use IWorkflowConfiguration instead
+   */
   export type WorkflowBuildConfig = {
 	entities: string[];
 	entity: string;
   }
+
+  /**
+   * @deprecated use IWorkflowsConfiguration instead
+   */
   export type WorkflowsBuildConfig = WorkflowBuildConfig[];
+
   /**
    * Including the provided project config, this is the manifest for all entities and workflows to be managed in build
+   * @deprecated IScout9ProjectBuildConfig
    */
   export interface Scout9ProjectBuildConfig extends Scout9ProjectConfig {
 	agents: Agent[];
@@ -131,6 +146,9 @@ declare module '@scout9/app' {
 	mode?: 'remote' | 'local';
   }
 
+  /**
+   * @deprecated use IConversation
+   */
   export interface Conversation {
 	$agent: string;
 	$customer: string;
@@ -158,6 +176,9 @@ declare module '@scout9/app' {
 	intentScore?: number | null;
   }
 
+  /**
+   * @deprecated use IMessage
+   */
   export interface Message {
 	id: string;
 
@@ -185,6 +206,9 @@ declare module '@scout9/app' {
 	intentScore?: number | null;
   }
 
+  /**
+   * @deprecated use ICustomer
+   */
   export interface Customer {
 	id: string;
 	name: string;
@@ -205,6 +229,9 @@ declare module '@scout9/app' {
 	[key: string]: any;
   }
 
+  /**
+   * @deprecated use IAgent
+   */
   export interface Agent {
 	// Generated Info
 	id: string;
@@ -236,10 +263,14 @@ declare module '@scout9/app' {
 	audios?: any[];
   }
 
+  /**
+   * @deprecated use IPersona
+   */
   export type Persona = Agent;
 
   /**
    * The input event provided to the application
+   * @deprecated use IWorkflowEvent
    */
   export interface WorkflowEvent<Type = any> {
 	messages: Message[];
@@ -256,11 +287,17 @@ declare module '@scout9/app' {
 	stagnationCount: number;
   }
 
+  /**
+   * @deprecated use IInstruction
+   */
   export interface Instruction {
 	id: string;
 	content: string;
   }
 
+  /**
+   * @deprecated use IWorkflowResponseSlot
+   */
   export interface WorkflowResponseSlot<Type = any> {
 	forward?: string | boolean | {
 	  to?: string;
@@ -281,89 +318,15 @@ declare module '@scout9/app' {
 	resetIntent?: boolean;
   }
 
+  /**
+   * @deprecated use IWorkflowResponse
+   */
   export type WorkflowResponse<Type = any> = WorkflowResponseSlot<Type> | WorkflowResponseSlot<Type>[];
 
+  /**
+   * @deprecated use IWorkflowFunction
+   */
   export type WorkflowFunction<Type = any> = (event: WorkflowEvent) => Promise<WorkflowResponse<Type>> | WorkflowResponse<Type>;
-
-  export function json<Type = any>(data: Type, init?: ResponseInit): Promise<EventResponse<Type>>;
-
-  export function run<Type = any>(event: WorkflowEvent, options?: RunOptions): Promise<WorkflowResponse<Type>>;
-
-  export function sendEvent<Type = any>(event: WorkflowEvent, options?: RunOptions): Promise<WorkflowResponse<Type>>;
-
-  export function build(options?: BuildOptions): Promise<Scout9ProjectBuildConfig>;
-
-  export function deploy(options?: DeployOptions): Promise<Scout9ProjectBuildConfig>;
-
-  export class EventResponse<Type = any> {
-	/**
-	 * Static method to create an EventResponse object.
-	 * @param body The body of the response, expected to be an object.
-	 * @param options Additional options for the response.
-	 */
-	static json<Type = any>(body: object, options?: ResponseInit): EventResponse<Type>;
-
-	/**
-	 * The body of the response.
-	 */
-	body: object;
-
-	// Alias to body
-	readonly data: object;
-
-	/**
-	 * Initialization options for the response.
-	 */
-	init?: ResponseInit;
-
-	/**
-	 * Creates an instance of EventResponse.
-	 * @param body The body of the response, expected to be an object.
-	 * @param init Initialization options for the response.
-	 */
-	constructor(body: Type, init?: ResponseInit);
-
-	/**
-	 * Returns a Response object with JSON body.
-	 */
-	readonly response: Response;
-  }
-
-  export type ApiFunctionParams<Params = Record<string, string>> = {
-	searchParams: {[key: string]: string | string[] };
-	params: Params;
-  }
-  // export type ApiEntityFunctionParams<Params = Record<string, string>> = ApiFunctionParams<Params> & {id: string};
-  export type ApiFunction<Params = Record<string, string>, Response = any> = (params: ApiFunctionParams<Params>) => Promise<EventResponse<Response>>;
-  export type QueryApiFunction<Params = Record<string, string>, Response = any> = (params: ApiFunctionParams<Params>) => Promise<EventResponse<Response>>;
-  export type GetApiFunction<Params = Record<string, string>, Response = any> = (params: ApiFunctionParams<Params>) => Promise<EventResponse<Response>>;
-  export type PostApiFunction<Params = Record<string, string>, RequestBody = any, Response = any> = (params: ApiFunctionParams<Params> & {body: Partial<RequestBody>}) => Promise<EventResponse<Response>>;
-  export type PutApiFunction<Params = Record<string, string>, RequestBody = any, Response = any> = (params: ApiFunctionParams<Params> & {body: Partial<RequestBody>}) => Promise<EventResponse<Response>>;
-  export type PatchApiFunction<Params = Record<string, string>, RequestBody = any, Response = any> = (params: ApiFunctionParams<Params> & {body: Partial<RequestBody>}) => Promise<EventResponse<Response>>;
-  export type DeleteApiFunction<Params = Record<string, string>, Response = any> = (params: ApiFunctionParams<Params>) => Promise<EventResponse<Response>>;
-
-
-  export type mimicCustomerMessage = (input: {
-	message: string;
-	messages?: Message[];
-	workflowFn: WorkflowFunction;
-	customer?: Customer;
-	context?: any;
-	/**
-	 * Agent or persona id
-	 */
-	persona?: string;
-
-	conversation?: Conversation;
-
-	cwd?: string;
-	src?: string;
-	mode?: 'development' | 'production';
-  }) => Promise<{
-	messages: Message[];
-	conversation: Conversation;
-	context: any;
-  }>
 }
 
 declare module '@scout9/app/testing-tools' {
@@ -540,6 +503,7 @@ declare module '@scout9/app/testing-tools' {
 declare module '@scout9/app/types' {
 	import type { z } from 'zod';
 	export const customerValueSchema: z.ZodUnion<[z.ZodBoolean, z.ZodNumber, z.ZodString]>;
+
 	export const customerSchema: z.ZodObject<{
 		firstName: z.ZodOptional<z.ZodString>;
 		lastName: z.ZodOptional<z.ZodString>;
@@ -595,6 +559,7 @@ declare module '@scout9/app/types' {
 		stripe: z.ZodOptional<z.ZodNullable<z.ZodString>>;
 		stripeDev: z.ZodOptional<z.ZodNullable<z.ZodString>>;
 	}, z.ZodUnion<[z.ZodBoolean, z.ZodNumber, z.ZodString]>, "strip">>;
+
 	export const agentBaseConfigurationSchema: z.ZodObject<{
 		deployed: z.ZodOptional<z.ZodObject<{
 			web: z.ZodOptional<z.ZodString>;
@@ -609,6 +574,7 @@ declare module '@scout9/app/types' {
 			phone?: string | undefined;
 			email?: string | undefined;
 		}>>;
+		img: z.ZodOptional<z.ZodNullable<z.ZodString>>;
 		firstName: z.ZodOptional<z.ZodString>;
 		lastName: z.ZodOptional<z.ZodString>;
 		inactive: z.ZodOptional<z.ZodBoolean>;
@@ -623,20 +589,35 @@ declare module '@scout9/app/types' {
 		excludedLocations: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 		model: z.ZodDefault<z.ZodOptional<z.ZodEnum<["Scout9", "bard", "openai"]>>>;
 		transcripts: z.ZodOptional<z.ZodArray<z.ZodArray<z.ZodObject<{
-			content: z.ZodString;
+			id: z.ZodString;
 			role: z.ZodEnum<["agent", "customer", "system"]>;
+			content: z.ZodString;
 			time: z.ZodString;
 			name: z.ZodOptional<z.ZodString>;
+			scheduled: z.ZodOptional<z.ZodString>;
+			context: z.ZodOptional<z.ZodAny>;
+			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
 		}, "strip", z.ZodTypeAny, {
 			time: string;
+			id: string;
 			content: string;
 			role: "agent" | "customer" | "system";
 			name?: string | undefined;
+			scheduled?: string | undefined;
+			context?: any;
+			intent?: string | null | undefined;
+			intentScore?: number | null | undefined;
 		}, {
 			time: string;
+			id: string;
 			content: string;
 			role: "agent" | "customer" | "system";
 			name?: string | undefined;
+			scheduled?: string | undefined;
+			context?: any;
+			intent?: string | null | undefined;
+			intentScore?: number | null | undefined;
 		}>, "many">, "many">>;
 		audios: z.ZodOptional<z.ZodArray<z.ZodAny, "many">>;
 	}, "strip", z.ZodTypeAny, {
@@ -648,6 +629,7 @@ declare module '@scout9/app/types' {
 			phone?: string | undefined;
 			email?: string | undefined;
 		} | undefined;
+		img?: string | null | undefined;
 		firstName?: string | undefined;
 		lastName?: string | undefined;
 		inactive?: boolean | undefined;
@@ -660,9 +642,14 @@ declare module '@scout9/app/types' {
 		excludedLocations?: string[] | undefined;
 		transcripts?: {
 			time: string;
+			id: string;
 			content: string;
 			role: "agent" | "customer" | "system";
 			name?: string | undefined;
+			scheduled?: string | undefined;
+			context?: any;
+			intent?: string | null | undefined;
+			intentScore?: number | null | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
 	}, {
@@ -671,6 +658,7 @@ declare module '@scout9/app/types' {
 			phone?: string | undefined;
 			email?: string | undefined;
 		} | undefined;
+		img?: string | null | undefined;
 		firstName?: string | undefined;
 		lastName?: string | undefined;
 		inactive?: boolean | undefined;
@@ -686,33 +674,55 @@ declare module '@scout9/app/types' {
 		model?: "openai" | "bard" | "Scout9" | undefined;
 		transcripts?: {
 			time: string;
+			id: string;
 			content: string;
 			role: "agent" | "customer" | "system";
 			name?: string | undefined;
+			scheduled?: string | undefined;
+			context?: any;
+			intent?: string | null | undefined;
+			intentScore?: number | null | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
 	}>;
+
 	export const agentConfigurationSchema: z.ZodObject<{
 		inactive: z.ZodOptional<z.ZodBoolean>;
+		img: z.ZodOptional<z.ZodNullable<z.ZodString>>;
 		title: z.ZodDefault<z.ZodOptional<z.ZodString>>;
 		context: z.ZodDefault<z.ZodOptional<z.ZodString>>;
 		firstName: z.ZodOptional<z.ZodString>;
 		lastName: z.ZodOptional<z.ZodString>;
 		transcripts: z.ZodOptional<z.ZodArray<z.ZodArray<z.ZodObject<{
-			content: z.ZodString;
+			id: z.ZodString;
 			role: z.ZodEnum<["agent", "customer", "system"]>;
+			content: z.ZodString;
 			time: z.ZodString;
 			name: z.ZodOptional<z.ZodString>;
+			scheduled: z.ZodOptional<z.ZodString>;
+			context: z.ZodOptional<z.ZodAny>;
+			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
 		}, "strip", z.ZodTypeAny, {
 			time: string;
+			id: string;
 			content: string;
 			role: "agent" | "customer" | "system";
 			name?: string | undefined;
+			scheduled?: string | undefined;
+			context?: any;
+			intent?: string | null | undefined;
+			intentScore?: number | null | undefined;
 		}, {
 			time: string;
+			id: string;
 			content: string;
 			role: "agent" | "customer" | "system";
 			name?: string | undefined;
+			scheduled?: string | undefined;
+			context?: any;
+			intent?: string | null | undefined;
+			intentScore?: number | null | undefined;
 		}>, "many">, "many">>;
 		audios: z.ZodOptional<z.ZodArray<z.ZodAny, "many">>;
 		includedLocations: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
@@ -743,13 +753,19 @@ declare module '@scout9/app/types' {
 		context: string;
 		model: "openai" | "bard" | "Scout9";
 		inactive?: boolean | undefined;
+		img?: string | null | undefined;
 		firstName?: string | undefined;
 		lastName?: string | undefined;
 		transcripts?: {
 			time: string;
+			id: string;
 			content: string;
 			role: "agent" | "customer" | "system";
 			name?: string | undefined;
+			scheduled?: string | undefined;
+			context?: any;
+			intent?: string | null | undefined;
+			intentScore?: number | null | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
 		includedLocations?: string[] | undefined;
@@ -767,15 +783,21 @@ declare module '@scout9/app/types' {
 	}, {
 		id: string;
 		inactive?: boolean | undefined;
+		img?: string | null | undefined;
 		title?: string | undefined;
 		context?: string | undefined;
 		firstName?: string | undefined;
 		lastName?: string | undefined;
 		transcripts?: {
 			time: string;
+			id: string;
 			content: string;
 			role: "agent" | "customer" | "system";
 			name?: string | undefined;
+			scheduled?: string | undefined;
+			context?: any;
+			intent?: string | null | undefined;
+			intentScore?: number | null | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
 		includedLocations?: string[] | undefined;
@@ -792,27 +814,44 @@ declare module '@scout9/app/types' {
 		forwardEmail?: string | undefined;
 		forwardPhone?: string | undefined;
 	}>;
+
 	export const agentsConfigurationSchema: z.ZodArray<z.ZodObject<{
 		inactive: z.ZodOptional<z.ZodBoolean>;
+		img: z.ZodOptional<z.ZodNullable<z.ZodString>>;
 		title: z.ZodDefault<z.ZodOptional<z.ZodString>>;
 		context: z.ZodDefault<z.ZodOptional<z.ZodString>>;
 		firstName: z.ZodOptional<z.ZodString>;
 		lastName: z.ZodOptional<z.ZodString>;
 		transcripts: z.ZodOptional<z.ZodArray<z.ZodArray<z.ZodObject<{
-			content: z.ZodString;
+			id: z.ZodString;
 			role: z.ZodEnum<["agent", "customer", "system"]>;
+			content: z.ZodString;
 			time: z.ZodString;
 			name: z.ZodOptional<z.ZodString>;
+			scheduled: z.ZodOptional<z.ZodString>;
+			context: z.ZodOptional<z.ZodAny>;
+			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
 		}, "strip", z.ZodTypeAny, {
 			time: string;
+			id: string;
 			content: string;
 			role: "agent" | "customer" | "system";
 			name?: string | undefined;
+			scheduled?: string | undefined;
+			context?: any;
+			intent?: string | null | undefined;
+			intentScore?: number | null | undefined;
 		}, {
 			time: string;
+			id: string;
 			content: string;
 			role: "agent" | "customer" | "system";
 			name?: string | undefined;
+			scheduled?: string | undefined;
+			context?: any;
+			intent?: string | null | undefined;
+			intentScore?: number | null | undefined;
 		}>, "many">, "many">>;
 		audios: z.ZodOptional<z.ZodArray<z.ZodAny, "many">>;
 		includedLocations: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
@@ -843,13 +882,19 @@ declare module '@scout9/app/types' {
 		context: string;
 		model: "openai" | "bard" | "Scout9";
 		inactive?: boolean | undefined;
+		img?: string | null | undefined;
 		firstName?: string | undefined;
 		lastName?: string | undefined;
 		transcripts?: {
 			time: string;
+			id: string;
 			content: string;
 			role: "agent" | "customer" | "system";
 			name?: string | undefined;
+			scheduled?: string | undefined;
+			context?: any;
+			intent?: string | null | undefined;
+			intentScore?: number | null | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
 		includedLocations?: string[] | undefined;
@@ -867,15 +912,21 @@ declare module '@scout9/app/types' {
 	}, {
 		id: string;
 		inactive?: boolean | undefined;
+		img?: string | null | undefined;
 		title?: string | undefined;
 		context?: string | undefined;
 		firstName?: string | undefined;
 		lastName?: string | undefined;
 		transcripts?: {
 			time: string;
+			id: string;
 			content: string;
 			role: "agent" | "customer" | "system";
 			name?: string | undefined;
+			scheduled?: string | undefined;
+			context?: any;
+			intent?: string | null | undefined;
+			intentScore?: number | null | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
 		includedLocations?: string[] | undefined;
@@ -892,6 +943,7 @@ declare module '@scout9/app/types' {
 		forwardEmail?: string | undefined;
 		forwardPhone?: string | undefined;
 	}>, "many">;
+
 	export const agentsBaseConfigurationSchema: z.ZodArray<z.ZodObject<{
 		deployed: z.ZodOptional<z.ZodObject<{
 			web: z.ZodOptional<z.ZodString>;
@@ -906,6 +958,7 @@ declare module '@scout9/app/types' {
 			phone?: string | undefined;
 			email?: string | undefined;
 		}>>;
+		img: z.ZodOptional<z.ZodNullable<z.ZodString>>;
 		firstName: z.ZodOptional<z.ZodString>;
 		lastName: z.ZodOptional<z.ZodString>;
 		inactive: z.ZodOptional<z.ZodBoolean>;
@@ -920,20 +973,35 @@ declare module '@scout9/app/types' {
 		excludedLocations: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 		model: z.ZodDefault<z.ZodOptional<z.ZodEnum<["Scout9", "bard", "openai"]>>>;
 		transcripts: z.ZodOptional<z.ZodArray<z.ZodArray<z.ZodObject<{
-			content: z.ZodString;
+			id: z.ZodString;
 			role: z.ZodEnum<["agent", "customer", "system"]>;
+			content: z.ZodString;
 			time: z.ZodString;
 			name: z.ZodOptional<z.ZodString>;
+			scheduled: z.ZodOptional<z.ZodString>;
+			context: z.ZodOptional<z.ZodAny>;
+			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
 		}, "strip", z.ZodTypeAny, {
 			time: string;
+			id: string;
 			content: string;
 			role: "agent" | "customer" | "system";
 			name?: string | undefined;
+			scheduled?: string | undefined;
+			context?: any;
+			intent?: string | null | undefined;
+			intentScore?: number | null | undefined;
 		}, {
 			time: string;
+			id: string;
 			content: string;
 			role: "agent" | "customer" | "system";
 			name?: string | undefined;
+			scheduled?: string | undefined;
+			context?: any;
+			intent?: string | null | undefined;
+			intentScore?: number | null | undefined;
 		}>, "many">, "many">>;
 		audios: z.ZodOptional<z.ZodArray<z.ZodAny, "many">>;
 	}, "strip", z.ZodTypeAny, {
@@ -945,6 +1013,7 @@ declare module '@scout9/app/types' {
 			phone?: string | undefined;
 			email?: string | undefined;
 		} | undefined;
+		img?: string | null | undefined;
 		firstName?: string | undefined;
 		lastName?: string | undefined;
 		inactive?: boolean | undefined;
@@ -957,9 +1026,14 @@ declare module '@scout9/app/types' {
 		excludedLocations?: string[] | undefined;
 		transcripts?: {
 			time: string;
+			id: string;
 			content: string;
 			role: "agent" | "customer" | "system";
 			name?: string | undefined;
+			scheduled?: string | undefined;
+			context?: any;
+			intent?: string | null | undefined;
+			intentScore?: number | null | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
 	}, {
@@ -968,6 +1042,7 @@ declare module '@scout9/app/types' {
 			phone?: string | undefined;
 			email?: string | undefined;
 		} | undefined;
+		img?: string | null | undefined;
 		firstName?: string | undefined;
 		lastName?: string | undefined;
 		inactive?: boolean | undefined;
@@ -983,25 +1058,328 @@ declare module '@scout9/app/types' {
 		model?: "openai" | "bard" | "Scout9" | undefined;
 		transcripts?: {
 			time: string;
+			id: string;
 			content: string;
 			role: "agent" | "customer" | "system";
 			name?: string | undefined;
+			scheduled?: string | undefined;
+			context?: any;
+			intent?: string | null | undefined;
+			intentScore?: number | null | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
 	}>, "many">;
+	export type ICustomerValue = import('zod').infer<typeof customerValueSchema>;
+	export type ICustomer = import('zod').infer<typeof customerSchema>;
+	export type IAgentBase = import('zod').infer<typeof agentBaseConfigurationSchema>;
+	export type IAgent = import('zod').infer<typeof agentBaseConfigurationSchema>;
+	export type IPersona = import('zod').infer<typeof agentBaseConfigurationSchema>;
+	export type IAgentsConfiguration = import('zod').infer<typeof agentsConfigurationSchema>;
+	export type IAgentsBaseConfiguration = import('zod').infer<typeof agentsBaseConfigurationSchema>;
 	/**
 	 * Utility runtime class used to guide event output
-	 */
-	export class EventResponse {
-		static json(body: any, options: any): EventResponse;
-		constructor(body: any, init: any);
-		body: any;
-		init: any;
+	 * */
+	export class EventResponse<T> {
+		/**
+		 * Create a new EventResponse instance with a JSON body.
+		 * @param body - The body of the response.
+		 * @param options - Additional options for the response.
+		 * @returns A new EventResponse instance.
+		 */
+		static json<T_1>(body: T_1, options?: ResponseInit | undefined): EventResponse<T_1>;
+		/**
+		 * Create an EventResponse.
+		 * @param body - The body of the response.
+		 * @param init - Additional options for the response.
+		 * @throws {Error} If the body is not a valid object.
+		 */
+		constructor(body: T, init?: ResponseInit | undefined);
+		
+		private body;
+		
+		private init;
+		/**
+		 * Get the response object.
+		 * @returns The response object.
+		 */
 		get response(): Response;
-		get data(): any;
+		/**
+		 * Get the data of the response.
+		 * @returns The body of the response.
+		 */
+		get data(): T;
 	}
-	export const Scout9ProjectBuildConfigSchema: z.ZodObject<{
+
+	export const eventResponseSchema: z.ZodObject<{
+		body: z.ZodAny;
+		init: z.ZodOptional<z.ZodObject<{
+			status: z.ZodOptional<z.ZodNumber>;
+			statusText: z.ZodOptional<z.ZodString>;
+			headers: z.ZodOptional<z.ZodAny>;
+		}, "strip", z.ZodTypeAny, {
+			status?: number | undefined;
+			statusText?: string | undefined;
+			headers?: any;
+		}, {
+			status?: number | undefined;
+			statusText?: string | undefined;
+			headers?: any;
+		}>>;
+	}, "strip", z.ZodTypeAny, {
+		body?: any;
+		init?: {
+			status?: number | undefined;
+			statusText?: string | undefined;
+			headers?: any;
+		} | undefined;
+	}, {
+		body?: any;
+		init?: {
+			status?: number | undefined;
+			statusText?: string | undefined;
+			headers?: any;
+		} | undefined;
+	}>;
+	export type IEventResponse<T> = {
+		/**
+		 * - The body of the response.
+		 */
+		body: T;
+		/**
+		 * - Additional options for the response.
+		 */
+		init?: ResponseInit | undefined;
+		/**
+		 * - The response object.
+		 */
+		response: Response;
+		/**
+		 * - The body of the response.
+		 */
+		data: T;
+	};
+	/**
+	 * Represents the configuration provided in src/index.{js | ts} in a project
+	 * 
+	 */
+	export const Scout9ProjectConfigSchema: z.ZodObject<{
+		/**
+		 * Tag to reference this application
+		 * @defaut your local package.json name + version, or scout9-app-v1.0.0
+		 */
 		tag: z.ZodOptional<z.ZodString>;
+		llm: z.ZodUnion<[z.ZodObject<{
+			engine: z.ZodLiteral<"openai">;
+			model: z.ZodUnion<[z.ZodLiteral<"gpt-4-1106-preview">, z.ZodLiteral<"gpt-4-vision-preview">, z.ZodLiteral<"gpt-4">, z.ZodLiteral<"gpt-4-0314">, z.ZodLiteral<"gpt-4-0613">, z.ZodLiteral<"gpt-4-32k">, z.ZodLiteral<"gpt-4-32k-0314">, z.ZodLiteral<"gpt-4-32k-0613">, z.ZodLiteral<"gpt-3.5-turbo">, z.ZodLiteral<"gpt-3.5-turbo-16k">, z.ZodLiteral<"gpt-3.5-turbo-0301">, z.ZodLiteral<"gpt-3.5-turbo-0613">, z.ZodLiteral<"gpt-3.5-turbo-16k-0613">, z.ZodString]>;
+		}, "strip", z.ZodTypeAny, {
+			model: string;
+			engine: "openai";
+		}, {
+			model: string;
+			engine: "openai";
+		}>, z.ZodObject<{
+			engine: z.ZodLiteral<"llama">;
+			model: z.ZodString;
+		}, "strip", z.ZodTypeAny, {
+			model: string;
+			engine: "llama";
+		}, {
+			model: string;
+			engine: "llama";
+		}>, z.ZodObject<{
+			engine: z.ZodLiteral<"bard">;
+			model: z.ZodString;
+		}, "strip", z.ZodTypeAny, {
+			model: string;
+			engine: "bard";
+		}, {
+			model: string;
+			engine: "bard";
+		}>]>;
+		/**
+		 * Configure personal model transformer (PMT) settings to align auto replies the agent's tone
+		 */
+		pmt: z.ZodObject<{
+			engine: z.ZodLiteral<"scout9">;
+			model: z.ZodString;
+		}, "strip", z.ZodTypeAny, {
+			model: string;
+			engine: "scout9";
+		}, {
+			model: string;
+			engine: "scout9";
+		}>;
+		/**
+		 * Determines the max auto replies without further conversation progression (defined by new context data gathered)
+		 * before the conversation is locked and requires manual intervention
+		 * @default 3
+		 */
+		maxLockAttempts: z.ZodOptional<z.ZodDefault<z.ZodNumber>>;
+		initialContext: z.ZodArray<z.ZodString, "many">;
+		organization: z.ZodOptional<z.ZodObject<{
+			name: z.ZodString;
+			description: z.ZodString;
+			dashboard: z.ZodOptional<z.ZodString>;
+			logo: z.ZodOptional<z.ZodString>;
+			icon: z.ZodOptional<z.ZodString>;
+			logos: z.ZodOptional<z.ZodString>;
+			website: z.ZodOptional<z.ZodString>;
+			email: z.ZodOptional<z.ZodString>;
+			phone: z.ZodOptional<z.ZodString>;
+		}, "strip", z.ZodTypeAny, {
+			name: string;
+			description: string;
+			dashboard?: string | undefined;
+			logo?: string | undefined;
+			icon?: string | undefined;
+			logos?: string | undefined;
+			website?: string | undefined;
+			email?: string | undefined;
+			phone?: string | undefined;
+		}, {
+			name: string;
+			description: string;
+			dashboard?: string | undefined;
+			logo?: string | undefined;
+			icon?: string | undefined;
+			logos?: string | undefined;
+			website?: string | undefined;
+			email?: string | undefined;
+			phone?: string | undefined;
+		}>>;
+	}, "strip", z.ZodTypeAny, {
+		initialContext: string[];
+		llm: {
+			model: string;
+			engine: "openai";
+		} | {
+			model: string;
+			engine: "llama";
+		} | {
+			model: string;
+			engine: "bard";
+		};
+		pmt: {
+			model: string;
+			engine: "scout9";
+		};
+		tag?: string | undefined;
+		maxLockAttempts?: number | undefined;
+		organization?: {
+			name: string;
+			description: string;
+			dashboard?: string | undefined;
+			logo?: string | undefined;
+			icon?: string | undefined;
+			logos?: string | undefined;
+			website?: string | undefined;
+			email?: string | undefined;
+			phone?: string | undefined;
+		} | undefined;
+	}, {
+		initialContext: string[];
+		llm: {
+			model: string;
+			engine: "openai";
+		} | {
+			model: string;
+			engine: "llama";
+		} | {
+			model: string;
+			engine: "bard";
+		};
+		pmt: {
+			model: string;
+			engine: "scout9";
+		};
+		tag?: string | undefined;
+		maxLockAttempts?: number | undefined;
+		organization?: {
+			name: string;
+			description: string;
+			dashboard?: string | undefined;
+			logo?: string | undefined;
+			icon?: string | undefined;
+			logos?: string | undefined;
+			website?: string | undefined;
+			email?: string | undefined;
+			phone?: string | undefined;
+		} | undefined;
+	}>;
+
+	export const Scout9ProjectBuildConfigSchema: z.ZodObject<{
+		organization: z.ZodOptional<z.ZodObject<{
+			name: z.ZodString;
+			description: z.ZodString;
+			dashboard: z.ZodOptional<z.ZodString>;
+			logo: z.ZodOptional<z.ZodString>;
+			icon: z.ZodOptional<z.ZodString>;
+			logos: z.ZodOptional<z.ZodString>;
+			website: z.ZodOptional<z.ZodString>;
+			email: z.ZodOptional<z.ZodString>;
+			phone: z.ZodOptional<z.ZodString>;
+		}, "strip", z.ZodTypeAny, {
+			name: string;
+			description: string;
+			dashboard?: string | undefined;
+			logo?: string | undefined;
+			icon?: string | undefined;
+			logos?: string | undefined;
+			website?: string | undefined;
+			email?: string | undefined;
+			phone?: string | undefined;
+		}, {
+			name: string;
+			description: string;
+			dashboard?: string | undefined;
+			logo?: string | undefined;
+			icon?: string | undefined;
+			logos?: string | undefined;
+			website?: string | undefined;
+			email?: string | undefined;
+			phone?: string | undefined;
+		}>>;
+		initialContext: z.ZodArray<z.ZodString, "many">;
+		tag: z.ZodOptional<z.ZodString>;
+		llm: z.ZodUnion<[z.ZodObject<{
+			engine: z.ZodLiteral<"openai">;
+			model: z.ZodUnion<[z.ZodLiteral<"gpt-4-1106-preview">, z.ZodLiteral<"gpt-4-vision-preview">, z.ZodLiteral<"gpt-4">, z.ZodLiteral<"gpt-4-0314">, z.ZodLiteral<"gpt-4-0613">, z.ZodLiteral<"gpt-4-32k">, z.ZodLiteral<"gpt-4-32k-0314">, z.ZodLiteral<"gpt-4-32k-0613">, z.ZodLiteral<"gpt-3.5-turbo">, z.ZodLiteral<"gpt-3.5-turbo-16k">, z.ZodLiteral<"gpt-3.5-turbo-0301">, z.ZodLiteral<"gpt-3.5-turbo-0613">, z.ZodLiteral<"gpt-3.5-turbo-16k-0613">, z.ZodString]>;
+		}, "strip", z.ZodTypeAny, {
+			model: string;
+			engine: "openai";
+		}, {
+			model: string;
+			engine: "openai";
+		}>, z.ZodObject<{
+			engine: z.ZodLiteral<"llama">;
+			model: z.ZodString;
+		}, "strip", z.ZodTypeAny, {
+			model: string;
+			engine: "llama";
+		}, {
+			model: string;
+			engine: "llama";
+		}>, z.ZodObject<{
+			engine: z.ZodLiteral<"bard">;
+			model: z.ZodString;
+		}, "strip", z.ZodTypeAny, {
+			model: string;
+			engine: "bard";
+		}, {
+			model: string;
+			engine: "bard";
+		}>]>;
+		pmt: z.ZodObject<{
+			engine: z.ZodLiteral<"scout9">;
+			model: z.ZodString;
+		}, "strip", z.ZodTypeAny, {
+			model: string;
+			engine: "scout9";
+		}, {
+			model: string;
+			engine: "scout9";
+		}>;
+		maxLockAttempts: z.ZodOptional<z.ZodDefault<z.ZodNumber>>;
 		agents: z.ZodArray<z.ZodObject<{
 			deployed: z.ZodOptional<z.ZodObject<{
 				web: z.ZodOptional<z.ZodString>;
@@ -1016,6 +1394,7 @@ declare module '@scout9/app/types' {
 				phone?: string | undefined;
 				email?: string | undefined;
 			}>>;
+			img: z.ZodOptional<z.ZodNullable<z.ZodString>>;
 			firstName: z.ZodOptional<z.ZodString>;
 			lastName: z.ZodOptional<z.ZodString>;
 			inactive: z.ZodOptional<z.ZodBoolean>;
@@ -1030,20 +1409,35 @@ declare module '@scout9/app/types' {
 			excludedLocations: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 			model: z.ZodDefault<z.ZodOptional<z.ZodEnum<["Scout9", "bard", "openai"]>>>;
 			transcripts: z.ZodOptional<z.ZodArray<z.ZodArray<z.ZodObject<{
-				content: z.ZodString;
+				id: z.ZodString;
 				role: z.ZodEnum<["agent", "customer", "system"]>;
+				content: z.ZodString;
 				time: z.ZodString;
 				name: z.ZodOptional<z.ZodString>;
+				scheduled: z.ZodOptional<z.ZodString>;
+				context: z.ZodOptional<z.ZodAny>;
+				intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+				intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
 			}, "strip", z.ZodTypeAny, {
 				time: string;
+				id: string;
 				content: string;
 				role: "agent" | "customer" | "system";
 				name?: string | undefined;
+				scheduled?: string | undefined;
+				context?: any;
+				intent?: string | null | undefined;
+				intentScore?: number | null | undefined;
 			}, {
 				time: string;
+				id: string;
 				content: string;
 				role: "agent" | "customer" | "system";
 				name?: string | undefined;
+				scheduled?: string | undefined;
+				context?: any;
+				intent?: string | null | undefined;
+				intentScore?: number | null | undefined;
 			}>, "many">, "many">>;
 			audios: z.ZodOptional<z.ZodArray<z.ZodAny, "many">>;
 		}, "strip", z.ZodTypeAny, {
@@ -1055,6 +1449,7 @@ declare module '@scout9/app/types' {
 				phone?: string | undefined;
 				email?: string | undefined;
 			} | undefined;
+			img?: string | null | undefined;
 			firstName?: string | undefined;
 			lastName?: string | undefined;
 			inactive?: boolean | undefined;
@@ -1067,9 +1462,14 @@ declare module '@scout9/app/types' {
 			excludedLocations?: string[] | undefined;
 			transcripts?: {
 				time: string;
+				id: string;
 				content: string;
 				role: "agent" | "customer" | "system";
 				name?: string | undefined;
+				scheduled?: string | undefined;
+				context?: any;
+				intent?: string | null | undefined;
+				intentScore?: number | null | undefined;
 			}[][] | undefined;
 			audios?: any[] | undefined;
 		}, {
@@ -1078,6 +1478,7 @@ declare module '@scout9/app/types' {
 				phone?: string | undefined;
 				email?: string | undefined;
 			} | undefined;
+			img?: string | null | undefined;
 			firstName?: string | undefined;
 			lastName?: string | undefined;
 			inactive?: boolean | undefined;
@@ -1093,9 +1494,14 @@ declare module '@scout9/app/types' {
 			model?: "openai" | "bard" | "Scout9" | undefined;
 			transcripts?: {
 				time: string;
+				id: string;
 				content: string;
 				role: "agent" | "customer" | "system";
 				name?: string | undefined;
+				scheduled?: string | undefined;
+				context?: any;
+				intent?: string | null | undefined;
+				intentScore?: number | null | undefined;
 			}[][] | undefined;
 			audios?: any[] | undefined;
 		}>, "many">;
@@ -1296,77 +1702,6 @@ declare module '@scout9/app/types' {
 			entity: string;
 			entities: string[];
 		}>, "many">;
-		llm: z.ZodUnion<[z.ZodObject<{
-			engine: z.ZodLiteral<"openai">;
-			model: z.ZodUnion<[z.ZodLiteral<"gpt-4-1106-preview">, z.ZodLiteral<"gpt-4-vision-preview">, z.ZodLiteral<"gpt-4">, z.ZodLiteral<"gpt-4-0314">, z.ZodLiteral<"gpt-4-0613">, z.ZodLiteral<"gpt-4-32k">, z.ZodLiteral<"gpt-4-32k-0314">, z.ZodLiteral<"gpt-4-32k-0613">, z.ZodLiteral<"gpt-3.5-turbo">, z.ZodLiteral<"gpt-3.5-turbo-16k">, z.ZodLiteral<"gpt-3.5-turbo-0301">, z.ZodLiteral<"gpt-3.5-turbo-0613">, z.ZodLiteral<"gpt-3.5-turbo-16k-0613">, z.ZodString]>;
-		}, "strip", z.ZodTypeAny, {
-			model: string;
-			engine: "openai";
-		}, {
-			model: string;
-			engine: "openai";
-		}>, z.ZodObject<{
-			engine: z.ZodLiteral<"llama">;
-			model: z.ZodString;
-		}, "strip", z.ZodTypeAny, {
-			model: string;
-			engine: "llama";
-		}, {
-			model: string;
-			engine: "llama";
-		}>, z.ZodObject<{
-			engine: z.ZodLiteral<"bard">;
-			model: z.ZodString;
-		}, "strip", z.ZodTypeAny, {
-			model: string;
-			engine: "bard";
-		}, {
-			model: string;
-			engine: "bard";
-		}>]>;
-		pmt: z.ZodObject<{
-			engine: z.ZodLiteral<"scout9">;
-			model: z.ZodString;
-		}, "strip", z.ZodTypeAny, {
-			model: string;
-			engine: "scout9";
-		}, {
-			model: string;
-			engine: "scout9";
-		}>;
-		initialContext: z.ZodArray<z.ZodString, "many">;
-		maxLockAttempts: z.ZodOptional<z.ZodNumber>;
-		organization: z.ZodOptional<z.ZodObject<{
-			name: z.ZodString;
-			description: z.ZodString;
-			dashboard: z.ZodOptional<z.ZodString>;
-			logo: z.ZodOptional<z.ZodString>;
-			icon: z.ZodOptional<z.ZodString>;
-			logos: z.ZodOptional<z.ZodString>;
-			website: z.ZodOptional<z.ZodString>;
-			email: z.ZodOptional<z.ZodString>;
-			phone: z.ZodOptional<z.ZodString>;
-		}, "strip", z.ZodTypeAny, {
-			name: string;
-			description: string;
-			dashboard?: string | undefined;
-			logo?: string | undefined;
-			icon?: string | undefined;
-			logos?: string | undefined;
-			website?: string | undefined;
-			email?: string | undefined;
-			phone?: string | undefined;
-		}, {
-			name: string;
-			description: string;
-			dashboard?: string | undefined;
-			logo?: string | undefined;
-			icon?: string | undefined;
-			logos?: string | undefined;
-			website?: string | undefined;
-			email?: string | undefined;
-			phone?: string | undefined;
-		}>>;
 	}, "strip", z.ZodTypeAny, {
 		agents: {
 			title: string;
@@ -1377,6 +1712,7 @@ declare module '@scout9/app/types' {
 				phone?: string | undefined;
 				email?: string | undefined;
 			} | undefined;
+			img?: string | null | undefined;
 			firstName?: string | undefined;
 			lastName?: string | undefined;
 			inactive?: boolean | undefined;
@@ -1389,9 +1725,14 @@ declare module '@scout9/app/types' {
 			excludedLocations?: string[] | undefined;
 			transcripts?: {
 				time: string;
+				id: string;
 				content: string;
 				role: "agent" | "customer" | "system";
 				name?: string | undefined;
+				scheduled?: string | undefined;
+				context?: any;
+				intent?: string | null | undefined;
+				intentScore?: number | null | undefined;
 			}[][] | undefined;
 			audios?: any[] | undefined;
 		}[];
@@ -1425,10 +1766,6 @@ declare module '@scout9/app/types' {
 			}[] | undefined;
 		}[];
 		initialContext: string[];
-		workflows: {
-			entity: string;
-			entities: string[];
-		}[];
 		llm: {
 			model: string;
 			engine: "openai";
@@ -1443,8 +1780,10 @@ declare module '@scout9/app/types' {
 			model: string;
 			engine: "scout9";
 		};
-		tag?: string | undefined;
-		maxLockAttempts?: number | undefined;
+		workflows: {
+			entity: string;
+			entities: string[];
+		}[];
 		organization?: {
 			name: string;
 			description: string;
@@ -1456,6 +1795,8 @@ declare module '@scout9/app/types' {
 			email?: string | undefined;
 			phone?: string | undefined;
 		} | undefined;
+		tag?: string | undefined;
+		maxLockAttempts?: number | undefined;
 	}, {
 		agents: {
 			deployed?: {
@@ -1463,6 +1804,7 @@ declare module '@scout9/app/types' {
 				phone?: string | undefined;
 				email?: string | undefined;
 			} | undefined;
+			img?: string | null | undefined;
 			firstName?: string | undefined;
 			lastName?: string | undefined;
 			inactive?: boolean | undefined;
@@ -1478,9 +1820,14 @@ declare module '@scout9/app/types' {
 			model?: "openai" | "bard" | "Scout9" | undefined;
 			transcripts?: {
 				time: string;
+				id: string;
 				content: string;
 				role: "agent" | "customer" | "system";
 				name?: string | undefined;
+				scheduled?: string | undefined;
+				context?: any;
+				intent?: string | null | undefined;
+				intentScore?: number | null | undefined;
 			}[][] | undefined;
 			audios?: any[] | undefined;
 		}[];
@@ -1514,10 +1861,6 @@ declare module '@scout9/app/types' {
 			}[] | undefined;
 		}[];
 		initialContext: string[];
-		workflows: {
-			entity: string;
-			entities: string[];
-		}[];
 		llm: {
 			model: string;
 			engine: "openai";
@@ -1532,8 +1875,10 @@ declare module '@scout9/app/types' {
 			model: string;
 			engine: "scout9";
 		};
-		tag?: string | undefined;
-		maxLockAttempts?: number | undefined;
+		workflows: {
+			entity: string;
+			entities: string[];
+		}[];
 		organization?: {
 			name: string;
 			description: string;
@@ -1545,29 +1890,14 @@ declare module '@scout9/app/types' {
 			email?: string | undefined;
 			phone?: string | undefined;
 		} | undefined;
+		tag?: string | undefined;
+		maxLockAttempts?: number | undefined;
 	}>;
-	export const _entityApiConfigurationSchema: z.ZodObject<{
-		GET: z.ZodOptional<z.ZodBoolean>;
-		UPDATE: z.ZodOptional<z.ZodBoolean>;
-		QUERY: z.ZodOptional<z.ZodBoolean>;
-		PUT: z.ZodOptional<z.ZodBoolean>;
-		PATCH: z.ZodOptional<z.ZodBoolean>;
-		DELETE: z.ZodOptional<z.ZodBoolean>;
-	}, "strip", z.ZodTypeAny, {
-		GET?: boolean | undefined;
-		UPDATE?: boolean | undefined;
-		QUERY?: boolean | undefined;
-		PUT?: boolean | undefined;
-		PATCH?: boolean | undefined;
-		DELETE?: boolean | undefined;
-	}, {
-		GET?: boolean | undefined;
-		UPDATE?: boolean | undefined;
-		QUERY?: boolean | undefined;
-		PUT?: boolean | undefined;
-		PATCH?: boolean | undefined;
-		DELETE?: boolean | undefined;
-	}>;
+	/**
+	 * Represents the configuration provided in src/index.{js | ts} in a project
+	 */
+	export type IScout9ProjectConfig = import('zod').infer<typeof Scout9ProjectConfigSchema>;
+	export type IScout9ProjectBuildConfig = import('zod').infer<typeof Scout9ProjectBuildConfigSchema>;
 	export const entityApiConfigurationSchema: z.ZodNullable<z.ZodObject<{
 		GET: z.ZodOptional<z.ZodBoolean>;
 		UPDATE: z.ZodOptional<z.ZodBoolean>;
@@ -1590,6 +1920,7 @@ declare module '@scout9/app/types' {
 		PATCH?: boolean | undefined;
 		DELETE?: boolean | undefined;
 	}>>;
+
 	export const entityConfigurationSchema: z.ZodEffects<z.ZodObject<{
 		id: z.ZodOptional<z.ZodString>;
 		definitions: z.ZodOptional<z.ZodArray<z.ZodObject<{
@@ -1713,6 +2044,7 @@ declare module '@scout9/app/types' {
 			};
 		}[] | undefined;
 	}>;
+
 	export const entitiesRootConfigurationSchema: z.ZodArray<z.ZodEffects<z.ZodObject<{
 		id: z.ZodOptional<z.ZodString>;
 		definitions: z.ZodOptional<z.ZodArray<z.ZodObject<{
@@ -1836,6 +2168,10 @@ declare module '@scout9/app/types' {
 			};
 		}[] | undefined;
 	}>, "many">;
+	/**
+	 * @TODO why type extend not valid?
+	 * 
+	 */
 	export const entityRootProjectConfigurationSchema: z.ZodEffects<z.ZodObject<{
 		id: z.ZodOptional<z.ZodString>;
 		training: z.ZodOptional<z.ZodArray<z.ZodObject<{
@@ -2023,6 +2359,7 @@ declare module '@scout9/app/types' {
 			utterance?: string | undefined;
 		}[] | undefined;
 	}>;
+
 	export const entitiesRootProjectConfigurationSchema: z.ZodArray<z.ZodEffects<z.ZodObject<{
 		id: z.ZodOptional<z.ZodString>;
 		training: z.ZodOptional<z.ZodArray<z.ZodObject<{
@@ -2210,22 +2547,43 @@ declare module '@scout9/app/types' {
 			utterance?: string | undefined;
 		}[] | undefined;
 	}>, "many">;
+	export type IEntityApiConfiguration = import('zod').infer<typeof entityApiConfigurationSchema>;
+	export type IEntityConfiguration = import('zod').infer<typeof entityConfigurationSchema>;
+	export type IEntitiesRootConfiguration = import('zod').infer<typeof entitiesRootConfigurationSchema>;
+	export type IEntityRootProjectConfiguration = import('zod').infer<typeof entityRootProjectConfigurationSchema>;
+	export type IEntitiesRootProjectConfiguration = import('zod').infer<typeof entitiesRootProjectConfigurationSchema>;
 	export const MessageSchema: z.ZodObject<{
-		content: z.ZodString;
+		id: z.ZodString;
 		role: z.ZodEnum<["agent", "customer", "system"]>;
+		content: z.ZodString;
 		time: z.ZodString;
 		name: z.ZodOptional<z.ZodString>;
+		scheduled: z.ZodOptional<z.ZodString>;
+		context: z.ZodOptional<z.ZodAny>;
+		intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+		intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
 	}, "strip", z.ZodTypeAny, {
 		time: string;
+		id: string;
 		content: string;
 		role: "agent" | "customer" | "system";
 		name?: string | undefined;
+		scheduled?: string | undefined;
+		context?: any;
+		intent?: string | null | undefined;
+		intentScore?: number | null | undefined;
 	}, {
 		time: string;
+		id: string;
 		content: string;
 		role: "agent" | "customer" | "system";
 		name?: string | undefined;
+		scheduled?: string | undefined;
+		context?: any;
+		intent?: string | null | undefined;
+		intentScore?: number | null | undefined;
 	}>;
+	export type IMessage = import('zod').infer<typeof MessageSchema>;
 	export const WorkflowConfigurationSchema: z.ZodObject<{
 		entities: z.ZodArray<z.ZodString, "many">;
 		entity: z.ZodString;
@@ -2236,6 +2594,7 @@ declare module '@scout9/app/types' {
 		entity: string;
 		entities: string[];
 	}>;
+
 	export const WorkflowsConfigurationSchema: z.ZodArray<z.ZodObject<{
 		entities: z.ZodArray<z.ZodString, "many">;
 		entity: z.ZodString;
@@ -2246,6 +2605,7 @@ declare module '@scout9/app/types' {
 		entity: string;
 		entities: string[];
 	}>, "many">;
+
 	export const ConversationSchema: z.ZodObject<{
 		$agent: z.ZodString;
 		$customer: z.ZodString;
@@ -2261,6 +2621,14 @@ declare module '@scout9/app/types' {
 			subject?: string | undefined;
 			platformEmailThreadId?: string | undefined;
 		}>>;
+		locked: z.ZodNullable<z.ZodOptional<z.ZodBoolean>>;
+		lockedReason: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+		lockAttempts: z.ZodNullable<z.ZodOptional<z.ZodNumber>>;
+		forwardedTo: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+		forwarded: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+		forwardNote: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+		intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+		intentScore: z.ZodNullable<z.ZodOptional<z.ZodNumber>>;
 	}, "strip", z.ZodTypeAny, {
 		environment: "email" | "phone" | "web";
 		$agent: string;
@@ -2270,6 +2638,14 @@ declare module '@scout9/app/types' {
 			subject?: string | undefined;
 			platformEmailThreadId?: string | undefined;
 		} | undefined;
+		locked?: boolean | null | undefined;
+		lockedReason?: string | null | undefined;
+		lockAttempts?: number | null | undefined;
+		forwardedTo?: string | null | undefined;
+		forwarded?: string | null | undefined;
+		forwardNote?: string | null | undefined;
+		intent?: string | null | undefined;
+		intentScore?: number | null | undefined;
 	}, {
 		environment: "email" | "phone" | "web";
 		$agent: string;
@@ -2279,36 +2655,61 @@ declare module '@scout9/app/types' {
 			subject?: string | undefined;
 			platformEmailThreadId?: string | undefined;
 		} | undefined;
+		locked?: boolean | null | undefined;
+		lockedReason?: string | null | undefined;
+		lockAttempts?: number | null | undefined;
+		forwardedTo?: string | null | undefined;
+		forwarded?: string | null | undefined;
+		forwardNote?: string | null | undefined;
+		intent?: string | null | undefined;
+		intentScore?: number | null | undefined;
 	}>;
+
 	export const IntentWorkflowEventSchema: z.ZodObject<{
 		current: z.ZodNullable<z.ZodString>;
 		flow: z.ZodArray<z.ZodString, "many">;
 		initial: z.ZodNullable<z.ZodString>;
 	}, "strip", z.ZodTypeAny, {
 		current: string | null;
-		initial: string | null;
 		flow: string[];
+		initial: string | null;
 	}, {
 		current: string | null;
-		initial: string | null;
 		flow: string[];
+		initial: string | null;
 	}>;
+
 	export const WorkflowEventSchema: z.ZodObject<{
 		messages: z.ZodArray<z.ZodObject<{
-			content: z.ZodString;
+			id: z.ZodString;
 			role: z.ZodEnum<["agent", "customer", "system"]>;
+			content: z.ZodString;
 			time: z.ZodString;
 			name: z.ZodOptional<z.ZodString>;
+			scheduled: z.ZodOptional<z.ZodString>;
+			context: z.ZodOptional<z.ZodAny>;
+			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
 		}, "strip", z.ZodTypeAny, {
 			time: string;
+			id: string;
 			content: string;
 			role: "agent" | "customer" | "system";
 			name?: string | undefined;
+			scheduled?: string | undefined;
+			context?: any;
+			intent?: string | null | undefined;
+			intentScore?: number | null | undefined;
 		}, {
 			time: string;
+			id: string;
 			content: string;
 			role: "agent" | "customer" | "system";
 			name?: string | undefined;
+			scheduled?: string | undefined;
+			context?: any;
+			intent?: string | null | undefined;
+			intentScore?: number | null | undefined;
 		}>, "many">;
 		conversation: z.ZodObject<{
 			$agent: z.ZodString;
@@ -2325,6 +2726,14 @@ declare module '@scout9/app/types' {
 				subject?: string | undefined;
 				platformEmailThreadId?: string | undefined;
 			}>>;
+			locked: z.ZodNullable<z.ZodOptional<z.ZodBoolean>>;
+			lockedReason: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			lockAttempts: z.ZodNullable<z.ZodOptional<z.ZodNumber>>;
+			forwardedTo: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			forwarded: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			forwardNote: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			intentScore: z.ZodNullable<z.ZodOptional<z.ZodNumber>>;
 		}, "strip", z.ZodTypeAny, {
 			environment: "email" | "phone" | "web";
 			$agent: string;
@@ -2334,6 +2743,14 @@ declare module '@scout9/app/types' {
 				subject?: string | undefined;
 				platformEmailThreadId?: string | undefined;
 			} | undefined;
+			locked?: boolean | null | undefined;
+			lockedReason?: string | null | undefined;
+			lockAttempts?: number | null | undefined;
+			forwardedTo?: string | null | undefined;
+			forwarded?: string | null | undefined;
+			forwardNote?: string | null | undefined;
+			intent?: string | null | undefined;
+			intentScore?: number | null | undefined;
 		}, {
 			environment: "email" | "phone" | "web";
 			$agent: string;
@@ -2343,45 +2760,84 @@ declare module '@scout9/app/types' {
 				subject?: string | undefined;
 				platformEmailThreadId?: string | undefined;
 			} | undefined;
+			locked?: boolean | null | undefined;
+			lockedReason?: string | null | undefined;
+			lockAttempts?: number | null | undefined;
+			forwardedTo?: string | null | undefined;
+			forwarded?: string | null | undefined;
+			forwardNote?: string | null | undefined;
+			intent?: string | null | undefined;
+			intentScore?: number | null | undefined;
 		}>;
 		context: z.ZodAny;
 		message: z.ZodObject<{
-			content: z.ZodString;
+			id: z.ZodString;
 			role: z.ZodEnum<["agent", "customer", "system"]>;
+			content: z.ZodString;
 			time: z.ZodString;
 			name: z.ZodOptional<z.ZodString>;
+			scheduled: z.ZodOptional<z.ZodString>;
+			context: z.ZodOptional<z.ZodAny>;
+			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
 		}, "strip", z.ZodTypeAny, {
 			time: string;
+			id: string;
 			content: string;
 			role: "agent" | "customer" | "system";
 			name?: string | undefined;
+			scheduled?: string | undefined;
+			context?: any;
+			intent?: string | null | undefined;
+			intentScore?: number | null | undefined;
 		}, {
 			time: string;
+			id: string;
 			content: string;
 			role: "agent" | "customer" | "system";
 			name?: string | undefined;
+			scheduled?: string | undefined;
+			context?: any;
+			intent?: string | null | undefined;
+			intentScore?: number | null | undefined;
 		}>;
-		agent: z.ZodObject<{
+		agent: z.ZodObject<Omit<{
 			inactive: z.ZodOptional<z.ZodBoolean>;
+			img: z.ZodOptional<z.ZodNullable<z.ZodString>>;
 			title: z.ZodDefault<z.ZodOptional<z.ZodString>>;
 			context: z.ZodDefault<z.ZodOptional<z.ZodString>>;
 			firstName: z.ZodOptional<z.ZodString>;
 			lastName: z.ZodOptional<z.ZodString>;
 			transcripts: z.ZodOptional<z.ZodArray<z.ZodArray<z.ZodObject<{
-				content: z.ZodString;
+				id: z.ZodString;
 				role: z.ZodEnum<["agent", "customer", "system"]>;
+				content: z.ZodString;
 				time: z.ZodString;
 				name: z.ZodOptional<z.ZodString>;
+				scheduled: z.ZodOptional<z.ZodString>;
+				context: z.ZodOptional<z.ZodAny>;
+				intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+				intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
 			}, "strip", z.ZodTypeAny, {
 				time: string;
+				id: string;
 				content: string;
 				role: "agent" | "customer" | "system";
 				name?: string | undefined;
+				scheduled?: string | undefined;
+				context?: any;
+				intent?: string | null | undefined;
+				intentScore?: number | null | undefined;
 			}, {
 				time: string;
+				id: string;
 				content: string;
 				role: "agent" | "customer" | "system";
 				name?: string | undefined;
+				scheduled?: string | undefined;
+				context?: any;
+				intent?: string | null | undefined;
+				intentScore?: number | null | undefined;
 			}>, "many">, "many">>;
 			audios: z.ZodOptional<z.ZodArray<z.ZodAny, "many">>;
 			includedLocations: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
@@ -2406,23 +2862,13 @@ declare module '@scout9/app/types' {
 			forwardEmail: z.ZodOptional<z.ZodString>;
 			forwardPhone: z.ZodOptional<z.ZodString>;
 			id: z.ZodString;
-		}, "strip", z.ZodTypeAny, {
+		}, "context" | "transcripts" | "audios" | "includedLocations" | "excludedLocations" | "model">, "strip", z.ZodTypeAny, {
 			id: string;
 			title: string;
-			context: string;
-			model: "openai" | "bard" | "Scout9";
 			inactive?: boolean | undefined;
+			img?: string | null | undefined;
 			firstName?: string | undefined;
 			lastName?: string | undefined;
-			transcripts?: {
-				time: string;
-				content: string;
-				role: "agent" | "customer" | "system";
-				name?: string | undefined;
-			}[][] | undefined;
-			audios?: any[] | undefined;
-			includedLocations?: string[] | undefined;
-			excludedLocations?: string[] | undefined;
 			deployed?: {
 				web?: string | undefined;
 				phone?: string | undefined;
@@ -2436,20 +2882,10 @@ declare module '@scout9/app/types' {
 		}, {
 			id: string;
 			inactive?: boolean | undefined;
+			img?: string | null | undefined;
 			title?: string | undefined;
-			context?: string | undefined;
 			firstName?: string | undefined;
 			lastName?: string | undefined;
-			transcripts?: {
-				time: string;
-				content: string;
-				role: "agent" | "customer" | "system";
-				name?: string | undefined;
-			}[][] | undefined;
-			audios?: any[] | undefined;
-			includedLocations?: string[] | undefined;
-			excludedLocations?: string[] | undefined;
-			model?: "openai" | "bard" | "Scout9" | undefined;
 			deployed?: {
 				web?: string | undefined;
 				phone?: string | undefined;
@@ -2522,39 +2958,34 @@ declare module '@scout9/app/types' {
 			initial: z.ZodNullable<z.ZodString>;
 		}, "strip", z.ZodTypeAny, {
 			current: string | null;
-			initial: string | null;
 			flow: string[];
+			initial: string | null;
 		}, {
 			current: string | null;
-			initial: string | null;
 			flow: string[];
+			initial: string | null;
 		}>;
 		stagnationCount: z.ZodNumber;
 		note: z.ZodOptional<z.ZodString>;
 	}, "strip", z.ZodTypeAny, {
 		message: {
 			time: string;
+			id: string;
 			content: string;
 			role: "agent" | "customer" | "system";
 			name?: string | undefined;
+			scheduled?: string | undefined;
+			context?: any;
+			intent?: string | null | undefined;
+			intentScore?: number | null | undefined;
 		};
 		agent: {
 			id: string;
 			title: string;
-			context: string;
-			model: "openai" | "bard" | "Scout9";
 			inactive?: boolean | undefined;
+			img?: string | null | undefined;
 			firstName?: string | undefined;
 			lastName?: string | undefined;
-			transcripts?: {
-				time: string;
-				content: string;
-				role: "agent" | "customer" | "system";
-				name?: string | undefined;
-			}[][] | undefined;
-			audios?: any[] | undefined;
-			includedLocations?: string[] | undefined;
-			excludedLocations?: string[] | undefined;
 			deployed?: {
 				web?: string | undefined;
 				phone?: string | undefined;
@@ -2589,8 +3020,8 @@ declare module '@scout9/app/types' {
 		};
 		intent: {
 			current: string | null;
-			initial: string | null;
 			flow: string[];
+			initial: string | null;
 		};
 		conversation: {
 			environment: "email" | "phone" | "web";
@@ -2601,12 +3032,25 @@ declare module '@scout9/app/types' {
 				subject?: string | undefined;
 				platformEmailThreadId?: string | undefined;
 			} | undefined;
+			locked?: boolean | null | undefined;
+			lockedReason?: string | null | undefined;
+			lockAttempts?: number | null | undefined;
+			forwardedTo?: string | null | undefined;
+			forwarded?: string | null | undefined;
+			forwardNote?: string | null | undefined;
+			intent?: string | null | undefined;
+			intentScore?: number | null | undefined;
 		};
 		messages: {
 			time: string;
+			id: string;
 			content: string;
 			role: "agent" | "customer" | "system";
 			name?: string | undefined;
+			scheduled?: string | undefined;
+			context?: any;
+			intent?: string | null | undefined;
+			intentScore?: number | null | undefined;
 		}[];
 		stagnationCount: number;
 		context?: any;
@@ -2614,27 +3058,22 @@ declare module '@scout9/app/types' {
 	}, {
 		message: {
 			time: string;
+			id: string;
 			content: string;
 			role: "agent" | "customer" | "system";
 			name?: string | undefined;
+			scheduled?: string | undefined;
+			context?: any;
+			intent?: string | null | undefined;
+			intentScore?: number | null | undefined;
 		};
 		agent: {
 			id: string;
 			inactive?: boolean | undefined;
+			img?: string | null | undefined;
 			title?: string | undefined;
-			context?: string | undefined;
 			firstName?: string | undefined;
 			lastName?: string | undefined;
-			transcripts?: {
-				time: string;
-				content: string;
-				role: "agent" | "customer" | "system";
-				name?: string | undefined;
-			}[][] | undefined;
-			audios?: any[] | undefined;
-			includedLocations?: string[] | undefined;
-			excludedLocations?: string[] | undefined;
-			model?: "openai" | "bard" | "Scout9" | undefined;
 			deployed?: {
 				web?: string | undefined;
 				phone?: string | undefined;
@@ -2669,8 +3108,8 @@ declare module '@scout9/app/types' {
 		};
 		intent: {
 			current: string | null;
-			initial: string | null;
 			flow: string[];
+			initial: string | null;
 		};
 		conversation: {
 			environment: "email" | "phone" | "web";
@@ -2681,28 +3120,56 @@ declare module '@scout9/app/types' {
 				subject?: string | undefined;
 				platformEmailThreadId?: string | undefined;
 			} | undefined;
+			locked?: boolean | null | undefined;
+			lockedReason?: string | null | undefined;
+			lockAttempts?: number | null | undefined;
+			forwardedTo?: string | null | undefined;
+			forwarded?: string | null | undefined;
+			forwardNote?: string | null | undefined;
+			intent?: string | null | undefined;
+			intentScore?: number | null | undefined;
 		};
 		messages: {
 			time: string;
+			id: string;
 			content: string;
 			role: "agent" | "customer" | "system";
 			name?: string | undefined;
+			scheduled?: string | undefined;
+			context?: any;
+			intent?: string | null | undefined;
+			intentScore?: number | null | undefined;
 		}[];
 		stagnationCount: number;
 		context?: any;
 		note?: string | undefined;
 	}>;
+	/**
+	 * Lazy is used to handle recursive types.
+	 * 
+	 */
 	export const ConversationContext: any;
+	/**
+	 * Forward input information of a conversation
+	 * 
+	 */
 	export const ForwardSchema: z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 		to: z.ZodOptional<z.ZodString>;
 		mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+		note: z.ZodOptional<z.ZodString>;
 	}, "strip", z.ZodTypeAny, {
 		to?: string | undefined;
 		mode?: "after-reply" | "immediately" | undefined;
+		note?: string | undefined;
 	}, {
 		to?: string | undefined;
 		mode?: "after-reply" | "immediately" | undefined;
+		note?: string | undefined;
 	}>]>;
+	/**
+	 * Instruction object schema used to send context to guide conversations
+	 * 
+	 */
 	export const InstructionSchema: z.ZodObject<{
 		id: z.ZodString;
 		content: z.ZodString;
@@ -2716,8 +3183,10 @@ declare module '@scout9/app/types' {
 	/**
 	 * If its a string, it will be sent as a static string.
 	 * If it's a object or WorkflowResponseMessageAPI - it will use
+	 * 
 	 */
 	export const WorkflowResponseMessage: z.ZodUnion<readonly [z.ZodTypeAny, z.ZodTypeAny, ...z.ZodTypeAny[]]>;
+
 	export const WorkflowResponseMessageApiRequest: z.ZodObject<{
 		uri: z.ZodString;
 		data: z.ZodOptional<z.ZodAny>;
@@ -2736,6 +3205,7 @@ declare module '@scout9/app/types' {
 	}>;
 	/**
 	 * The intended response provided by the WorkflowResponseMessageApiRequest
+	 * 
 	 */
 	export const WorkflowResponseMessageApiResponse: z.ZodUnion<[z.ZodString, z.ZodObject<{
 		message: z.ZodString;
@@ -2782,17 +3252,25 @@ declare module '@scout9/app/types' {
 			text: string;
 		};
 	}>]>;
+	/**
+	 * The workflow response object slot
+	 * 
+	 */
 	export const WorkflowResponseSlotSchema: z.ZodObject<{
 		forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 			to: z.ZodOptional<z.ZodString>;
 			mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+			note: z.ZodOptional<z.ZodString>;
 		}, "strip", z.ZodTypeAny, {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
+			note?: string | undefined;
 		}, {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
+			note?: string | undefined;
 		}>]>>;
+		forwardNote: z.ZodOptional<z.ZodString>;
 		instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
 			id: z.ZodString;
 			content: z.ZodString;
@@ -2822,7 +3300,9 @@ declare module '@scout9/app/types' {
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
+			note?: string | undefined;
 		} | undefined;
+		forwardNote?: string | undefined;
 		instructions?: string | string[] | {
 			id: string;
 			content: string;
@@ -2840,7 +3320,9 @@ declare module '@scout9/app/types' {
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
+			note?: string | undefined;
 		} | undefined;
+		forwardNote?: string | undefined;
 		instructions?: string | string[] | {
 			id: string;
 			content: string;
@@ -2855,17 +3337,25 @@ declare module '@scout9/app/types' {
 		contextUpsert?: any;
 		resetIntent?: boolean | undefined;
 	}>;
+	/**
+	 * The workflow response to send in any given workflow
+	 * 
+	 */
 	export const WorkflowResponseSchema: z.ZodUnion<[z.ZodObject<{
 		forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 			to: z.ZodOptional<z.ZodString>;
 			mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+			note: z.ZodOptional<z.ZodString>;
 		}, "strip", z.ZodTypeAny, {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
+			note?: string | undefined;
 		}, {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
+			note?: string | undefined;
 		}>]>>;
+		forwardNote: z.ZodOptional<z.ZodString>;
 		instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
 			id: z.ZodString;
 			content: z.ZodString;
@@ -2895,7 +3385,9 @@ declare module '@scout9/app/types' {
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
+			note?: string | undefined;
 		} | undefined;
+		forwardNote?: string | undefined;
 		instructions?: string | string[] | {
 			id: string;
 			content: string;
@@ -2913,7 +3405,9 @@ declare module '@scout9/app/types' {
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
+			note?: string | undefined;
 		} | undefined;
+		forwardNote?: string | undefined;
 		instructions?: string | string[] | {
 			id: string;
 			content: string;
@@ -2931,13 +3425,17 @@ declare module '@scout9/app/types' {
 		forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 			to: z.ZodOptional<z.ZodString>;
 			mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+			note: z.ZodOptional<z.ZodString>;
 		}, "strip", z.ZodTypeAny, {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
+			note?: string | undefined;
 		}, {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
+			note?: string | undefined;
 		}>]>>;
+		forwardNote: z.ZodOptional<z.ZodString>;
 		instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
 			id: z.ZodString;
 			content: z.ZodString;
@@ -2967,7 +3465,9 @@ declare module '@scout9/app/types' {
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
+			note?: string | undefined;
 		} | undefined;
+		forwardNote?: string | undefined;
 		instructions?: string | string[] | {
 			id: string;
 			content: string;
@@ -2985,7 +3485,9 @@ declare module '@scout9/app/types' {
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
+			note?: string | undefined;
 		} | undefined;
+		forwardNote?: string | undefined;
 		instructions?: string | string[] | {
 			id: string;
 			content: string;
@@ -3000,6 +3502,1166 @@ declare module '@scout9/app/types' {
 		contextUpsert?: any;
 		resetIntent?: boolean | undefined;
 	}>, "many">]>;
+
+	export const WorkflowFunctionSchema: z.ZodFunction<z.ZodTuple<[z.ZodObject<{
+		messages: z.ZodArray<z.ZodObject<{
+			id: z.ZodString;
+			role: z.ZodEnum<["agent", "customer", "system"]>;
+			content: z.ZodString;
+			time: z.ZodString;
+			name: z.ZodOptional<z.ZodString>;
+			scheduled: z.ZodOptional<z.ZodString>;
+			context: z.ZodOptional<z.ZodAny>;
+			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+		}, "strip", z.ZodTypeAny, {
+			time: string;
+			id: string;
+			content: string;
+			role: "agent" | "customer" | "system";
+			name?: string | undefined;
+			scheduled?: string | undefined;
+			context?: any;
+			intent?: string | null | undefined;
+			intentScore?: number | null | undefined;
+		}, {
+			time: string;
+			id: string;
+			content: string;
+			role: "agent" | "customer" | "system";
+			name?: string | undefined;
+			scheduled?: string | undefined;
+			context?: any;
+			intent?: string | null | undefined;
+			intentScore?: number | null | undefined;
+		}>, "many">;
+		conversation: z.ZodObject<{
+			$agent: z.ZodString;
+			$customer: z.ZodString;
+			initialContexts: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+			environment: z.ZodEnum<["phone", "email", "web"]>;
+			environmentProps: z.ZodOptional<z.ZodObject<{
+				subject: z.ZodOptional<z.ZodString>;
+				platformEmailThreadId: z.ZodOptional<z.ZodString>;
+			}, "strip", z.ZodTypeAny, {
+				subject?: string | undefined;
+				platformEmailThreadId?: string | undefined;
+			}, {
+				subject?: string | undefined;
+				platformEmailThreadId?: string | undefined;
+			}>>;
+			locked: z.ZodNullable<z.ZodOptional<z.ZodBoolean>>;
+			lockedReason: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			lockAttempts: z.ZodNullable<z.ZodOptional<z.ZodNumber>>;
+			forwardedTo: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			forwarded: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			forwardNote: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			intentScore: z.ZodNullable<z.ZodOptional<z.ZodNumber>>;
+		}, "strip", z.ZodTypeAny, {
+			environment: "email" | "phone" | "web";
+			$agent: string;
+			$customer: string;
+			initialContexts?: string[] | undefined;
+			environmentProps?: {
+				subject?: string | undefined;
+				platformEmailThreadId?: string | undefined;
+			} | undefined;
+			locked?: boolean | null | undefined;
+			lockedReason?: string | null | undefined;
+			lockAttempts?: number | null | undefined;
+			forwardedTo?: string | null | undefined;
+			forwarded?: string | null | undefined;
+			forwardNote?: string | null | undefined;
+			intent?: string | null | undefined;
+			intentScore?: number | null | undefined;
+		}, {
+			environment: "email" | "phone" | "web";
+			$agent: string;
+			$customer: string;
+			initialContexts?: string[] | undefined;
+			environmentProps?: {
+				subject?: string | undefined;
+				platformEmailThreadId?: string | undefined;
+			} | undefined;
+			locked?: boolean | null | undefined;
+			lockedReason?: string | null | undefined;
+			lockAttempts?: number | null | undefined;
+			forwardedTo?: string | null | undefined;
+			forwarded?: string | null | undefined;
+			forwardNote?: string | null | undefined;
+			intent?: string | null | undefined;
+			intentScore?: number | null | undefined;
+		}>;
+		context: z.ZodAny;
+		message: z.ZodObject<{
+			id: z.ZodString;
+			role: z.ZodEnum<["agent", "customer", "system"]>;
+			content: z.ZodString;
+			time: z.ZodString;
+			name: z.ZodOptional<z.ZodString>;
+			scheduled: z.ZodOptional<z.ZodString>;
+			context: z.ZodOptional<z.ZodAny>;
+			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+		}, "strip", z.ZodTypeAny, {
+			time: string;
+			id: string;
+			content: string;
+			role: "agent" | "customer" | "system";
+			name?: string | undefined;
+			scheduled?: string | undefined;
+			context?: any;
+			intent?: string | null | undefined;
+			intentScore?: number | null | undefined;
+		}, {
+			time: string;
+			id: string;
+			content: string;
+			role: "agent" | "customer" | "system";
+			name?: string | undefined;
+			scheduled?: string | undefined;
+			context?: any;
+			intent?: string | null | undefined;
+			intentScore?: number | null | undefined;
+		}>;
+		agent: z.ZodObject<Omit<{
+			inactive: z.ZodOptional<z.ZodBoolean>;
+			img: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+			title: z.ZodDefault<z.ZodOptional<z.ZodString>>;
+			context: z.ZodDefault<z.ZodOptional<z.ZodString>>;
+			firstName: z.ZodOptional<z.ZodString>;
+			lastName: z.ZodOptional<z.ZodString>;
+			transcripts: z.ZodOptional<z.ZodArray<z.ZodArray<z.ZodObject<{
+				id: z.ZodString;
+				role: z.ZodEnum<["agent", "customer", "system"]>;
+				content: z.ZodString;
+				time: z.ZodString;
+				name: z.ZodOptional<z.ZodString>;
+				scheduled: z.ZodOptional<z.ZodString>;
+				context: z.ZodOptional<z.ZodAny>;
+				intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+				intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+			}, "strip", z.ZodTypeAny, {
+				time: string;
+				id: string;
+				content: string;
+				role: "agent" | "customer" | "system";
+				name?: string | undefined;
+				scheduled?: string | undefined;
+				context?: any;
+				intent?: string | null | undefined;
+				intentScore?: number | null | undefined;
+			}, {
+				time: string;
+				id: string;
+				content: string;
+				role: "agent" | "customer" | "system";
+				name?: string | undefined;
+				scheduled?: string | undefined;
+				context?: any;
+				intent?: string | null | undefined;
+				intentScore?: number | null | undefined;
+			}>, "many">, "many">>;
+			audios: z.ZodOptional<z.ZodArray<z.ZodAny, "many">>;
+			includedLocations: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+			excludedLocations: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+			model: z.ZodDefault<z.ZodOptional<z.ZodEnum<["Scout9", "bard", "openai"]>>>;
+			deployed: z.ZodOptional<z.ZodObject<{
+				web: z.ZodOptional<z.ZodString>;
+				phone: z.ZodOptional<z.ZodString>;
+				email: z.ZodOptional<z.ZodString>;
+			}, "strip", z.ZodTypeAny, {
+				web?: string | undefined;
+				phone?: string | undefined;
+				email?: string | undefined;
+			}, {
+				web?: string | undefined;
+				phone?: string | undefined;
+				email?: string | undefined;
+			}>>;
+			programmablePhoneNumber: z.ZodOptional<z.ZodString>;
+			programmablePhoneNumberSid: z.ZodOptional<z.ZodString>;
+			programmableEmail: z.ZodOptional<z.ZodString>;
+			forwardEmail: z.ZodOptional<z.ZodString>;
+			forwardPhone: z.ZodOptional<z.ZodString>;
+			id: z.ZodString;
+		}, "context" | "transcripts" | "audios" | "includedLocations" | "excludedLocations" | "model">, "strip", z.ZodTypeAny, {
+			id: string;
+			title: string;
+			inactive?: boolean | undefined;
+			img?: string | null | undefined;
+			firstName?: string | undefined;
+			lastName?: string | undefined;
+			deployed?: {
+				web?: string | undefined;
+				phone?: string | undefined;
+				email?: string | undefined;
+			} | undefined;
+			programmablePhoneNumber?: string | undefined;
+			programmablePhoneNumberSid?: string | undefined;
+			programmableEmail?: string | undefined;
+			forwardEmail?: string | undefined;
+			forwardPhone?: string | undefined;
+		}, {
+			id: string;
+			inactive?: boolean | undefined;
+			img?: string | null | undefined;
+			title?: string | undefined;
+			firstName?: string | undefined;
+			lastName?: string | undefined;
+			deployed?: {
+				web?: string | undefined;
+				phone?: string | undefined;
+				email?: string | undefined;
+			} | undefined;
+			programmablePhoneNumber?: string | undefined;
+			programmablePhoneNumberSid?: string | undefined;
+			programmableEmail?: string | undefined;
+			forwardEmail?: string | undefined;
+			forwardPhone?: string | undefined;
+		}>;
+		customer: z.ZodObject<{
+			firstName: z.ZodOptional<z.ZodString>;
+			lastName: z.ZodOptional<z.ZodString>;
+			name: z.ZodString;
+			email: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+			phone: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+			img: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+			neighborhood: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+			city: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+			country: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+			line1: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+			line2: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+			postal_code: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+			state: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+			town: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+			joined: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+			stripe: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+			stripeDev: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+		}, "strip", z.ZodUnion<[z.ZodBoolean, z.ZodNumber, z.ZodString]>, z.objectOutputType<{
+			firstName: z.ZodOptional<z.ZodString>;
+			lastName: z.ZodOptional<z.ZodString>;
+			name: z.ZodString;
+			email: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+			phone: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+			img: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+			neighborhood: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+			city: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+			country: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+			line1: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+			line2: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+			postal_code: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+			state: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+			town: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+			joined: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+			stripe: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+			stripeDev: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+		}, z.ZodUnion<[z.ZodBoolean, z.ZodNumber, z.ZodString]>, "strip">, z.objectInputType<{
+			firstName: z.ZodOptional<z.ZodString>;
+			lastName: z.ZodOptional<z.ZodString>;
+			name: z.ZodString;
+			email: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+			phone: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+			img: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+			neighborhood: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+			city: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+			country: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+			line1: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+			line2: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+			postal_code: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+			state: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+			town: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+			joined: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+			stripe: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+			stripeDev: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+		}, z.ZodUnion<[z.ZodBoolean, z.ZodNumber, z.ZodString]>, "strip">>;
+		intent: z.ZodObject<{
+			current: z.ZodNullable<z.ZodString>;
+			flow: z.ZodArray<z.ZodString, "many">;
+			initial: z.ZodNullable<z.ZodString>;
+		}, "strip", z.ZodTypeAny, {
+			current: string | null;
+			flow: string[];
+			initial: string | null;
+		}, {
+			current: string | null;
+			flow: string[];
+			initial: string | null;
+		}>;
+		stagnationCount: z.ZodNumber;
+		note: z.ZodOptional<z.ZodString>;
+	}, "strip", z.ZodTypeAny, {
+		message: {
+			time: string;
+			id: string;
+			content: string;
+			role: "agent" | "customer" | "system";
+			name?: string | undefined;
+			scheduled?: string | undefined;
+			context?: any;
+			intent?: string | null | undefined;
+			intentScore?: number | null | undefined;
+		};
+		agent: {
+			id: string;
+			title: string;
+			inactive?: boolean | undefined;
+			img?: string | null | undefined;
+			firstName?: string | undefined;
+			lastName?: string | undefined;
+			deployed?: {
+				web?: string | undefined;
+				phone?: string | undefined;
+				email?: string | undefined;
+			} | undefined;
+			programmablePhoneNumber?: string | undefined;
+			programmablePhoneNumberSid?: string | undefined;
+			programmableEmail?: string | undefined;
+			forwardEmail?: string | undefined;
+			forwardPhone?: string | undefined;
+		};
+		customer: {
+			name: string;
+			firstName?: string | undefined;
+			lastName?: string | undefined;
+			email?: string | null | undefined;
+			phone?: string | null | undefined;
+			img?: string | null | undefined;
+			neighborhood?: string | null | undefined;
+			city?: string | null | undefined;
+			country?: string | null | undefined;
+			line1?: string | null | undefined;
+			line2?: string | null | undefined;
+			postal_code?: string | null | undefined;
+			state?: string | null | undefined;
+			town?: string | null | undefined;
+			joined?: string | null | undefined;
+			stripe?: string | null | undefined;
+			stripeDev?: string | null | undefined;
+		} & {
+			[k: string]: string | number | boolean;
+		};
+		intent: {
+			current: string | null;
+			flow: string[];
+			initial: string | null;
+		};
+		conversation: {
+			environment: "email" | "phone" | "web";
+			$agent: string;
+			$customer: string;
+			initialContexts?: string[] | undefined;
+			environmentProps?: {
+				subject?: string | undefined;
+				platformEmailThreadId?: string | undefined;
+			} | undefined;
+			locked?: boolean | null | undefined;
+			lockedReason?: string | null | undefined;
+			lockAttempts?: number | null | undefined;
+			forwardedTo?: string | null | undefined;
+			forwarded?: string | null | undefined;
+			forwardNote?: string | null | undefined;
+			intent?: string | null | undefined;
+			intentScore?: number | null | undefined;
+		};
+		messages: {
+			time: string;
+			id: string;
+			content: string;
+			role: "agent" | "customer" | "system";
+			name?: string | undefined;
+			scheduled?: string | undefined;
+			context?: any;
+			intent?: string | null | undefined;
+			intentScore?: number | null | undefined;
+		}[];
+		stagnationCount: number;
+		context?: any;
+		note?: string | undefined;
+	}, {
+		message: {
+			time: string;
+			id: string;
+			content: string;
+			role: "agent" | "customer" | "system";
+			name?: string | undefined;
+			scheduled?: string | undefined;
+			context?: any;
+			intent?: string | null | undefined;
+			intentScore?: number | null | undefined;
+		};
+		agent: {
+			id: string;
+			inactive?: boolean | undefined;
+			img?: string | null | undefined;
+			title?: string | undefined;
+			firstName?: string | undefined;
+			lastName?: string | undefined;
+			deployed?: {
+				web?: string | undefined;
+				phone?: string | undefined;
+				email?: string | undefined;
+			} | undefined;
+			programmablePhoneNumber?: string | undefined;
+			programmablePhoneNumberSid?: string | undefined;
+			programmableEmail?: string | undefined;
+			forwardEmail?: string | undefined;
+			forwardPhone?: string | undefined;
+		};
+		customer: {
+			name: string;
+			firstName?: string | undefined;
+			lastName?: string | undefined;
+			email?: string | null | undefined;
+			phone?: string | null | undefined;
+			img?: string | null | undefined;
+			neighborhood?: string | null | undefined;
+			city?: string | null | undefined;
+			country?: string | null | undefined;
+			line1?: string | null | undefined;
+			line2?: string | null | undefined;
+			postal_code?: string | null | undefined;
+			state?: string | null | undefined;
+			town?: string | null | undefined;
+			joined?: string | null | undefined;
+			stripe?: string | null | undefined;
+			stripeDev?: string | null | undefined;
+		} & {
+			[k: string]: string | number | boolean;
+		};
+		intent: {
+			current: string | null;
+			flow: string[];
+			initial: string | null;
+		};
+		conversation: {
+			environment: "email" | "phone" | "web";
+			$agent: string;
+			$customer: string;
+			initialContexts?: string[] | undefined;
+			environmentProps?: {
+				subject?: string | undefined;
+				platformEmailThreadId?: string | undefined;
+			} | undefined;
+			locked?: boolean | null | undefined;
+			lockedReason?: string | null | undefined;
+			lockAttempts?: number | null | undefined;
+			forwardedTo?: string | null | undefined;
+			forwarded?: string | null | undefined;
+			forwardNote?: string | null | undefined;
+			intent?: string | null | undefined;
+			intentScore?: number | null | undefined;
+		};
+		messages: {
+			time: string;
+			id: string;
+			content: string;
+			role: "agent" | "customer" | "system";
+			name?: string | undefined;
+			scheduled?: string | undefined;
+			context?: any;
+			intent?: string | null | undefined;
+			intentScore?: number | null | undefined;
+		}[];
+		stagnationCount: number;
+		context?: any;
+		note?: string | undefined;
+	}>], z.ZodUnknown>, z.ZodUnion<[z.ZodPromise<z.ZodUnion<[z.ZodObject<{
+		forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+			to: z.ZodOptional<z.ZodString>;
+			mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+			note: z.ZodOptional<z.ZodString>;
+		}, "strip", z.ZodTypeAny, {
+			to?: string | undefined;
+			mode?: "after-reply" | "immediately" | undefined;
+			note?: string | undefined;
+		}, {
+			to?: string | undefined;
+			mode?: "after-reply" | "immediately" | undefined;
+			note?: string | undefined;
+		}>]>>;
+		forwardNote: z.ZodOptional<z.ZodString>;
+		instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+			id: z.ZodString;
+			content: z.ZodString;
+		}, "strip", z.ZodTypeAny, {
+			id: string;
+			content: string;
+		}, {
+			id: string;
+			content: string;
+		}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+			id: z.ZodString;
+			content: z.ZodString;
+		}, "strip", z.ZodTypeAny, {
+			id: string;
+			content: string;
+		}, {
+			id: string;
+			content: string;
+		}>, "many">]>>;
+		removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+		message: z.ZodOptional<z.ZodString>;
+		secondsDelay: z.ZodOptional<z.ZodNumber>;
+		scheduled: z.ZodOptional<z.ZodNumber>;
+		contextUpsert: any;
+		resetIntent: z.ZodOptional<z.ZodBoolean>;
+	}, "strip", z.ZodTypeAny, {
+		forward?: string | boolean | {
+			to?: string | undefined;
+			mode?: "after-reply" | "immediately" | undefined;
+			note?: string | undefined;
+		} | undefined;
+		forwardNote?: string | undefined;
+		instructions?: string | string[] | {
+			id: string;
+			content: string;
+		} | {
+			id: string;
+			content: string;
+		}[] | undefined;
+		removeInstructions?: string[] | undefined;
+		message?: string | undefined;
+		secondsDelay?: number | undefined;
+		scheduled?: number | undefined;
+		contextUpsert?: any;
+		resetIntent?: boolean | undefined;
+	}, {
+		forward?: string | boolean | {
+			to?: string | undefined;
+			mode?: "after-reply" | "immediately" | undefined;
+			note?: string | undefined;
+		} | undefined;
+		forwardNote?: string | undefined;
+		instructions?: string | string[] | {
+			id: string;
+			content: string;
+		} | {
+			id: string;
+			content: string;
+		}[] | undefined;
+		removeInstructions?: string[] | undefined;
+		message?: string | undefined;
+		secondsDelay?: number | undefined;
+		scheduled?: number | undefined;
+		contextUpsert?: any;
+		resetIntent?: boolean | undefined;
+	}>, z.ZodArray<z.ZodObject<{
+		forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+			to: z.ZodOptional<z.ZodString>;
+			mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+			note: z.ZodOptional<z.ZodString>;
+		}, "strip", z.ZodTypeAny, {
+			to?: string | undefined;
+			mode?: "after-reply" | "immediately" | undefined;
+			note?: string | undefined;
+		}, {
+			to?: string | undefined;
+			mode?: "after-reply" | "immediately" | undefined;
+			note?: string | undefined;
+		}>]>>;
+		forwardNote: z.ZodOptional<z.ZodString>;
+		instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+			id: z.ZodString;
+			content: z.ZodString;
+		}, "strip", z.ZodTypeAny, {
+			id: string;
+			content: string;
+		}, {
+			id: string;
+			content: string;
+		}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+			id: z.ZodString;
+			content: z.ZodString;
+		}, "strip", z.ZodTypeAny, {
+			id: string;
+			content: string;
+		}, {
+			id: string;
+			content: string;
+		}>, "many">]>>;
+		removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+		message: z.ZodOptional<z.ZodString>;
+		secondsDelay: z.ZodOptional<z.ZodNumber>;
+		scheduled: z.ZodOptional<z.ZodNumber>;
+		contextUpsert: any;
+		resetIntent: z.ZodOptional<z.ZodBoolean>;
+	}, "strip", z.ZodTypeAny, {
+		forward?: string | boolean | {
+			to?: string | undefined;
+			mode?: "after-reply" | "immediately" | undefined;
+			note?: string | undefined;
+		} | undefined;
+		forwardNote?: string | undefined;
+		instructions?: string | string[] | {
+			id: string;
+			content: string;
+		} | {
+			id: string;
+			content: string;
+		}[] | undefined;
+		removeInstructions?: string[] | undefined;
+		message?: string | undefined;
+		secondsDelay?: number | undefined;
+		scheduled?: number | undefined;
+		contextUpsert?: any;
+		resetIntent?: boolean | undefined;
+	}, {
+		forward?: string | boolean | {
+			to?: string | undefined;
+			mode?: "after-reply" | "immediately" | undefined;
+			note?: string | undefined;
+		} | undefined;
+		forwardNote?: string | undefined;
+		instructions?: string | string[] | {
+			id: string;
+			content: string;
+		} | {
+			id: string;
+			content: string;
+		}[] | undefined;
+		removeInstructions?: string[] | undefined;
+		message?: string | undefined;
+		secondsDelay?: number | undefined;
+		scheduled?: number | undefined;
+		contextUpsert?: any;
+		resetIntent?: boolean | undefined;
+	}>, "many">]>>, z.ZodUnion<[z.ZodObject<{
+		forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+			to: z.ZodOptional<z.ZodString>;
+			mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+			note: z.ZodOptional<z.ZodString>;
+		}, "strip", z.ZodTypeAny, {
+			to?: string | undefined;
+			mode?: "after-reply" | "immediately" | undefined;
+			note?: string | undefined;
+		}, {
+			to?: string | undefined;
+			mode?: "after-reply" | "immediately" | undefined;
+			note?: string | undefined;
+		}>]>>;
+		forwardNote: z.ZodOptional<z.ZodString>;
+		instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+			id: z.ZodString;
+			content: z.ZodString;
+		}, "strip", z.ZodTypeAny, {
+			id: string;
+			content: string;
+		}, {
+			id: string;
+			content: string;
+		}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+			id: z.ZodString;
+			content: z.ZodString;
+		}, "strip", z.ZodTypeAny, {
+			id: string;
+			content: string;
+		}, {
+			id: string;
+			content: string;
+		}>, "many">]>>;
+		removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+		message: z.ZodOptional<z.ZodString>;
+		secondsDelay: z.ZodOptional<z.ZodNumber>;
+		scheduled: z.ZodOptional<z.ZodNumber>;
+		contextUpsert: any;
+		resetIntent: z.ZodOptional<z.ZodBoolean>;
+	}, "strip", z.ZodTypeAny, {
+		forward?: string | boolean | {
+			to?: string | undefined;
+			mode?: "after-reply" | "immediately" | undefined;
+			note?: string | undefined;
+		} | undefined;
+		forwardNote?: string | undefined;
+		instructions?: string | string[] | {
+			id: string;
+			content: string;
+		} | {
+			id: string;
+			content: string;
+		}[] | undefined;
+		removeInstructions?: string[] | undefined;
+		message?: string | undefined;
+		secondsDelay?: number | undefined;
+		scheduled?: number | undefined;
+		contextUpsert?: any;
+		resetIntent?: boolean | undefined;
+	}, {
+		forward?: string | boolean | {
+			to?: string | undefined;
+			mode?: "after-reply" | "immediately" | undefined;
+			note?: string | undefined;
+		} | undefined;
+		forwardNote?: string | undefined;
+		instructions?: string | string[] | {
+			id: string;
+			content: string;
+		} | {
+			id: string;
+			content: string;
+		}[] | undefined;
+		removeInstructions?: string[] | undefined;
+		message?: string | undefined;
+		secondsDelay?: number | undefined;
+		scheduled?: number | undefined;
+		contextUpsert?: any;
+		resetIntent?: boolean | undefined;
+	}>, z.ZodArray<z.ZodObject<{
+		forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+			to: z.ZodOptional<z.ZodString>;
+			mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+			note: z.ZodOptional<z.ZodString>;
+		}, "strip", z.ZodTypeAny, {
+			to?: string | undefined;
+			mode?: "after-reply" | "immediately" | undefined;
+			note?: string | undefined;
+		}, {
+			to?: string | undefined;
+			mode?: "after-reply" | "immediately" | undefined;
+			note?: string | undefined;
+		}>]>>;
+		forwardNote: z.ZodOptional<z.ZodString>;
+		instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+			id: z.ZodString;
+			content: z.ZodString;
+		}, "strip", z.ZodTypeAny, {
+			id: string;
+			content: string;
+		}, {
+			id: string;
+			content: string;
+		}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+			id: z.ZodString;
+			content: z.ZodString;
+		}, "strip", z.ZodTypeAny, {
+			id: string;
+			content: string;
+		}, {
+			id: string;
+			content: string;
+		}>, "many">]>>;
+		removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+		message: z.ZodOptional<z.ZodString>;
+		secondsDelay: z.ZodOptional<z.ZodNumber>;
+		scheduled: z.ZodOptional<z.ZodNumber>;
+		contextUpsert: any;
+		resetIntent: z.ZodOptional<z.ZodBoolean>;
+	}, "strip", z.ZodTypeAny, {
+		forward?: string | boolean | {
+			to?: string | undefined;
+			mode?: "after-reply" | "immediately" | undefined;
+			note?: string | undefined;
+		} | undefined;
+		forwardNote?: string | undefined;
+		instructions?: string | string[] | {
+			id: string;
+			content: string;
+		} | {
+			id: string;
+			content: string;
+		}[] | undefined;
+		removeInstructions?: string[] | undefined;
+		message?: string | undefined;
+		secondsDelay?: number | undefined;
+		scheduled?: number | undefined;
+		contextUpsert?: any;
+		resetIntent?: boolean | undefined;
+	}, {
+		forward?: string | boolean | {
+			to?: string | undefined;
+			mode?: "after-reply" | "immediately" | undefined;
+			note?: string | undefined;
+		} | undefined;
+		forwardNote?: string | undefined;
+		instructions?: string | string[] | {
+			id: string;
+			content: string;
+		} | {
+			id: string;
+			content: string;
+		}[] | undefined;
+		removeInstructions?: string[] | undefined;
+		message?: string | undefined;
+		secondsDelay?: number | undefined;
+		scheduled?: number | undefined;
+		contextUpsert?: any;
+		resetIntent?: boolean | undefined;
+	}>, "many">]>]>>;
+	export type IWorkflowConfiguration = import('zod').infer<typeof WorkflowConfigurationSchema>;
+	export type IWorkflowsConfiguration = import('zod').infer<typeof WorkflowsConfigurationSchema>;
+	export type IConversation = import('zod').infer<typeof ConversationSchema>;
+	export type IIntentWorkflowEvent = import('zod').infer<typeof IntentWorkflowEventSchema>;
+	export type IWorkflowEvent = import('zod').infer<typeof WorkflowEventSchema>;
+	/**
+	 * Forward input information of a conversation
+	 */
+	export type IForward = import('zod').infer<typeof ForwardSchema>;
+	/**
+	 * Instruction object schema used to send context to guide conversations
+	 */
+	export type IInstruction = import('zod').infer<typeof InstructionSchema>;
+	/**
+	 * If its a string, it will be sent as a static string.
+	 * If it's a object or WorkflowResponseMessageAPI - it will use
+	 */
+	export type IWorkflowResponseMessage = import('zod').infer<typeof WorkflowResponseMessage>;
+	export type IWorkflowResponseMessageApiRequest = import('zod').infer<typeof WorkflowResponseMessageApiRequest>;
+	/**
+	 * The intended response provided by the WorkflowResponseMessageApiRequest
+	 */
+	export type IWorkflowResponseMessageApiResponse = import('zod').infer<typeof WorkflowResponseMessageApiResponse>;
+	/**
+	 * The workflow response object slot
+	 */
+	export type IWorkflowResponseSlot = import('zod').infer<typeof WorkflowResponseSlotSchema>;
+	/**
+	 * The workflow response to send in any given workflow
+	 */
+	export type IWorkflowResponse = import('zod').infer<typeof WorkflowResponseSchema>;
+	export type IWorkflowFunction = import('zod').infer<typeof WorkflowFunctionSchema>;
+	export const apiFunctionSchema: z.ZodFunction<z.ZodTuple<[z.ZodObject<{
+		searchParams: z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodArray<z.ZodString, "many">]>>;
+		params: z.ZodRecord<z.ZodString, z.ZodString>;
+	}, "strip", z.ZodTypeAny, {
+		params: Record<string, string>;
+		searchParams: Record<string, string | string[]>;
+	}, {
+		params: Record<string, string>;
+		searchParams: Record<string, string | string[]>;
+	}>], z.ZodUnknown>, z.ZodPromise<z.ZodObject<{
+		body: z.ZodAny;
+		init: z.ZodOptional<z.ZodObject<{
+			status: z.ZodOptional<z.ZodNumber>;
+			statusText: z.ZodOptional<z.ZodString>;
+			headers: z.ZodOptional<z.ZodAny>;
+		}, "strip", z.ZodTypeAny, {
+			status?: number | undefined;
+			statusText?: string | undefined;
+			headers?: any;
+		}, {
+			status?: number | undefined;
+			statusText?: string | undefined;
+			headers?: any;
+		}>>; /**
+		 * @template Params
+		 * @template RequestBody
+		 * @template Response
+		 * @typedef {function(IApiFunctionParams & {body: Partial<RequestBody>}): Promise<EventResponse<Response>>} IPatchApiFunction
+		 */
+	}, "strip", z.ZodTypeAny, {
+		body?: any;
+		init?: {
+			status?: number | undefined;
+			statusText?: string | undefined;
+			headers?: any;
+		} | undefined;
+	}, {
+		body?: any;
+		init?: {
+			status?: number | undefined;
+			statusText?: string | undefined;
+			headers?: any;
+		} | undefined;
+	}>>>;
+
+	export const queryApiFunctionSchema: z.ZodFunction<z.ZodTuple<[z.ZodObject<{
+		searchParams: z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodArray<z.ZodString, "many">]>>;
+		params: z.ZodRecord<z.ZodString, z.ZodString>;
+	}, "strip", z.ZodTypeAny, {
+		params: Record<string, string>;
+		searchParams: Record<string, string | string[]>;
+	}, {
+		params: Record<string, string>;
+		searchParams: Record<string, string | string[]>;
+	}>], z.ZodUnknown>, z.ZodPromise<z.ZodObject<{
+		body: z.ZodAny;
+		init: z.ZodOptional<z.ZodObject<{
+			status: z.ZodOptional<z.ZodNumber>;
+			statusText: z.ZodOptional<z.ZodString>;
+			headers: z.ZodOptional<z.ZodAny>;
+		}, "strip", z.ZodTypeAny, {
+			status?: number | undefined;
+			statusText?: string | undefined;
+			headers?: any;
+		}, {
+			status?: number | undefined;
+			statusText?: string | undefined;
+			headers?: any;
+		}>>; /**
+		 * @template Params
+		 * @template RequestBody
+		 * @template Response
+		 * @typedef {function(IApiFunctionParams & {body: Partial<RequestBody>}): Promise<EventResponse<Response>>} IPatchApiFunction
+		 */
+	}, "strip", z.ZodTypeAny, {
+		body?: any;
+		init?: {
+			status?: number | undefined;
+			statusText?: string | undefined;
+			headers?: any;
+		} | undefined;
+	}, {
+		body?: any;
+		init?: {
+			status?: number | undefined;
+			statusText?: string | undefined;
+			headers?: any;
+		} | undefined;
+	}>>>;
+
+	export const getApiFunctionSchema: z.ZodFunction<z.ZodTuple<[z.ZodObject<{
+		searchParams: z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodArray<z.ZodString, "many">]>>;
+		params: z.ZodRecord<z.ZodString, z.ZodString>;
+	}, "strip", z.ZodTypeAny, {
+		params: Record<string, string>;
+		searchParams: Record<string, string | string[]>;
+	}, {
+		params: Record<string, string>;
+		searchParams: Record<string, string | string[]>;
+	}>], z.ZodUnknown>, z.ZodPromise<z.ZodObject<{
+		body: z.ZodAny;
+		init: z.ZodOptional<z.ZodObject<{
+			status: z.ZodOptional<z.ZodNumber>;
+			statusText: z.ZodOptional<z.ZodString>;
+			headers: z.ZodOptional<z.ZodAny>;
+		}, "strip", z.ZodTypeAny, {
+			status?: number | undefined;
+			statusText?: string | undefined;
+			headers?: any;
+		}, {
+			status?: number | undefined;
+			statusText?: string | undefined;
+			headers?: any;
+		}>>; /**
+		 * @template Params
+		 * @template RequestBody
+		 * @template Response
+		 * @typedef {function(IApiFunctionParams & {body: Partial<RequestBody>}): Promise<EventResponse<Response>>} IPatchApiFunction
+		 */
+	}, "strip", z.ZodTypeAny, {
+		body?: any;
+		init?: {
+			status?: number | undefined;
+			statusText?: string | undefined;
+			headers?: any;
+		} | undefined;
+	}, {
+		body?: any;
+		init?: {
+			status?: number | undefined;
+			statusText?: string | undefined;
+			headers?: any;
+		} | undefined;
+	}>>>;
+	export function postApiFunctionSchema(requestBodySchema: any): z.ZodFunction<z.ZodTuple<[z.ZodObject<{
+		params: z.ZodRecord<z.ZodString, z.ZodString>;
+		searchParams: z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodArray<z.ZodString, "many">]>>;
+		body: any;
+	}, "strip", z.ZodTypeAny, {
+		params: Record<string, string>;
+		searchParams: Record<string, string | string[]>;
+		body?: any;
+	}, {
+		params: Record<string, string>;
+		searchParams: Record<string, string | string[]>;
+		body?: any;
+	}>], z.ZodUnknown>, z.ZodPromise<z.ZodObject<{
+		body: z.ZodAny;
+		init: z.ZodOptional<z.ZodObject<{
+			status: z.ZodOptional<z.ZodNumber>;
+			statusText: z.ZodOptional<z.ZodString>;
+			headers: z.ZodOptional<z.ZodAny>;
+		}, "strip", z.ZodTypeAny, {
+			status?: number | undefined;
+			statusText?: string | undefined;
+			headers?: any;
+		}, {
+			status?: number | undefined;
+			statusText?: string | undefined;
+			headers?: any;
+		}>>; /**
+		 * @template Params
+		 * @template RequestBody
+		 * @template Response
+		 * @typedef {function(IApiFunctionParams & {body: Partial<RequestBody>}): Promise<EventResponse<Response>>} IPatchApiFunction
+		 */
+	}, "strip", z.ZodTypeAny, {
+		body?: any;
+		init?: {
+			status?: number | undefined;
+			statusText?: string | undefined;
+			headers?: any;
+		} | undefined;
+	}, {
+		body?: any;
+		init?: {
+			status?: number | undefined;
+			statusText?: string | undefined;
+			headers?: any;
+		} | undefined;
+	}>>>;
+	export function putApiFunctionSchema(requestBodySchema: any): z.ZodFunction<z.ZodTuple<[z.ZodObject<{
+		params: z.ZodRecord<z.ZodString, z.ZodString>;
+		searchParams: z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodArray<z.ZodString, "many">]>>;
+		body: any;
+	}, "strip", z.ZodTypeAny, {
+		params: Record<string, string>;
+		searchParams: Record<string, string | string[]>;
+		body?: any;
+	}, {
+		params: Record<string, string>;
+		searchParams: Record<string, string | string[]>;
+		body?: any;
+	}>], z.ZodUnknown>, z.ZodPromise<z.ZodObject<{
+		body: z.ZodAny;
+		init: z.ZodOptional<z.ZodObject<{
+			status: z.ZodOptional<z.ZodNumber>;
+			statusText: z.ZodOptional<z.ZodString>;
+			headers: z.ZodOptional<z.ZodAny>;
+		}, "strip", z.ZodTypeAny, {
+			status?: number | undefined;
+			statusText?: string | undefined;
+			headers?: any;
+		}, {
+			status?: number | undefined;
+			statusText?: string | undefined;
+			headers?: any;
+		}>>; /**
+		 * @template Params
+		 * @template RequestBody
+		 * @template Response
+		 * @typedef {function(IApiFunctionParams & {body: Partial<RequestBody>}): Promise<EventResponse<Response>>} IPatchApiFunction
+		 */
+	}, "strip", z.ZodTypeAny, {
+		body?: any;
+		init?: {
+			status?: number | undefined;
+			statusText?: string | undefined;
+			headers?: any;
+		} | undefined;
+	}, {
+		body?: any;
+		init?: {
+			status?: number | undefined;
+			statusText?: string | undefined;
+			headers?: any;
+		} | undefined;
+	}>>>;
+	export function patchApiFunctionSchema(requestBodySchema: any): z.ZodFunction<z.ZodTuple<[z.ZodObject<{
+		params: z.ZodRecord<z.ZodString, z.ZodString>;
+		searchParams: z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodArray<z.ZodString, "many">]>>;
+		body: any;
+	}, "strip", z.ZodTypeAny, {
+		params: Record<string, string>;
+		searchParams: Record<string, string | string[]>;
+		body?: any;
+	}, {
+		params: Record<string, string>;
+		searchParams: Record<string, string | string[]>;
+		body?: any;
+	}>], z.ZodUnknown>, z.ZodPromise<z.ZodObject<{
+		body: z.ZodAny;
+		init: z.ZodOptional<z.ZodObject<{
+			status: z.ZodOptional<z.ZodNumber>;
+			statusText: z.ZodOptional<z.ZodString>;
+			headers: z.ZodOptional<z.ZodAny>;
+		}, "strip", z.ZodTypeAny, {
+			status?: number | undefined;
+			statusText?: string | undefined;
+			headers?: any;
+		}, {
+			status?: number | undefined;
+			statusText?: string | undefined;
+			headers?: any;
+		}>>; /**
+		 * @template Params
+		 * @template RequestBody
+		 * @template Response
+		 * @typedef {function(IApiFunctionParams & {body: Partial<RequestBody>}): Promise<EventResponse<Response>>} IPatchApiFunction
+		 */
+	}, "strip", z.ZodTypeAny, {
+		body?: any;
+		init?: {
+			status?: number | undefined;
+			statusText?: string | undefined;
+			headers?: any;
+		} | undefined;
+	}, {
+		body?: any;
+		init?: {
+			status?: number | undefined;
+			statusText?: string | undefined;
+			headers?: any;
+		} | undefined;
+	}>>>;
+
+	export const deleteApiFunctionSchema: z.ZodFunction<z.ZodTuple<[z.ZodObject<{
+		searchParams: z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodArray<z.ZodString, "many">]>>;
+		params: z.ZodRecord<z.ZodString, z.ZodString>;
+	}, "strip", z.ZodTypeAny, {
+		params: Record<string, string>;
+		searchParams: Record<string, string | string[]>;
+	}, {
+		params: Record<string, string>;
+		searchParams: Record<string, string | string[]>;
+	}>], z.ZodUnknown>, z.ZodPromise<z.ZodObject<{
+		body: z.ZodAny;
+		init: z.ZodOptional<z.ZodObject<{
+			status: z.ZodOptional<z.ZodNumber>;
+			statusText: z.ZodOptional<z.ZodString>;
+			headers: z.ZodOptional<z.ZodAny>;
+		}, "strip", z.ZodTypeAny, {
+			status?: number | undefined;
+			statusText?: string | undefined;
+			headers?: any;
+		}, {
+			status?: number | undefined;
+			statusText?: string | undefined;
+			headers?: any;
+		}>>; /**
+		 * @template Params
+		 * @template RequestBody
+		 * @template Response
+		 * @typedef {function(IApiFunctionParams & {body: Partial<RequestBody>}): Promise<EventResponse<Response>>} IPatchApiFunction
+		 */
+	}, "strip", z.ZodTypeAny, {
+		body?: any;
+		init?: {
+			status?: number | undefined;
+			statusText?: string | undefined;
+			headers?: any;
+		} | undefined;
+	}, {
+		body?: any;
+		init?: {
+			status?: number | undefined;
+			statusText?: string | undefined;
+			headers?: any;
+		} | undefined;
+	}>>>;
+	export type IApiFunctionParams = {
+		searchParams: {
+			[x: string]: string | string[];
+		};
+		params: Record<string, string>;
+	};
+	export type IApiEntityFunctionParams = IApiFunctionParams & {
+		id: string;
+	};
+	export type IApiFunction<Params, Response_1> = (arg0: IApiFunctionParams) => Promise<EventResponse<any>>;
+	export type IQueryApiFunction<Params, Response_1> = IApiFunction<Params, Response>;
+	export type GetApiFunction<Params, Response_1> = IApiFunction<Params, Response>;
+	export type IPostApiFunction<Params, RequestBody, Response_1> = (arg0: IApiFunctionParams & {
+		body: Partial<RequestBody>;
+	}) => Promise<EventResponse<Response>>;
+	export type IPutApiFunction<Params, RequestBody, Response_1> = (arg0: IApiFunctionParams & {
+		body: Partial<RequestBody>;
+	}) => Promise<EventResponse<Response>>;
+	export type IPatchApiFunction<Params, RequestBody, Response_1> = (arg0: IApiFunctionParams & {
+		body: Partial<RequestBody>;
+	}) => Promise<EventResponse<Response>>;
+	export type IDeleteApiFunction<Params, Response_1> = IApiFunction<Params, Response>;
 }
 
 declare module '@scout9/app/spirits' {

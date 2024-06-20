@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { agentsConfigurationSchema, agentsBaseConfigurationSchema } from './agent.js';
+import { agentsConfigurationSchema, agentsBaseConfigurationSchema } from './users.js';
 import { entitiesRootProjectConfigurationSchema } from './entity.js';
 import { WorkflowsConfigurationSchema } from './workflow.js';
 
@@ -40,21 +40,46 @@ const bardSchema = z.object({
   model: z.string()
 });
 
+/**
+ * Configure personal model transformer (PMT) settings to align auto replies the agent's tone
+ */
 const pmtSchema = z.object({
   engine: z.literal('scout9'),
   // model: pmtModelOptions
   model: z.string()
+}, {
+  description: 'Configure personal model transformer (PMT) settings to align auto replies the agent\'s tone'
 });
 
-export const Scout9ProjectBuildConfigSchema = z.object({
+/**
+ * Represents the configuration provided in src/index.{js | ts} in a project
+ * @typedef {import('zod').infer<typeof Scout9ProjectConfigSchema>} IScout9ProjectConfig
+ */
+export const Scout9ProjectConfigSchema = z.object({
+  /**
+   * Tag to reference this application
+   * @defaut your local package.json name + version, or scout9-app-v1.0.0
+   */
   tag: z.string().optional(), // Defaults to scout9-app-v1.0.0
-  agents: agentsBaseConfigurationSchema,
-  entities: entitiesRootProjectConfigurationSchema,
-  workflows: WorkflowsConfigurationSchema,
   llm: z.union([llmSchema, llamaSchema, bardSchema]),
+  /**
+   * Configure personal model transformer (PMT) settings to align auto replies the agent's tone
+   */
   pmt: pmtSchema,
-  initialContext: z.array(z.string()),
-  maxLockAttempts: z.number().min(0).max(20).optional(),
+
+  /**
+   * Determines the max auto replies without further conversation progression (defined by new context data gathered)
+   * before the conversation is locked and requires manual intervention
+   * @default 3
+   */
+  maxLockAttempts: z.number({
+    description: 'Determines the max auto replies without further conversation progression (defined by new context data gathered), before the conversation is locked and requires manual intervention'
+  }).min(0).max(20).default(3).optional(),
+
+  initialContext: z.array(z.string(), {
+    description: 'Configure the initial contexts for every conversation'
+  }),
+
   organization: z.object({
     name: z.string(),
     description: z.string(),
@@ -66,4 +91,15 @@ export const Scout9ProjectBuildConfigSchema = z.object({
     email: z.string().email().optional(),
     phone: z.string().optional(),
   }).optional()
+})
+
+/**
+ * @typedef {import('zod').infer<typeof Scout9ProjectBuildConfigSchema>} IScout9ProjectBuildConfig
+ */
+export const Scout9ProjectBuildConfigSchema = Scout9ProjectConfigSchema.extend({
+  agents: agentsBaseConfigurationSchema,
+  entities: entitiesRootProjectConfigurationSchema,
+  workflows: WorkflowsConfigurationSchema
 });
+
+

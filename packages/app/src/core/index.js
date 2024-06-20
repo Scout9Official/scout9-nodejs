@@ -20,34 +20,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 
-/**
- * @returns {Promise<string>} - the output directory
- */
-// async function runNpmRunBuild({cwd = process.cwd(), src = 'src'} = {}) {
-//   const pkg = JSON.parse(fss.readFileSync(new URL(`${cwd}/package.json`, import.meta.url), 'utf-8'));
-//   // Package.json must have a "build" script
-//   const buildScript = pkg.scripts?.build;
-//   if (!buildScript) {
-//     // If no build script then just return src
-//     return path.resolve(cwd, src);
-//   }
-//   // "build" script cannot contain "scout9 build" (otherwise we'll get stuck in a loop)
-//   if (buildScript.includes('scout9 build')) {
-//     throw new Error(`"build" script in ${cwd}/package.json cannot contain "scout9 build"`);
-//   }
-//
-//   return new Promise((resolve, reject) => {
-//     exec('npm run build', {cwd}, (error, stdout, stderr) => {
-//       if (error) {
-//         return reject(error);
-//       }
-//       // @TODO don't assume build script created a "build" directory (use a config)
-//       return resolve(path.resolve(cwd, 'build'));
-//     });
-//   });
-// }
-
-
 function zipDirectory(source, out) {
   const archive = archiver('tar', {
     gzip: true,
@@ -126,7 +98,7 @@ async function downloadAndUnpackZip(outputDir) {
  * @param {string} cwd
  * @param {string} src
  * @param {string} dest
- * @param {Scout9ProjectBuildConfig} config
+ * @param {import('../runtime/client/config.js').IScout9ProjectBuildConfig} config
  * @returns {Promise<void>}
  */
 async function buildApp(cwd, src, dest, config) {
@@ -245,6 +217,13 @@ async function downloadDevApp(destination, version) {
 
 }
 
+/**
+ * @param {Object} [options]
+ * @param {string} [options.cwd]
+ * @param {string} [options.src]
+ * @param {boolean} [options.ignoreAppRequire]
+ * @returns {Promise<{app: *, fileName: string, exe: string, filePath: string}>}
+ */
 export async function getApp({cwd = process.cwd(), src = 'src', ignoreAppRequire = false} = {}) {
   const indexTsPath = path.resolve(cwd, src, 'index.ts');
   const indexJsPath = path.resolve(cwd, src, 'index.js');
@@ -313,10 +292,10 @@ export async function getAgentContacts() {
  * Runs a given project container from scout9 to given environment
  * Runs the project in a container
  *
- * @param {WorkflowEvent} event - every workflow receives an event object
+ * @param {import('../runtime/client/workflow.js').IWorkflowEvent} event - every workflow receives an event object
  * @param {Object} options
  * @param {string} options.eventSource - the source path of the event
- * @returns {Promise<WorkflowResponse<any>>}
+ * @returns {Promise<import('../runtime/client/workflow.js').IWorkflowResponse>}
  */
 export async function run(event, {eventSource} = {}) {
   const result = WorkflowEventSchema.safeParse(event);
@@ -359,7 +338,7 @@ export async function runConfig() {
 /**
  * Builds a local project
  * @param {{cwd: string; src: string; dest: string; logger: ProgressLogger; mode: string;}} - build options
- * @param {Scout9ProjectBuildConfig} config
+ * @param {import('../runtime/client/').IScout9ProjectBuildConfig} config
  * @returns {messages: string[]}
  */
 export async function build({
@@ -408,6 +387,7 @@ export async function build({
  * Deploys a local project to scout9
  * @param {{cwd: string; src: string, dest: string}} - build options
  * @param {Scout9ProjectBuildConfig} config
+ * @return {Promise<{deploy: Object, contacts: any}>}
  */
 export async function deploy(
   {cwd = process.cwd(), src = './src', dest = '/tmp/project', logger = new ProgressLogger()},
@@ -455,7 +435,7 @@ export async function deploy(
 /**
  * Tests a local project to scout9 by running a dummy parse command with the project's local entities
  * @param {{cwd: string; src: string, dest: string}} - build options
- * @param {Scout9ProjectBuildConfig} config
+ * @param {import('../runtime/client/config.js').IScout9ProjectBuildConfig} config
  */
 export async function test(
   {cwd = process.cwd(), src = './src', dest = '/tmp/project', logger = new ProgressLogger()},
@@ -487,8 +467,8 @@ export async function test(
 /**
  *
  * @param {{cwd: string; src: string; projectFiles: ProjectFiles; logger: ProgressLogger}} options
- * @param {Scout9ProjectBuildConfig} config
- * @returns {Promise<{success: boolean; config: Scout9ProjectBuildConfig}>}
+ * @param {import('../runtime/client/config.js').IScout9ProjectBuildConfig} config
+ * @returns {Promise<{success: boolean; config: import('../runtime/client/config.js').IScout9ProjectBuildConfig}>}
  */
 export async function sync({
   cwd = process.cwd(), src = 'src',

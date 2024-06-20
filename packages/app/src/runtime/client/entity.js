@@ -2,7 +2,10 @@ import { z } from 'zod';
 import { zId } from './utils.js';
 
 
-export const _entityApiConfigurationSchema = z.object({
+/**
+ * @typedef {import('zod').infer<typeof entityApiConfigurationSchema>} IEntityApiConfiguration
+ */
+export const entityApiConfigurationSchema = z.object({
   // path: z.string(),
   GET: z.boolean().optional(),
   UPDATE: z.boolean().optional(),
@@ -10,9 +13,7 @@ export const _entityApiConfigurationSchema = z.object({
   PUT: z.boolean().optional(),
   PATCH: z.boolean().optional(),
   DELETE: z.boolean().optional()
-})
-
-export const entityApiConfigurationSchema = _entityApiConfigurationSchema.nullable();
+}).nullable();
 
 const entityConfigurationDefinitionSchema = z.object({
   utterance: zId('Utterance', z.string({description: 'What entity utterance this represents, if not provided, it will default to the entity id'}))
@@ -39,6 +40,9 @@ const _entityConfigurationSchema = z.object({
   tests: z.array(entityConfigurationTestSchema).optional()
 }).strict();
 
+/**
+ * @typedef {import('zod').infer<typeof entityConfigurationSchema>} IEntityConfiguration
+ */
 export const entityConfigurationSchema = _entityConfigurationSchema.refine((data) => {
   // If 'definitions' is provided, then 'training' must also be provided
   if (data.definitions !== undefined) {
@@ -51,6 +55,9 @@ export const entityConfigurationSchema = _entityConfigurationSchema.refine((data
   message: "If 'definitions' is provided, then 'training' must also be provided",
 });
 
+/**
+ * @typedef {import('zod').infer<typeof entitiesRootConfigurationSchema>} IEntitiesRootConfiguration
+ */
 export const entitiesRootConfigurationSchema = z.array(entityConfigurationSchema);
 
 
@@ -65,7 +72,10 @@ const entityExtendedProjectConfigurationSchema = z.object({
 const _entityRootProjectConfigurationSchema = _entityConfigurationSchema.extend(entityExtendedProjectConfigurationSchema.shape);
 const _entitiesRootProjectConfigurationSchema = z.array(_entityRootProjectConfigurationSchema);
 
-// @TODO why type extend not valid?
+/**
+ * @TODO why type extend not valid?
+ * @typedef {import('zod').infer<typeof entityRootProjectConfigurationSchema>} IEntityRootProjectConfiguration
+ */
 export const entityRootProjectConfigurationSchema = _entityConfigurationSchema.extend(entityExtendedProjectConfigurationSchema.shape).refine((data) => {
   // If 'definitions' is provided, then 'training' must also be provided
   if (data.definitions !== undefined) {
@@ -77,4 +87,8 @@ export const entityRootProjectConfigurationSchema = _entityConfigurationSchema.e
   // Custom error message
   message: "If 'definitions' is provided, then 'training' must also be provided",
 });
+
+/**
+ * @typedef {import('zod').infer<typeof entitiesRootProjectConfigurationSchema>} IEntitiesRootProjectConfiguration
+ */
 export const entitiesRootProjectConfigurationSchema = z.array(entityRootProjectConfigurationSchema);

@@ -2,8 +2,14 @@ import { z } from 'zod';
 import { zId } from './utils.js';
 import { MessageSchema } from './message.js';
 
+/**
+ * @typedef {import('zod').infer<typeof customerValueSchema>} ICustomerValue
+ */
 export const customerValueSchema = z.union([z.boolean(), z.number(), z.string()]);
 
+/**
+ * @typedef {import('zod').infer<typeof customerSchema>} ICustomer
+ */
 export const customerSchema = z.object({
   firstName: z.string().optional(),
   lastName: z.string().optional(),
@@ -24,13 +30,16 @@ export const customerSchema = z.object({
   stripeDev: z.string().nullable().optional()
 }).catchall(customerValueSchema);
 
-
+/**
+ * @typedef {import('zod').infer<typeof agentBaseConfigurationSchema>} IAgentBase
+ */
 export const agentBaseConfigurationSchema = z.object({
   deployed: z.object({
     web: z.string({description: 'Web URL for agent'}).optional(),
     phone: z.string({description: 'Phone number for agent'}).optional(),
     email: z.string({description: 'Email address for agent'}).optional()
   }).optional(),
+  img: z.string().nullable().optional(),
   firstName: z.string({description: 'Agent first name'}).optional(),
   lastName: z.string({description: 'Agent last name'}).optional(),
   inactive: z.boolean({description: 'Agent is inactive'}).optional(),
@@ -46,11 +55,23 @@ export const agentBaseConfigurationSchema = z.object({
   model: z.enum(['Scout9', 'bard', 'openai']).optional().default('openai'),
   transcripts: z.array(z.array(MessageSchema)).optional(),
   audios: z.array(z.any()).optional()
-
 });
+
+/**
+ * @typedef {import('zod').infer<typeof agentBaseConfigurationSchema>} IAgent
+ * @typedef {import('zod').infer<typeof agentBaseConfigurationSchema>} IPersona
+ */
 export const agentConfigurationSchema = agentBaseConfigurationSchema.extend({
-  id: zId('Agent ID', z.string({description: 'Unique ID for agent'})),
-})
+  id: zId('Agent ID', {description: 'Unique ID for agent'}),
+});
+
+/**
+ * @typedef {import('zod').infer<typeof agentsConfigurationSchema>} IAgentsConfiguration
+ */
 export const agentsConfigurationSchema = z.array(agentConfigurationSchema);
 
+/**
+ * @typedef {import('zod').infer<typeof agentsBaseConfigurationSchema>} IAgentsBaseConfiguration
+ */
 export const agentsBaseConfigurationSchema = z.array(agentBaseConfigurationSchema);
+
