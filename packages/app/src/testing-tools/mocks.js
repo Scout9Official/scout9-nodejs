@@ -1,7 +1,7 @@
 import moment from 'moment';
 
 /**
- * @returns {import('@scout9/app').IAgent}
+ * @returns {import('../runtime/client/users.js').IAgent}
  */
 export const createMockAgent = (firstName = 'Carmela', lastName = 'Soprano') => {
   return {
@@ -12,7 +12,7 @@ export const createMockAgent = (firstName = 'Carmela', lastName = 'Soprano') => 
 }
 
 /**
- * @returns {import('@scout9/app').ICustomer}
+ * @returns {import('../runtime/client/users.js').ICustomer}
  */
 export const createMockCustomer = (firstName = 'Tony', lastName = 'Soprano') => {
   return {
@@ -28,7 +28,7 @@ export const createMockCustomer = (firstName = 'Tony', lastName = 'Soprano') => 
  * @param content
  * @param role
  * @param time
- * @returns {import('@scout9/app').IMessage}
+ * @returns {import('../runtime/client/message.js').IMessage}
  */
 export const createMockMessage = (content, role = 'customer', time  = moment().toISOString()) => {
   return {
@@ -42,7 +42,7 @@ export const createMockMessage = (content, role = 'customer', time  = moment().t
 }
 
 /**
- * @returns {import('@scout9/app').IConversation}
+ * @returns {import('../runtime/client/workflow.js').IConversation}
  */
 export const createMockConversation = (environment = 'phone', $agent = 'default', $customer = 'default') => {
   return {
@@ -54,8 +54,8 @@ export const createMockConversation = (environment = 'phone', $agent = 'default'
 
 /**
  * @param {string} message
- * @param {string | import('@scout9/app').IWorkflowEvent['intent'] | null} intent
- * @returns {import('@scout9/app').IWorkflowEvent}
+ * @param {string | import('../runtime/client/workflow.js').IWorkflowEvent['intent'] | null} intent
+ * @returns {import('../runtime/client/workflow.js').IWorkflowEvent}
  */
 export const createMockWorkflowEvent = (
   message,

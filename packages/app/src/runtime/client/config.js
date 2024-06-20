@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { agentsConfigurationSchema, agentsBaseConfigurationSchema } from './users.js';
+import { agentsBaseConfigurationSchema } from './users.js';
 import { entitiesRootProjectConfigurationSchema } from './entity.js';
 import { WorkflowsConfigurationSchema } from './workflow.js';
 

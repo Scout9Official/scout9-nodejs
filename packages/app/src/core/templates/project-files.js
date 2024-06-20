@@ -15,7 +15,7 @@ const resolveFilePath = () => {
 export const entities = {
   /**
    * Generates ./src/entities/
-   * @param {import('@scout9/app').IScout9ProjectBuildConfig} config
+   * @param {import('../../runtime/client/config.js').IScout9ProjectBuildConfig} config
    * @param {string} cwd
    * @param {string} src
    * @returns {Promise<void>}

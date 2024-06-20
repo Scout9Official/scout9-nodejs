@@ -177,6 +177,7 @@ export interface Conversation {
 }
 
 /**
+ * @typedef {import('./runtime/client/message.js').IMessage} IMessage
  * @deprecated use IMessage
  */
 export interface Message {
