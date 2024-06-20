@@ -330,11 +330,11 @@ declare module '@scout9/app' {
 }
 
 declare module '@scout9/app/testing-tools' {
-	export function createMockAgent(firstName?: string, lastName?: string): import('@scout9/app').Agent;
-	export function createMockCustomer(firstName?: string, lastName?: string): import('@scout9/app').Customer;
-	export function createMockMessage(content: any, role?: string, time?: string): import('@scout9/app').Message;
-	export function createMockConversation(environment?: string, $agent?: string, $customer?: string): import('@scout9/app').Conversation;
-	export function createMockWorkflowEvent(message: string, intent?: string | import('@scout9/app').WorkflowEvent['intent'] | null): import('@scout9/app').WorkflowEvent;
+	export function createMockAgent(firstName?: string, lastName?: string): any;
+	export function createMockCustomer(firstName?: string, lastName?: string): any;
+	export function createMockMessage(content: any, role?: string, time?: string): any;
+	export function createMockConversation(environment?: string, $agent?: string, $customer?: string): any;
+	export function createMockWorkflowEvent(message: string, intent?: string | import('@scout9/app').IWorkflowEvent['intent'] | null): any;
 	/**
 	 * Testing tool kit, used to handle Scout9 operations such as parsing, workflow, and generating responses
 	 */
@@ -355,19 +355,19 @@ declare module '@scout9/app/testing-tools' {
 			persona: any;
 			customer: any;
 			context: any;
-			conversation?: import("@scout9/app").Conversation | undefined;
+			conversation?: any;
 			api: any;
 			app: any;
 			project: any;
 		});
 		
-		customer: import('@scout9/app').Customer;
+		customer: any;
 		
-		persona: import('@scout9/app').Persona;
+		persona: any;
 		
-		conversation: import('@scout9/app').Conversation;
+		conversation: any;
 		
-		messages: import('@scout9/app').Message[];
+		messages: import('@scout9/app').IMessage[];
 		
 		context: any;
 		
@@ -412,7 +412,7 @@ declare module '@scout9/app/testing-tools' {
 		 * @param message - the message to run through the workflow
 		 * @param event - additional event data
 		 * */
-		workflow(message: string, event?: Omit<Partial<import('@scout9/app').WorkflowEvent>, 'message'> | undefined): Promise<import('@scout9/app').WorkflowResponse>;
+		workflow(message: string, event?: Omit<Partial<import('@scout9/app').IWorkflowEvent>, 'message'> | undefined): Promise<import('@scout9/app').IWorkflowResponse>;
 		/**
 		 * Generate a response to the user from the given or registered persona's voice in relation to the current conversation's context.
 		 * @param {Object} input - Generation input, defaults to test registered data such as existing messages, context, and persona information.
@@ -420,7 +420,7 @@ declare module '@scout9/app/testing-tools' {
 		generate({ personaId, conversation, messages, context }?: {
 			personaId?: string | undefined;
 			conversation?: Partial<import("@scout9/admin").ConversationCreateRequest> | undefined;
-			messages?: import("@scout9/app").Message[] | undefined;
+			messages?: any[] | undefined;
 			context?: any;
 		} | undefined): Promise<import('@scout9/admin').GenerateResponse>;
 		
@@ -449,36 +449,36 @@ declare module '@scout9/app/testing-tools' {
 		/**
 		 * - used to define generation and extract persona metadata
 		 */
-		config: import('@scout9/app').Scout9ProjectBuildConfig;
-		conversation: import('@scout9/app').Conversation;
-		messages: Array<import('@scout9/app').Message>;
+		config: any;
+		conversation: any;
+		messages: Array<import('@scout9/app').IMessage>;
 		/**
 		 * - the message sent by the customer (should exist in messages)
 		 */
-		message: import('@scout9/app').Message;
-		customer: import('@scout9/app').Customer;
+		message: any;
+		customer: any;
 		context: any;
 	};
 	export type ParseOutput = {
-		messages: Array<import('@scout9/app').Message>;
-		conversation: import('@scout9/app').Conversation;
-		message: import('@scout9/app').Message;
+		messages: Array<import('@scout9/app').IMessage>;
+		conversation: any;
+		message: any;
 		context: any;
 	};
 	export type WorkflowOutput = {
-		slots: Array<import('@scout9/app').WorkflowResponseSlot>;
-		messages: Array<import('@scout9/app').Message>;
-		conversation: import('@scout9/app').Conversation;
+		slots: Array<import('@scout9/app').IWorkflowResponseSlot>;
+		messages: Array<import('@scout9/app').IMessage>;
+		conversation: any;
 		context: any;
 	};
 	export type GenerateOutput = {
 		generate: import('@scout9/admin').GenerateResponse | undefined;
-		messages: Array<import('@scout9/app').Message>;
-		conversation: import('@scout9/app').Conversation;
+		messages: Array<import('@scout9/app').IMessage>;
+		conversation: any;
 		context: any;
 	};
 	export type ParseFun = (message: string, language: string | undefined) => Promise<import('@scout9/admin').ParseResponse>;
-	export type WorkflowFun = (event: import('@scout9/app').WorkflowEvent) => Promise<import('@scout9/app').WorkflowResponse>;
+	export type WorkflowFun = (event: any) => Promise<import('@scout9/app').IWorkflowResponse>;
 	export type GenerateFun = (data: import('@scout9/admin').GenerateRequestOneOf) => Promise<import('@scout9/admin').GenerateResponse>;
 	export type IdGeneratorFun = (prefix: any) => string;
 	export type StatusCallback = (message: string, level?: 'info' | 'warn' | 'error' | 'success' | undefined, type?: string | undefined, payload?: any | undefined) => void;
@@ -490,13 +490,13 @@ declare module '@scout9/app/testing-tools' {
 		progress?: StatusCallback | undefined;
 	};
 	export type ConversationEvent = {
-		conversation: Change<import('@scout9/app').Conversation> & {
+		conversation: Change<import('@scout9/app').IConversation> & {
 			forwardNote?: string;
 			forward?: import('@scout9/app').WorkflowResponseSlot['forward'];
 		};
-		messages: Change<Array<import('@scout9/app').Message>>;
+		messages: Change<Array<import('@scout9/app').IMessage>>;
 		context: Change<Object>;
-		message: Change<import('@scout9/app').Message>;
+		message: Change<import('@scout9/app').IMessage>;
 	};
 }
 
@@ -598,6 +598,7 @@ declare module '@scout9/app/types' {
 			context: z.ZodOptional<z.ZodAny>;
 			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
 			intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+			delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
 		}, "strip", z.ZodTypeAny, {
 			time: string;
 			id: string;
@@ -608,6 +609,7 @@ declare module '@scout9/app/types' {
 			context?: any;
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
+			delayInSeconds?: number | null | undefined;
 		}, {
 			time: string;
 			id: string;
@@ -618,6 +620,7 @@ declare module '@scout9/app/types' {
 			context?: any;
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
+			delayInSeconds?: number | null | undefined;
 		}>, "many">, "many">>;
 		audios: z.ZodOptional<z.ZodArray<z.ZodAny, "many">>;
 	}, "strip", z.ZodTypeAny, {
@@ -650,6 +653,7 @@ declare module '@scout9/app/types' {
 			context?: any;
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
+			delayInSeconds?: number | null | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
 	}, {
@@ -682,6 +686,7 @@ declare module '@scout9/app/types' {
 			context?: any;
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
+			delayInSeconds?: number | null | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
 	}>;
@@ -703,6 +708,7 @@ declare module '@scout9/app/types' {
 			context: z.ZodOptional<z.ZodAny>;
 			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
 			intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+			delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
 		}, "strip", z.ZodTypeAny, {
 			time: string;
 			id: string;
@@ -713,6 +719,7 @@ declare module '@scout9/app/types' {
 			context?: any;
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
+			delayInSeconds?: number | null | undefined;
 		}, {
 			time: string;
 			id: string;
@@ -723,6 +730,7 @@ declare module '@scout9/app/types' {
 			context?: any;
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
+			delayInSeconds?: number | null | undefined;
 		}>, "many">, "many">>;
 		audios: z.ZodOptional<z.ZodArray<z.ZodAny, "many">>;
 		includedLocations: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
@@ -766,6 +774,7 @@ declare module '@scout9/app/types' {
 			context?: any;
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
+			delayInSeconds?: number | null | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
 		includedLocations?: string[] | undefined;
@@ -798,6 +807,7 @@ declare module '@scout9/app/types' {
 			context?: any;
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
+			delayInSeconds?: number | null | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
 		includedLocations?: string[] | undefined;
@@ -832,6 +842,7 @@ declare module '@scout9/app/types' {
 			context: z.ZodOptional<z.ZodAny>;
 			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
 			intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+			delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
 		}, "strip", z.ZodTypeAny, {
 			time: string;
 			id: string;
@@ -842,6 +853,7 @@ declare module '@scout9/app/types' {
 			context?: any;
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
+			delayInSeconds?: number | null | undefined;
 		}, {
 			time: string;
 			id: string;
@@ -852,6 +864,7 @@ declare module '@scout9/app/types' {
 			context?: any;
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
+			delayInSeconds?: number | null | undefined;
 		}>, "many">, "many">>;
 		audios: z.ZodOptional<z.ZodArray<z.ZodAny, "many">>;
 		includedLocations: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
@@ -895,6 +908,7 @@ declare module '@scout9/app/types' {
 			context?: any;
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
+			delayInSeconds?: number | null | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
 		includedLocations?: string[] | undefined;
@@ -927,6 +941,7 @@ declare module '@scout9/app/types' {
 			context?: any;
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
+			delayInSeconds?: number | null | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
 		includedLocations?: string[] | undefined;
@@ -982,6 +997,7 @@ declare module '@scout9/app/types' {
 			context: z.ZodOptional<z.ZodAny>;
 			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
 			intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+			delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
 		}, "strip", z.ZodTypeAny, {
 			time: string;
 			id: string;
@@ -992,6 +1008,7 @@ declare module '@scout9/app/types' {
 			context?: any;
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
+			delayInSeconds?: number | null | undefined;
 		}, {
 			time: string;
 			id: string;
@@ -1002,6 +1019,7 @@ declare module '@scout9/app/types' {
 			context?: any;
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
+			delayInSeconds?: number | null | undefined;
 		}>, "many">, "many">>;
 		audios: z.ZodOptional<z.ZodArray<z.ZodAny, "many">>;
 	}, "strip", z.ZodTypeAny, {
@@ -1034,6 +1052,7 @@ declare module '@scout9/app/types' {
 			context?: any;
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
+			delayInSeconds?: number | null | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
 	}, {
@@ -1066,6 +1085,7 @@ declare module '@scout9/app/types' {
 			context?: any;
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
+			delayInSeconds?: number | null | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
 	}>, "many">;
@@ -1248,7 +1268,6 @@ declare module '@scout9/app/types' {
 			phone?: string | undefined;
 		}>>;
 	}, "strip", z.ZodTypeAny, {
-		initialContext: string[];
 		llm: {
 			model: string;
 			engine: "openai";
@@ -1263,6 +1282,7 @@ declare module '@scout9/app/types' {
 			model: string;
 			engine: "scout9";
 		};
+		initialContext: string[];
 		tag?: string | undefined;
 		maxLockAttempts?: number | undefined;
 		organization?: {
@@ -1277,7 +1297,6 @@ declare module '@scout9/app/types' {
 			phone?: string | undefined;
 		} | undefined;
 	}, {
-		initialContext: string[];
 		llm: {
 			model: string;
 			engine: "openai";
@@ -1292,6 +1311,7 @@ declare module '@scout9/app/types' {
 			model: string;
 			engine: "scout9";
 		};
+		initialContext: string[];
 		tag?: string | undefined;
 		maxLockAttempts?: number | undefined;
 		organization?: {
@@ -1339,7 +1359,6 @@ declare module '@scout9/app/types' {
 			email?: string | undefined;
 			phone?: string | undefined;
 		}>>;
-		initialContext: z.ZodArray<z.ZodString, "many">;
 		tag: z.ZodOptional<z.ZodString>;
 		llm: z.ZodUnion<[z.ZodObject<{
 			engine: z.ZodLiteral<"openai">;
@@ -1380,6 +1399,7 @@ declare module '@scout9/app/types' {
 			engine: "scout9";
 		}>;
 		maxLockAttempts: z.ZodOptional<z.ZodDefault<z.ZodNumber>>;
+		initialContext: z.ZodArray<z.ZodString, "many">;
 		agents: z.ZodArray<z.ZodObject<{
 			deployed: z.ZodOptional<z.ZodObject<{
 				web: z.ZodOptional<z.ZodString>;
@@ -1418,6 +1438,7 @@ declare module '@scout9/app/types' {
 				context: z.ZodOptional<z.ZodAny>;
 				intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
 				intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+				delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
 			}, "strip", z.ZodTypeAny, {
 				time: string;
 				id: string;
@@ -1428,6 +1449,7 @@ declare module '@scout9/app/types' {
 				context?: any;
 				intent?: string | null | undefined;
 				intentScore?: number | null | undefined;
+				delayInSeconds?: number | null | undefined;
 			}, {
 				time: string;
 				id: string;
@@ -1438,6 +1460,7 @@ declare module '@scout9/app/types' {
 				context?: any;
 				intent?: string | null | undefined;
 				intentScore?: number | null | undefined;
+				delayInSeconds?: number | null | undefined;
 			}>, "many">, "many">>;
 			audios: z.ZodOptional<z.ZodArray<z.ZodAny, "many">>;
 		}, "strip", z.ZodTypeAny, {
@@ -1470,6 +1493,7 @@ declare module '@scout9/app/types' {
 				context?: any;
 				intent?: string | null | undefined;
 				intentScore?: number | null | undefined;
+				delayInSeconds?: number | null | undefined;
 			}[][] | undefined;
 			audios?: any[] | undefined;
 		}, {
@@ -1502,6 +1526,7 @@ declare module '@scout9/app/types' {
 				context?: any;
 				intent?: string | null | undefined;
 				intentScore?: number | null | undefined;
+				delayInSeconds?: number | null | undefined;
 			}[][] | undefined;
 			audios?: any[] | undefined;
 		}>, "many">;
@@ -1733,6 +1758,7 @@ declare module '@scout9/app/types' {
 				context?: any;
 				intent?: string | null | undefined;
 				intentScore?: number | null | undefined;
+				delayInSeconds?: number | null | undefined;
 			}[][] | undefined;
 			audios?: any[] | undefined;
 		}[];
@@ -1765,7 +1791,6 @@ declare module '@scout9/app/types' {
 				utterance?: string | undefined;
 			}[] | undefined;
 		}[];
-		initialContext: string[];
 		llm: {
 			model: string;
 			engine: "openai";
@@ -1780,6 +1805,7 @@ declare module '@scout9/app/types' {
 			model: string;
 			engine: "scout9";
 		};
+		initialContext: string[];
 		workflows: {
 			entity: string;
 			entities: string[];
@@ -1828,6 +1854,7 @@ declare module '@scout9/app/types' {
 				context?: any;
 				intent?: string | null | undefined;
 				intentScore?: number | null | undefined;
+				delayInSeconds?: number | null | undefined;
 			}[][] | undefined;
 			audios?: any[] | undefined;
 		}[];
@@ -1860,7 +1887,6 @@ declare module '@scout9/app/types' {
 				utterance?: string | undefined;
 			}[] | undefined;
 		}[];
-		initialContext: string[];
 		llm: {
 			model: string;
 			engine: "openai";
@@ -1875,6 +1901,7 @@ declare module '@scout9/app/types' {
 			model: string;
 			engine: "scout9";
 		};
+		initialContext: string[];
 		workflows: {
 			entity: string;
 			entities: string[];
@@ -2562,6 +2589,7 @@ declare module '@scout9/app/types' {
 		context: z.ZodOptional<z.ZodAny>;
 		intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
 		intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+		delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
 	}, "strip", z.ZodTypeAny, {
 		time: string;
 		id: string;
@@ -2572,6 +2600,7 @@ declare module '@scout9/app/types' {
 		context?: any;
 		intent?: string | null | undefined;
 		intentScore?: number | null | undefined;
+		delayInSeconds?: number | null | undefined;
 	}, {
 		time: string;
 		id: string;
@@ -2582,6 +2611,7 @@ declare module '@scout9/app/types' {
 		context?: any;
 		intent?: string | null | undefined;
 		intentScore?: number | null | undefined;
+		delayInSeconds?: number | null | undefined;
 	}>;
 	export type IMessage = import('zod').infer<typeof MessageSchema>;
 	export const WorkflowConfigurationSchema: z.ZodObject<{
@@ -2690,6 +2720,7 @@ declare module '@scout9/app/types' {
 			context: z.ZodOptional<z.ZodAny>;
 			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
 			intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+			delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
 		}, "strip", z.ZodTypeAny, {
 			time: string;
 			id: string;
@@ -2700,6 +2731,7 @@ declare module '@scout9/app/types' {
 			context?: any;
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
+			delayInSeconds?: number | null | undefined;
 		}, {
 			time: string;
 			id: string;
@@ -2710,6 +2742,7 @@ declare module '@scout9/app/types' {
 			context?: any;
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
+			delayInSeconds?: number | null | undefined;
 		}>, "many">;
 		conversation: z.ZodObject<{
 			$agent: z.ZodString;
@@ -2780,6 +2813,7 @@ declare module '@scout9/app/types' {
 			context: z.ZodOptional<z.ZodAny>;
 			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
 			intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+			delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
 		}, "strip", z.ZodTypeAny, {
 			time: string;
 			id: string;
@@ -2790,6 +2824,7 @@ declare module '@scout9/app/types' {
 			context?: any;
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
+			delayInSeconds?: number | null | undefined;
 		}, {
 			time: string;
 			id: string;
@@ -2800,6 +2835,7 @@ declare module '@scout9/app/types' {
 			context?: any;
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
+			delayInSeconds?: number | null | undefined;
 		}>;
 		agent: z.ZodObject<Omit<{
 			inactive: z.ZodOptional<z.ZodBoolean>;
@@ -2818,6 +2854,7 @@ declare module '@scout9/app/types' {
 				context: z.ZodOptional<z.ZodAny>;
 				intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
 				intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+				delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
 			}, "strip", z.ZodTypeAny, {
 				time: string;
 				id: string;
@@ -2828,6 +2865,7 @@ declare module '@scout9/app/types' {
 				context?: any;
 				intent?: string | null | undefined;
 				intentScore?: number | null | undefined;
+				delayInSeconds?: number | null | undefined;
 			}, {
 				time: string;
 				id: string;
@@ -2838,6 +2876,7 @@ declare module '@scout9/app/types' {
 				context?: any;
 				intent?: string | null | undefined;
 				intentScore?: number | null | undefined;
+				delayInSeconds?: number | null | undefined;
 			}>, "many">, "many">>;
 			audios: z.ZodOptional<z.ZodArray<z.ZodAny, "many">>;
 			includedLocations: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
@@ -2978,6 +3017,7 @@ declare module '@scout9/app/types' {
 			context?: any;
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
+			delayInSeconds?: number | null | undefined;
 		};
 		agent: {
 			id: string;
@@ -3051,6 +3091,7 @@ declare module '@scout9/app/types' {
 			context?: any;
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
+			delayInSeconds?: number | null | undefined;
 		}[];
 		stagnationCount: number;
 		context?: any;
@@ -3066,6 +3107,7 @@ declare module '@scout9/app/types' {
 			context?: any;
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
+			delayInSeconds?: number | null | undefined;
 		};
 		agent: {
 			id: string;
@@ -3139,6 +3181,7 @@ declare module '@scout9/app/types' {
 			context?: any;
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
+			delayInSeconds?: number | null | undefined;
 		}[];
 		stagnationCount: number;
 		context?: any;
@@ -3514,6 +3557,7 @@ declare module '@scout9/app/types' {
 			context: z.ZodOptional<z.ZodAny>;
 			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
 			intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+			delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
 		}, "strip", z.ZodTypeAny, {
 			time: string;
 			id: string;
@@ -3524,6 +3568,7 @@ declare module '@scout9/app/types' {
 			context?: any;
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
+			delayInSeconds?: number | null | undefined;
 		}, {
 			time: string;
 			id: string;
@@ -3534,6 +3579,7 @@ declare module '@scout9/app/types' {
 			context?: any;
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
+			delayInSeconds?: number | null | undefined;
 		}>, "many">;
 		conversation: z.ZodObject<{
 			$agent: z.ZodString;
@@ -3604,6 +3650,7 @@ declare module '@scout9/app/types' {
 			context: z.ZodOptional<z.ZodAny>;
 			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
 			intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+			delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
 		}, "strip", z.ZodTypeAny, {
 			time: string;
 			id: string;
@@ -3614,6 +3661,7 @@ declare module '@scout9/app/types' {
 			context?: any;
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
+			delayInSeconds?: number | null | undefined;
 		}, {
 			time: string;
 			id: string;
@@ -3624,6 +3672,7 @@ declare module '@scout9/app/types' {
 			context?: any;
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
+			delayInSeconds?: number | null | undefined;
 		}>;
 		agent: z.ZodObject<Omit<{
 			inactive: z.ZodOptional<z.ZodBoolean>;
@@ -3642,6 +3691,7 @@ declare module '@scout9/app/types' {
 				context: z.ZodOptional<z.ZodAny>;
 				intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
 				intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+				delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
 			}, "strip", z.ZodTypeAny, {
 				time: string;
 				id: string;
@@ -3652,6 +3702,7 @@ declare module '@scout9/app/types' {
 				context?: any;
 				intent?: string | null | undefined;
 				intentScore?: number | null | undefined;
+				delayInSeconds?: number | null | undefined;
 			}, {
 				time: string;
 				id: string;
@@ -3662,6 +3713,7 @@ declare module '@scout9/app/types' {
 				context?: any;
 				intent?: string | null | undefined;
 				intentScore?: number | null | undefined;
+				delayInSeconds?: number | null | undefined;
 			}>, "many">, "many">>;
 			audios: z.ZodOptional<z.ZodArray<z.ZodAny, "many">>;
 			includedLocations: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
@@ -3802,6 +3854,7 @@ declare module '@scout9/app/types' {
 			context?: any;
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
+			delayInSeconds?: number | null | undefined;
 		};
 		agent: {
 			id: string;
@@ -3875,6 +3928,7 @@ declare module '@scout9/app/types' {
 			context?: any;
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
+			delayInSeconds?: number | null | undefined;
 		}[];
 		stagnationCount: number;
 		context?: any;
@@ -3890,6 +3944,7 @@ declare module '@scout9/app/types' {
 			context?: any;
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
+			delayInSeconds?: number | null | undefined;
 		};
 		agent: {
 			id: string;
@@ -3963,6 +4018,7 @@ declare module '@scout9/app/types' {
 			context?: any;
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
+			delayInSeconds?: number | null | undefined;
 		}[];
 		stagnationCount: number;
 		context?: any;
@@ -4688,36 +4744,36 @@ declare module '@scout9/app/spirits' {
 		/**
 		 * - used to define generation and extract persona metadata
 		 */
-		config: import('@scout9/app').Scout9ProjectBuildConfig;
-		conversation: import('@scout9/app').Conversation;
-		messages: Array<import('@scout9/app').Message>;
+		config: any;
+		conversation: any;
+		messages: Array<import('@scout9/app').IMessage>;
 		/**
 		 * - the message sent by the customer (should exist in messages)
 		 */
-		message: import('@scout9/app').Message;
-		customer: import('@scout9/app').Customer;
+		message: any;
+		customer: any;
 		context: any;
 	};
 	export type ParseOutput = {
-		messages: Array<import('@scout9/app').Message>;
-		conversation: import('@scout9/app').Conversation;
-		message: import('@scout9/app').Message;
+		messages: Array<import('@scout9/app').IMessage>;
+		conversation: any;
+		message: any;
 		context: any;
 	};
 	export type WorkflowOutput = {
-		slots: Array<import('@scout9/app').WorkflowResponseSlot>;
-		messages: Array<import('@scout9/app').Message>;
-		conversation: import('@scout9/app').Conversation;
+		slots: Array<import('@scout9/app').IWorkflowResponseSlot>;
+		messages: Array<import('@scout9/app').IMessage>;
+		conversation: any;
 		context: any;
 	};
 	export type GenerateOutput = {
 		generate: import('@scout9/admin').GenerateResponse | undefined;
-		messages: Array<import('@scout9/app').Message>;
-		conversation: import('@scout9/app').Conversation;
+		messages: Array<import('@scout9/app').IMessage>;
+		conversation: any;
 		context: any;
 	};
 	export type ParseFun = (message: string, language: string | undefined) => Promise<import('@scout9/admin').ParseResponse>;
-	export type WorkflowFun = (event: import('@scout9/app').WorkflowEvent) => Promise<import('@scout9/app').WorkflowResponse>;
+	export type WorkflowFun = (event: any) => Promise<import('@scout9/app').IWorkflowResponse>;
 	export type GenerateFun = (data: import('@scout9/admin').GenerateRequestOneOf) => Promise<import('@scout9/admin').GenerateResponse>;
 	export type IdGeneratorFun = (prefix: any) => string;
 	export type StatusCallback = (message: string, level?: 'info' | 'warn' | 'error' | 'success' | undefined, type?: string | undefined, payload?: any | undefined) => void;
@@ -4729,13 +4785,13 @@ declare module '@scout9/app/spirits' {
 		progress?: StatusCallback | undefined;
 	};
 	export type ConversationEvent = {
-		conversation: Change<import('@scout9/app').Conversation> & {
+		conversation: Change<import('@scout9/app').IConversation> & {
 			forwardNote?: string;
 			forward?: import('@scout9/app').WorkflowResponseSlot['forward'];
 		};
-		messages: Change<Array<import('@scout9/app').Message>>;
+		messages: Change<Array<import('@scout9/app').IMessage>>;
 		context: Change<Object>;
-		message: Change<import('@scout9/app').Message>;
+		message: Change<import('@scout9/app').IMessage>;
 	};
 }
 
