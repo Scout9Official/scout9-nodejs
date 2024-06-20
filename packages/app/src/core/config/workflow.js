@@ -1,13 +1,9 @@
 import { globSync } from 'glob';
-import path from 'node:path';
-import {
-  WorkflowConfigurationSchema,
-  WorkflowsConfigurationSchema
-} from '../../runtime/index.js';
+import { WorkflowConfigurationSchema, WorkflowsConfigurationSchema } from '../../runtime/index.js';
 
 
 /**
- * @returns {Promise<WorkflowsBuildConfig>}
+ * @returns {Promise<import('@scout9/app').IWorkflowsConfiguration>}
  */
 export default async function loadWorkflowsConfig(
   {
@@ -34,7 +30,7 @@ export default async function loadWorkflowsConfig(
     .map(({path, parents}) => {
 
       // Validate project configuration
-      /** @type {WorkflowBuildConfig} */
+      /** @type {import('@scout9/app').IWorkflowConfiguration} */
       const workflowConfig = {
         entity: parents[0],
         entities: parents.reverse(),

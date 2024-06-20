@@ -7,7 +7,7 @@ function agentsTemplate(agents, exe = 'js') {
   return `
 /**
  * Required core entity type: Agents represents you and your team
- * @returns {Array<import('@scout9/app').Agent>}
+ * @returns {Array<import('@scout9/app').IAgent>}
  */
 export default function Agents() {
   return ${JSON.stringify(agents, null, 2)};
@@ -19,12 +19,13 @@ export default function Agents() {
  * @param {Scout9ProjectBuildConfig} config
  * @param {string} exe - file extension
  * @returns {string}
+ *
  */
 function rootTemplate(config, exe = 'js') {
   return `
 /**
  * Configuration for the Scout9 project.
- * @type {import('@scout9/app').Scout9ProjectConfig}
+ * @type {import('@scout9/app').IScout9ProjectConfig}
  */
 export default {
 
@@ -51,8 +52,8 @@ export default {
 function appTemplate() {
   return `
 /**
- * @param {import('@scout9/app').WorkflowEvent} event - every workflow receives an event object
- * @returns {Promise<import('@scout9/app').WorkflowResponse>} - every workflow must return a WorkflowResponse
+ * @param {import('@scout9/app').IWorkflowEvent} event - every workflow receives an event object
+ * @returns {Promise<import('@scout9/app').IWorkflowResponse>} - every workflow must return a WorkflowResponse
  */
 export default async function Scout9App(event) {
   return {

@@ -1,8 +1,8 @@
 import { platformApi } from './data.js';
 
 /**
- * @param {Scout9ProjectBuildConfig} config
- * @returns {Promise<Scout9ProjectBuildConfig>}
+ * @param {import('@scout9/app').IScout9ProjectBuildConfig} config
+ * @returns {Promise<import('@scout9/app').IScout9ProjectBuildConfig>}
  */
 export async function syncData(config) {
   if (!process.env.SCOUT9_API_KEY) {

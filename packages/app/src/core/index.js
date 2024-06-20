@@ -98,7 +98,7 @@ async function downloadAndUnpackZip(outputDir) {
  * @param {string} cwd
  * @param {string} src
  * @param {string} dest
- * @param {import('../runtime/client/config.js').IScout9ProjectBuildConfig} config
+ * @param {import('@scout9/app').IScout9ProjectBuildConfig} config
  * @returns {Promise<void>}
  */
 async function buildApp(cwd, src, dest, config) {
@@ -435,7 +435,7 @@ export async function deploy(
 /**
  * Tests a local project to scout9 by running a dummy parse command with the project's local entities
  * @param {{cwd: string; src: string, dest: string}} - build options
- * @param {import('../runtime/client/config.js').IScout9ProjectBuildConfig} config
+ * @param {import('@scout9/app').IScout9ProjectBuildConfig} config
  */
 export async function test(
   {cwd = process.cwd(), src = './src', dest = '/tmp/project', logger = new ProgressLogger()},
@@ -467,8 +467,8 @@ export async function test(
 /**
  *
  * @param {{cwd: string; src: string; projectFiles: ProjectFiles; logger: ProgressLogger}} options
- * @param {import('../runtime/client/config.js').IScout9ProjectBuildConfig} config
- * @returns {Promise<{success: boolean; config: import('../runtime/client/config.js').IScout9ProjectBuildConfig}>}
+ * @param {import('@scout9/app').IScout9ProjectBuildConfig} config
+ * @returns {Promise<{success: boolean; config: import('@scout9/app').IScout9ProjectBuildConfig}>}
  */
 export async function sync({
   cwd = process.cwd(), src = 'src',

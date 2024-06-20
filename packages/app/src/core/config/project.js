@@ -35,7 +35,8 @@ async function writeImageToServer({img, type = 'icon', source}) {
 
 
 /**
- * Loads the users local package.json, if they provide a package-s9-test.json, it will load that instead (used for scout9 internal testing)
+ * Loads the users local package.json, if they provide a package-s9-test.json,
+ * it will load that instead (used for scout9 internal testing)
  * @param {cwd?: string}
  * @returns {Promise<{isTest: boolean, pkg: {name: string; version: string; dependencies: Record<string, string>}}>}
  */
@@ -54,7 +55,7 @@ export async function loadUserPackageJson({cwd = process.cwd()}) {
 }
 
 /**
- * @returns {Promise<Scout9ProjectConfig>}
+ * @returns {Promise<import('@scout9/app').IScout9ProjectConfig>}
  */
 export default async function loadProjectConfig({cwd = process.cwd(), deploying = false, src = 'src', cb = (message) => {}} = {}) {
   // Grab the project tag name (from their package.json)

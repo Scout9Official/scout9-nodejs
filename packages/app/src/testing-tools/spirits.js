@@ -14,35 +14,35 @@
 
 /**
  * @typedef {Object} ConversationData
- * @property {import('@scout9/app').Scout9ProjectBuildConfig} config - used to define generation and extract persona metadata
- * @property {import('@scout9/app').Conversation} conversation
- * @property {Array<import('@scout9/app').Message>} messages
- * @property {import('@scout9/app').Message} message - the message sent by the customer (should exist in messages)
- * @property {import('@scout9/app').Customer} customer
+ * @property {import('@scout9/app').IScout9ProjectBuildConfig} config - used to define generation and extract persona metadata
+ * @property {import('@scout9/app').IConversation} conversation
+ * @property {Array<import('@scout9/app').IMessage>} messages
+ * @property {import('@scout9/app').IMessage} message - the message sent by the customer (should exist in messages)
+ * @property {import('@scout9/app').ICustomer} customer
  * @property {any} context
  */
 
 /**
  * @typedef {Object} ParseOutput
- * @property {Array<import('@scout9/app').Message>} messages
- * @property {import('@scout9/app').Conversation} conversation
- * @property {import('@scout9/app').Message} message
+ * @property {Array<import('@scout9/app').IMessage>} messages
+ * @property {import('@scout9/app').IConversation} conversation
+ * @property {import('@scout9/app').IMessage} message
  * @property {any} context
  */
 
 /**
  * @typedef {Object} WorkflowOutput
- * @property {Array<import('@scout9/app').WorkflowResponseSlot>} slots
- * @property {Array<import('@scout9/app').Message>} messages
- * @property {import('@scout9/app').Conversation} conversation
+ * @property {Array<import('@scout9/app').IWorkflowResponseSlot>} slots
+ * @property {Array<import('@scout9/app').IMessage>} messages
+ * @property {import('@scout9/app').IConversation} conversation
  * @property {any} context
  */
 
 /**
  * @typedef {Object} GenerateOutput
  * @property {import('@scout9/admin').GenerateResponse | undefined} generate
- * @property {Array<import('@scout9/app').Message>} messages
- * @property {import('@scout9/app').Conversation} conversation
+ * @property {Array<import('@scout9/app').IMessage>} messages
+ * @property {import('@scout9/app').IConversation} conversation
  * @property {any} context
  */
 
@@ -55,8 +55,8 @@
 
 /**
  * @callback WorkflowFun
- * @param {import('@scout9/app').WorkflowEvent} event - conversation data
- * @returns {Promise<import('@scout9/app').WorkflowResponse>}
+ * @param {import('@scout9/app').IWorkflowEvent} event - conversation data
+ * @returns {Promise<import('@scout9/app').IWorkflowResponse>}
  */
 
 /**
@@ -67,7 +67,7 @@
 
 /**
  * @callback IdGeneratorFun
- * @param {import('@scout9/app').Message.role} prefix
+ * @param {import('@scout9/app').IMessage.role} prefix
  * @returns {string}
  */
 /**
@@ -90,10 +90,10 @@
 
 /**
  * @typedef {Object} ConversationEvent
- * @property {Change<import('@scout9/app').Conversation> & {forwardNote?: string; forward?: import('@scout9/app').WorkflowResponseSlot['forward']}} conversation
- * @property {Change<Array<import('@scout9/app').Message>>} messages
+ * @property {Change<import('@scout9/app').IConversation> & {forwardNote?: string; forward?: import('@scout9/app').WorkflowResponseSlot['forward']}} conversation
+ * @property {Change<Array<import('@scout9/app').IMessage>>} messages
  * @property {Change<Object>} context
- * @property {Change<import('@scout9/app').Message>} message
+ * @property {Change<import('@scout9/app').IMessage>} message
  */
 export const Spirits = {
 

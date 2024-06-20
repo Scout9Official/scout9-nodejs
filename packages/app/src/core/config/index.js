@@ -7,8 +7,6 @@ import loadProjectConfig from './project.js';
 import loadWorkflowsConfig from './workflow.js';
 import { Scout9ProjectBuildConfigSchema } from '../../runtime/index.js';
 import { ProgressLogger } from '../../utils/index.js';
-import ProjectFiles from '../../utils/project.js';
-import { logUserValidationError } from '../../report.js';
 
 
 export function loadEnvConfig({
@@ -36,7 +34,7 @@ export function loadEnvConfig({
 /**
  * @deprecated use "new ProjectFiles(...).load()" instead
  * @param {{cwd: string; src: string; logger?: ProgressLogger; deploying?: boolean; cb?: (message: string) => void}} - build options
- * @returns {Promise<Scout9ProjectBuildConfig>}
+ * @returns {Promise<import('@scout9/app').IScout9ProjectBuildConfig>}
  */
 export async function loadConfig({
   cwd = process.cwd(), src = 'src', dest = '/tmp/project', deploying = false, logger = new ProgressLogger(), cb = (msg) => {
@@ -51,7 +49,7 @@ export async function loadConfig({
   const workflowsConfig = await loadWorkflowsConfig({cwd, src, logger, deploying, cb});
 
   /**
-   * @type {Scout9ProjectBuildConfig}
+   * @type {import('@scout9/app').IScout9ProjectBuildConfig}
    */
   const projectConfig = {
     ...baseProjectConfig,

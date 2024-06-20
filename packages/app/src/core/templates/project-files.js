@@ -1,9 +1,5 @@
 import fs from 'node:fs/promises';
 import { globSync } from 'glob';
-import path from 'node:path';
-import fss from 'node:fs';
-import { checkVariableType, requireProjectFile } from '../../utils/index.js';
-
 
 
 const resolveFilePath = () => {
@@ -19,7 +15,7 @@ const resolveFilePath = () => {
 export const entities = {
   /**
    * Generates ./src/entities/
-   * @param {Scout9ProjectBuildConfig} config
+   * @param {import('@scout9/app').IScout9ProjectBuildConfig} config
    * @param {string} cwd
    * @param {string} src
    * @returns {Promise<void>}

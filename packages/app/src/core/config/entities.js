@@ -31,12 +31,12 @@ async function loadEntityApiConfig(cwd, filePath) {
 }
 
 /**
- * @returns {Promise<EntitiesBuildConfig>}
+ * @returns {Promise<import('@scout9/app').IEntitiesRootProjectConfiguration>}
  */
 export default async function loadEntitiesConfig(
   {cwd = process.cwd(), src = 'src', logger, cb = (message) => {}} = {}
 ) {
-  /** @type EntitiesBuildConfig */
+  /** @type import('@scout9/app').IEntitiesRootProjectConfiguration */
   const config = [];
   // const paths = globSync(path.resolve(cwd, `${src}/entities/**/{index,config,api}.{ts,js}`), {cwd, absolute: true});
   const filePaths = globSync(`${src}/entities/**/{index,config,api}.{ts,js}`, {cwd, absolute: true});

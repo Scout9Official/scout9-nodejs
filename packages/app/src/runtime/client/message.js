@@ -14,4 +14,5 @@ export const MessageSchema = z.object({
   context: z.any({description: 'The context generated from the message'}).optional(),
   intent: z.string({description: 'Detected intent'}).optional().nullable(),
   intentScore: z.number({description: 'Confidence score of the assigned intent'}).nullable().optional(),
+  delayInSeconds: z.number({description: 'How long to delay the message manually in seconds'}).nullable().optional()
 });
