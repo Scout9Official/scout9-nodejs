@@ -23,6 +23,7 @@ Scout9's Persona Model Transforming (PMT) technology auto crafts messages in you
 * `scout9 sync` (coming soon)
 
 
+
 #### Thanks to our early backers using Scout9 to improve their customer experience
 * [REI](https://rei.com): Supply chain procurement SMS auto replies
 * [Microsoft](https://microsoft.com): Azure customer account support SMS auto replies

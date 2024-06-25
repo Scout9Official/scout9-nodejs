@@ -7,11 +7,6 @@ export default async function () {
   return {
     definitions: [
       {
-        utterance: 'quantity',
-        value: 'number',
-        text: []
-      },
-      {
         utterance: 'size',
         value: 'small',
         text: ['small', 'sm', '6 inch', '6-inch', '6in', '6 in', '6"']
@@ -54,15 +49,15 @@ export default async function () {
     ],
     training: [
       ...[
-        '{{quantity:number}} %topping% %size%',
-        '{{quantity:number}} %topping% %size%, {{quantity:number}} %topping% %size%, and {{quantity:number}} %topping% %size% and that should be all',
-        'Hey I would like {{quantity:number}} %topping% %size%',
-        'Hey I would like {{quantity:number}} %topping% and %topping%',
-        'Hey I would like {{quantity:number}} %topping%, %topping%, and extra %topping%', // @TODO extra would need to be a separate topping
-        'Hey I would like {{quantity:number}} %size% %topping%, %topping%, and %topping%',
+        '%number% %topping% %size%',
+        '%number% %topping% %size%, %number% %topping% %size%, and %number% %topping% %size% and that should be all',
+        'Hey I would like %number% %topping% %size%',
+        'Hey I would like %number% %topping% and %topping%',
+        'Hey I would like %number% %topping%, %topping%, and extra %topping%', // @TODO extra would need to be a separate topping
+        'Hey I would like %number% %size% %topping%, %topping%, and %topping%',
         'Could I get a %topping% pizza please?',
-        'Could I get {{quantity:number}} %size% %topping%, %topping%, and %topping%?',
-        'Can I order a {{quantity:number}} %size% %topping%, %topping%, and %topping%',
+        'Could I get %number% %size% %topping%, %topping%, and %topping%?',
+        'Can I order a %number% %size% %topping%, %topping%, and %topping%',
       ].map((text) => ({text, intent: 'pizza'})),
       ...[
         'Can you remove that %size% %topping% pizza',

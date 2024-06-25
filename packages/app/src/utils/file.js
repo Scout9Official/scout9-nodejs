@@ -42,8 +42,14 @@ async function fetchFileToBuffer(url) {
   if (!response.ok) {
     throw new Error(`Failed to fetch file "${url}": ${response.statusText}`);
   }
+  let buffer;
+  if ('buffer' in response) {
+    buffer = await response.buffer();
+  } else {
+    buffer = await response.arrayBuffer().then(a => Buffer.from(a));
+  }
   return {
-    buffer: response.buffer(),
+    buffer,
     ext: extname(url).slice(1),
     mime: response.headers.get('content-type')
   };

@@ -116,6 +116,18 @@ export const InstructionSchema = z.object({
 });
 
 /**
+ * @typedef {import('zod').infer<typeof WorkflowResponseMessageApiRequest>} IWorkflowResponseMessageApiRequest
+ */
+export const WorkflowResponseMessageApiRequest =  z.object({
+  uri: z.string(),
+  data: z.any().optional(),
+  headers: z.object({
+    [z.string()]: z.string(),
+  }).optional(),
+  method: z.enum(["GET", "POST", "PUT"]).optional()
+});
+
+/**
  * If its a string, it will be sent as a static string.
  * If it's a object or WorkflowResponseMessageAPI - it will use
  * @typedef {import('zod').infer<typeof WorkflowResponseMessage>} IWorkflowResponseMessage
@@ -129,17 +141,6 @@ export const WorkflowResponseMessage = z.union(
   WorkflowResponseMessageApiRequest
 );
 
-/**
- * @typedef {import('zod').infer<typeof WorkflowResponseMessageApiRequest>} IWorkflowResponseMessageApiRequest
- */
-export const WorkflowResponseMessageApiRequest =  z.object({
-  uri: z.string(),
-  data: z.any().optional(),
-  headers: z.object({
-    [z.string()]: z.string(),
-  }).optional(),
-  method: z.enum(["GET", "POST", "PUT"]).optional()
-});
 
 /**
  * The intended response provided by the WorkflowResponseMessageApiRequest
