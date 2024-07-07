@@ -8,13 +8,13 @@ import PizzaOrder from './workflows/pizzaOrder/workflow.js';
 export default async function Scout9App(event) {
 
   // If the user intent is pizzaOrder or the context has a pizza object, run the pizza order workflow
-  if (event.intent.initial === 'pizzaOrder'  || !!event.context.pizza) {
+  if (event.intent.initial === 'pizza'  || !!event.context.pizza) {
     // run pizza order workflow
     return PizzaOrder(event);
   } else {
     if (event.stagnationCount < 2) {
       return {
-        instructions: 'Double check if the user is looking to order a pizza'
+        instructions: 'Double check if the user is looking to order a pizza from us at PizzaZoom'
       }
     } else {
       // End auto replies, forward to agent for manual intervention

@@ -16,7 +16,7 @@ export function validateAgentConfig(agents) {
     }
     if (!agent.programmablePhoneNumber) {
       const userName = agent.firstName ? `${agent.firstName}${agent.lastName ? ' ' + agent.lastName : ''}` : agent.forwardPhone;
-      cb(`⚠️${colors.yellow('Warning')}: ${userName} does not have a masked phone number to do auto replies. You can register one at ${colors.cyan('https://scout9.com/b')} under ${colors.green('users')} > ${colors.green(userName)}. Then run ${colors.cyan('scout9 sync')} to update.`);
+      cb(`⚠️${colors.yellow('Warning')}: ${userName} does not have a masked phone number to do auto replies.\nYou can register one at ${colors.cyan('https://scout9.com/b')} under ${colors.green('users')} > ${colors.green(userName)}. Then run ${colors.cyan('scout9 sync')} to update.`);
     }
     if (agent.forwardPhone && agents.filter(a => a.forwardPhone && (a.forwardPhone === agent.forwardPhone)).length > 1) {
       throw new Error(`src/entities/agents.js|ts: ".forwardPhone: ${agent.forwardPhone}" can only be associated to one agent within your project`);

@@ -572,6 +572,36 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         },
         /**
          *
+         * @summary Natural language prompt to resolve a context value derived from the conversation.
+         * @param {CaptureContextRequest} captureContextRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        captureContext: async (captureContextRequest, options = {}) => {
+            // verify required parameter 'captureContextRequest' is not null or undefined
+            (0, common_1.assertParamExists)('captureContext', 'captureContextRequest', captureContextRequest);
+            const localVarPath = `/v1-utils-macros-context`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options };
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
+            localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(captureContextRequest, localVarRequestOptions, configuration);
+            return {
+                url: (0, common_1.toPathString)(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
          * @summary Get the current project configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1677,6 +1707,36 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         },
         /**
          *
+         * @summary Natural language prompt to resolve to a boolean value.
+         * @param {DidRequest} didRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        did: async (didRequest, options = {}) => {
+            // verify required parameter 'didRequest' is not null or undefined
+            (0, common_1.assertParamExists)('did', 'didRequest', didRequest);
+            const localVarPath = `/v1-utils-macros-did`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options };
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
+            localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(didRequest, localVarRequestOptions, configuration);
+            return {
+                url: (0, common_1.toPathString)(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
          * @summary Get an entity by type and ID
          * @param {string} type The type of the entity to fetch
          * @param {string} id The unique identifier of the entity
@@ -2428,6 +2488,17 @@ const Scout9ApiFp = function (configuration) {
         },
         /**
          *
+         * @summary Natural language prompt to resolve a context value derived from the conversation.
+         * @param {CaptureContextRequest} captureContextRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async captureContext(captureContextRequest, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.captureContext(captureContextRequest, options);
+            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+        },
+        /**
+         *
          * @summary Get the current project configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2836,6 +2907,17 @@ const Scout9ApiFp = function (configuration) {
         },
         /**
          *
+         * @summary Natural language prompt to resolve to a boolean value.
+         * @param {DidRequest} didRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async did(didRequest, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.did(didRequest, options);
+            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+        },
+        /**
+         *
          * @summary Get an entity by type and ID
          * @param {string} type The type of the entity to fetch
          * @param {string} id The unique identifier of the entity
@@ -3161,6 +3243,16 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
          */
         agentsUpdate(updateAgentsRequest, options) {
             return localVarFp.agentsUpdate(updateAgentsRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
+         * @summary Natural language prompt to resolve a context value derived from the conversation.
+         * @param {CaptureContextRequest} captureContextRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        captureContext(captureContextRequest, options) {
+            return localVarFp.captureContext(captureContextRequest, options).then((request) => request(axios, basePath));
         },
         /**
          *
@@ -3536,6 +3628,16 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
         },
         /**
          *
+         * @summary Natural language prompt to resolve to a boolean value.
+         * @param {DidRequest} didRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        did(didRequest, options) {
+            return localVarFp.did(didRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
          * @summary Get an entity by type and ID
          * @param {string} type The type of the entity to fetch
          * @param {string} id The unique identifier of the entity
@@ -3851,6 +3953,17 @@ class Scout9ApiGenerated extends base_1.BaseAPI {
      */
     agentsUpdate(updateAgentsRequest, options) {
         return (0, exports.Scout9ApiFp)(this.configuration).agentsUpdate(updateAgentsRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     *
+     * @summary Natural language prompt to resolve a context value derived from the conversation.
+     * @param {CaptureContextRequest} captureContextRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    captureContext(captureContextRequest, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).captureContext(captureContextRequest, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      *
@@ -4259,6 +4372,17 @@ class Scout9ApiGenerated extends base_1.BaseAPI {
      */
     deleteEntity(type, id, options) {
         return (0, exports.Scout9ApiFp)(this.configuration).deleteEntity(type, id, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     *
+     * @summary Natural language prompt to resolve to a boolean value.
+     * @param {DidRequest} didRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    did(didRequest, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).did(didRequest, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      *

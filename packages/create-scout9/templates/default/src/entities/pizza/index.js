@@ -49,6 +49,7 @@ export default async function () {
     ],
     training: [
       ...[
+        'get a few pizzas',
         '%number% %topping% %size%',
         '%number% %topping% %size%, %number% %topping% %size%, and %number% %topping% %size% and that should be all',
         'Hey I would like %number% %topping% %size%',

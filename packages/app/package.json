@@ -1,6 +1,6 @@
 {
   "name": "@scout9/app",
-  "version": "1.0.0-alpha.0.1.90",
+  "version": "1.0.0-alpha.0.1.92",
   "description": "Build and deploy your Scout9 app for SMS auto replies",
   "publishConfig": {
     "access": "public"
@@ -14,7 +14,7 @@
     "test:generate": "npx rimraf src-test && echo \"Generate a new test project\" && npm create scout9@latest src-test",
     "posttest:generate": "node scripts/test-project-build.js && node scripts/test-project-sync.js",
     "pretest": "node scripts/test-project-build.js",
-    "test": "node --experimental-vm-modules ../../node_modules/.bin/jest",
+    "test": "node --experimental-vm-modules ../../node_modules/.bin/jest --detectOpenHandles --forceExit",
     "test:deploy": "node ./src/cli.js deploy",
     "postinstall": "node postinstall.js",
     "prepublishOnly": "npm run build",

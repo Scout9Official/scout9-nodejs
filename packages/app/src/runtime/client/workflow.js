@@ -6,15 +6,17 @@ import { agentConfigurationSchema, customerSchema } from './users.js';
 import { MessageSchema } from './message.js';
 
 
-
 /**
  * @typedef {import('zod').infer<typeof WorkflowConfigurationSchema>} IWorkflowConfiguration
  */
 export const WorkflowConfigurationSchema = z.object({
-  entities: z.array(zId('Workflow Folder', z.string()), {description: 'Workflow id association, used to handle route params'})
+  entities: z.array(
+    zId('Workflow Folder', z.string()),
+    {description: 'Workflow id association, used to handle route params'}
+  )
     .min(1, 'Must have at least 1 entity')
     .max(15, 'Cannot have more than 15 entity paths'),
-  entity: zId('Workflow Folder', z.string()),
+  entity: zId('Workflow Folder', z.string())
 });
 
 /**
@@ -29,11 +31,12 @@ export const WorkflowsConfigurationSchema = z.array(WorkflowConfigurationSchema)
 export const ConversationSchema = z.object({
   $agent: zId('Conversation Agent ID', z.string({description: 'Default agent assigned to the conversation(s)'})),
   $customer: zId('Conversation Customer ID', z.string({description: 'Customer this conversation is with'})),
-  initialContexts: z.array(z.string(), {description: 'Initial contexts to load when starting the conversation'}).optional(),
+  initialContexts: z.array(z.string(), {description: 'Initial contexts to load when starting the conversation'})
+    .optional(),
   environment: z.enum(['phone', 'email', 'web']),
   environmentProps: z.object({
     subject: z.string({description: 'HTML Subject of the conversation'}).optional(),
-    platformEmailThreadId: z.string({description: 'Used to sync email messages with the conversation'}).optional(),
+    platformEmailThreadId: z.string({description: 'Used to sync email messages with the conversation'}).optional()
   }).optional(),
   locked: z.boolean({description: 'Whether the conversation is locked or not'}).optional().nullable(),
   lockedReason: z.string({description: 'Why this conversation was locked'}).optional().nullable(),
@@ -42,16 +45,16 @@ export const ConversationSchema = z.object({
   forwarded: z.string({description: 'Datetime ISO 8601 timestamp when persona was forwarded'}).optional().nullable(),
   forwardNote: z.string().optional().nullable(),
   intent: z.string({description: 'Detected intent of conversation'}).optional().nullable(),
-  intentScore: z.number({description: 'Confidence score of the assigned intent'}).optional().nullable(),
+  intentScore: z.number({description: 'Confidence score of the assigned intent'}).optional().nullable()
 });
 
 /**
  * @typedef {import('zod').infer<typeof IntentWorkflowEventSchema>} IIntentWorkflowEvent
  */
 export const IntentWorkflowEventSchema = z.object({
- current: z.string().nullable(),
- flow: z.array(z.string()),
- initial: z.string().nullable()
+  current: z.string().nullable(),
+  flow: z.array(z.string()),
+  initial: z.string().nullable()
 });
 
 /**
@@ -74,7 +77,7 @@ export const WorkflowEventSchema = z.object({
   intent: IntentWorkflowEventSchema,
   stagnationCount: z.number(),
   note: z.string({description: 'Any developer notes to provide'}).optional()
-})
+});
 
 const Primitive = z.union([z.string(), z.number(), z.boolean()]);
 // Assuming ConversationContext is already defined as a Zod schema
@@ -102,29 +105,36 @@ export const ForwardSchema = z.union([
     to: z.string().optional(),
     mode: z.enum(['after-reply', 'immediately']).optional(),
     note: z.string({description: 'Note to provide to the agent'}).optional()
-  }),
+  })
 ], {description: 'Forward input information of a conversation'});
 
 
 /**
  * Instruction object schema used to send context to guide conversations
- * @typedef {import('zod').infer<typeof InstructionSchema>} IInstruction
+ * @typedef {import('zod').infer<typeof InstructionObjectSchema>} IInstruction
  */
-export const InstructionSchema = z.object({
-  id: zId('Instruction ID').describe('Unique ID for the instruction, this is used to remove the instruction later'),
-  content: z.string(),
+export const InstructionObjectSchema = z.object({
+  id: zId('Instruction ID')
+    .describe('Unique ID for the instruction, this is used to remove the instruction later')
+    .optional(),
+  persist: z.boolean()
+    .describe(
+      'if true, the instruction persists the conversation, if false the instruction will only last for 1 auto reply')
+    .default(true)
+    .optional(),
+  content: z.string()
 });
 
 /**
  * @typedef {import('zod').infer<typeof WorkflowResponseMessageApiRequest>} IWorkflowResponseMessageApiRequest
  */
-export const WorkflowResponseMessageApiRequest =  z.object({
+export const WorkflowResponseMessageApiRequest = z.object({
   uri: z.string(),
   data: z.any().optional(),
   headers: z.object({
-    [z.string()]: z.string(),
+    [z.string()]: z.string()
   }).optional(),
-  method: z.enum(["GET", "POST", "PUT"]).optional()
+  method: z.enum(['GET', 'POST', 'PUT']).optional()
 });
 
 /**
@@ -166,14 +176,18 @@ export const WorkflowResponseMessageApiResponse = z.union([
   })
 ]);
 
+export const InstructionSchema = z.union([z.string(), InstructionObjectSchema, z.array(z.string()), z.array(
+  InstructionObjectSchema)]);
+
 /**
  * The workflow response object slot
- * @typedef {import('zod').infer<typeof WorkflowResponseSlotSchema>} IWorkflowResponseSlot
+ * @typedef {import('zod').infer<typeof WorkflowResponseSlotSchemaBase>} IWorkflowResponseSlotBase
  */
-export const WorkflowResponseSlotSchema = z.object({
+export const WorkflowResponseSlotBaseSchema = z.object({
   forward: ForwardSchema.optional(),
-  forwardNote: z.string({description: 'Note to provide to the agent, recommend using forward object api instead'}).optional(),
-  instructions: z.union([z.string(), InstructionSchema, z.array(z.string()), z.array(InstructionSchema)]).optional(),
+  forwardNote: z.string({description: 'Note to provide to the agent, recommend using forward object api instead'})
+    .optional(),
+  instructions: InstructionSchema.optional(),
   removeInstructions: z.array(z.string()).optional(),
   message: z.string().optional(),
   // message: WorkflowResponseMessage.optional(),
@@ -181,6 +195,29 @@ export const WorkflowResponseSlotSchema = z.object({
   scheduled: z.number().optional(),
   contextUpsert: ConversationContext.optional(),
   resetIntent: z.boolean().optional(),
+  followup: z.object({
+    message: z.string().optional(), // @TODO either message or instructions
+    instructions: InstructionSchema,
+    scheduled: z.number().optional(),
+    cancelIf: ConversationContext.optional(),
+    literal: z.boolean().optional()
+  }).optional()
+});
+/**
+ * The workflow response object slot
+ * @typedef {import('zod').infer<typeof WorkflowResponseSlotSchema>} IWorkflowResponseSlot
+ */
+export const WorkflowResponseSlotSchema = WorkflowResponseSlotBaseSchema.extend({
+  anticipate: z.union([
+    z.object({
+      did: z.string({definition: 'The prompt to check if true or false'}),
+      yes: WorkflowResponseSlotBaseSchema,
+      no: WorkflowResponseSlotBaseSchema
+    }),
+    z.array(WorkflowResponseSlotBaseSchema.extend({
+      keywords: z.array(z.string()).min(1).max(20)
+    }))
+  ]).optional()
 });
 
 /**
@@ -199,5 +236,5 @@ export const WorkflowFunctionSchema = z.function()
   .args(WorkflowEventSchema)
   .returns(z.union([
     z.promise(WorkflowResponseSchema),
-    WorkflowResponseSchema,
+    WorkflowResponseSchema
   ]));

@@ -294,6 +294,62 @@ export interface BlockInfo {
     'time'?: string;
 }
 /**
+ * @type CaptureContext200Response
+ * @export
+ */
+export type CaptureContext200Response = Array<{
+    [key: string]: any;
+}> | {
+    [key: string]: any;
+};
+/**
+ *
+ * @export
+ * @interface CaptureContextRequest
+ */
+export interface CaptureContextRequest {
+    /**
+     *
+     * @type {string}
+     * @memberof CaptureContextRequest
+     */
+    'prompt': string;
+    /**
+     *
+     * @type {CaptureContextRequestExamples}
+     * @memberof CaptureContextRequest
+     */
+    'examples'?: CaptureContextRequestExamples;
+}
+/**
+ * @type CaptureContextRequestExamples
+ * @export
+ */
+export type CaptureContextRequestExamples = Array<CaptureContextRequestExamplesOneOfInner> | Array<{
+    [key: string]: any;
+}>;
+/**
+ *
+ * @export
+ * @interface CaptureContextRequestExamplesOneOfInner
+ */
+export interface CaptureContextRequestExamplesOneOfInner {
+    /**
+     *
+     * @type {string}
+     * @memberof CaptureContextRequestExamplesOneOfInner
+     */
+    'input': string;
+    /**
+     *
+     * @type {Array<{ [key: string]: any; }>}
+     * @memberof CaptureContextRequestExamplesOneOfInner
+     */
+    'output': Array<{
+        [key: string]: any;
+    }>;
+}
+/**
  * @type Condition
  * @export
  */
@@ -2550,6 +2606,32 @@ export interface DeleteWorkflowsResponse {
      * @memberof DeleteWorkflowsResponse
      */
     '$operation': string;
+}
+/**
+ *
+ * @export
+ * @interface Did200Response
+ */
+export interface Did200Response {
+    /**
+     *
+     * @type {boolean}
+     * @memberof Did200Response
+     */
+    'value': boolean;
+}
+/**
+ *
+ * @export
+ * @interface DidRequest
+ */
+export interface DidRequest {
+    /**
+     *
+     * @type {string}
+     * @memberof DidRequest
+     */
+    'prompt': string;
 }
 /**
  *
@@ -7252,6 +7334,14 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
     agentsUpdate: (updateAgentsRequest: UpdateAgentsRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
+     * @summary Natural language prompt to resolve a context value derived from the conversation.
+     * @param {CaptureContextRequest} captureContextRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    captureContext: (captureContextRequest: CaptureContextRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
      * @summary Get the current project configuration
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -7552,6 +7642,14 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
     deleteEntity: (type: string, id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
+     * @summary Natural language prompt to resolve to a boolean value.
+     * @param {DidRequest} didRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    did: (didRequest: DidRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
      * @summary Get an entity by type and ID
      * @param {string} type The type of the entity to fetch
      * @param {string} id The unique identifier of the entity
@@ -7799,6 +7897,14 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
      * @throws {RequiredError}
      */
     agentsUpdate(updateAgentsRequest: UpdateAgentsRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateAgentsResponse>>;
+    /**
+     *
+     * @summary Natural language prompt to resolve a context value derived from the conversation.
+     * @param {CaptureContextRequest} captureContextRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    captureContext(captureContextRequest: CaptureContextRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CaptureContext200Response>>;
     /**
      *
      * @summary Get the current project configuration
@@ -8101,6 +8207,14 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
     deleteEntity(type: string, id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>>;
     /**
      *
+     * @summary Natural language prompt to resolve to a boolean value.
+     * @param {DidRequest} didRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    did(didRequest: DidRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Did200Response>>;
+    /**
+     *
      * @summary Get an entity by type and ID
      * @param {string} type The type of the entity to fetch
      * @param {string} id The unique identifier of the entity
@@ -8350,6 +8464,14 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
      * @throws {RequiredError}
      */
     agentsUpdate(updateAgentsRequest: UpdateAgentsRequest, options?: any): AxiosPromise<UpdateAgentsResponse>;
+    /**
+     *
+     * @summary Natural language prompt to resolve a context value derived from the conversation.
+     * @param {CaptureContextRequest} captureContextRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    captureContext(captureContextRequest: CaptureContextRequest, options?: any): AxiosPromise<CaptureContext200Response>;
     /**
      *
      * @summary Get the current project configuration
@@ -8652,6 +8774,14 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
     deleteEntity(type: string, id: string, options?: any): AxiosPromise<void>;
     /**
      *
+     * @summary Natural language prompt to resolve to a boolean value.
+     * @param {DidRequest} didRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    did(didRequest: DidRequest, options?: any): AxiosPromise<Did200Response>;
+    /**
+     *
      * @summary Get an entity by type and ID
      * @param {string} type The type of the entity to fetch
      * @param {string} id The unique identifier of the entity
@@ -8912,6 +9042,15 @@ export declare class Scout9ApiGenerated extends BaseAPI {
      * @memberof Scout9Api
      */
     agentsUpdate(updateAgentsRequest: UpdateAgentsRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<UpdateAgentsResponse, any>>;
+    /**
+     *
+     * @summary Natural language prompt to resolve a context value derived from the conversation.
+     * @param {CaptureContextRequest} captureContextRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    captureContext(captureContextRequest: CaptureContextRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<CaptureContext200Response, any>>;
     /**
      *
      * @summary Get the current project configuration
@@ -9248,6 +9387,15 @@ export declare class Scout9ApiGenerated extends BaseAPI {
      * @memberof Scout9Api
      */
     deleteEntity(type: string, id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<void, any>>;
+    /**
+     *
+     * @summary Natural language prompt to resolve to a boolean value.
+     * @param {DidRequest} didRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    did(didRequest: DidRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<Did200Response, any>>;
     /**
      *
      * @summary Get an entity by type and ID
