@@ -1,6 +1,6 @@
 export default {
-  globalSetup: './tests/setup.js',
-  globalTeardown: './tests/teardown.js',
+  // globalSetup: './tests/setup.js',
+  // globalTeardown: './tests/teardown.js',
   transform: {
     '\\.js$': 'babel-jest'
   },

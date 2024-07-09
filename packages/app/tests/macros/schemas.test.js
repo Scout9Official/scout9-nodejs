@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ContextExampleSchema } from '../../src/macros/schemas.js';
+import { ContextExampleSchema } from '../../src/index.js';
 
 // Example function to parse and validate data
 const validateCaptureContextRequestExamples = (data) => {

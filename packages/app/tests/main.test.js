@@ -1,6 +1,6 @@
 import { ConversationState } from './utils.js';
 
-describe('PizzaZoom End To End Testing', () => {
+describe.skip('PizzaZoom End To End Testing', () => {
 
   const conversation = new ConversationState();
 

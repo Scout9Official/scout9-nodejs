@@ -1,69 +1,87 @@
-import { WorkflowResponseSlotBaseSchema, WorkflowResponseSlotSchema } from '../runtime/index.js';
+import { WorkflowResponseSlotBaseSchema, WorkflowResponseSlotSchema } from '../client/workflow.js';
+import { MacroUtils } from './utils.js';
 
-function HelperMacros() {
-  return {
-    /**
-     * Sets context into the conversation context for later use
-     * @param {any} contextUpdates
-     * @return {*}
-     */
-    upsert(contextUpdates) {
-      return this;
-    }
-  };
-}
 
-const dateToUnix = (date) => parseInt((date.getTime() / 1000).toFixed(0));
-const scheduledToUnix = (scheduled) => {
-  if (scheduled instanceof Date) {
-    return dateToUnix(scheduled)
-  } else if (typeof scheduled === 'string') {
-    const timestamp = Date.parse(scheduled);
-    if (isNaN(timestamp) === false) {
-      return dateToUnix(new Date(timestamp));
-    } else {
-      throw new Error('.scheduled is an invalid date string');
-    }
-  } else {
-    throw new Error(`.scheduled was neither a Date or ISO string`);
-  }
-}
 
 function EventMacros() {
-  const helperMacros = HelperMacros();
 
-  const chainable = (obj) => {
-    return {
-      ...obj,
-      ...helperMacros,
-      chainable: undefined
-    };
-  };
+  let slots = [];
 
-  const slots = [];
-
-  const obj = {
+  return {
 
     /**
      * Sets context into the conversation context for later use
      * @param {Record<string, any>} updates
-     * @return {*}
+     * @return {this}
      */
     upsert(updates) {
       const slot = {contextUpsert: updates}
       slots.push(WorkflowResponseSlotSchema.parse(slot));
+      return this;
     },
 
     /**
      * Similar to `instruction` except that it requires a schedule time parameter that determines when to follow up (and is not an event output macro). This will fire another run job with a new insert system context message, if `options.literal` is set to true, it will be an appended agent message prior to running the workflow app.
+     *
      * @param {string} instruction
+     *
+     * @overload
+     * @param {Date | string} options
+     *
+     * @overload
      * @param {Object} options
      * @param {Date | string} options.scheduled
      * @param {Record<string, any>} [options.cancelIf]
+     * @param {boolean} [options.literal]
+     * @param {boolean} [options.overrideLock]
      *
+     * @return {this}
      */
     followup(instruction, options) {
+      let slot;
+      if (!options) {
+        throw new Error('Missing second argument in followup(instruction, options) \'options\' argument needs to be included')
+      }
+      // Check if it's date value
+      const {success, ...rest} = MacroUtils.scheduledToUnixSafe(options);
+      if (!success) {
+        if (!('scheduled' in options)) {
+          throw new Error('.scheduled was not included in options and needs to be required');
+        }
+        if (typeof options !== 'object') {
+          throw new Error('second argument options in followup is not an object type');
+        }
 
+        // Advance object
+        slot = {
+          followup: {
+            scheduled: MacroUtils.scheduledToUnix(options.scheduled)
+          }
+        }
+        if (options.literal) {
+          slot.followup.message = instruction;
+        } else {
+          slot.followup.instructions = instruction;
+        }
+        if (typeof options.overrideLock === 'boolean') {
+          slot.followup.overrideLock = options.overrideLock;
+        }
+        if (options.cancelIf) {
+          slot.followup.cancelIf = options.cancelIf;
+        }
+
+      } else {
+        // Simple follow up
+        slot = {
+          followup: {
+            instructions: instruction,
+            scheduled: rest.data
+          }
+        }
+
+      }
+      slots.push(WorkflowResponseSlotSchema.parse(slot));
+      return this;
     },
 
     /**
@@ -75,6 +93,8 @@ function EventMacros() {
      *
      * @overload
      * @param {(Array<import('zod').infer<typeof import('../runtime/client/workflow.js').WorkflowResponseSlotBaseSchema> & {keywords: string[]}>)} instruction
+     *
+     * @return {EventMacros}
      */
     anticipate(instruction, yes, no) {
       const slot = {
@@ -103,9 +123,8 @@ function EventMacros() {
         throw new Error(`Instruction is not of type "string" or "array"`);
       }
       slots.push(WorkflowResponseSlotSchema.parse(slot));
+      return this;
     },
-
-
 
     /**
      *
@@ -113,13 +132,13 @@ function EventMacros() {
      * @param {Object} [options]
      * @param {string} [options.id] - Unique ID for the instruction, this is used to remove the instruction later
      * @param {string} [options.persist] - if true, the instruction persists the conversation, if false the instruction will only last for 1 auto reply
-     * @return {obj}
+     * @return {EventMacros}
      */
     instruct(instruction, options = {}) {
       const slot = {};
       if (Object.keys(options).length > 0) {
         const instructionObj = {
-          context: instruction,
+          content: instruction,
         }
         if (options.id) {
           instructionObj.id = options.id
@@ -127,11 +146,11 @@ function EventMacros() {
         if (typeof options.persist === 'boolean') {
           instructionObj.persist = options.persist
         }
-        slot.instruction = instructionObj;
+        slot.instructions = instructionObj;
       } else {
-        slot.instruction = instruction;
+        slot.instructions = instruction;
       }
-      slots.push(slot);
+      slots.push(WorkflowResponseSlotSchema.parse(slot));
       return this;
     },
     /**
@@ -140,7 +159,7 @@ function EventMacros() {
      * @param {Object} [options]
      * @param {Date | string} [options.scheduled] - this will schedule the date to a specific provided date
      * @param {string} [options.delay] - delays the message return in seconds
-     * @return {obj}
+     * @return {this}
      */
     reply(message, options = {}) {
       const slot = {
@@ -148,7 +167,7 @@ function EventMacros() {
       };
       if (Object.keys(options).length) {
         if ('scheduled' in options) {
-          slot.scheduled = scheduledToUnix(options.scheduled);
+          slot.scheduled = MacroUtils.scheduledToUnix(options.scheduled);
         }
         if ('delay' in options) {
           const delay = options.delay;
@@ -158,37 +177,58 @@ function EventMacros() {
           slot.secondsDelay = delay;
         }
       }
-      slots.push(slot);
+      slots.push(WorkflowResponseSlotSchema.parse(slot));
       return this;
     },
     /**
      * This macro ends the conversation and forwards it the owner of the persona to manually handle the flow. If your app returns undefined or no event, then a default forward is generated.
      * @param {string} message - the message to forward to owner of persona
-     * @param {string} [note] - debug note to label reason or add additional information behind the forward
+     * @param {Object} [options]
+     * @param {'after-reply' | 'immediately'} [options.mode] - sets forward mode, defaults to "immediately"
+     * @param {string} [options.to] - another phone or email to forward to instead of owner
+     * @return {this}
      */
-    forward(message, note) {
-      const slot = {
-        forward: message,
-        forwardNote: note
+    forward(message, options = {}) {
+      let slot;
+      if (options && Object.keys(options).length) {
+        slot = {
+          forward: {
+            note: message
+          },
+          forwardNote: message
+        }
+        if (options.to) {
+          slot.forward.to = options.to;
+        }
+        if (options.mode) {
+          slot.forward.mode = options.mode;
+        }
+      } else {
+        slot = {
+          forward: true,
+          forwardNote: message
+        }
       }
-      slots.push(slot);
+      slots.push(WorkflowResponseSlotSchema.parse(slot));
+      return this;
     },
-    toJSON() {
-      return slots;
-    }
-  };
-
-  return {
-    instruct: (instruction, options = {}) => chainable(obj).instruct(instruction, options),
-    reply: (message, options = {}) => chainable(obj).reply(message, options),
-    forward: (message, note) => chainable(obj).forward(message, note),
-    toJSON: () => chainable(obj).toJSON()
+    /**
+     *
+     * @return {Array<(import('zod').infer<typeof import('../runtime/client/workflow.js').WorkflowResponseSlotSchema>)>}
+     */
+    toJSON(flush = true) {
+      if (flush) {
+        const copy = [...slots];
+        slots =[];
+        return copy;
+      } else {
+        return slots;
+      }
+    },
   };
 }
 
 const eventMacros = EventMacros();
-const { foo, bar } = eventMacros;
-
-foo().bar();
-foo().bar().baz().foo(); // Works
-// baz().foo(); // This will throw an error since baz() cannot chain foo()
+export const instruct = eventMacros.instruct.bind(eventMacros);
+export const forward = eventMacros.forward.bind(eventMacros);
+export const reply = eventMacros.reply.bind(eventMacros);

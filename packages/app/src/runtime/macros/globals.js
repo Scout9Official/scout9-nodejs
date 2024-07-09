@@ -2,7 +2,6 @@
 
 export default class MacroGlobals {
 
-
   static $convo() {
     const $convo = globalThis?.SCOUT9?.$convo;
     if (!$convo) {

@@ -5,6 +5,13 @@
 import { Configuration, Scout9Api } from '@scout9/admin';
 import MacroGlobals from './globals.js';
 
+function handleAxiosResponse(res) {
+  if (res.status === 200) {
+    return res.data;
+  } else {
+    throw new Error(`${res.status} ${res.statusText}`)
+  }
+}
 
 /**
  * The `did` macro takes a given prompt and infers a binary `true` or `false` result in relation to the prompt's subject actor and the prompt's inquiry.
@@ -14,7 +21,7 @@ import MacroGlobals from './globals.js';
 export async function did(prompt) {
   const convoId = MacroGlobals.$convo();
   const {value} = (await (new Scout9Api(new Configuration({apiKey: process.env.SCOUT9_API_KEY}))).did({prompt, convoId})
-    .then(res => res.okay ? res.data : throw new Error(`${res.status} ${res.statusText}`)));
+    .then(handleAxiosResponse));
   return value;
 }
 
@@ -27,6 +34,10 @@ export async function did(prompt) {
  */
 export async function context(prompt, examples) {
   const convoId = MacroGlobals.$convo();
-  return (await (new Scout9Api(new Configuration({apiKey: process.env.SCOUT9_API_KEY}))).captureContext({prompt, examples, convoId})
-    .then(res => res.data));
+  return (await (new Scout9Api(new Configuration({apiKey: process.env.SCOUT9_API_KEY}))).captureContext({
+    prompt,
+    examples,
+    convoId
+  })
+    .then(handleAxiosResponse));
 }

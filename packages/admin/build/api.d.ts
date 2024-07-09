@@ -316,6 +316,12 @@ export interface CaptureContextRequest {
     'prompt': string;
     /**
      *
+     * @type {string}
+     * @memberof CaptureContextRequest
+     */
+    'convoId': string;
+    /**
+     *
      * @type {CaptureContextRequestExamples}
      * @memberof CaptureContextRequest
      */
@@ -2632,6 +2638,12 @@ export interface DidRequest {
      * @memberof DidRequest
      */
     'prompt': string;
+    /**
+     *
+     * @type {string}
+     * @memberof DidRequest
+     */
+    'convoId': string;
 }
 /**
  *

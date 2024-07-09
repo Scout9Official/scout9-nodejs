@@ -176,12 +176,39 @@ export const WorkflowResponseMessageApiResponse = z.union([
   })
 ]);
 
+/**
+ * The workflow response object slot
+ * @typedef {import('zod').infer<typeof InstructionSchema>} IInstruction
+ */
 export const InstructionSchema = z.union([z.string(), InstructionObjectSchema, z.array(z.string()), z.array(
   InstructionObjectSchema)]);
 
 /**
+ * Base follow up schema to follow up with the client
+ * @typedef {import('zod').infer<typeof FollowupBaseSchema>} IFollowupBase
+ */
+export const FollowupBaseSchema = z.object({
+  scheduled: z.number(),
+  cancelIf: ConversationContext.optional(),
+  overrideLock: z.boolean({description: 'This will still run even if the conversation is locked, defaults to false'}).optional()
+});
+
+/**
+ * Data used to automatically follow up with the client in the future
+ * @typedef {import('zod').infer<typeof FollowupSchema>} IFollowup
+ */
+export const FollowupSchema = z.union([
+  FollowupBaseSchema.extend({
+    message: z.string({description: 'Manual message sent to client'}),
+  }),
+  FollowupBaseSchema.extend({
+    instructions: InstructionSchema
+  })
+]);
+
+/**
  * The workflow response object slot
- * @typedef {import('zod').infer<typeof WorkflowResponseSlotSchemaBase>} IWorkflowResponseSlotBase
+ * @typedef {import('zod').infer<typeof WorkflowResponseSlotBaseSchema>} IWorkflowResponseSlotBase
  */
 export const WorkflowResponseSlotBaseSchema = z.object({
   forward: ForwardSchema.optional(),
@@ -190,19 +217,13 @@ export const WorkflowResponseSlotBaseSchema = z.object({
   instructions: InstructionSchema.optional(),
   removeInstructions: z.array(z.string()).optional(),
   message: z.string().optional(),
-  // message: WorkflowResponseMessage.optional(),
   secondsDelay: z.number().optional(),
   scheduled: z.number().optional(),
   contextUpsert: ConversationContext.optional(),
   resetIntent: z.boolean().optional(),
-  followup: z.object({
-    message: z.string().optional(), // @TODO either message or instructions
-    instructions: InstructionSchema,
-    scheduled: z.number().optional(),
-    cancelIf: ConversationContext.optional(),
-    literal: z.boolean().optional()
-  }).optional()
+  followup: FollowupSchema.optional()
 });
+
 /**
  * The workflow response object slot
  * @typedef {import('zod').infer<typeof WorkflowResponseSlotSchema>} IWorkflowResponseSlot

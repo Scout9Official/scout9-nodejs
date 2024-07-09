@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-const packageJson = require("../package.json");
+const packageJson = require('../package.json');
 
 export interface ConfigurationParameters {
     apiKey?: string | Promise<string> | ((name: string) => string) | ((name: string) => Promise<string>);
@@ -104,8 +104,10 @@ export class Configuration {
         if (this.business) {
             this.baseOptions.headers['Scout9-Business'] = this.business;
         }
+
+
         if (!this.formDataCtor) {
-            this.formDataCtor = require("form-data");
+            this.formDataCtor = require('form-data');
         }
     }
 

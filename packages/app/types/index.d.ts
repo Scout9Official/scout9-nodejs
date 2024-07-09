@@ -890,6 +890,7 @@ declare module '@scout9/app/testing-tools' {
 	 * 
 	 */
 	const WorkflowResponseSlotSchema: z.ZodObject<{
+		message: z.ZodOptional<z.ZodString>;
 		forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 			to: z.ZodOptional<z.ZodString>;
 			mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
@@ -903,78 +904,1440 @@ declare module '@scout9/app/testing-tools' {
 			mode?: "after-reply" | "immediately" | undefined;
 			note?: string | undefined;
 		}>]>>;
+		scheduled: z.ZodOptional<z.ZodNumber>;
 		forwardNote: z.ZodOptional<z.ZodString>;
 		instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
-			id: z.ZodString;
+			id: z.ZodOptional<z.ZodString>;
+			persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 			content: z.ZodString;
 		}, "strip", z.ZodTypeAny, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
-			id: z.ZodString;
+			id: z.ZodOptional<z.ZodString>;
+			persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 			content: z.ZodString;
 		}, "strip", z.ZodTypeAny, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}>, "many">]>>;
 		removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-		message: z.ZodOptional<z.ZodString>;
 		secondsDelay: z.ZodOptional<z.ZodNumber>;
-		scheduled: z.ZodOptional<z.ZodNumber>;
 		contextUpsert: any;
 		resetIntent: z.ZodOptional<z.ZodBoolean>;
+		followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+			scheduled: z.ZodNumber;
+			cancelIf: any;
+			overrideLock: z.ZodOptional<z.ZodBoolean>;
+			message: z.ZodString;
+		}, "strip", z.ZodTypeAny, {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}, {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}>, z.ZodObject<{
+			scheduled: z.ZodNumber;
+			cancelIf: any;
+			overrideLock: z.ZodOptional<z.ZodBoolean>;
+			instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, "many">]>;
+		}, "strip", z.ZodTypeAny, {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}, {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}>]>>;
+		anticipate: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+			did: z.ZodString;
+			yes: z.ZodObject<{
+				forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+					to: z.ZodOptional<z.ZodString>;
+					mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+					note: z.ZodOptional<z.ZodString>;
+				}, "strip", z.ZodTypeAny, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}>]>>;
+				forwardNote: z.ZodOptional<z.ZodString>;
+				instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, "many">]>>;
+				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+				message: z.ZodOptional<z.ZodString>;
+				secondsDelay: z.ZodOptional<z.ZodNumber>;
+				scheduled: z.ZodOptional<z.ZodNumber>;
+				contextUpsert: any;
+				resetIntent: z.ZodOptional<z.ZodBoolean>;
+				followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					message: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>, z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, "many">]>;
+				}, "strip", z.ZodTypeAny, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>]>>;
+			}, "strip", z.ZodTypeAny, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}>;
+			no: z.ZodObject<{
+				forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+					to: z.ZodOptional<z.ZodString>;
+					mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+					note: z.ZodOptional<z.ZodString>;
+				}, "strip", z.ZodTypeAny, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}>]>>;
+				forwardNote: z.ZodOptional<z.ZodString>;
+				instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, "many">]>>;
+				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+				message: z.ZodOptional<z.ZodString>;
+				secondsDelay: z.ZodOptional<z.ZodNumber>;
+				scheduled: z.ZodOptional<z.ZodNumber>;
+				contextUpsert: any;
+				resetIntent: z.ZodOptional<z.ZodBoolean>;
+				followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					message: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>, z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, "many">]>;
+				}, "strip", z.ZodTypeAny, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>]>>;
+			}, "strip", z.ZodTypeAny, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}>;
+		}, "strip", z.ZodTypeAny, {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		}, {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		}>, z.ZodArray<z.ZodObject<{
+			message: z.ZodOptional<z.ZodString>;
+			forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+				to: z.ZodOptional<z.ZodString>;
+				mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+				note: z.ZodOptional<z.ZodString>;
+			}, "strip", z.ZodTypeAny, {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			}, {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			}>]>>;
+			scheduled: z.ZodOptional<z.ZodNumber>;
+			forwardNote: z.ZodOptional<z.ZodString>;
+			instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, "many">]>>;
+			removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+			secondsDelay: z.ZodOptional<z.ZodNumber>;
+			contextUpsert: any;
+			resetIntent: z.ZodOptional<z.ZodBoolean>;
+			followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+				scheduled: z.ZodNumber;
+				cancelIf: any;
+				overrideLock: z.ZodOptional<z.ZodBoolean>;
+				message: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}, {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}>, z.ZodObject<{
+				scheduled: z.ZodNumber;
+				cancelIf: any;
+				overrideLock: z.ZodOptional<z.ZodBoolean>;
+				instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, "many">]>;
+			}, "strip", z.ZodTypeAny, {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}, {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}>]>>;
+			keywords: z.ZodArray<z.ZodString, "many">;
+		}, "strip", z.ZodTypeAny, {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}, {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}>, "many">]>>;
 	}, "strip", z.ZodTypeAny, {
+		message?: string | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
 			note?: string | undefined;
 		} | undefined;
+		scheduled?: number | undefined;
 		forwardNote?: string | undefined;
 		instructions?: string | string[] | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		} | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}[] | undefined;
 		removeInstructions?: string[] | undefined;
-		message?: string | undefined;
 		secondsDelay?: number | undefined;
-		scheduled?: number | undefined;
 		contextUpsert?: any;
 		resetIntent?: boolean | undefined;
+		followup?: {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | undefined;
+		anticipate?: {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		} | {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}[] | undefined;
 	}, {
+		message?: string | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
 			note?: string | undefined;
 		} | undefined;
+		scheduled?: number | undefined;
 		forwardNote?: string | undefined;
 		instructions?: string | string[] | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		} | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}[] | undefined;
 		removeInstructions?: string[] | undefined;
-		message?: string | undefined;
 		secondsDelay?: number | undefined;
-		scheduled?: number | undefined;
 		contextUpsert?: any;
 		resetIntent?: boolean | undefined;
+		followup?: {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | undefined;
+		anticipate?: {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		} | {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}[] | undefined;
 	}>;
 	/**
 	 * The workflow response to send in any given workflow
 	 * 
 	 */
 	const WorkflowResponseSchema: z.ZodUnion<[z.ZodObject<{
+		message: z.ZodOptional<z.ZodString>;
 		forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 			to: z.ZodOptional<z.ZodString>;
 			mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
@@ -988,73 +2351,1435 @@ declare module '@scout9/app/testing-tools' {
 			mode?: "after-reply" | "immediately" | undefined;
 			note?: string | undefined;
 		}>]>>;
+		scheduled: z.ZodOptional<z.ZodNumber>;
 		forwardNote: z.ZodOptional<z.ZodString>;
 		instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
-			id: z.ZodString;
+			id: z.ZodOptional<z.ZodString>;
+			persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 			content: z.ZodString;
 		}, "strip", z.ZodTypeAny, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
-			id: z.ZodString;
+			id: z.ZodOptional<z.ZodString>;
+			persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 			content: z.ZodString;
 		}, "strip", z.ZodTypeAny, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}>, "many">]>>;
 		removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-		message: z.ZodOptional<z.ZodString>;
 		secondsDelay: z.ZodOptional<z.ZodNumber>;
-		scheduled: z.ZodOptional<z.ZodNumber>;
 		contextUpsert: any;
 		resetIntent: z.ZodOptional<z.ZodBoolean>;
+		followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+			scheduled: z.ZodNumber;
+			cancelIf: any;
+			overrideLock: z.ZodOptional<z.ZodBoolean>;
+			message: z.ZodString;
+		}, "strip", z.ZodTypeAny, {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}, {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}>, z.ZodObject<{
+			scheduled: z.ZodNumber;
+			cancelIf: any;
+			overrideLock: z.ZodOptional<z.ZodBoolean>;
+			instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, "many">]>;
+		}, "strip", z.ZodTypeAny, {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}, {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}>]>>;
+		anticipate: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+			did: z.ZodString;
+			yes: z.ZodObject<{
+				forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+					to: z.ZodOptional<z.ZodString>;
+					mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+					note: z.ZodOptional<z.ZodString>;
+				}, "strip", z.ZodTypeAny, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}>]>>;
+				forwardNote: z.ZodOptional<z.ZodString>;
+				instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, "many">]>>;
+				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+				message: z.ZodOptional<z.ZodString>;
+				secondsDelay: z.ZodOptional<z.ZodNumber>;
+				scheduled: z.ZodOptional<z.ZodNumber>;
+				contextUpsert: any;
+				resetIntent: z.ZodOptional<z.ZodBoolean>;
+				followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					message: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>, z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, "many">]>;
+				}, "strip", z.ZodTypeAny, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>]>>;
+			}, "strip", z.ZodTypeAny, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}>;
+			no: z.ZodObject<{
+				forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+					to: z.ZodOptional<z.ZodString>;
+					mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+					note: z.ZodOptional<z.ZodString>;
+				}, "strip", z.ZodTypeAny, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}>]>>;
+				forwardNote: z.ZodOptional<z.ZodString>;
+				instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, "many">]>>;
+				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+				message: z.ZodOptional<z.ZodString>;
+				secondsDelay: z.ZodOptional<z.ZodNumber>;
+				scheduled: z.ZodOptional<z.ZodNumber>;
+				contextUpsert: any;
+				resetIntent: z.ZodOptional<z.ZodBoolean>;
+				followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					message: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>, z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, "many">]>;
+				}, "strip", z.ZodTypeAny, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>]>>;
+			}, "strip", z.ZodTypeAny, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}>;
+		}, "strip", z.ZodTypeAny, {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		}, {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		}>, z.ZodArray<z.ZodObject<{
+			message: z.ZodOptional<z.ZodString>;
+			forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+				to: z.ZodOptional<z.ZodString>;
+				mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+				note: z.ZodOptional<z.ZodString>;
+			}, "strip", z.ZodTypeAny, {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			}, {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			}>]>>;
+			scheduled: z.ZodOptional<z.ZodNumber>;
+			forwardNote: z.ZodOptional<z.ZodString>;
+			instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, "many">]>>;
+			removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+			secondsDelay: z.ZodOptional<z.ZodNumber>;
+			contextUpsert: any;
+			resetIntent: z.ZodOptional<z.ZodBoolean>;
+			followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+				scheduled: z.ZodNumber;
+				cancelIf: any;
+				overrideLock: z.ZodOptional<z.ZodBoolean>;
+				message: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}, {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}>, z.ZodObject<{
+				scheduled: z.ZodNumber;
+				cancelIf: any;
+				overrideLock: z.ZodOptional<z.ZodBoolean>;
+				instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, "many">]>;
+			}, "strip", z.ZodTypeAny, {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}, {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}>]>>;
+			keywords: z.ZodArray<z.ZodString, "many">;
+		}, "strip", z.ZodTypeAny, {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}, {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}>, "many">]>>;
 	}, "strip", z.ZodTypeAny, {
+		message?: string | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
 			note?: string | undefined;
 		} | undefined;
+		scheduled?: number | undefined;
 		forwardNote?: string | undefined;
 		instructions?: string | string[] | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		} | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}[] | undefined;
 		removeInstructions?: string[] | undefined;
-		message?: string | undefined;
 		secondsDelay?: number | undefined;
-		scheduled?: number | undefined;
 		contextUpsert?: any;
 		resetIntent?: boolean | undefined;
+		followup?: {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | undefined;
+		anticipate?: {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		} | {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}[] | undefined;
 	}, {
+		message?: string | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
 			note?: string | undefined;
 		} | undefined;
+		scheduled?: number | undefined;
 		forwardNote?: string | undefined;
 		instructions?: string | string[] | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		} | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}[] | undefined;
 		removeInstructions?: string[] | undefined;
-		message?: string | undefined;
 		secondsDelay?: number | undefined;
-		scheduled?: number | undefined;
 		contextUpsert?: any;
 		resetIntent?: boolean | undefined;
+		followup?: {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | undefined;
+		anticipate?: {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		} | {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}[] | undefined;
 	}>, z.ZodArray<z.ZodObject<{
+		message: z.ZodOptional<z.ZodString>;
 		forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 			to: z.ZodOptional<z.ZodString>;
 			mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
@@ -1068,72 +3793,1433 @@ declare module '@scout9/app/testing-tools' {
 			mode?: "after-reply" | "immediately" | undefined;
 			note?: string | undefined;
 		}>]>>;
+		scheduled: z.ZodOptional<z.ZodNumber>;
 		forwardNote: z.ZodOptional<z.ZodString>;
 		instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
-			id: z.ZodString;
+			id: z.ZodOptional<z.ZodString>;
+			persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 			content: z.ZodString;
 		}, "strip", z.ZodTypeAny, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
-			id: z.ZodString;
+			id: z.ZodOptional<z.ZodString>;
+			persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 			content: z.ZodString;
 		}, "strip", z.ZodTypeAny, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}>, "many">]>>;
 		removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-		message: z.ZodOptional<z.ZodString>;
 		secondsDelay: z.ZodOptional<z.ZodNumber>;
-		scheduled: z.ZodOptional<z.ZodNumber>;
 		contextUpsert: any;
 		resetIntent: z.ZodOptional<z.ZodBoolean>;
+		followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+			scheduled: z.ZodNumber;
+			cancelIf: any;
+			overrideLock: z.ZodOptional<z.ZodBoolean>;
+			message: z.ZodString;
+		}, "strip", z.ZodTypeAny, {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}, {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}>, z.ZodObject<{
+			scheduled: z.ZodNumber;
+			cancelIf: any;
+			overrideLock: z.ZodOptional<z.ZodBoolean>;
+			instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, "many">]>;
+		}, "strip", z.ZodTypeAny, {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}, {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}>]>>;
+		anticipate: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+			did: z.ZodString;
+			yes: z.ZodObject<{
+				forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+					to: z.ZodOptional<z.ZodString>;
+					mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+					note: z.ZodOptional<z.ZodString>;
+				}, "strip", z.ZodTypeAny, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}>]>>;
+				forwardNote: z.ZodOptional<z.ZodString>;
+				instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, "many">]>>;
+				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+				message: z.ZodOptional<z.ZodString>;
+				secondsDelay: z.ZodOptional<z.ZodNumber>;
+				scheduled: z.ZodOptional<z.ZodNumber>;
+				contextUpsert: any;
+				resetIntent: z.ZodOptional<z.ZodBoolean>;
+				followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					message: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>, z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, "many">]>;
+				}, "strip", z.ZodTypeAny, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>]>>;
+			}, "strip", z.ZodTypeAny, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}>;
+			no: z.ZodObject<{
+				forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+					to: z.ZodOptional<z.ZodString>;
+					mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+					note: z.ZodOptional<z.ZodString>;
+				}, "strip", z.ZodTypeAny, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}>]>>;
+				forwardNote: z.ZodOptional<z.ZodString>;
+				instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, "many">]>>;
+				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+				message: z.ZodOptional<z.ZodString>;
+				secondsDelay: z.ZodOptional<z.ZodNumber>;
+				scheduled: z.ZodOptional<z.ZodNumber>;
+				contextUpsert: any;
+				resetIntent: z.ZodOptional<z.ZodBoolean>;
+				followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					message: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>, z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, "many">]>;
+				}, "strip", z.ZodTypeAny, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>]>>;
+			}, "strip", z.ZodTypeAny, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}>;
+		}, "strip", z.ZodTypeAny, {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		}, {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		}>, z.ZodArray<z.ZodObject<{
+			message: z.ZodOptional<z.ZodString>;
+			forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+				to: z.ZodOptional<z.ZodString>;
+				mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+				note: z.ZodOptional<z.ZodString>;
+			}, "strip", z.ZodTypeAny, {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			}, {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			}>]>>;
+			scheduled: z.ZodOptional<z.ZodNumber>;
+			forwardNote: z.ZodOptional<z.ZodString>;
+			instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, "many">]>>;
+			removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+			secondsDelay: z.ZodOptional<z.ZodNumber>;
+			contextUpsert: any;
+			resetIntent: z.ZodOptional<z.ZodBoolean>;
+			followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+				scheduled: z.ZodNumber;
+				cancelIf: any;
+				overrideLock: z.ZodOptional<z.ZodBoolean>;
+				message: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}, {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}>, z.ZodObject<{
+				scheduled: z.ZodNumber;
+				cancelIf: any;
+				overrideLock: z.ZodOptional<z.ZodBoolean>;
+				instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, "many">]>;
+			}, "strip", z.ZodTypeAny, {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}, {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}>]>>;
+			keywords: z.ZodArray<z.ZodString, "many">;
+		}, "strip", z.ZodTypeAny, {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}, {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}>, "many">]>>;
 	}, "strip", z.ZodTypeAny, {
+		message?: string | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
 			note?: string | undefined;
 		} | undefined;
+		scheduled?: number | undefined;
 		forwardNote?: string | undefined;
 		instructions?: string | string[] | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		} | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}[] | undefined;
 		removeInstructions?: string[] | undefined;
-		message?: string | undefined;
 		secondsDelay?: number | undefined;
-		scheduled?: number | undefined;
 		contextUpsert?: any;
 		resetIntent?: boolean | undefined;
+		followup?: {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | undefined;
+		anticipate?: {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		} | {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}[] | undefined;
 	}, {
+		message?: string | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
 			note?: string | undefined;
 		} | undefined;
+		scheduled?: number | undefined;
 		forwardNote?: string | undefined;
 		instructions?: string | string[] | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		} | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}[] | undefined;
 		removeInstructions?: string[] | undefined;
-		message?: string | undefined;
 		secondsDelay?: number | undefined;
-		scheduled?: number | undefined;
 		contextUpsert?: any;
 		resetIntent?: boolean | undefined;
+		followup?: {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | undefined;
+		anticipate?: {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		} | {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}[] | undefined;
 	}>, "many">]>;
 	type IConversation = import('zod').infer<typeof ConversationSchema>;
 	type IWorkflowEvent = import('zod').infer<typeof WorkflowEventSchema>;
@@ -1214,7 +5300,7 @@ declare module '@scout9/app/testing-tools' {
 			forward?: IWorkflowResponseSlot['forward'];
 		};
 		messages: Change<Array<IMessage>>;
-		context: Change<Object>;
+		context: Change<any>;
 		message: Change<IMessage>;
 	};
 	const Scout9ProjectBuildConfigSchema: z.ZodObject<{
@@ -4526,15 +8612,18 @@ declare module '@scout9/app' {
 	 * Instruction object schema used to send context to guide conversations
 	 * 
 	 */
-	export const InstructionSchema: z.ZodObject<{
-		id: z.ZodString;
+	export const InstructionObjectSchema: z.ZodObject<{
+		id: z.ZodOptional<z.ZodString>;
+		persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 		content: z.ZodString;
 	}, "strip", z.ZodTypeAny, {
-		id: string;
 		content: string;
+		id?: string | undefined;
+		persist?: boolean | undefined;
 	}, {
-		id: string;
 		content: string;
+		id?: string | undefined;
+		persist?: boolean | undefined;
 	}>;
 
 	export const WorkflowResponseMessageApiRequest: z.ZodObject<{
@@ -4612,7 +8701,144 @@ declare module '@scout9/app' {
 	 * The workflow response object slot
 	 * 
 	 */
-	export const WorkflowResponseSlotSchema: z.ZodObject<{
+	export const InstructionSchema: z.ZodUnion<[z.ZodString, z.ZodObject<{
+		id: z.ZodOptional<z.ZodString>;
+		persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+		content: z.ZodString;
+	}, "strip", z.ZodTypeAny, {
+		content: string;
+		id?: string | undefined;
+		persist?: boolean | undefined;
+	}, {
+		content: string;
+		id?: string | undefined;
+		persist?: boolean | undefined;
+	}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+		id: z.ZodOptional<z.ZodString>;
+		persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+		content: z.ZodString;
+	}, "strip", z.ZodTypeAny, {
+		content: string;
+		id?: string | undefined;
+		persist?: boolean | undefined;
+	}, {
+		content: string;
+		id?: string | undefined;
+		persist?: boolean | undefined;
+	}>, "many">]>;
+	/**
+	 * Base follow up schema to follow up with the client
+	 * 
+	 */
+	export const FollowupBaseSchema: z.ZodObject<{
+		scheduled: z.ZodNumber;
+		cancelIf: any;
+		overrideLock: z.ZodOptional<z.ZodBoolean>;
+	}, "strip", z.ZodTypeAny, {
+		scheduled: number;
+		cancelIf?: any;
+		overrideLock?: boolean | undefined;
+	}, {
+		scheduled: number;
+		cancelIf?: any;
+		overrideLock?: boolean | undefined;
+	}>;
+	/**
+	 * Data used to automatically follow up with the client in the future
+	 * 
+	 */
+	export const FollowupSchema: z.ZodUnion<[z.ZodObject<{
+		scheduled: z.ZodNumber;
+		cancelIf: any;
+		overrideLock: z.ZodOptional<z.ZodBoolean>;
+		message: z.ZodString;
+	}, "strip", z.ZodTypeAny, {
+		message: string;
+		scheduled: number;
+		cancelIf?: any;
+		overrideLock?: boolean | undefined;
+	}, {
+		message: string;
+		scheduled: number;
+		cancelIf?: any;
+		overrideLock?: boolean | undefined;
+	}>, z.ZodObject<{
+		scheduled: z.ZodNumber;
+		cancelIf: any;
+		overrideLock: z.ZodOptional<z.ZodBoolean>;
+		instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+			id: z.ZodOptional<z.ZodString>;
+			persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+			content: z.ZodString;
+		}, "strip", z.ZodTypeAny, {
+			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
+		}, {
+			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
+		}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+			id: z.ZodOptional<z.ZodString>;
+			persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+			content: z.ZodString;
+		}, "strip", z.ZodTypeAny, {
+			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
+		}, {
+			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
+		}>, "many">]>;
+	}, "strip", z.ZodTypeAny, {
+		scheduled: number;
+		instructions: (string | string[] | {
+			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
+		} | {
+			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
+		}[]) & (string | string[] | {
+			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
+		} | {
+			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
+		}[] | undefined);
+		cancelIf?: any;
+		overrideLock?: boolean | undefined;
+	}, {
+		scheduled: number;
+		instructions: (string | string[] | {
+			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
+		} | {
+			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
+		}[]) & (string | string[] | {
+			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
+		} | {
+			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
+		}[] | undefined);
+		cancelIf?: any;
+		overrideLock?: boolean | undefined;
+	}>]>;
+	/**
+	 * The workflow response object slot
+	 * 
+	 */
+	export const WorkflowResponseSlotBaseSchema: z.ZodObject<{
 		forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 			to: z.ZodOptional<z.ZodString>;
 			mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
@@ -4628,23 +8854,29 @@ declare module '@scout9/app' {
 		}>]>>;
 		forwardNote: z.ZodOptional<z.ZodString>;
 		instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
-			id: z.ZodString;
+			id: z.ZodOptional<z.ZodString>;
+			persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 			content: z.ZodString;
 		}, "strip", z.ZodTypeAny, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
-			id: z.ZodString;
+			id: z.ZodOptional<z.ZodString>;
+			persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 			content: z.ZodString;
 		}, "strip", z.ZodTypeAny, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}>, "many">]>>;
 		removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 		message: z.ZodOptional<z.ZodString>;
@@ -4652,6 +8884,93 @@ declare module '@scout9/app' {
 		scheduled: z.ZodOptional<z.ZodNumber>;
 		contextUpsert: any;
 		resetIntent: z.ZodOptional<z.ZodBoolean>;
+		followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+			scheduled: z.ZodNumber;
+			cancelIf: any;
+			overrideLock: z.ZodOptional<z.ZodBoolean>;
+			message: z.ZodString;
+		}, "strip", z.ZodTypeAny, {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}, {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}>, z.ZodObject<{
+			scheduled: z.ZodNumber;
+			cancelIf: any;
+			overrideLock: z.ZodOptional<z.ZodBoolean>;
+			instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, "many">]>;
+		}, "strip", z.ZodTypeAny, {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}, {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}>]>>;
 	}, "strip", z.ZodTypeAny, {
 		forward?: string | boolean | {
 			to?: string | undefined;
@@ -4660,11 +8979,13 @@ declare module '@scout9/app' {
 		} | undefined;
 		forwardNote?: string | undefined;
 		instructions?: string | string[] | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		} | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}[] | undefined;
 		removeInstructions?: string[] | undefined;
 		message?: string | undefined;
@@ -4672,6 +8993,33 @@ declare module '@scout9/app' {
 		scheduled?: number | undefined;
 		contextUpsert?: any;
 		resetIntent?: boolean | undefined;
+		followup?: {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | undefined;
 	}, {
 		forward?: string | boolean | {
 			to?: string | undefined;
@@ -4680,11 +9028,13 @@ declare module '@scout9/app' {
 		} | undefined;
 		forwardNote?: string | undefined;
 		instructions?: string | string[] | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		} | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}[] | undefined;
 		removeInstructions?: string[] | undefined;
 		message?: string | undefined;
@@ -4692,12 +9042,1487 @@ declare module '@scout9/app' {
 		scheduled?: number | undefined;
 		contextUpsert?: any;
 		resetIntent?: boolean | undefined;
+		followup?: {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | undefined;
+	}>;
+	/**
+	 * The workflow response object slot
+	 * 
+	 */
+	export const WorkflowResponseSlotSchema: z.ZodObject<{
+		message: z.ZodOptional<z.ZodString>;
+		forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+			to: z.ZodOptional<z.ZodString>;
+			mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+			note: z.ZodOptional<z.ZodString>;
+		}, "strip", z.ZodTypeAny, {
+			to?: string | undefined;
+			mode?: "after-reply" | "immediately" | undefined;
+			note?: string | undefined;
+		}, {
+			to?: string | undefined;
+			mode?: "after-reply" | "immediately" | undefined;
+			note?: string | undefined;
+		}>]>>;
+		scheduled: z.ZodOptional<z.ZodNumber>;
+		forwardNote: z.ZodOptional<z.ZodString>;
+		instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+			id: z.ZodOptional<z.ZodString>;
+			persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+			content: z.ZodString;
+		}, "strip", z.ZodTypeAny, {
+			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
+		}, {
+			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
+		}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+			id: z.ZodOptional<z.ZodString>;
+			persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+			content: z.ZodString;
+		}, "strip", z.ZodTypeAny, {
+			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
+		}, {
+			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
+		}>, "many">]>>;
+		removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+		secondsDelay: z.ZodOptional<z.ZodNumber>;
+		contextUpsert: any;
+		resetIntent: z.ZodOptional<z.ZodBoolean>;
+		followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+			scheduled: z.ZodNumber;
+			cancelIf: any;
+			overrideLock: z.ZodOptional<z.ZodBoolean>;
+			message: z.ZodString;
+		}, "strip", z.ZodTypeAny, {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}, {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}>, z.ZodObject<{
+			scheduled: z.ZodNumber;
+			cancelIf: any;
+			overrideLock: z.ZodOptional<z.ZodBoolean>;
+			instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, "many">]>;
+		}, "strip", z.ZodTypeAny, {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}, {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}>]>>;
+		anticipate: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+			did: z.ZodString;
+			yes: z.ZodObject<{
+				forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+					to: z.ZodOptional<z.ZodString>;
+					mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+					note: z.ZodOptional<z.ZodString>;
+				}, "strip", z.ZodTypeAny, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}>]>>;
+				forwardNote: z.ZodOptional<z.ZodString>;
+				instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, "many">]>>;
+				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+				message: z.ZodOptional<z.ZodString>;
+				secondsDelay: z.ZodOptional<z.ZodNumber>;
+				scheduled: z.ZodOptional<z.ZodNumber>;
+				contextUpsert: any;
+				resetIntent: z.ZodOptional<z.ZodBoolean>;
+				followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					message: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>, z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, "many">]>;
+				}, "strip", z.ZodTypeAny, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>]>>;
+			}, "strip", z.ZodTypeAny, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}>;
+			no: z.ZodObject<{
+				forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+					to: z.ZodOptional<z.ZodString>;
+					mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+					note: z.ZodOptional<z.ZodString>;
+				}, "strip", z.ZodTypeAny, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}>]>>;
+				forwardNote: z.ZodOptional<z.ZodString>;
+				instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, "many">]>>;
+				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+				message: z.ZodOptional<z.ZodString>;
+				secondsDelay: z.ZodOptional<z.ZodNumber>;
+				scheduled: z.ZodOptional<z.ZodNumber>;
+				contextUpsert: any;
+				resetIntent: z.ZodOptional<z.ZodBoolean>;
+				followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					message: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>, z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, "many">]>;
+				}, "strip", z.ZodTypeAny, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>]>>;
+			}, "strip", z.ZodTypeAny, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}>;
+		}, "strip", z.ZodTypeAny, {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		}, {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		}>, z.ZodArray<z.ZodObject<{
+			message: z.ZodOptional<z.ZodString>;
+			forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+				to: z.ZodOptional<z.ZodString>;
+				mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+				note: z.ZodOptional<z.ZodString>;
+			}, "strip", z.ZodTypeAny, {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			}, {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			}>]>>;
+			scheduled: z.ZodOptional<z.ZodNumber>;
+			forwardNote: z.ZodOptional<z.ZodString>;
+			instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, "many">]>>;
+			removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+			secondsDelay: z.ZodOptional<z.ZodNumber>;
+			contextUpsert: any;
+			resetIntent: z.ZodOptional<z.ZodBoolean>;
+			followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+				scheduled: z.ZodNumber;
+				cancelIf: any;
+				overrideLock: z.ZodOptional<z.ZodBoolean>;
+				message: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}, {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}>, z.ZodObject<{
+				scheduled: z.ZodNumber;
+				cancelIf: any;
+				overrideLock: z.ZodOptional<z.ZodBoolean>;
+				instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, "many">]>;
+			}, "strip", z.ZodTypeAny, {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}, {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}>]>>;
+			keywords: z.ZodArray<z.ZodString, "many">;
+		}, "strip", z.ZodTypeAny, {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}, {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}>, "many">]>>;
+	}, "strip", z.ZodTypeAny, {
+		message?: string | undefined;
+		forward?: string | boolean | {
+			to?: string | undefined;
+			mode?: "after-reply" | "immediately" | undefined;
+			note?: string | undefined;
+		} | undefined;
+		scheduled?: number | undefined;
+		forwardNote?: string | undefined;
+		instructions?: string | string[] | {
+			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
+		} | {
+			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
+		}[] | undefined;
+		removeInstructions?: string[] | undefined;
+		secondsDelay?: number | undefined;
+		contextUpsert?: any;
+		resetIntent?: boolean | undefined;
+		followup?: {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | undefined;
+		anticipate?: {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		} | {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}[] | undefined;
+	}, {
+		message?: string | undefined;
+		forward?: string | boolean | {
+			to?: string | undefined;
+			mode?: "after-reply" | "immediately" | undefined;
+			note?: string | undefined;
+		} | undefined;
+		scheduled?: number | undefined;
+		forwardNote?: string | undefined;
+		instructions?: string | string[] | {
+			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
+		} | {
+			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
+		}[] | undefined;
+		removeInstructions?: string[] | undefined;
+		secondsDelay?: number | undefined;
+		contextUpsert?: any;
+		resetIntent?: boolean | undefined;
+		followup?: {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | undefined;
+		anticipate?: {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		} | {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}[] | undefined;
 	}>;
 	/**
 	 * The workflow response to send in any given workflow
 	 * 
 	 */
 	export const WorkflowResponseSchema: z.ZodUnion<[z.ZodObject<{
+		message: z.ZodOptional<z.ZodString>;
 		forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 			to: z.ZodOptional<z.ZodString>;
 			mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
@@ -4711,73 +10536,1435 @@ declare module '@scout9/app' {
 			mode?: "after-reply" | "immediately" | undefined;
 			note?: string | undefined;
 		}>]>>;
+		scheduled: z.ZodOptional<z.ZodNumber>;
 		forwardNote: z.ZodOptional<z.ZodString>;
 		instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
-			id: z.ZodString;
+			id: z.ZodOptional<z.ZodString>;
+			persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 			content: z.ZodString;
 		}, "strip", z.ZodTypeAny, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
-			id: z.ZodString;
+			id: z.ZodOptional<z.ZodString>;
+			persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 			content: z.ZodString;
 		}, "strip", z.ZodTypeAny, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}>, "many">]>>;
 		removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-		message: z.ZodOptional<z.ZodString>;
 		secondsDelay: z.ZodOptional<z.ZodNumber>;
-		scheduled: z.ZodOptional<z.ZodNumber>;
 		contextUpsert: any;
 		resetIntent: z.ZodOptional<z.ZodBoolean>;
+		followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+			scheduled: z.ZodNumber;
+			cancelIf: any;
+			overrideLock: z.ZodOptional<z.ZodBoolean>;
+			message: z.ZodString;
+		}, "strip", z.ZodTypeAny, {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}, {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}>, z.ZodObject<{
+			scheduled: z.ZodNumber;
+			cancelIf: any;
+			overrideLock: z.ZodOptional<z.ZodBoolean>;
+			instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, "many">]>;
+		}, "strip", z.ZodTypeAny, {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}, {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}>]>>;
+		anticipate: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+			did: z.ZodString;
+			yes: z.ZodObject<{
+				forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+					to: z.ZodOptional<z.ZodString>;
+					mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+					note: z.ZodOptional<z.ZodString>;
+				}, "strip", z.ZodTypeAny, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}>]>>;
+				forwardNote: z.ZodOptional<z.ZodString>;
+				instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, "many">]>>;
+				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+				message: z.ZodOptional<z.ZodString>;
+				secondsDelay: z.ZodOptional<z.ZodNumber>;
+				scheduled: z.ZodOptional<z.ZodNumber>;
+				contextUpsert: any;
+				resetIntent: z.ZodOptional<z.ZodBoolean>;
+				followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					message: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>, z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, "many">]>;
+				}, "strip", z.ZodTypeAny, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>]>>;
+			}, "strip", z.ZodTypeAny, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}>;
+			no: z.ZodObject<{
+				forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+					to: z.ZodOptional<z.ZodString>;
+					mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+					note: z.ZodOptional<z.ZodString>;
+				}, "strip", z.ZodTypeAny, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}>]>>;
+				forwardNote: z.ZodOptional<z.ZodString>;
+				instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, "many">]>>;
+				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+				message: z.ZodOptional<z.ZodString>;
+				secondsDelay: z.ZodOptional<z.ZodNumber>;
+				scheduled: z.ZodOptional<z.ZodNumber>;
+				contextUpsert: any;
+				resetIntent: z.ZodOptional<z.ZodBoolean>;
+				followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					message: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>, z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, "many">]>;
+				}, "strip", z.ZodTypeAny, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>]>>;
+			}, "strip", z.ZodTypeAny, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}>;
+		}, "strip", z.ZodTypeAny, {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		}, {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		}>, z.ZodArray<z.ZodObject<{
+			message: z.ZodOptional<z.ZodString>;
+			forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+				to: z.ZodOptional<z.ZodString>;
+				mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+				note: z.ZodOptional<z.ZodString>;
+			}, "strip", z.ZodTypeAny, {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			}, {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			}>]>>;
+			scheduled: z.ZodOptional<z.ZodNumber>;
+			forwardNote: z.ZodOptional<z.ZodString>;
+			instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, "many">]>>;
+			removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+			secondsDelay: z.ZodOptional<z.ZodNumber>;
+			contextUpsert: any;
+			resetIntent: z.ZodOptional<z.ZodBoolean>;
+			followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+				scheduled: z.ZodNumber;
+				cancelIf: any;
+				overrideLock: z.ZodOptional<z.ZodBoolean>;
+				message: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}, {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}>, z.ZodObject<{
+				scheduled: z.ZodNumber;
+				cancelIf: any;
+				overrideLock: z.ZodOptional<z.ZodBoolean>;
+				instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, "many">]>;
+			}, "strip", z.ZodTypeAny, {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}, {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}>]>>;
+			keywords: z.ZodArray<z.ZodString, "many">;
+		}, "strip", z.ZodTypeAny, {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}, {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}>, "many">]>>;
 	}, "strip", z.ZodTypeAny, {
+		message?: string | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
 			note?: string | undefined;
 		} | undefined;
+		scheduled?: number | undefined;
 		forwardNote?: string | undefined;
 		instructions?: string | string[] | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		} | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}[] | undefined;
 		removeInstructions?: string[] | undefined;
-		message?: string | undefined;
 		secondsDelay?: number | undefined;
-		scheduled?: number | undefined;
 		contextUpsert?: any;
 		resetIntent?: boolean | undefined;
+		followup?: {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | undefined;
+		anticipate?: {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		} | {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}[] | undefined;
 	}, {
+		message?: string | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
 			note?: string | undefined;
 		} | undefined;
+		scheduled?: number | undefined;
 		forwardNote?: string | undefined;
 		instructions?: string | string[] | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		} | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}[] | undefined;
 		removeInstructions?: string[] | undefined;
-		message?: string | undefined;
 		secondsDelay?: number | undefined;
-		scheduled?: number | undefined;
 		contextUpsert?: any;
 		resetIntent?: boolean | undefined;
+		followup?: {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | undefined;
+		anticipate?: {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		} | {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}[] | undefined;
 	}>, z.ZodArray<z.ZodObject<{
+		message: z.ZodOptional<z.ZodString>;
 		forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 			to: z.ZodOptional<z.ZodString>;
 			mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
@@ -4791,72 +11978,1433 @@ declare module '@scout9/app' {
 			mode?: "after-reply" | "immediately" | undefined;
 			note?: string | undefined;
 		}>]>>;
+		scheduled: z.ZodOptional<z.ZodNumber>;
 		forwardNote: z.ZodOptional<z.ZodString>;
 		instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
-			id: z.ZodString;
+			id: z.ZodOptional<z.ZodString>;
+			persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 			content: z.ZodString;
 		}, "strip", z.ZodTypeAny, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
-			id: z.ZodString;
+			id: z.ZodOptional<z.ZodString>;
+			persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 			content: z.ZodString;
 		}, "strip", z.ZodTypeAny, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}>, "many">]>>;
 		removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-		message: z.ZodOptional<z.ZodString>;
 		secondsDelay: z.ZodOptional<z.ZodNumber>;
-		scheduled: z.ZodOptional<z.ZodNumber>;
 		contextUpsert: any;
 		resetIntent: z.ZodOptional<z.ZodBoolean>;
+		followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+			scheduled: z.ZodNumber;
+			cancelIf: any;
+			overrideLock: z.ZodOptional<z.ZodBoolean>;
+			message: z.ZodString;
+		}, "strip", z.ZodTypeAny, {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}, {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}>, z.ZodObject<{
+			scheduled: z.ZodNumber;
+			cancelIf: any;
+			overrideLock: z.ZodOptional<z.ZodBoolean>;
+			instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, "many">]>;
+		}, "strip", z.ZodTypeAny, {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}, {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}>]>>;
+		anticipate: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+			did: z.ZodString;
+			yes: z.ZodObject<{
+				forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+					to: z.ZodOptional<z.ZodString>;
+					mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+					note: z.ZodOptional<z.ZodString>;
+				}, "strip", z.ZodTypeAny, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}>]>>;
+				forwardNote: z.ZodOptional<z.ZodString>;
+				instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, "many">]>>;
+				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+				message: z.ZodOptional<z.ZodString>;
+				secondsDelay: z.ZodOptional<z.ZodNumber>;
+				scheduled: z.ZodOptional<z.ZodNumber>;
+				contextUpsert: any;
+				resetIntent: z.ZodOptional<z.ZodBoolean>;
+				followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					message: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>, z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, "many">]>;
+				}, "strip", z.ZodTypeAny, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>]>>;
+			}, "strip", z.ZodTypeAny, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}>;
+			no: z.ZodObject<{
+				forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+					to: z.ZodOptional<z.ZodString>;
+					mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+					note: z.ZodOptional<z.ZodString>;
+				}, "strip", z.ZodTypeAny, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}>]>>;
+				forwardNote: z.ZodOptional<z.ZodString>;
+				instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, "many">]>>;
+				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+				message: z.ZodOptional<z.ZodString>;
+				secondsDelay: z.ZodOptional<z.ZodNumber>;
+				scheduled: z.ZodOptional<z.ZodNumber>;
+				contextUpsert: any;
+				resetIntent: z.ZodOptional<z.ZodBoolean>;
+				followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					message: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>, z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, "many">]>;
+				}, "strip", z.ZodTypeAny, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>]>>;
+			}, "strip", z.ZodTypeAny, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}>;
+		}, "strip", z.ZodTypeAny, {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		}, {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		}>, z.ZodArray<z.ZodObject<{
+			message: z.ZodOptional<z.ZodString>;
+			forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+				to: z.ZodOptional<z.ZodString>;
+				mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+				note: z.ZodOptional<z.ZodString>;
+			}, "strip", z.ZodTypeAny, {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			}, {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			}>]>>;
+			scheduled: z.ZodOptional<z.ZodNumber>;
+			forwardNote: z.ZodOptional<z.ZodString>;
+			instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, "many">]>>;
+			removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+			secondsDelay: z.ZodOptional<z.ZodNumber>;
+			contextUpsert: any;
+			resetIntent: z.ZodOptional<z.ZodBoolean>;
+			followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+				scheduled: z.ZodNumber;
+				cancelIf: any;
+				overrideLock: z.ZodOptional<z.ZodBoolean>;
+				message: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}, {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}>, z.ZodObject<{
+				scheduled: z.ZodNumber;
+				cancelIf: any;
+				overrideLock: z.ZodOptional<z.ZodBoolean>;
+				instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, "many">]>;
+			}, "strip", z.ZodTypeAny, {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}, {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}>]>>;
+			keywords: z.ZodArray<z.ZodString, "many">;
+		}, "strip", z.ZodTypeAny, {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}, {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}>, "many">]>>;
 	}, "strip", z.ZodTypeAny, {
+		message?: string | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
 			note?: string | undefined;
 		} | undefined;
+		scheduled?: number | undefined;
 		forwardNote?: string | undefined;
 		instructions?: string | string[] | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		} | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}[] | undefined;
 		removeInstructions?: string[] | undefined;
-		message?: string | undefined;
 		secondsDelay?: number | undefined;
-		scheduled?: number | undefined;
 		contextUpsert?: any;
 		resetIntent?: boolean | undefined;
+		followup?: {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | undefined;
+		anticipate?: {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		} | {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}[] | undefined;
 	}, {
+		message?: string | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
 			note?: string | undefined;
 		} | undefined;
+		scheduled?: number | undefined;
 		forwardNote?: string | undefined;
 		instructions?: string | string[] | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		} | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}[] | undefined;
 		removeInstructions?: string[] | undefined;
-		message?: string | undefined;
 		secondsDelay?: number | undefined;
-		scheduled?: number | undefined;
 		contextUpsert?: any;
 		resetIntent?: boolean | undefined;
+		followup?: {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | undefined;
+		anticipate?: {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		} | {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}[] | undefined;
 	}>, "many">]>;
 
 	export const WorkflowFunctionSchema: z.ZodFunction<z.ZodTuple<[z.ZodObject<{
@@ -5337,6 +13885,7 @@ declare module '@scout9/app' {
 		context?: any;
 		note?: string | undefined;
 	}>], z.ZodUnknown>, z.ZodUnion<[z.ZodPromise<z.ZodUnion<[z.ZodObject<{
+		message: z.ZodOptional<z.ZodString>;
 		forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 			to: z.ZodOptional<z.ZodString>;
 			mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
@@ -5350,73 +13899,1435 @@ declare module '@scout9/app' {
 			mode?: "after-reply" | "immediately" | undefined;
 			note?: string | undefined;
 		}>]>>;
+		scheduled: z.ZodOptional<z.ZodNumber>;
 		forwardNote: z.ZodOptional<z.ZodString>;
 		instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
-			id: z.ZodString;
+			id: z.ZodOptional<z.ZodString>;
+			persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 			content: z.ZodString;
 		}, "strip", z.ZodTypeAny, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
-			id: z.ZodString;
+			id: z.ZodOptional<z.ZodString>;
+			persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 			content: z.ZodString;
 		}, "strip", z.ZodTypeAny, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}>, "many">]>>;
 		removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-		message: z.ZodOptional<z.ZodString>;
 		secondsDelay: z.ZodOptional<z.ZodNumber>;
-		scheduled: z.ZodOptional<z.ZodNumber>;
 		contextUpsert: any;
 		resetIntent: z.ZodOptional<z.ZodBoolean>;
+		followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+			scheduled: z.ZodNumber;
+			cancelIf: any;
+			overrideLock: z.ZodOptional<z.ZodBoolean>;
+			message: z.ZodString;
+		}, "strip", z.ZodTypeAny, {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}, {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}>, z.ZodObject<{
+			scheduled: z.ZodNumber;
+			cancelIf: any;
+			overrideLock: z.ZodOptional<z.ZodBoolean>;
+			instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, "many">]>;
+		}, "strip", z.ZodTypeAny, {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}, {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}>]>>;
+		anticipate: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+			did: z.ZodString;
+			yes: z.ZodObject<{
+				forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+					to: z.ZodOptional<z.ZodString>;
+					mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+					note: z.ZodOptional<z.ZodString>;
+				}, "strip", z.ZodTypeAny, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}>]>>;
+				forwardNote: z.ZodOptional<z.ZodString>;
+				instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, "many">]>>;
+				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+				message: z.ZodOptional<z.ZodString>;
+				secondsDelay: z.ZodOptional<z.ZodNumber>;
+				scheduled: z.ZodOptional<z.ZodNumber>;
+				contextUpsert: any;
+				resetIntent: z.ZodOptional<z.ZodBoolean>;
+				followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					message: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>, z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, "many">]>;
+				}, "strip", z.ZodTypeAny, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>]>>;
+			}, "strip", z.ZodTypeAny, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}>;
+			no: z.ZodObject<{
+				forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+					to: z.ZodOptional<z.ZodString>;
+					mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+					note: z.ZodOptional<z.ZodString>;
+				}, "strip", z.ZodTypeAny, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}>]>>;
+				forwardNote: z.ZodOptional<z.ZodString>;
+				instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, "many">]>>;
+				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+				message: z.ZodOptional<z.ZodString>;
+				secondsDelay: z.ZodOptional<z.ZodNumber>;
+				scheduled: z.ZodOptional<z.ZodNumber>;
+				contextUpsert: any;
+				resetIntent: z.ZodOptional<z.ZodBoolean>;
+				followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					message: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>, z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, "many">]>;
+				}, "strip", z.ZodTypeAny, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>]>>;
+			}, "strip", z.ZodTypeAny, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}>;
+		}, "strip", z.ZodTypeAny, {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		}, {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		}>, z.ZodArray<z.ZodObject<{
+			message: z.ZodOptional<z.ZodString>;
+			forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+				to: z.ZodOptional<z.ZodString>;
+				mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+				note: z.ZodOptional<z.ZodString>;
+			}, "strip", z.ZodTypeAny, {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			}, {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			}>]>>;
+			scheduled: z.ZodOptional<z.ZodNumber>;
+			forwardNote: z.ZodOptional<z.ZodString>;
+			instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, "many">]>>;
+			removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+			secondsDelay: z.ZodOptional<z.ZodNumber>;
+			contextUpsert: any;
+			resetIntent: z.ZodOptional<z.ZodBoolean>;
+			followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+				scheduled: z.ZodNumber;
+				cancelIf: any;
+				overrideLock: z.ZodOptional<z.ZodBoolean>;
+				message: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}, {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}>, z.ZodObject<{
+				scheduled: z.ZodNumber;
+				cancelIf: any;
+				overrideLock: z.ZodOptional<z.ZodBoolean>;
+				instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, "many">]>;
+			}, "strip", z.ZodTypeAny, {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}, {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}>]>>;
+			keywords: z.ZodArray<z.ZodString, "many">;
+		}, "strip", z.ZodTypeAny, {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}, {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}>, "many">]>>;
 	}, "strip", z.ZodTypeAny, {
+		message?: string | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
 			note?: string | undefined;
 		} | undefined;
+		scheduled?: number | undefined;
 		forwardNote?: string | undefined;
 		instructions?: string | string[] | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		} | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}[] | undefined;
 		removeInstructions?: string[] | undefined;
-		message?: string | undefined;
 		secondsDelay?: number | undefined;
-		scheduled?: number | undefined;
 		contextUpsert?: any;
 		resetIntent?: boolean | undefined;
+		followup?: {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | undefined;
+		anticipate?: {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		} | {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}[] | undefined;
 	}, {
+		message?: string | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
 			note?: string | undefined;
 		} | undefined;
+		scheduled?: number | undefined;
 		forwardNote?: string | undefined;
 		instructions?: string | string[] | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		} | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}[] | undefined;
 		removeInstructions?: string[] | undefined;
-		message?: string | undefined;
 		secondsDelay?: number | undefined;
-		scheduled?: number | undefined;
 		contextUpsert?: any;
 		resetIntent?: boolean | undefined;
+		followup?: {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | undefined;
+		anticipate?: {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		} | {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}[] | undefined;
 	}>, z.ZodArray<z.ZodObject<{
+		message: z.ZodOptional<z.ZodString>;
 		forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 			to: z.ZodOptional<z.ZodString>;
 			mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
@@ -5430,73 +15341,1435 @@ declare module '@scout9/app' {
 			mode?: "after-reply" | "immediately" | undefined;
 			note?: string | undefined;
 		}>]>>;
+		scheduled: z.ZodOptional<z.ZodNumber>;
 		forwardNote: z.ZodOptional<z.ZodString>;
 		instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
-			id: z.ZodString;
+			id: z.ZodOptional<z.ZodString>;
+			persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 			content: z.ZodString;
 		}, "strip", z.ZodTypeAny, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
-			id: z.ZodString;
+			id: z.ZodOptional<z.ZodString>;
+			persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 			content: z.ZodString;
 		}, "strip", z.ZodTypeAny, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}>, "many">]>>;
 		removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-		message: z.ZodOptional<z.ZodString>;
 		secondsDelay: z.ZodOptional<z.ZodNumber>;
-		scheduled: z.ZodOptional<z.ZodNumber>;
 		contextUpsert: any;
 		resetIntent: z.ZodOptional<z.ZodBoolean>;
+		followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+			scheduled: z.ZodNumber;
+			cancelIf: any;
+			overrideLock: z.ZodOptional<z.ZodBoolean>;
+			message: z.ZodString;
+		}, "strip", z.ZodTypeAny, {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}, {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}>, z.ZodObject<{
+			scheduled: z.ZodNumber;
+			cancelIf: any;
+			overrideLock: z.ZodOptional<z.ZodBoolean>;
+			instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, "many">]>;
+		}, "strip", z.ZodTypeAny, {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}, {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}>]>>;
+		anticipate: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+			did: z.ZodString;
+			yes: z.ZodObject<{
+				forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+					to: z.ZodOptional<z.ZodString>;
+					mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+					note: z.ZodOptional<z.ZodString>;
+				}, "strip", z.ZodTypeAny, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}>]>>;
+				forwardNote: z.ZodOptional<z.ZodString>;
+				instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, "many">]>>;
+				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+				message: z.ZodOptional<z.ZodString>;
+				secondsDelay: z.ZodOptional<z.ZodNumber>;
+				scheduled: z.ZodOptional<z.ZodNumber>;
+				contextUpsert: any;
+				resetIntent: z.ZodOptional<z.ZodBoolean>;
+				followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					message: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>, z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, "many">]>;
+				}, "strip", z.ZodTypeAny, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>]>>;
+			}, "strip", z.ZodTypeAny, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}>;
+			no: z.ZodObject<{
+				forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+					to: z.ZodOptional<z.ZodString>;
+					mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+					note: z.ZodOptional<z.ZodString>;
+				}, "strip", z.ZodTypeAny, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}>]>>;
+				forwardNote: z.ZodOptional<z.ZodString>;
+				instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, "many">]>>;
+				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+				message: z.ZodOptional<z.ZodString>;
+				secondsDelay: z.ZodOptional<z.ZodNumber>;
+				scheduled: z.ZodOptional<z.ZodNumber>;
+				contextUpsert: any;
+				resetIntent: z.ZodOptional<z.ZodBoolean>;
+				followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					message: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>, z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, "many">]>;
+				}, "strip", z.ZodTypeAny, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>]>>;
+			}, "strip", z.ZodTypeAny, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}>;
+		}, "strip", z.ZodTypeAny, {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		}, {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		}>, z.ZodArray<z.ZodObject<{
+			message: z.ZodOptional<z.ZodString>;
+			forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+				to: z.ZodOptional<z.ZodString>;
+				mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+				note: z.ZodOptional<z.ZodString>;
+			}, "strip", z.ZodTypeAny, {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			}, {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			}>]>>;
+			scheduled: z.ZodOptional<z.ZodNumber>;
+			forwardNote: z.ZodOptional<z.ZodString>;
+			instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, "many">]>>;
+			removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+			secondsDelay: z.ZodOptional<z.ZodNumber>;
+			contextUpsert: any;
+			resetIntent: z.ZodOptional<z.ZodBoolean>;
+			followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+				scheduled: z.ZodNumber;
+				cancelIf: any;
+				overrideLock: z.ZodOptional<z.ZodBoolean>;
+				message: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}, {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}>, z.ZodObject<{
+				scheduled: z.ZodNumber;
+				cancelIf: any;
+				overrideLock: z.ZodOptional<z.ZodBoolean>;
+				instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, "many">]>;
+			}, "strip", z.ZodTypeAny, {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}, {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}>]>>;
+			keywords: z.ZodArray<z.ZodString, "many">;
+		}, "strip", z.ZodTypeAny, {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}, {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}>, "many">]>>;
 	}, "strip", z.ZodTypeAny, {
+		message?: string | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
 			note?: string | undefined;
 		} | undefined;
+		scheduled?: number | undefined;
 		forwardNote?: string | undefined;
 		instructions?: string | string[] | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		} | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}[] | undefined;
 		removeInstructions?: string[] | undefined;
-		message?: string | undefined;
 		secondsDelay?: number | undefined;
-		scheduled?: number | undefined;
 		contextUpsert?: any;
 		resetIntent?: boolean | undefined;
+		followup?: {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | undefined;
+		anticipate?: {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		} | {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}[] | undefined;
 	}, {
+		message?: string | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
 			note?: string | undefined;
 		} | undefined;
+		scheduled?: number | undefined;
 		forwardNote?: string | undefined;
 		instructions?: string | string[] | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		} | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}[] | undefined;
 		removeInstructions?: string[] | undefined;
-		message?: string | undefined;
 		secondsDelay?: number | undefined;
-		scheduled?: number | undefined;
 		contextUpsert?: any;
 		resetIntent?: boolean | undefined;
+		followup?: {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | undefined;
+		anticipate?: {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		} | {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}[] | undefined;
 	}>, "many">]>>, z.ZodUnion<[z.ZodObject<{
+		message: z.ZodOptional<z.ZodString>;
 		forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 			to: z.ZodOptional<z.ZodString>;
 			mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
@@ -5510,73 +16783,1435 @@ declare module '@scout9/app' {
 			mode?: "after-reply" | "immediately" | undefined;
 			note?: string | undefined;
 		}>]>>;
+		scheduled: z.ZodOptional<z.ZodNumber>;
 		forwardNote: z.ZodOptional<z.ZodString>;
 		instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
-			id: z.ZodString;
+			id: z.ZodOptional<z.ZodString>;
+			persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 			content: z.ZodString;
 		}, "strip", z.ZodTypeAny, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
-			id: z.ZodString;
+			id: z.ZodOptional<z.ZodString>;
+			persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 			content: z.ZodString;
 		}, "strip", z.ZodTypeAny, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}>, "many">]>>;
 		removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-		message: z.ZodOptional<z.ZodString>;
 		secondsDelay: z.ZodOptional<z.ZodNumber>;
-		scheduled: z.ZodOptional<z.ZodNumber>;
 		contextUpsert: any;
 		resetIntent: z.ZodOptional<z.ZodBoolean>;
+		followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+			scheduled: z.ZodNumber;
+			cancelIf: any;
+			overrideLock: z.ZodOptional<z.ZodBoolean>;
+			message: z.ZodString;
+		}, "strip", z.ZodTypeAny, {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}, {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}>, z.ZodObject<{
+			scheduled: z.ZodNumber;
+			cancelIf: any;
+			overrideLock: z.ZodOptional<z.ZodBoolean>;
+			instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, "many">]>;
+		}, "strip", z.ZodTypeAny, {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}, {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}>]>>;
+		anticipate: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+			did: z.ZodString;
+			yes: z.ZodObject<{
+				forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+					to: z.ZodOptional<z.ZodString>;
+					mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+					note: z.ZodOptional<z.ZodString>;
+				}, "strip", z.ZodTypeAny, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}>]>>;
+				forwardNote: z.ZodOptional<z.ZodString>;
+				instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, "many">]>>;
+				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+				message: z.ZodOptional<z.ZodString>;
+				secondsDelay: z.ZodOptional<z.ZodNumber>;
+				scheduled: z.ZodOptional<z.ZodNumber>;
+				contextUpsert: any;
+				resetIntent: z.ZodOptional<z.ZodBoolean>;
+				followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					message: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>, z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, "many">]>;
+				}, "strip", z.ZodTypeAny, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>]>>;
+			}, "strip", z.ZodTypeAny, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}>;
+			no: z.ZodObject<{
+				forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+					to: z.ZodOptional<z.ZodString>;
+					mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+					note: z.ZodOptional<z.ZodString>;
+				}, "strip", z.ZodTypeAny, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}>]>>;
+				forwardNote: z.ZodOptional<z.ZodString>;
+				instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, "many">]>>;
+				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+				message: z.ZodOptional<z.ZodString>;
+				secondsDelay: z.ZodOptional<z.ZodNumber>;
+				scheduled: z.ZodOptional<z.ZodNumber>;
+				contextUpsert: any;
+				resetIntent: z.ZodOptional<z.ZodBoolean>;
+				followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					message: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>, z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, "many">]>;
+				}, "strip", z.ZodTypeAny, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>]>>;
+			}, "strip", z.ZodTypeAny, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}>;
+		}, "strip", z.ZodTypeAny, {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		}, {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		}>, z.ZodArray<z.ZodObject<{
+			message: z.ZodOptional<z.ZodString>;
+			forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+				to: z.ZodOptional<z.ZodString>;
+				mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+				note: z.ZodOptional<z.ZodString>;
+			}, "strip", z.ZodTypeAny, {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			}, {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			}>]>>;
+			scheduled: z.ZodOptional<z.ZodNumber>;
+			forwardNote: z.ZodOptional<z.ZodString>;
+			instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, "many">]>>;
+			removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+			secondsDelay: z.ZodOptional<z.ZodNumber>;
+			contextUpsert: any;
+			resetIntent: z.ZodOptional<z.ZodBoolean>;
+			followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+				scheduled: z.ZodNumber;
+				cancelIf: any;
+				overrideLock: z.ZodOptional<z.ZodBoolean>;
+				message: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}, {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}>, z.ZodObject<{
+				scheduled: z.ZodNumber;
+				cancelIf: any;
+				overrideLock: z.ZodOptional<z.ZodBoolean>;
+				instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, "many">]>;
+			}, "strip", z.ZodTypeAny, {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}, {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}>]>>;
+			keywords: z.ZodArray<z.ZodString, "many">;
+		}, "strip", z.ZodTypeAny, {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}, {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}>, "many">]>>;
 	}, "strip", z.ZodTypeAny, {
+		message?: string | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
 			note?: string | undefined;
 		} | undefined;
+		scheduled?: number | undefined;
 		forwardNote?: string | undefined;
 		instructions?: string | string[] | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		} | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}[] | undefined;
 		removeInstructions?: string[] | undefined;
-		message?: string | undefined;
 		secondsDelay?: number | undefined;
-		scheduled?: number | undefined;
 		contextUpsert?: any;
 		resetIntent?: boolean | undefined;
+		followup?: {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | undefined;
+		anticipate?: {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		} | {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}[] | undefined;
 	}, {
+		message?: string | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
 			note?: string | undefined;
 		} | undefined;
+		scheduled?: number | undefined;
 		forwardNote?: string | undefined;
 		instructions?: string | string[] | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		} | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}[] | undefined;
 		removeInstructions?: string[] | undefined;
-		message?: string | undefined;
 		secondsDelay?: number | undefined;
-		scheduled?: number | undefined;
 		contextUpsert?: any;
 		resetIntent?: boolean | undefined;
+		followup?: {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | undefined;
+		anticipate?: {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		} | {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}[] | undefined;
 	}>, z.ZodArray<z.ZodObject<{
+		message: z.ZodOptional<z.ZodString>;
 		forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 			to: z.ZodOptional<z.ZodString>;
 			mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
@@ -5590,72 +18225,1433 @@ declare module '@scout9/app' {
 			mode?: "after-reply" | "immediately" | undefined;
 			note?: string | undefined;
 		}>]>>;
+		scheduled: z.ZodOptional<z.ZodNumber>;
 		forwardNote: z.ZodOptional<z.ZodString>;
 		instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
-			id: z.ZodString;
+			id: z.ZodOptional<z.ZodString>;
+			persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 			content: z.ZodString;
 		}, "strip", z.ZodTypeAny, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
-			id: z.ZodString;
+			id: z.ZodOptional<z.ZodString>;
+			persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 			content: z.ZodString;
 		}, "strip", z.ZodTypeAny, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}>, "many">]>>;
 		removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-		message: z.ZodOptional<z.ZodString>;
 		secondsDelay: z.ZodOptional<z.ZodNumber>;
-		scheduled: z.ZodOptional<z.ZodNumber>;
 		contextUpsert: any;
 		resetIntent: z.ZodOptional<z.ZodBoolean>;
+		followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+			scheduled: z.ZodNumber;
+			cancelIf: any;
+			overrideLock: z.ZodOptional<z.ZodBoolean>;
+			message: z.ZodString;
+		}, "strip", z.ZodTypeAny, {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}, {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}>, z.ZodObject<{
+			scheduled: z.ZodNumber;
+			cancelIf: any;
+			overrideLock: z.ZodOptional<z.ZodBoolean>;
+			instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, "many">]>;
+		}, "strip", z.ZodTypeAny, {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}, {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}>]>>;
+		anticipate: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+			did: z.ZodString;
+			yes: z.ZodObject<{
+				forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+					to: z.ZodOptional<z.ZodString>;
+					mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+					note: z.ZodOptional<z.ZodString>;
+				}, "strip", z.ZodTypeAny, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}>]>>;
+				forwardNote: z.ZodOptional<z.ZodString>;
+				instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, "many">]>>;
+				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+				message: z.ZodOptional<z.ZodString>;
+				secondsDelay: z.ZodOptional<z.ZodNumber>;
+				scheduled: z.ZodOptional<z.ZodNumber>;
+				contextUpsert: any;
+				resetIntent: z.ZodOptional<z.ZodBoolean>;
+				followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					message: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>, z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, "many">]>;
+				}, "strip", z.ZodTypeAny, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>]>>;
+			}, "strip", z.ZodTypeAny, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}>;
+			no: z.ZodObject<{
+				forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+					to: z.ZodOptional<z.ZodString>;
+					mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+					note: z.ZodOptional<z.ZodString>;
+				}, "strip", z.ZodTypeAny, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}>]>>;
+				forwardNote: z.ZodOptional<z.ZodString>;
+				instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, "many">]>>;
+				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+				message: z.ZodOptional<z.ZodString>;
+				secondsDelay: z.ZodOptional<z.ZodNumber>;
+				scheduled: z.ZodOptional<z.ZodNumber>;
+				contextUpsert: any;
+				resetIntent: z.ZodOptional<z.ZodBoolean>;
+				followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					message: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>, z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, "many">]>;
+				}, "strip", z.ZodTypeAny, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>]>>;
+			}, "strip", z.ZodTypeAny, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}>;
+		}, "strip", z.ZodTypeAny, {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		}, {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		}>, z.ZodArray<z.ZodObject<{
+			message: z.ZodOptional<z.ZodString>;
+			forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+				to: z.ZodOptional<z.ZodString>;
+				mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+				note: z.ZodOptional<z.ZodString>;
+			}, "strip", z.ZodTypeAny, {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			}, {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			}>]>>;
+			scheduled: z.ZodOptional<z.ZodNumber>;
+			forwardNote: z.ZodOptional<z.ZodString>;
+			instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, "many">]>>;
+			removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+			secondsDelay: z.ZodOptional<z.ZodNumber>;
+			contextUpsert: any;
+			resetIntent: z.ZodOptional<z.ZodBoolean>;
+			followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+				scheduled: z.ZodNumber;
+				cancelIf: any;
+				overrideLock: z.ZodOptional<z.ZodBoolean>;
+				message: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}, {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}>, z.ZodObject<{
+				scheduled: z.ZodNumber;
+				cancelIf: any;
+				overrideLock: z.ZodOptional<z.ZodBoolean>;
+				instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, "many">]>;
+			}, "strip", z.ZodTypeAny, {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}, {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}>]>>;
+			keywords: z.ZodArray<z.ZodString, "many">;
+		}, "strip", z.ZodTypeAny, {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}, {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}>, "many">]>>;
 	}, "strip", z.ZodTypeAny, {
+		message?: string | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
 			note?: string | undefined;
 		} | undefined;
+		scheduled?: number | undefined;
 		forwardNote?: string | undefined;
 		instructions?: string | string[] | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		} | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}[] | undefined;
 		removeInstructions?: string[] | undefined;
-		message?: string | undefined;
 		secondsDelay?: number | undefined;
-		scheduled?: number | undefined;
 		contextUpsert?: any;
 		resetIntent?: boolean | undefined;
+		followup?: {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | undefined;
+		anticipate?: {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		} | {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}[] | undefined;
 	}, {
+		message?: string | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
 			note?: string | undefined;
 		} | undefined;
+		scheduled?: number | undefined;
 		forwardNote?: string | undefined;
 		instructions?: string | string[] | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		} | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}[] | undefined;
 		removeInstructions?: string[] | undefined;
-		message?: string | undefined;
 		secondsDelay?: number | undefined;
-		scheduled?: number | undefined;
 		contextUpsert?: any;
 		resetIntent?: boolean | undefined;
+		followup?: {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | undefined;
+		anticipate?: {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		} | {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}[] | undefined;
 	}>, "many">]>]>>;
 	export type IWorkflowConfiguration = import('zod').infer<typeof WorkflowConfigurationSchema>;
 	export type IWorkflowsConfiguration = import('zod').infer<typeof WorkflowsConfigurationSchema>;
@@ -5669,7 +19665,7 @@ declare module '@scout9/app' {
 	/**
 	 * Instruction object schema used to send context to guide conversations
 	 */
-	export type IInstruction = import('zod').infer<typeof InstructionSchema>;
+	export type IInstruction = import('zod').infer<typeof InstructionObjectSchema>;
 	export type IWorkflowResponseMessageApiRequest = import('zod').infer<typeof WorkflowResponseMessageApiRequest>;
 	/**
 	 * If its a string, it will be sent as a static string.
@@ -5680,6 +19676,18 @@ declare module '@scout9/app' {
 	 * The intended response provided by the WorkflowResponseMessageApiRequest
 	 */
 	export type IWorkflowResponseMessageApiResponse = import('zod').infer<typeof WorkflowResponseMessageApiResponse>;
+	/**
+	 * Base follow up schema to follow up with the client
+	 */
+	export type IFollowupBase = import('zod').infer<typeof FollowupBaseSchema>;
+	/**
+	 * Data used to automatically follow up with the client in the future
+	 */
+	export type IFollowup = import('zod').infer<typeof FollowupSchema>;
+	/**
+	 * The workflow response object slot
+	 */
+	export type IWorkflowResponseSlotBase = import('zod').infer<typeof WorkflowResponseSlotBaseSchema>;
 	/**
 	 * The workflow response object slot
 	 */
@@ -6104,7 +20112,7 @@ declare module '@scout9/app/spirits' {
 			forward?: IWorkflowResponseSlot['forward'];
 		};
 		messages: Change<Array<IMessage>>;
-		context: Change<Object>;
+		context: Change<any>;
 		message: Change<IMessage>;
 	};
 	const Scout9ProjectBuildConfigSchema: z.ZodObject<{
@@ -7243,6 +21251,7 @@ declare module '@scout9/app/spirits' {
 	 * 
 	 */
 	const WorkflowResponseSlotSchema: z.ZodObject<{
+		message: z.ZodOptional<z.ZodString>;
 		forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 			to: z.ZodOptional<z.ZodString>;
 			mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
@@ -7256,78 +21265,1440 @@ declare module '@scout9/app/spirits' {
 			mode?: "after-reply" | "immediately" | undefined;
 			note?: string | undefined;
 		}>]>>;
+		scheduled: z.ZodOptional<z.ZodNumber>;
 		forwardNote: z.ZodOptional<z.ZodString>;
 		instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
-			id: z.ZodString;
+			id: z.ZodOptional<z.ZodString>;
+			persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 			content: z.ZodString;
 		}, "strip", z.ZodTypeAny, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
-			id: z.ZodString;
+			id: z.ZodOptional<z.ZodString>;
+			persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 			content: z.ZodString;
 		}, "strip", z.ZodTypeAny, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}>, "many">]>>;
 		removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-		message: z.ZodOptional<z.ZodString>;
 		secondsDelay: z.ZodOptional<z.ZodNumber>;
-		scheduled: z.ZodOptional<z.ZodNumber>;
 		contextUpsert: any;
 		resetIntent: z.ZodOptional<z.ZodBoolean>;
+		followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+			scheduled: z.ZodNumber;
+			cancelIf: any;
+			overrideLock: z.ZodOptional<z.ZodBoolean>;
+			message: z.ZodString;
+		}, "strip", z.ZodTypeAny, {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}, {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}>, z.ZodObject<{
+			scheduled: z.ZodNumber;
+			cancelIf: any;
+			overrideLock: z.ZodOptional<z.ZodBoolean>;
+			instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, "many">]>;
+		}, "strip", z.ZodTypeAny, {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}, {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}>]>>;
+		anticipate: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+			did: z.ZodString;
+			yes: z.ZodObject<{
+				forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+					to: z.ZodOptional<z.ZodString>;
+					mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+					note: z.ZodOptional<z.ZodString>;
+				}, "strip", z.ZodTypeAny, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}>]>>;
+				forwardNote: z.ZodOptional<z.ZodString>;
+				instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, "many">]>>;
+				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+				message: z.ZodOptional<z.ZodString>;
+				secondsDelay: z.ZodOptional<z.ZodNumber>;
+				scheduled: z.ZodOptional<z.ZodNumber>;
+				contextUpsert: any;
+				resetIntent: z.ZodOptional<z.ZodBoolean>;
+				followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					message: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>, z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, "many">]>;
+				}, "strip", z.ZodTypeAny, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>]>>;
+			}, "strip", z.ZodTypeAny, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}>;
+			no: z.ZodObject<{
+				forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+					to: z.ZodOptional<z.ZodString>;
+					mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+					note: z.ZodOptional<z.ZodString>;
+				}, "strip", z.ZodTypeAny, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}>]>>;
+				forwardNote: z.ZodOptional<z.ZodString>;
+				instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, "many">]>>;
+				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+				message: z.ZodOptional<z.ZodString>;
+				secondsDelay: z.ZodOptional<z.ZodNumber>;
+				scheduled: z.ZodOptional<z.ZodNumber>;
+				contextUpsert: any;
+				resetIntent: z.ZodOptional<z.ZodBoolean>;
+				followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					message: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>, z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, "many">]>;
+				}, "strip", z.ZodTypeAny, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>]>>;
+			}, "strip", z.ZodTypeAny, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}>;
+		}, "strip", z.ZodTypeAny, {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		}, {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		}>, z.ZodArray<z.ZodObject<{
+			message: z.ZodOptional<z.ZodString>;
+			forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+				to: z.ZodOptional<z.ZodString>;
+				mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+				note: z.ZodOptional<z.ZodString>;
+			}, "strip", z.ZodTypeAny, {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			}, {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			}>]>>;
+			scheduled: z.ZodOptional<z.ZodNumber>;
+			forwardNote: z.ZodOptional<z.ZodString>;
+			instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, "many">]>>;
+			removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+			secondsDelay: z.ZodOptional<z.ZodNumber>;
+			contextUpsert: any;
+			resetIntent: z.ZodOptional<z.ZodBoolean>;
+			followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+				scheduled: z.ZodNumber;
+				cancelIf: any;
+				overrideLock: z.ZodOptional<z.ZodBoolean>;
+				message: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}, {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}>, z.ZodObject<{
+				scheduled: z.ZodNumber;
+				cancelIf: any;
+				overrideLock: z.ZodOptional<z.ZodBoolean>;
+				instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, "many">]>;
+			}, "strip", z.ZodTypeAny, {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}, {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}>]>>;
+			keywords: z.ZodArray<z.ZodString, "many">;
+		}, "strip", z.ZodTypeAny, {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}, {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}>, "many">]>>;
 	}, "strip", z.ZodTypeAny, {
+		message?: string | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
 			note?: string | undefined;
 		} | undefined;
+		scheduled?: number | undefined;
 		forwardNote?: string | undefined;
 		instructions?: string | string[] | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		} | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}[] | undefined;
 		removeInstructions?: string[] | undefined;
-		message?: string | undefined;
 		secondsDelay?: number | undefined;
-		scheduled?: number | undefined;
 		contextUpsert?: any;
 		resetIntent?: boolean | undefined;
+		followup?: {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | undefined;
+		anticipate?: {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		} | {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}[] | undefined;
 	}, {
+		message?: string | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
 			note?: string | undefined;
 		} | undefined;
+		scheduled?: number | undefined;
 		forwardNote?: string | undefined;
 		instructions?: string | string[] | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		} | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}[] | undefined;
 		removeInstructions?: string[] | undefined;
-		message?: string | undefined;
 		secondsDelay?: number | undefined;
-		scheduled?: number | undefined;
 		contextUpsert?: any;
 		resetIntent?: boolean | undefined;
+		followup?: {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | undefined;
+		anticipate?: {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		} | {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}[] | undefined;
 	}>;
 	/**
 	 * The workflow response to send in any given workflow
 	 * 
 	 */
 	const WorkflowResponseSchema: z.ZodUnion<[z.ZodObject<{
+		message: z.ZodOptional<z.ZodString>;
 		forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 			to: z.ZodOptional<z.ZodString>;
 			mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
@@ -7341,73 +22712,1435 @@ declare module '@scout9/app/spirits' {
 			mode?: "after-reply" | "immediately" | undefined;
 			note?: string | undefined;
 		}>]>>;
+		scheduled: z.ZodOptional<z.ZodNumber>;
 		forwardNote: z.ZodOptional<z.ZodString>;
 		instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
-			id: z.ZodString;
+			id: z.ZodOptional<z.ZodString>;
+			persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 			content: z.ZodString;
 		}, "strip", z.ZodTypeAny, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
-			id: z.ZodString;
+			id: z.ZodOptional<z.ZodString>;
+			persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 			content: z.ZodString;
 		}, "strip", z.ZodTypeAny, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}>, "many">]>>;
 		removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-		message: z.ZodOptional<z.ZodString>;
 		secondsDelay: z.ZodOptional<z.ZodNumber>;
-		scheduled: z.ZodOptional<z.ZodNumber>;
 		contextUpsert: any;
 		resetIntent: z.ZodOptional<z.ZodBoolean>;
+		followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+			scheduled: z.ZodNumber;
+			cancelIf: any;
+			overrideLock: z.ZodOptional<z.ZodBoolean>;
+			message: z.ZodString;
+		}, "strip", z.ZodTypeAny, {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}, {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}>, z.ZodObject<{
+			scheduled: z.ZodNumber;
+			cancelIf: any;
+			overrideLock: z.ZodOptional<z.ZodBoolean>;
+			instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, "many">]>;
+		}, "strip", z.ZodTypeAny, {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}, {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}>]>>;
+		anticipate: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+			did: z.ZodString;
+			yes: z.ZodObject<{
+				forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+					to: z.ZodOptional<z.ZodString>;
+					mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+					note: z.ZodOptional<z.ZodString>;
+				}, "strip", z.ZodTypeAny, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}>]>>;
+				forwardNote: z.ZodOptional<z.ZodString>;
+				instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, "many">]>>;
+				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+				message: z.ZodOptional<z.ZodString>;
+				secondsDelay: z.ZodOptional<z.ZodNumber>;
+				scheduled: z.ZodOptional<z.ZodNumber>;
+				contextUpsert: any;
+				resetIntent: z.ZodOptional<z.ZodBoolean>;
+				followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					message: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>, z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, "many">]>;
+				}, "strip", z.ZodTypeAny, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>]>>;
+			}, "strip", z.ZodTypeAny, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}>;
+			no: z.ZodObject<{
+				forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+					to: z.ZodOptional<z.ZodString>;
+					mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+					note: z.ZodOptional<z.ZodString>;
+				}, "strip", z.ZodTypeAny, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}>]>>;
+				forwardNote: z.ZodOptional<z.ZodString>;
+				instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, "many">]>>;
+				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+				message: z.ZodOptional<z.ZodString>;
+				secondsDelay: z.ZodOptional<z.ZodNumber>;
+				scheduled: z.ZodOptional<z.ZodNumber>;
+				contextUpsert: any;
+				resetIntent: z.ZodOptional<z.ZodBoolean>;
+				followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					message: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>, z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, "many">]>;
+				}, "strip", z.ZodTypeAny, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>]>>;
+			}, "strip", z.ZodTypeAny, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}>;
+		}, "strip", z.ZodTypeAny, {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		}, {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		}>, z.ZodArray<z.ZodObject<{
+			message: z.ZodOptional<z.ZodString>;
+			forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+				to: z.ZodOptional<z.ZodString>;
+				mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+				note: z.ZodOptional<z.ZodString>;
+			}, "strip", z.ZodTypeAny, {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			}, {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			}>]>>;
+			scheduled: z.ZodOptional<z.ZodNumber>;
+			forwardNote: z.ZodOptional<z.ZodString>;
+			instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, "many">]>>;
+			removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+			secondsDelay: z.ZodOptional<z.ZodNumber>;
+			contextUpsert: any;
+			resetIntent: z.ZodOptional<z.ZodBoolean>;
+			followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+				scheduled: z.ZodNumber;
+				cancelIf: any;
+				overrideLock: z.ZodOptional<z.ZodBoolean>;
+				message: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}, {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}>, z.ZodObject<{
+				scheduled: z.ZodNumber;
+				cancelIf: any;
+				overrideLock: z.ZodOptional<z.ZodBoolean>;
+				instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, "many">]>;
+			}, "strip", z.ZodTypeAny, {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}, {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}>]>>;
+			keywords: z.ZodArray<z.ZodString, "many">;
+		}, "strip", z.ZodTypeAny, {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}, {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}>, "many">]>>;
 	}, "strip", z.ZodTypeAny, {
+		message?: string | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
 			note?: string | undefined;
 		} | undefined;
+		scheduled?: number | undefined;
 		forwardNote?: string | undefined;
 		instructions?: string | string[] | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		} | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}[] | undefined;
 		removeInstructions?: string[] | undefined;
-		message?: string | undefined;
 		secondsDelay?: number | undefined;
-		scheduled?: number | undefined;
 		contextUpsert?: any;
 		resetIntent?: boolean | undefined;
+		followup?: {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | undefined;
+		anticipate?: {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		} | {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}[] | undefined;
 	}, {
+		message?: string | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
 			note?: string | undefined;
 		} | undefined;
+		scheduled?: number | undefined;
 		forwardNote?: string | undefined;
 		instructions?: string | string[] | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		} | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}[] | undefined;
 		removeInstructions?: string[] | undefined;
-		message?: string | undefined;
 		secondsDelay?: number | undefined;
-		scheduled?: number | undefined;
 		contextUpsert?: any;
 		resetIntent?: boolean | undefined;
+		followup?: {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | undefined;
+		anticipate?: {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		} | {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}[] | undefined;
 	}>, z.ZodArray<z.ZodObject<{
+		message: z.ZodOptional<z.ZodString>;
 		forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 			to: z.ZodOptional<z.ZodString>;
 			mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
@@ -7421,72 +24154,1433 @@ declare module '@scout9/app/spirits' {
 			mode?: "after-reply" | "immediately" | undefined;
 			note?: string | undefined;
 		}>]>>;
+		scheduled: z.ZodOptional<z.ZodNumber>;
 		forwardNote: z.ZodOptional<z.ZodString>;
 		instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
-			id: z.ZodString;
+			id: z.ZodOptional<z.ZodString>;
+			persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 			content: z.ZodString;
 		}, "strip", z.ZodTypeAny, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
-			id: z.ZodString;
+			id: z.ZodOptional<z.ZodString>;
+			persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 			content: z.ZodString;
 		}, "strip", z.ZodTypeAny, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}, {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}>, "many">]>>;
 		removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-		message: z.ZodOptional<z.ZodString>;
 		secondsDelay: z.ZodOptional<z.ZodNumber>;
-		scheduled: z.ZodOptional<z.ZodNumber>;
 		contextUpsert: any;
 		resetIntent: z.ZodOptional<z.ZodBoolean>;
+		followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+			scheduled: z.ZodNumber;
+			cancelIf: any;
+			overrideLock: z.ZodOptional<z.ZodBoolean>;
+			message: z.ZodString;
+		}, "strip", z.ZodTypeAny, {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}, {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}>, z.ZodObject<{
+			scheduled: z.ZodNumber;
+			cancelIf: any;
+			overrideLock: z.ZodOptional<z.ZodBoolean>;
+			instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, "many">]>;
+		}, "strip", z.ZodTypeAny, {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}, {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		}>]>>;
+		anticipate: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+			did: z.ZodString;
+			yes: z.ZodObject<{
+				forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+					to: z.ZodOptional<z.ZodString>;
+					mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+					note: z.ZodOptional<z.ZodString>;
+				}, "strip", z.ZodTypeAny, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}>]>>;
+				forwardNote: z.ZodOptional<z.ZodString>;
+				instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, "many">]>>;
+				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+				message: z.ZodOptional<z.ZodString>;
+				secondsDelay: z.ZodOptional<z.ZodNumber>;
+				scheduled: z.ZodOptional<z.ZodNumber>;
+				contextUpsert: any;
+				resetIntent: z.ZodOptional<z.ZodBoolean>;
+				followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					message: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>, z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, "many">]>;
+				}, "strip", z.ZodTypeAny, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>]>>;
+			}, "strip", z.ZodTypeAny, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}>;
+			no: z.ZodObject<{
+				forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+					to: z.ZodOptional<z.ZodString>;
+					mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+					note: z.ZodOptional<z.ZodString>;
+				}, "strip", z.ZodTypeAny, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}, {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				}>]>>;
+				forwardNote: z.ZodOptional<z.ZodString>;
+				instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, "many">]>>;
+				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+				message: z.ZodOptional<z.ZodString>;
+				secondsDelay: z.ZodOptional<z.ZodNumber>;
+				scheduled: z.ZodOptional<z.ZodNumber>;
+				contextUpsert: any;
+				resetIntent: z.ZodOptional<z.ZodBoolean>;
+				followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					message: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>, z.ZodObject<{
+					scheduled: z.ZodNumber;
+					cancelIf: any;
+					overrideLock: z.ZodOptional<z.ZodBoolean>;
+					instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+						id: z.ZodOptional<z.ZodString>;
+						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+						content: z.ZodString;
+					}, "strip", z.ZodTypeAny, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}, {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}>, "many">]>;
+				}, "strip", z.ZodTypeAny, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}, {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				}>]>>;
+			}, "strip", z.ZodTypeAny, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}, {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			}>;
+		}, "strip", z.ZodTypeAny, {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		}, {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		}>, z.ZodArray<z.ZodObject<{
+			message: z.ZodOptional<z.ZodString>;
+			forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
+				to: z.ZodOptional<z.ZodString>;
+				mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
+				note: z.ZodOptional<z.ZodString>;
+			}, "strip", z.ZodTypeAny, {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			}, {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			}>]>>;
+			scheduled: z.ZodOptional<z.ZodNumber>;
+			forwardNote: z.ZodOptional<z.ZodString>;
+			instructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				id: z.ZodOptional<z.ZodString>;
+				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+				content: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}, {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}>, "many">]>>;
+			removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+			secondsDelay: z.ZodOptional<z.ZodNumber>;
+			contextUpsert: any;
+			resetIntent: z.ZodOptional<z.ZodBoolean>;
+			followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
+				scheduled: z.ZodNumber;
+				cancelIf: any;
+				overrideLock: z.ZodOptional<z.ZodBoolean>;
+				message: z.ZodString;
+			}, "strip", z.ZodTypeAny, {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}, {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}>, z.ZodObject<{
+				scheduled: z.ZodNumber;
+				cancelIf: any;
+				overrideLock: z.ZodOptional<z.ZodBoolean>;
+				instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					id: z.ZodOptional<z.ZodString>;
+					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+					content: z.ZodString;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}, {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}>, "many">]>;
+			}, "strip", z.ZodTypeAny, {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}, {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			}>]>>;
+			keywords: z.ZodArray<z.ZodString, "many">;
+		}, "strip", z.ZodTypeAny, {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}, {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}>, "many">]>>;
 	}, "strip", z.ZodTypeAny, {
+		message?: string | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
 			note?: string | undefined;
 		} | undefined;
+		scheduled?: number | undefined;
 		forwardNote?: string | undefined;
 		instructions?: string | string[] | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		} | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}[] | undefined;
 		removeInstructions?: string[] | undefined;
-		message?: string | undefined;
 		secondsDelay?: number | undefined;
-		scheduled?: number | undefined;
 		contextUpsert?: any;
 		resetIntent?: boolean | undefined;
+		followup?: {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | undefined;
+		anticipate?: {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		} | {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}[] | undefined;
 	}, {
+		message?: string | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
 			note?: string | undefined;
 		} | undefined;
+		scheduled?: number | undefined;
 		forwardNote?: string | undefined;
 		instructions?: string | string[] | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		} | {
-			id: string;
 			content: string;
+			id?: string | undefined;
+			persist?: boolean | undefined;
 		}[] | undefined;
 		removeInstructions?: string[] | undefined;
-		message?: string | undefined;
 		secondsDelay?: number | undefined;
-		scheduled?: number | undefined;
 		contextUpsert?: any;
 		resetIntent?: boolean | undefined;
+		followup?: {
+			message: string;
+			scheduled: number;
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | {
+			scheduled: number;
+			instructions: (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[]) & (string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined);
+			cancelIf?: any;
+			overrideLock?: boolean | undefined;
+		} | undefined;
+		anticipate?: {
+			did: string;
+			yes: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+			no: {
+				forward?: string | boolean | {
+					to?: string | undefined;
+					mode?: "after-reply" | "immediately" | undefined;
+					note?: string | undefined;
+				} | undefined;
+				forwardNote?: string | undefined;
+				instructions?: string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined;
+				removeInstructions?: string[] | undefined;
+				message?: string | undefined;
+				secondsDelay?: number | undefined;
+				scheduled?: number | undefined;
+				contextUpsert?: any;
+				resetIntent?: boolean | undefined;
+				followup?: {
+					message: string;
+					scheduled: number;
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | {
+					scheduled: number;
+					instructions: (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[]) & (string | string[] | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					} | {
+						content: string;
+						id?: string | undefined;
+						persist?: boolean | undefined;
+					}[] | undefined);
+					cancelIf?: any;
+					overrideLock?: boolean | undefined;
+				} | undefined;
+			};
+		} | {
+			keywords: string[];
+			message?: string | undefined;
+			forward?: string | boolean | {
+				to?: string | undefined;
+				mode?: "after-reply" | "immediately" | undefined;
+				note?: string | undefined;
+			} | undefined;
+			scheduled?: number | undefined;
+			forwardNote?: string | undefined;
+			instructions?: string | string[] | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			} | {
+				content: string;
+				id?: string | undefined;
+				persist?: boolean | undefined;
+			}[] | undefined;
+			removeInstructions?: string[] | undefined;
+			secondsDelay?: number | undefined;
+			contextUpsert?: any;
+			resetIntent?: boolean | undefined;
+			followup?: {
+				message: string;
+				scheduled: number;
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | {
+				scheduled: number;
+				instructions: (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[]) & (string | string[] | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				} | {
+					content: string;
+					id?: string | undefined;
+					persist?: boolean | undefined;
+				}[] | undefined);
+				cancelIf?: any;
+				overrideLock?: boolean | undefined;
+			} | undefined;
+		}[] | undefined;
 	}>, "many">]>;
 	type IConversation = import('zod').infer<typeof ConversationSchema>;
 	type IWorkflowEvent = import('zod').infer<typeof WorkflowEventSchema>;

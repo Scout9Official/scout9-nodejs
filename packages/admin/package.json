@@ -1,12 +1,13 @@
 {
   "name": "@scout9/admin",
-  "version": "1.0.0-alpha.0.0.42",
+  "version": "1.0.0-alpha.0.0.46",
   "description": "",
   "main": "./build/index.js",
-  "types": "./build/index.d.ts",
   "scripts": {
     "prepublishOnly": "npm run build",
     "prebuild": "rm -rf ./build && rm -rf ./tsconfig.tsbuildinfo",
+    "build:cjs": "tsc --project tsconfig.cjs.json",
+    "build:esm": "tsc --project tsconfig.esm.json",
     "build": "npx tsc --project ./tsconfig.json"
   },
   "repository": {
