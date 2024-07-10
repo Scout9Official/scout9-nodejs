@@ -2,7 +2,7 @@
  * Builder Macros
  * used to build and guide a application logic in relation to the Scout9 conversation state.
  */
-import { Configuration, Scout9Api } from '@scout9/admin';
+import { Configuration, MacroContextResult, Scout9Api } from '@scout9/admin';
 import MacroGlobals from './globals.js';
 
 function handleAxiosResponse(res) {
@@ -30,14 +30,15 @@ export async function did(prompt) {
  * The `context` macro, similar to the `did` macro, takes a natural statement and checks the entire conversation state and extracts or infers a metadata composition result.
  * @param {string} prompt
  * @param {import('@scout9/admin').CaptureContextRequestExamples} [examples]
- * @return {Promise<import('@scout9/admin').CaptureContext200Response>}
+ * @return {Promise<import('@scout9/admin').MacroContextValue>}
  */
 export async function context(prompt, examples) {
   const convoId = MacroGlobals.$convo();
-  return (await (new Scout9Api(new Configuration({apiKey: process.env.SCOUT9_API_KEY}))).captureContext({
+  const {value} = (await (new Scout9Api(new Configuration({apiKey: process.env.SCOUT9_API_KEY}))).captureContext({
     prompt,
     examples,
     convoId
   })
     .then(handleAxiosResponse));
+  return value;
 }

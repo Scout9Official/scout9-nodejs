@@ -20039,6 +20039,124 @@ declare module '@scout9/app' {
 		body: Partial<RequestBody>;
 	}) => Promise<EventResponse<Response>>;
 	export type IDeleteApiFunction<Params, Response_1> = IApiFunction<Params, Response>;
+	export function instruct(instruction: string, options?: {
+		id?: string | undefined;
+		persist?: string | undefined;
+	} | undefined): typeof EventMacros;
+	/**
+	 * This macro ends the conversation and forwards it the owner of the persona to manually handle the flow. If your app returns undefined or no event, then a default forward is generated.
+	 * @param message - the message to forward to owner of persona
+	 * */
+	export function forward(message: string, options?: {
+		mode?: "after-reply" | "immediately" | undefined;
+		to?: string | undefined;
+	} | undefined): any;
+	/**
+	 * If a manual message must be sent, you can use the `reply` macro
+	 * @param message - the message to manually send to the user
+	 * */
+	export function reply(message: string, options?: {
+		scheduled?: string | Date | undefined;
+		delay?: string | undefined;
+	} | undefined): any;
+	function EventMacros(): {
+		/**
+		 * Sets context into the conversation context for later use
+		 * */
+		upsert(updates: Record<string, any>): any;
+		/**
+		 * Similar to `instruction` except that it requires a schedule time parameter that determines when to follow up (and is not an event output macro). This will fire another run job with a new insert system context message, if `options.literal` is set to true, it will be an appended agent message prior to running the workflow app.
+		 *
+		 * */
+		/**
+		 * Similar to `instruction` except that it requires a schedule time parameter that determines when to follow up (and is not an event output macro). This will fire another run job with a new insert system context message, if `options.literal` is set to true, it will be an appended agent message prior to running the workflow app.
+		 *
+		 * */
+		followup(options: Date | string): any;
+		/**
+		 * Similar to `instruction` except that it requires a schedule time parameter that determines when to follow up (and is not an event output macro). This will fire another run job with a new insert system context message, if `options.literal` is set to true, it will be an appended agent message prior to running the workflow app.
+		 *
+		 * */
+		/**
+		 * Similar to `instruction` except that it requires a schedule time parameter that determines when to follow up (and is not an event output macro). This will fire another run job with a new insert system context message, if `options.literal` is set to true, it will be an appended agent message prior to running the workflow app.
+		 *
+		 * */
+		followup(options: {
+			scheduled: Date | string;
+			cancelIf?: Record<string, any> | undefined;
+			literal?: boolean | undefined;
+			overrideLock?: boolean | undefined;
+		}): any;
+		/**
+		 * Similar to `instruct` except that it requires a schedule time parameter that determines when to follow up (and is not an event output macro). This will fire another run job with a new insert system context message, if `options.literal` is set to true, it will be an appended agent message prior to running the workflow app.
+		 * */
+		/**
+		 * Similar to `instruct` except that it requires a schedule time parameter that determines when to follow up (and is not an event output macro). This will fire another run job with a new insert system context message, if `options.literal` is set to true, it will be an appended agent message prior to running the workflow app.
+		 * */
+		anticipate(instruction: string, yes: object, no: object): any;
+		/**
+		 * Similar to `instruct` except that it requires a schedule time parameter that determines when to follow up (and is not an event output macro). This will fire another run job with a new insert system context message, if `options.literal` is set to true, it will be an appended agent message prior to running the workflow app.
+		 * */
+		/**
+		 * Similar to `instruct` except that it requires a schedule time parameter that determines when to follow up (and is not an event output macro). This will fire another run job with a new insert system context message, if `options.literal` is set to true, it will be an appended agent message prior to running the workflow app.
+		 * */
+		anticipate(instruction: (Array<IWorkflowResponseSlotBase & {
+			keywords: string[];
+		}>)): typeof EventMacros;
+		
+		instruct(instruction: string, options?: {
+			id?: string | undefined;
+			persist?: string | undefined;
+		} | undefined): typeof EventMacros;
+		/**
+		 * If a manual message must be sent, you can use the `reply` macro
+		 * @param message - the message to manually send to the user
+		 * */
+		reply(message: string, options?: {
+			scheduled?: string | Date | undefined;
+			delay?: string | undefined;
+		} | undefined): any;
+		/**
+		 * This macro ends the conversation and forwards it the owner of the persona to manually handle the flow. If your app returns undefined or no event, then a default forward is generated.
+		 * @param message - the message to forward to owner of persona
+		 * */
+		forward(message: string, options?: {
+			mode?: "after-reply" | "immediately" | undefined;
+			to?: string | undefined;
+		} | undefined): any;
+		/**
+		 * Returns event payload
+		 * */
+		toJSON(flush?: boolean): Array<IWorkflowResponseSlot>;
+	};
+	/**
+	 * The `did` macro takes a given prompt and infers a binary `true` or `false` result in relation to the prompt's subject actor and the prompt's inquiry.
+	 * */
+	export function did(prompt: string): Promise<boolean>;
+	/**
+	 * The `context` macro, similar to the `did` macro, takes a natural statement and checks the entire conversation state and extracts or infers a metadata composition result.
+	 * */
+	export function context(prompt: string, examples?: any): Promise<import('@scout9/admin').MacroContextValue>;
+	export const ContextExampleWithTrainingDataSchema: z.ZodObject<{
+		input: z.ZodString;
+		output: z.ZodArray<z.ZodRecord<z.ZodString, z.ZodAny>, "many">;
+	}, "strip", z.ZodTypeAny, {
+		input: string;
+		output: Record<string, any>[];
+	}, {
+		input: string;
+		output: Record<string, any>[];
+	}>;
+	export const ContextExampleSchema: z.ZodUnion<[z.ZodArray<z.ZodObject<{
+		input: z.ZodString;
+		output: z.ZodArray<z.ZodRecord<z.ZodString, z.ZodAny>, "many">;
+	}, "strip", z.ZodTypeAny, {
+		input: string;
+		output: Record<string, any>[];
+	}, {
+		input: string;
+		output: Record<string, any>[];
+	}>, "many">, z.ZodArray<z.ZodRecord<z.ZodString, z.ZodAny>, "many">]>;
 }
 
 declare module '@scout9/app/spirits' {

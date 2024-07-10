@@ -92,7 +92,7 @@ function EventMacros() {
      * @param {object} no - The object to process if the instruction is a string and the condition is not met.
      *
      * @overload
-     * @param {(Array<import('zod').infer<typeof import('../runtime/client/workflow.js').WorkflowResponseSlotBaseSchema> & {keywords: string[]}>)} instruction
+     * @param {(Array<IWorkflowResponseSlotBase & {keywords: string[]}>)} instruction
      *
      * @return {EventMacros}
      */
@@ -182,7 +182,7 @@ function EventMacros() {
     },
     /**
      * This macro ends the conversation and forwards it the owner of the persona to manually handle the flow. If your app returns undefined or no event, then a default forward is generated.
-     * @param {string} message - the message to forward to owner of persona
+     * @param {string} [message] - the message to forward to owner of persona
      * @param {Object} [options]
      * @param {'after-reply' | 'immediately'} [options.mode] - sets forward mode, defaults to "immediately"
      * @param {string} [options.to] - another phone or email to forward to instead of owner
@@ -190,12 +190,13 @@ function EventMacros() {
      */
     forward(message, options = {}) {
       let slot;
+      const defaultForward = 'Conversation forwarded for manual intervention';
       if (options && Object.keys(options).length) {
         slot = {
           forward: {
-            note: message
+            note: message ?? defaultForward
           },
-          forwardNote: message
+          forwardNote: message ?? defaultForward
         }
         if (options.to) {
           slot.forward.to = options.to;
@@ -206,15 +207,15 @@ function EventMacros() {
       } else {
         slot = {
           forward: true,
-          forwardNote: message
+          forwardNote: message ?? defaultForward
         }
       }
       slots.push(WorkflowResponseSlotSchema.parse(slot));
       return this;
     },
     /**
-     *
-     * @return {Array<(import('zod').infer<typeof import('../runtime/client/workflow.js').WorkflowResponseSlotSchema>)>}
+     * Returns event payload
+     * @return {Array<IWorkflowResponseSlot>}
      */
     toJSON(flush = true) {
       if (flush) {

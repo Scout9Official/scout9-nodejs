@@ -5,7 +5,7 @@ import bodyParser from 'body-parser';
 import colors from 'kleur';
 import { config as dotenv } from 'dotenv';
 import { Configuration, Scout9Api } from '@scout9/admin';
-import { EventResponse } from '@scout9/app';
+import { EventResponse, WorkflowEventSchema } from '@scout9/app';
 import path from 'node:path';
 import fs from 'node:fs';
 import https from 'node:https';
@@ -162,8 +162,12 @@ if (dev) {
 // Root application POST endpoint will run the scout9 app
 app.post(dev ? '/dev/workflow' : '/', async (req, res) => {
   try {
-    // @TODO use zod to check if req.body is a valid event object
-    const response = await projectApp(req.body);
+    const event = WorkflowEventSchema.parse(req.body.event);
+    globalThis.SCOUT9 = {
+      ...event,
+      $convo: req.body.$convo,
+    }
+    const response = await projectApp(event);
     res.writeHead(200, {'Content-Type': 'application/json'});
     res.end(JSON.stringify(response));
   } catch (e) {

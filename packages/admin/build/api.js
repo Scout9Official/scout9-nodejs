@@ -16,7 +16,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Scout9Api = exports.Scout9ApiGenerated = exports.Scout9ApiFactory = exports.Scout9ApiFp = exports.Scout9ApiAxiosParamCreator = exports.CustomContextApi = exports.CustomContextApiFactory = exports.CustomContextApiFp = exports.CustomContextApiAxiosParamCreator = exports.WorkflowResponseSlotForwardOneOfModeEnum = exports.PurposeEnum = exports.PmtConfigModelEnum = exports.PmtConfigEngineEnum = exports.MessageGetResponseInnerRoleEnum = exports.MessageCreateRequestRoleEnum = exports.MessageBaseRoleEnum = exports.MessageRoleEnum = exports.LlmConfigOneOf2EngineEnum = exports.LlmConfigOneOf1EngineEnum = exports.LlmConfigOneOfModelEnum = exports.LlmConfigOneOfEngineEnum = exports.ListApiOperationsResponseInnerMethodEnum = exports.GetApiOperationResponseMethodEnum = exports.ForwardRequestLatestMessageRoleEnum = exports.ForwardRequestForwardOneOfModeEnum = exports.ExistenceOperator = exports.EqualityOperator = exports.ConversationEnvironment = exports.ConversationContextFieldConditionOperatorEnum = exports.ApiOperationMethodEnum = void 0;
+exports.Scout9Api = exports.Scout9ApiGenerated = exports.Scout9ApiFactory = exports.Scout9ApiFp = exports.Scout9ApiAxiosParamCreator = exports.CustomContextApi = exports.CustomContextApiFactory = exports.CustomContextApiFp = exports.CustomContextApiAxiosParamCreator = exports.WorkflowResponseSlotForwardOneOfModeEnum = exports.PurposeEnum = exports.PmtConfigModelEnum = exports.PmtConfigEngineEnum = exports.MessageGetResponseInnerRoleEnum = exports.MessageCreateRequestRoleEnum = exports.MessageBaseRoleEnum = exports.MessageRoleEnum = exports.MacroResultTypeEnum = exports.MacroDidResultAllOfTypeEnum = exports.MacroDidResultTypeEnum = exports.MacroContextResultAllOfTypeEnum = exports.MacroContextResultTypeEnum = exports.LlmConfigOneOf2EngineEnum = exports.LlmConfigOneOf1EngineEnum = exports.LlmConfigOneOfModelEnum = exports.LlmConfigOneOfEngineEnum = exports.ListApiOperationsResponseInnerMethodEnum = exports.GetApiOperationResponseMethodEnum = exports.ForwardRequestLatestMessageRoleEnum = exports.ForwardRequestForwardOneOfModeEnum = exports.ExistenceOperator = exports.EqualityOperator = exports.ConversationEnvironment = exports.ConversationContextFieldConditionOperatorEnum = exports.ApiOperationMethodEnum = void 0;
 const axios_1 = __importDefault(require("axios"));
 // Some imports not used depending on template conditions
 // @ts-ignore
@@ -140,6 +140,22 @@ exports.LlmConfigOneOf1EngineEnum = {
 };
 exports.LlmConfigOneOf2EngineEnum = {
     Bard: 'bard'
+};
+exports.MacroContextResultTypeEnum = {
+    Context: 'context'
+};
+exports.MacroContextResultAllOfTypeEnum = {
+    Context: 'context'
+};
+exports.MacroDidResultTypeEnum = {
+    Did: 'did'
+};
+exports.MacroDidResultAllOfTypeEnum = {
+    Did: 'did'
+};
+exports.MacroResultTypeEnum = {
+    Did: 'did',
+    Context: 'context'
 };
 exports.MessageRoleEnum = {
     Customer: 'customer',
@@ -573,13 +589,13 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         /**
          *
          * @summary Natural language prompt to resolve a context value derived from the conversation.
-         * @param {CaptureContextRequest} captureContextRequest
+         * @param {MacroContextInput} macroContextInput
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        captureContext: async (captureContextRequest, options = {}) => {
-            // verify required parameter 'captureContextRequest' is not null or undefined
-            (0, common_1.assertParamExists)('captureContext', 'captureContextRequest', captureContextRequest);
+        captureContext: async (macroContextInput, options = {}) => {
+            // verify required parameter 'macroContextInput' is not null or undefined
+            (0, common_1.assertParamExists)('captureContext', 'macroContextInput', macroContextInput);
             const localVarPath = `/v1-utils-macros-context`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
@@ -594,7 +610,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
             (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
-            localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(captureContextRequest, localVarRequestOptions, configuration);
+            localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(macroContextInput, localVarRequestOptions, configuration);
             return {
                 url: (0, common_1.toPathString)(localVarUrlObj),
                 options: localVarRequestOptions,
@@ -1708,13 +1724,13 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         /**
          *
          * @summary Natural language prompt to resolve to a boolean value.
-         * @param {DidRequest} didRequest
+         * @param {MacroDidInput} macroDidInput
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        did: async (didRequest, options = {}) => {
-            // verify required parameter 'didRequest' is not null or undefined
-            (0, common_1.assertParamExists)('did', 'didRequest', didRequest);
+        did: async (macroDidInput, options = {}) => {
+            // verify required parameter 'macroDidInput' is not null or undefined
+            (0, common_1.assertParamExists)('did', 'macroDidInput', macroDidInput);
             const localVarPath = `/v1-utils-macros-did`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
@@ -1729,7 +1745,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
             (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
-            localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(didRequest, localVarRequestOptions, configuration);
+            localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(macroDidInput, localVarRequestOptions, configuration);
             return {
                 url: (0, common_1.toPathString)(localVarUrlObj),
                 options: localVarRequestOptions,
@@ -2489,12 +2505,12 @@ const Scout9ApiFp = function (configuration) {
         /**
          *
          * @summary Natural language prompt to resolve a context value derived from the conversation.
-         * @param {CaptureContextRequest} captureContextRequest
+         * @param {MacroContextInput} macroContextInput
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async captureContext(captureContextRequest, options) {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.captureContext(captureContextRequest, options);
+        async captureContext(macroContextInput, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.captureContext(macroContextInput, options);
             return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
         },
         /**
@@ -2908,12 +2924,12 @@ const Scout9ApiFp = function (configuration) {
         /**
          *
          * @summary Natural language prompt to resolve to a boolean value.
-         * @param {DidRequest} didRequest
+         * @param {MacroDidInput} macroDidInput
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async did(didRequest, options) {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.did(didRequest, options);
+        async did(macroDidInput, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.did(macroDidInput, options);
             return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
         },
         /**
@@ -3247,12 +3263,12 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
         /**
          *
          * @summary Natural language prompt to resolve a context value derived from the conversation.
-         * @param {CaptureContextRequest} captureContextRequest
+         * @param {MacroContextInput} macroContextInput
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        captureContext(captureContextRequest, options) {
-            return localVarFp.captureContext(captureContextRequest, options).then((request) => request(axios, basePath));
+        captureContext(macroContextInput, options) {
+            return localVarFp.captureContext(macroContextInput, options).then((request) => request(axios, basePath));
         },
         /**
          *
@@ -3629,12 +3645,12 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
         /**
          *
          * @summary Natural language prompt to resolve to a boolean value.
-         * @param {DidRequest} didRequest
+         * @param {MacroDidInput} macroDidInput
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        did(didRequest, options) {
-            return localVarFp.did(didRequest, options).then((request) => request(axios, basePath));
+        did(macroDidInput, options) {
+            return localVarFp.did(macroDidInput, options).then((request) => request(axios, basePath));
         },
         /**
          *
@@ -3957,13 +3973,13 @@ class Scout9ApiGenerated extends base_1.BaseAPI {
     /**
      *
      * @summary Natural language prompt to resolve a context value derived from the conversation.
-     * @param {CaptureContextRequest} captureContextRequest
+     * @param {MacroContextInput} macroContextInput
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
-    captureContext(captureContextRequest, options) {
-        return (0, exports.Scout9ApiFp)(this.configuration).captureContext(captureContextRequest, options).then((request) => request(this.axios, this.basePath));
+    captureContext(macroContextInput, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).captureContext(macroContextInput, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      *
@@ -4376,13 +4392,13 @@ class Scout9ApiGenerated extends base_1.BaseAPI {
     /**
      *
      * @summary Natural language prompt to resolve to a boolean value.
-     * @param {DidRequest} didRequest
+     * @param {MacroDidInput} macroDidInput
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
-    did(didRequest, options) {
-        return (0, exports.Scout9ApiFp)(this.configuration).did(didRequest, options).then((request) => request(this.axios, this.basePath));
+    did(macroDidInput, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).did(macroDidInput, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      *

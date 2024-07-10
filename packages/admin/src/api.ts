@@ -309,62 +309,6 @@ export interface BlockInfo {
   'time'?: string;
 }
 /**
- * @type CaptureContext200Response
- * @export
- */
-export type CaptureContext200Response = Array<{ [key: string]: any; }> | { [key: string]: any; };
-
-/**
- *
- * @export
- * @interface CaptureContextRequest
- */
-export interface CaptureContextRequest {
-  /**
-   *
-   * @type {string}
-   * @memberof CaptureContextRequest
-   */
-  'prompt': string;
-  /**
-   *
-   * @type {string}
-   * @memberof CaptureContextRequest
-   */
-  'convoId': string;
-  /**
-   *
-   * @type {CaptureContextRequestExamples}
-   * @memberof CaptureContextRequest
-   */
-  'examples'?: CaptureContextRequestExamples;
-}
-/**
- * @type CaptureContextRequestExamples
- * @export
- */
-export type CaptureContextRequestExamples = Array<CaptureContextRequestExamplesOneOfInner> | Array<{ [key: string]: any; }>;
-
-/**
- *
- * @export
- * @interface CaptureContextRequestExamplesOneOfInner
- */
-export interface CaptureContextRequestExamplesOneOfInner {
-  /**
-   *
-   * @type {string}
-   * @memberof CaptureContextRequestExamplesOneOfInner
-   */
-  'input': string;
-  /**
-   *
-   * @type {Array<{ [key: string]: any; }>}
-   * @memberof CaptureContextRequestExamplesOneOfInner
-   */
-  'output': Array<{ [key: string]: any; }>;
-}
-/**
  * @type Condition
  * @export
  */
@@ -2646,38 +2590,6 @@ export interface DeleteWorkflowsResponse {
 /**
  *
  * @export
- * @interface Did200Response
- */
-export interface Did200Response {
-  /**
-   *
-   * @type {boolean}
-   * @memberof Did200Response
-   */
-  'value': boolean;
-}
-/**
- *
- * @export
- * @interface DidRequest
- */
-export interface DidRequest {
-  /**
-   *
-   * @type {string}
-   * @memberof DidRequest
-   */
-  'prompt': string;
-  /**
-   *
-   * @type {string}
-   * @memberof DidRequest
-   */
-  'convoId': string;
-}
-/**
- *
- * @export
  * @interface EntitiesBuildConfigInner
  */
 export interface EntitiesBuildConfigInner {
@@ -4684,6 +4596,209 @@ export interface Logs500Response {
    */
   'message'?: string;
 }
+/**
+ *
+ * @export
+ * @interface MacroContextInput
+ */
+export interface MacroContextInput {
+  /**
+   *
+   * @type {string}
+   * @memberof MacroContextInput
+   */
+  'prompt': string;
+  /**
+   *
+   * @type {string}
+   * @memberof MacroContextInput
+   */
+  'convoId': string;
+  /**
+   *
+   * @type {MacroContextInputExamples}
+   * @memberof MacroContextInput
+   */
+  'examples'?: MacroContextInputExamples;
+}
+/**
+ * @type MacroContextInputExamples
+ * @export
+ */
+export type MacroContextInputExamples = Array<MacroContextInputExamplesOneOfInner> | Array<{ [key: string]: any; }>;
+
+/**
+ *
+ * @export
+ * @interface MacroContextInputExamplesOneOfInner
+ */
+export interface MacroContextInputExamplesOneOfInner {
+  /**
+   *
+   * @type {string}
+   * @memberof MacroContextInputExamplesOneOfInner
+   */
+  'input': string;
+  /**
+   *
+   * @type {MacroContextInputExamplesOneOfInnerOutput}
+   * @memberof MacroContextInputExamplesOneOfInner
+   */
+  'output': MacroContextInputExamplesOneOfInnerOutput;
+}
+/**
+ * @type MacroContextInputExamplesOneOfInnerOutput
+ * @export
+ */
+export type MacroContextInputExamplesOneOfInnerOutput = Array<{ [key: string]: any; }> | { [key: string]: any; };
+
+/**
+ *
+ * @export
+ * @interface MacroContextResult
+ */
+export interface MacroContextResult {
+  /**
+   * The prompt that was used
+   * @type {string}
+   * @memberof MacroContextResult
+   */
+  'prompt'?: string;
+  /**
+   * Type is hard-coded to \'context\'
+   * @type {string}
+   * @memberof MacroContextResult
+   */
+  'type'?: MacroContextResultTypeEnum;
+  /**
+   *
+   * @type {MacroContextValue}
+   * @memberof MacroContextResult
+   */
+  'value'?: MacroContextValue;
+  /**
+   * The number of tokens used to generate this response
+   * @type {number}
+   * @memberof MacroContextResult
+   */
+  'tokensTotal'?: number;
+}
+
+export const MacroContextResultTypeEnum = {
+  Context: 'context'
+} as const;
+
+export type MacroContextResultTypeEnum = typeof MacroContextResultTypeEnum[keyof typeof MacroContextResultTypeEnum];
+
+/**
+ * @type MacroContextValue
+ * @export
+ */
+export type MacroContextValue = Array<{ [key: string]: any; }> | { [key: string]: any; };
+
+/**
+ *
+ * @export
+ * @interface MacroDidInput
+ */
+export interface MacroDidInput {
+  /**
+   *
+   * @type {string}
+   * @memberof MacroDidInput
+   */
+  'prompt': string;
+  /**
+   *
+   * @type {string}
+   * @memberof MacroDidInput
+   */
+  'convoId': string;
+}
+/**
+ *
+ * @export
+ * @interface MacroDidResult
+ */
+export interface MacroDidResult {
+  /**
+   * The prompt that was used
+   * @type {string}
+   * @memberof MacroDidResult
+   */
+  'prompt'?: string;
+  /**
+   * Type is hard-coded to \'did\'
+   * @type {string}
+   * @memberof MacroDidResult
+   */
+  'type'?: MacroDidResultTypeEnum;
+  /**
+   * The returned value is of type boolean
+   * @type {boolean}
+   * @memberof MacroDidResult
+   */
+  'value'?: boolean;
+  /**
+   * The number of tokens used to generate this response
+   * @type {number}
+   * @memberof MacroDidResult
+   */
+  'tokensTotal'?: number;
+}
+
+export const MacroDidResultTypeEnum = {
+  Did: 'did'
+} as const;
+
+export type MacroDidResultTypeEnum = typeof MacroDidResultTypeEnum[keyof typeof MacroDidResultTypeEnum];
+
+/**
+ *
+ * @export
+ * @interface MacroResult
+ */
+export interface MacroResult {
+  /**
+   * The prompt that was used
+   * @type {string}
+   * @memberof MacroResult
+   */
+  'prompt'?: string;
+  /**
+   * What type of Macro result this represents
+   * @type {string}
+   * @memberof MacroResult
+   */
+  'type'?: MacroResultTypeEnum;
+  /**
+   *
+   * @type {MacroResultValue}
+   * @memberof MacroResult
+   */
+  'value'?: MacroResultValue;
+  /**
+   * The number of tokens used to generate this response
+   * @type {number}
+   * @memberof MacroResult
+   */
+  'tokensTotal'?: number;
+}
+
+export const MacroResultTypeEnum = {
+  Did: 'did',
+  Context: 'context'
+} as const;
+
+export type MacroResultTypeEnum = typeof MacroResultTypeEnum[keyof typeof MacroResultTypeEnum];
+
+/**
+ * @type MacroResultValue
+ * The returned value of the macro
+ * @export
+ */
+export type MacroResultValue = MacroContextValue | boolean;
+
 /**
  *
  * @export
@@ -7762,13 +7877,13 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
     /**
      *
      * @summary Natural language prompt to resolve a context value derived from the conversation.
-     * @param {CaptureContextRequest} captureContextRequest
+     * @param {MacroContextInput} macroContextInput
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    captureContext: async (captureContextRequest: CaptureContextRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-      // verify required parameter 'captureContextRequest' is not null or undefined
-      assertParamExists('captureContext', 'captureContextRequest', captureContextRequest)
+    captureContext: async (macroContextInput: MacroContextInput, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'macroContextInput' is not null or undefined
+      assertParamExists('captureContext', 'macroContextInput', macroContextInput)
       const localVarPath = `/v1-utils-macros-context`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -7788,7 +7903,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-      localVarRequestOptions.data = serializeDataIfNeeded(captureContextRequest, localVarRequestOptions, configuration)
+      localVarRequestOptions.data = serializeDataIfNeeded(macroContextInput, localVarRequestOptions, configuration)
 
       return {
         url: toPathString(localVarUrlObj),
@@ -9121,13 +9236,13 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
     /**
      *
      * @summary Natural language prompt to resolve to a boolean value.
-     * @param {DidRequest} didRequest
+     * @param {MacroDidInput} macroDidInput
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    did: async (didRequest: DidRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-      // verify required parameter 'didRequest' is not null or undefined
-      assertParamExists('did', 'didRequest', didRequest)
+    did: async (macroDidInput: MacroDidInput, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'macroDidInput' is not null or undefined
+      assertParamExists('did', 'macroDidInput', macroDidInput)
       const localVarPath = `/v1-utils-macros-did`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -9147,7 +9262,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-      localVarRequestOptions.data = serializeDataIfNeeded(didRequest, localVarRequestOptions, configuration)
+      localVarRequestOptions.data = serializeDataIfNeeded(macroDidInput, localVarRequestOptions, configuration)
 
       return {
         url: toPathString(localVarUrlObj),
@@ -10033,12 +10148,12 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
     /**
      *
      * @summary Natural language prompt to resolve a context value derived from the conversation.
-     * @param {CaptureContextRequest} captureContextRequest
+     * @param {MacroContextInput} macroContextInput
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async captureContext(captureContextRequest: CaptureContextRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CaptureContext200Response>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.captureContext(captureContextRequest, options);
+    async captureContext(macroContextInput: MacroContextInput, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<MacroContextResult>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.captureContext(macroContextInput, options);
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
     },
     /**
@@ -10452,12 +10567,12 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
     /**
      *
      * @summary Natural language prompt to resolve to a boolean value.
-     * @param {DidRequest} didRequest
+     * @param {MacroDidInput} macroDidInput
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async did(didRequest: DidRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Did200Response>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.did(didRequest, options);
+    async did(macroDidInput: MacroDidInput, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<MacroDidResult>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.did(macroDidInput, options);
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
     },
     /**
@@ -10791,12 +10906,12 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
     /**
      *
      * @summary Natural language prompt to resolve a context value derived from the conversation.
-     * @param {CaptureContextRequest} captureContextRequest
+     * @param {MacroContextInput} macroContextInput
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    captureContext(captureContextRequest: CaptureContextRequest, options?: any): AxiosPromise<CaptureContext200Response> {
-      return localVarFp.captureContext(captureContextRequest, options).then((request) => request(axios, basePath));
+    captureContext(macroContextInput: MacroContextInput, options?: any): AxiosPromise<MacroContextResult> {
+      return localVarFp.captureContext(macroContextInput, options).then((request) => request(axios, basePath));
     },
     /**
      *
@@ -11173,12 +11288,12 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
     /**
      *
      * @summary Natural language prompt to resolve to a boolean value.
-     * @param {DidRequest} didRequest
+     * @param {MacroDidInput} macroDidInput
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    did(didRequest: DidRequest, options?: any): AxiosPromise<Did200Response> {
-      return localVarFp.did(didRequest, options).then((request) => request(axios, basePath));
+    did(macroDidInput: MacroDidInput, options?: any): AxiosPromise<MacroDidResult> {
+      return localVarFp.did(macroDidInput, options).then((request) => request(axios, basePath));
     },
     /**
      *
@@ -11510,13 +11625,13 @@ export class Scout9ApiGenerated extends BaseAPI {
   /**
    *
    * @summary Natural language prompt to resolve a context value derived from the conversation.
-   * @param {CaptureContextRequest} captureContextRequest
+   * @param {MacroContextInput} macroContextInput
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof Scout9Api
    */
-  public captureContext(captureContextRequest: CaptureContextRequest, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).captureContext(captureContextRequest, options).then((request) => request(this.axios, this.basePath));
+  public captureContext(macroContextInput: MacroContextInput, options?: AxiosRequestConfig) {
+    return Scout9ApiFp(this.configuration).captureContext(macroContextInput, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -11966,13 +12081,13 @@ export class Scout9ApiGenerated extends BaseAPI {
   /**
    *
    * @summary Natural language prompt to resolve to a boolean value.
-   * @param {DidRequest} didRequest
+   * @param {MacroDidInput} macroDidInput
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof Scout9Api
    */
-  public did(didRequest: DidRequest, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).did(didRequest, options).then((request) => request(this.axios, this.basePath));
+  public did(macroDidInput: MacroDidInput, options?: AxiosRequestConfig) {
+    return Scout9ApiFp(this.configuration).did(macroDidInput, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
