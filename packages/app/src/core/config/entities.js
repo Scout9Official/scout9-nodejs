@@ -1,10 +1,10 @@
 import { globSync } from 'glob';
 import path from 'node:path';
 import {
-    entitiesRootProjectConfigurationSchema,
-    entityApiConfigurationSchema,
-    entityConfigurationSchema,
-    entityRootProjectConfigurationSchema
+    EntitiesRootProjectConfigurationSchema,
+    EntityApiConfigurationSchema,
+    EntityConfigurationSchema,
+    EntityRootProjectConfigurationSchema
 } from '../../runtime/index.js';
 import { checkVariableType, requireOptionalProjectFile, requireProjectFile } from '../../utils/index.js';
 import { logUserValidationError } from '../../report.js';
@@ -23,7 +23,7 @@ async function loadEntityApiConfig(cwd, filePath) {
         config[key] = true;
       }
     }
-    entityApiConfigurationSchema.parse(config);
+    EntityApiConfigurationSchema.parse(config);
     return config;
   } else {
     return null;
@@ -31,12 +31,12 @@ async function loadEntityApiConfig(cwd, filePath) {
 }
 
 /**
- * @returns {Promise<import('../../runtime/client/config.js').IEntitiesRootProjectConfiguration>}
+ * @returns {Promise<EntitiesRootProjectConfiguration>}
  */
 export default async function loadEntitiesConfig(
   {cwd = process.cwd(), src = 'src', logger, cb = (message) => {}} = {}
 ) {
-  /** @type import('../../runtime/client/config.js').IEntitiesRootProjectConfiguration */
+  /** @type EntitiesRootProjectConfiguration */
   const config = [];
   // const paths = globSync(path.resolve(cwd, `${src}/entities/**/{index,config,api}.{ts,js}`), {cwd, absolute: true});
   const filePaths = globSync(`${src}/entities/**/{index,config,api}.{ts,js}`, {cwd, absolute: true});
@@ -79,7 +79,7 @@ export default async function loadEntitiesConfig(
       }
 
       // Validate entity configuration
-      const result = entityConfigurationSchema.safeParse(entityConfig, {path: ['entities', config.length]});
+      const result = EntityConfigurationSchema.safeParse(entityConfig, {path: ['entities', config.length]});
       if (!result.success) {
         logUserValidationError(result.error, filePath);
         throw result.error;
@@ -96,7 +96,7 @@ export default async function loadEntitiesConfig(
       entities: parents.reverse(),
       api
     };
-    entityRootProjectConfigurationSchema.parse(entityProjectConfig);
+    EntityRootProjectConfigurationSchema.parse(entityProjectConfig);
     const existingIndex = config.findIndex(c => c.entity === entityProjectConfig.entity);
     if (existingIndex > -1) {
       if (config[existingIndex].entities.length !== entityProjectConfig.entities.length) {
@@ -134,7 +134,7 @@ export default async function loadEntitiesConfig(
   }
 
   // Validate the config
-  entitiesRootProjectConfigurationSchema.parse(config);
+  EntitiesRootProjectConfigurationSchema.parse(config);
 
   return config;
 }

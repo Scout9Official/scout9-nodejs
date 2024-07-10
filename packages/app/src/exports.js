@@ -8,29 +8,30 @@ export * from './runtime/client/index.js';
 export * from './runtime/macros/index.js';
 
 /**
- * @param {import('./runtime/client/workflow.js').IWorkflowEvent} event - every workflow receives an event object
+ * @param {WorkflowEvent} event - every workflow receives an event object
  * @param {Object} options
  * @param {string} [options.cwd=process.cwd()] - the working directory
  * @param {string} [options.mode='production'] - the build mode
  * @param {string} [options.src='./src'] - the source directory
  * @param {string} options.eventSource - the source of the workflow event
- * @returns {Promise<import('./runtime/client/workflow.js').IWorkflowResponse>}
+ * @returns {WorkflowResponse}
  */
 export async function run(event, options) {
   return Scout9Platform.run(event, options)
 }
 
 /**
- * @param {import('./runtime/client/workflow.js').IWorkflowEvent} event - every workflow receives an event object
+ * @param {WorkflowEvent} event - every workflow receives an event object
  * @param {{cwd: string; mode: 'development' | 'production'; src: string}} options - build options
- * @returns {Promise<import('./runtime/client/workflow.js').IWorkflowResponse>}
+ * @returns {WorkflowResponse}
  */
 export const sendEvent = run;
 
 /**
- * @param data {T}
- * @param init {ResponseInit | undefined}
- * @returns {import('./runtime/client/api.js').EventResponse<T>}
+ * @template T
+ * @param {T} data
+ * @param {ResponseInit | undefined} [init]
+ * @returns {EventResponse<T>}
  */
 export function json(data, init) {
   if (data instanceof Promise) {

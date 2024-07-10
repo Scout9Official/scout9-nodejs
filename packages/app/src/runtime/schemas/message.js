@@ -1,9 +1,6 @@
 import { z } from 'zod';
 import { zId } from './utils.js';
 
-/**
- * @typedef {import('zod').infer<typeof MessageSchema>} IMessage
- */
 export const MessageSchema = z.object({
   id: zId('Message ID', {description: 'Unique ID for the message'}),
   role: z.enum(['agent', 'customer', 'system']),

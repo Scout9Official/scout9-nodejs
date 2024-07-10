@@ -1,9 +1,9 @@
 import { z } from 'zod';
-import { agentsBaseConfigurationSchema } from './users.js';
-import { entitiesRootProjectConfigurationSchema } from './entity.js';
+import { AgentsSchema } from './users.js';
+import { EntitiesRootProjectConfigurationSchema } from './entity.js';
 import { WorkflowsConfigurationSchema } from './workflow.js';
 
-const llmModelOptions = z.union([
+const LlmModelOptions = z.union([
   z.literal('gpt-4-1106-preview'),
   z.literal('gpt-4-vision-preview'),
   z.literal('gpt-4'),
@@ -20,22 +20,22 @@ const llmModelOptions = z.union([
   z.string() // for the (string & {}) part
 ]);
 
-const pmtModelOptions = z.union([
+const PmtModelOptions = z.union([
   z.literal('orin-1.0'),
   z.literal('orin-2.0-preview')
 ]);
 
-const llmSchema = z.object({
+const LlmSchema = z.object({
   engine: z.literal('openai'),
-  model: llmModelOptions
+  model: LlmModelOptions
 });
 
-const llamaSchema = z.object({
+const LlamaSchema = z.object({
   engine: z.literal('llama'),
   model: z.string()
 });
 
-const bardSchema = z.object({
+const BardSchema = z.object({
   engine: z.literal('bard'),
   model: z.string()
 });
@@ -43,7 +43,7 @@ const bardSchema = z.object({
 /**
  * Configure personal model transformer (PMT) settings to align auto replies the agent's tone
  */
-const pmtSchema = z.object({
+const PmtSchema = z.object({
   engine: z.literal('scout9'),
   // model: pmtModelOptions
   model: z.string()
@@ -53,7 +53,6 @@ const pmtSchema = z.object({
 
 /**
  * Represents the configuration provided in src/index.{js | ts} in a project
- * @typedef {import('zod').infer<typeof Scout9ProjectConfigSchema>} IScout9ProjectConfig
  */
 export const Scout9ProjectConfigSchema = z.object({
   /**
@@ -61,11 +60,11 @@ export const Scout9ProjectConfigSchema = z.object({
    * @defaut your local package.json name + version, or scout9-app-v1.0.0
    */
   tag: z.string().optional(), // Defaults to scout9-app-v1.0.0
-  llm: z.union([llmSchema, llamaSchema, bardSchema]),
+  llm: z.union([LlmSchema, LlamaSchema, BardSchema]),
   /**
    * Configure personal model transformer (PMT) settings to align auto replies the agent's tone
    */
-  pmt: pmtSchema,
+  pmt: PmtSchema,
 
   /**
    * Determines the max auto replies without further conversation progression (defined by new context data gathered)
@@ -93,12 +92,9 @@ export const Scout9ProjectConfigSchema = z.object({
   }).optional()
 })
 
-/**
- * @typedef {import('zod').infer<typeof Scout9ProjectBuildConfigSchema>} IScout9ProjectBuildConfig
- */
 export const Scout9ProjectBuildConfigSchema = Scout9ProjectConfigSchema.extend({
-  agents: agentsBaseConfigurationSchema,
-  entities: entitiesRootProjectConfigurationSchema,
+  agents: AgentsSchema,
+  entities: EntitiesRootProjectConfigurationSchema,
   workflows: WorkflowsConfigurationSchema
 });
 

@@ -4621,29 +4621,6 @@ export declare const MacroContextResultTypeEnum: {
 };
 export type MacroContextResultTypeEnum = typeof MacroContextResultTypeEnum[keyof typeof MacroContextResultTypeEnum];
 /**
- *
- * @export
- * @interface MacroContextResultAllOf
- */
-export interface MacroContextResultAllOf {
-    /**
-     * Type is hard-coded to \'context\'
-     * @type {string}
-     * @memberof MacroContextResultAllOf
-     */
-    'type'?: MacroContextResultAllOfTypeEnum;
-    /**
-     *
-     * @type {MacroContextValue}
-     * @memberof MacroContextResultAllOf
-     */
-    'value'?: MacroContextValue;
-}
-export declare const MacroContextResultAllOfTypeEnum: {
-    readonly Context: "context";
-};
-export type MacroContextResultAllOfTypeEnum = typeof MacroContextResultAllOfTypeEnum[keyof typeof MacroContextResultAllOfTypeEnum];
-/**
  * @type MacroContextValue
  * @export
  */
@@ -4706,29 +4683,6 @@ export declare const MacroDidResultTypeEnum: {
     readonly Did: "did";
 };
 export type MacroDidResultTypeEnum = typeof MacroDidResultTypeEnum[keyof typeof MacroDidResultTypeEnum];
-/**
- *
- * @export
- * @interface MacroDidResultAllOf
- */
-export interface MacroDidResultAllOf {
-    /**
-     * Type is hard-coded to \'did\'
-     * @type {string}
-     * @memberof MacroDidResultAllOf
-     */
-    'type'?: MacroDidResultAllOfTypeEnum;
-    /**
-     * The returned value is of type boolean
-     * @type {boolean}
-     * @memberof MacroDidResultAllOf
-     */
-    'value'?: boolean;
-}
-export declare const MacroDidResultAllOfTypeEnum: {
-    readonly Did: "did";
-};
-export type MacroDidResultAllOfTypeEnum = typeof MacroDidResultAllOfTypeEnum[keyof typeof MacroDidResultAllOfTypeEnum];
 /**
  *
  * @export

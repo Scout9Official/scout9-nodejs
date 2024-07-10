@@ -1,9 +1,77 @@
-import { WorkflowResponseSlotBaseSchema, WorkflowResponseSlotSchema } from '../client/workflow.js';
+import { WorkflowResponseSlotBaseSchema, WorkflowResponseSlotSchema } from '../schemas/workflow.js';
 import { MacroUtils } from './utils.js';
 
 
+/**
+ * followup macro options
+ * @typedef {Object} OptionsFollowup
+ * @property {Date | string} scheduled
+ * @property {Record<string, any>} [cancelIf]
+ * @property {boolean} [literal]
+ * @property {boolean} [overrideLock]
+ */
 
-function EventMacros() {
+/**
+ * instruct macro options
+ * @typedef {Object} OptionsInstruct
+ * @property {string} [id] - Unique ID for the instruction, this is used to remove the instruction later
+ * @property {boolean} [persist] - if true, the instruction persists the conversation, if false the instruction will only last for 1 auto reply
+ */
+
+/**
+ * reply macro options
+ * @typedef {Object} OptionsReply
+ * @property {Date | string} [scheduled]
+ * @property {number} [delay]
+ */
+
+/**
+ * forward macro options
+ * @typedef {Object} OptionsForward
+ * @property {'after-reply' | 'immediately'} [mode] - sets forward mode, defaults to "immediately". If "after-reply", the forward will be on hold until the customer responds. We recommend using "immediately" for most cases.
+ * @property {string} [to] - another phone or email to forward to instead of owner
+ */
+
+/**
+ *
+ * @return {{followup(string, (Date|string|OptionsFollowup)): EventMacros, toJSON(boolean=): Array<WorkflowResponseSlot>, instruct(string, OptionsFollowup=): EventMacros, forward(string=, OptionsForward=): EventMacros, anticipate((string|Array<WorkflowResponseSlotBase&{keywords: string[]}>), WorkflowResponseSlotBaseSchema, WorkflowResponseSlotBaseSchema): EventMacros, upsert(Record<string, *>): EventMacros, reply(string, OptionsReply=): EventMacros}|*|*[]}
+ * @constructor
+ */
+
+/**
+ * @typedef {WorkflowResponseSlotBase & {keywords: string[]}} WorkflowResponseSlotBaseWithKeywords
+ * - Extends `WorkflowResponseSlotBase` to include keywords.
+ * @property {string[]} keywords - Keywords associated with the slot.
+ */
+
+/**
+ * @typedef {(
+ *   (instruction: string, yes: WorkflowResponseSlotBase, no: WorkflowResponseSlotBase) => EventMacros |
+ *   (instruction: WorkflowResponseSlotBaseWithKeywords[]) => EventMacros
+ * )} AnticipateFunction
+ * - Defines the overloads for the `anticipate` function.
+ * @property {function(string, WorkflowResponseSlotBase, WorkflowResponseSlotBase): EventMacros} withCondition
+ * - Overload for when the instruction is a string.
+ * @property {string} withCondition.instruction - The instruction as a string.
+ * @property {WorkflowResponseSlotBase} withCondition.yes - Object to process if the condition is met.
+ * @property {WorkflowResponseSlotBase} withCondition.no - Object to process if the condition is not met.
+ * @property {function(WorkflowResponseSlotBaseWithKeywords[]): EventMacros} withoutCondition
+ * - Overload for when the instruction is an array.
+ * @property {WorkflowResponseSlotBaseWithKeywords[]} withoutCondition.instruction - Array of slots with keywords.
+ */
+
+/**
+ * Event macros to be used inside your scout9 auto reply workflows
+ * @typedef {Object} EventMacros
+ * @property {function(Record<string, any>): EventMacros} upsert
+ * @property {function(string, (Date | string | OptionsFollowup)): EventMacros} followup
+ * @property {AnticipateFunction} anticipate
+ * @property {function(string, OptionsInstruct?): EventMacros} instruct
+ * @property {function(string, OptionsReply?): EventMacros} reply
+ * @property {function(string?, OptionsForward?): EventMacros} forward
+ * @property {function(boolean?): Array<WorkflowResponseSlot>} toJSON
+ */
+function EventMacrosFactory() {
 
   let slots = [];
 
@@ -12,7 +80,7 @@ function EventMacros() {
     /**
      * Sets context into the conversation context for later use
      * @param {Record<string, any>} updates
-     * @return {this}
+     * @return {EventMacros}
      */
     upsert(updates) {
       const slot = {contextUpsert: updates}
@@ -24,18 +92,9 @@ function EventMacros() {
      * Similar to `instruction` except that it requires a schedule time parameter that determines when to follow up (and is not an event output macro). This will fire another run job with a new insert system context message, if `options.literal` is set to true, it will be an appended agent message prior to running the workflow app.
      *
      * @param {string} instruction
+     * @param {Date | string | OptionsFollowup} options
      *
-     * @overload
-     * @param {Date | string} options
-     *
-     * @overload
-     * @param {Object} options
-     * @param {Date | string} options.scheduled
-     * @param {Record<string, any>} [options.cancelIf]
-     * @param {boolean} [options.literal]
-     * @param {boolean} [options.overrideLock]
-     *
-     * @return {this}
+     * @return {EventMacros}
      */
     followup(instruction, options) {
       let slot;
@@ -88,11 +147,11 @@ function EventMacros() {
      * Similar to `instruct` except that it requires a schedule time parameter that determines when to follow up (and is not an event output macro). This will fire another run job with a new insert system context message, if `options.literal` is set to true, it will be an appended agent message prior to running the workflow app.
      * @overload
      * @param {string} instruction - The instruction to be anticipated as a string. When this is a string, `yes` and `no` must be provided as objects.
-     * @param {object} yes - The object to process if the instruction is a string and the condition is met.
-     * @param {object} no - The object to process if the instruction is a string and the condition is not met.
+     * @param {WorkflowResponseSlotBaseSchema} yes - The object to process if the instruction is a string and the condition is met.
+     * @param {WorkflowResponseSlotBaseSchema} no - The object to process if the instruction is a string and the condition is not met.
      *
      * @overload
-     * @param {(Array<IWorkflowResponseSlotBase & {keywords: string[]}>)} instruction
+     * @param {(Array<WorkflowResponseSlotBase & {keywords: string[]}>)} instruction
      *
      * @return {EventMacros}
      */
@@ -127,11 +186,9 @@ function EventMacros() {
     },
 
     /**
-     *
+     * Return instructions to guide next auto reply response
      * @param {string} instruction
-     * @param {Object} [options]
-     * @param {string} [options.id] - Unique ID for the instruction, this is used to remove the instruction later
-     * @param {string} [options.persist] - if true, the instruction persists the conversation, if false the instruction will only last for 1 auto reply
+     * @param {OptionsFollowup} [options]
      * @return {EventMacros}
      */
     instruct(instruction, options = {}) {
@@ -156,10 +213,8 @@ function EventMacros() {
     /**
      * If a manual message must be sent, you can use the `reply` macro
      * @param {string} message - the message to manually send to the user
-     * @param {Object} [options]
-     * @param {Date | string} [options.scheduled] - this will schedule the date to a specific provided date
-     * @param {string} [options.delay] - delays the message return in seconds
-     * @return {this}
+     * @param {OptionsReply} [options]
+     * @return {EventMacros}
      */
     reply(message, options = {}) {
       const slot = {
@@ -183,10 +238,8 @@ function EventMacros() {
     /**
      * This macro ends the conversation and forwards it the owner of the persona to manually handle the flow. If your app returns undefined or no event, then a default forward is generated.
      * @param {string} [message] - the message to forward to owner of persona
-     * @param {Object} [options]
-     * @param {'after-reply' | 'immediately'} [options.mode] - sets forward mode, defaults to "immediately"
-     * @param {string} [options.to] - another phone or email to forward to instead of owner
-     * @return {this}
+     * @param {OptionsForward} [options]
+     * @return {EventMacros}
      */
     forward(message, options = {}) {
       let slot;
@@ -215,7 +268,7 @@ function EventMacros() {
     },
     /**
      * Returns event payload
-     * @return {Array<IWorkflowResponseSlot>}
+     * @return {Array<WorkflowResponseSlot>}
      */
     toJSON(flush = true) {
       if (flush) {
@@ -229,7 +282,57 @@ function EventMacros() {
   };
 }
 
-const eventMacros = EventMacros();
+const eventMacros = EventMacrosFactory();
+
+/**
+ * Return instructions to guide next auto reply response
+ * @param {string} instruction - the instruction to send to the
+ * @param {OptionsInstruct} [options]
+ * @return {EventMacros}
+ *
+ * @example instruct("Ask user if they are looking to order a pizza");
+ *
+ * @type {(message: string, options?: OptionsInstruct) => EventMacros}
+ */
 export const instruct = eventMacros.instruct.bind(eventMacros);
+
+/**
+ * Forwards conversation back to you or owner of workflow.
+ *
+ * Typically used when the conversation is over or user is stuck in the workflow and needs manual intervention.
+ *
+ * The provided message input gets sent to you in a sms text with some information why conversation was forwarded.
+ *
+ * Calling this method will lock the conversation and prevent auto replies from being sent to the user.
+ *
+ * @example - end of workflow
+ * forward("User wants 1 cheese pizza ready for pick");
+ *
+ * @example - broken step in workflow
+ * forward("Cannot determine what the user wants");
+ *
+ * @example - forward if user sends a message
+ * reply("Let me know if you're looking for a gutter cleaning").forward("User responded to gutter cleaning request", {mode: 'after-reply'});
+ *
+ * @type {(message: string, options?: OptionsForward) => EventMacros}
+ */
 export const forward = eventMacros.forward.bind(eventMacros);
+
+/**
+ * Manual message to send to the customer from the workflow.
+ *
+ * Typically used to return specific information to the user
+ *
+ * @example - confirming invoice
+ * reply(`So I got...\n${invoiceItems.map((item) => `${}`)}`)
+ * const msg = [
+ *   'So I got...',
+ *   invoice.items.map((item) => `${item.quantity} ${item.name}`),
+ *   `Total: ${invoice.totalStr}`,
+ *   `\nThis look right?`
+ * ].join('\n');
+ * return reply(msg).instruct("If user confirms ask if they prefer to pay cash or credit");
+ *
+ * @type {(message: string, options?: OptionsReply) => EventMacros}
+ */
 export const reply = eventMacros.reply.bind(eventMacros);

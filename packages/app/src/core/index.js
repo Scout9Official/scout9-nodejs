@@ -98,7 +98,7 @@ async function downloadAndUnpackZip(outputDir) {
  * @param {string} cwd
  * @param {string} src
  * @param {string} dest
- * @param {import('../runtime/client/config.js').IScout9ProjectBuildConfig} config
+ * @param {Scout9ProjectBuildConfig} config
  * @returns {Promise<void>}
  */
 async function buildApp(cwd, src, dest, config) {
@@ -292,10 +292,10 @@ export async function getAgentContacts() {
  * Runs a given project container from scout9 to given environment
  * Runs the project in a container
  *
- * @param {import('../runtime/client/workflow.js').IWorkflowEvent} event - every workflow receives an event object
+ * @param {WorkflowEvent} event - every workflow receives an event object
  * @param {Object} options
  * @param {string} options.eventSource - the source path of the event
- * @returns {Promise<import('../runtime/client/workflow.js').IWorkflowResponse>}
+ * @returns {Promise<WorkflowResponse>}
  */
 export async function run(event, {eventSource} = {}) {
   const result = WorkflowEventSchema.safeParse(event);
@@ -338,7 +338,7 @@ export async function runConfig() {
 /**
  * Builds a local project
  * @param {{cwd: string; src: string; dest: string; logger: ProgressLogger; mode: string;}} - build options
- * @param {import('../runtime/client/').IScout9ProjectBuildConfig} config
+ * @param {Scout9ProjectBuildConfig} config
  * @returns {messages: string[]}
  */
 export async function build({
@@ -435,7 +435,7 @@ export async function deploy(
 /**
  * Tests a local project to scout9 by running a dummy parse command with the project's local entities
  * @param {{cwd: string; src: string, dest: string}} - build options
- * @param {import('../runtime/client/config.js').IScout9ProjectBuildConfig} config
+ * @param {Scout9ProjectBuildConfig} config
  */
 export async function test(
   {cwd = process.cwd(), src = './src', dest = '/tmp/project', logger = new ProgressLogger()},
@@ -467,8 +467,8 @@ export async function test(
 /**
  *
  * @param {{cwd: string; src: string; projectFiles: ProjectFiles; logger: ProgressLogger}} options
- * @param {import('../runtime/client/config.js').IScout9ProjectBuildConfig} config
- * @returns {Promise<{success: boolean; config: import('../runtime/client/config.js').IScout9ProjectBuildConfig}>}
+ * @param {Scout9ProjectBuildConfig} config
+ * @returns {Promise<{success: boolean; config: Scout9ProjectBuildConfig}>}
  */
 export async function sync({
   cwd = process.cwd(), src = 'src',

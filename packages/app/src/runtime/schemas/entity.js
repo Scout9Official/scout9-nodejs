@@ -2,10 +2,7 @@ import { z } from 'zod';
 import { zId } from './utils.js';
 
 
-/**
- * @typedef {import('zod').infer<typeof entityApiConfigurationSchema>} IEntityApiConfiguration
- */
-export const entityApiConfigurationSchema = z.object({
+export const EntityApiConfigurationSchema = z.object({
   // path: z.string(),
   GET: z.boolean().optional(),
   UPDATE: z.boolean().optional(),
@@ -15,17 +12,17 @@ export const entityApiConfigurationSchema = z.object({
   DELETE: z.boolean().optional()
 }).nullable();
 
-const entityConfigurationDefinitionSchema = z.object({
+const EntityConfigurationDefinitionSchema = z.object({
   utterance: zId('Utterance', z.string({description: 'What entity utterance this represents, if not provided, it will default to the entity id'}))
     .optional(),
   value: z.string({description: 'The value of this entity variance'}),
   text: z.array(z.string(), {description: 'Text representing the entity variance'})
 });
-const entityConfigurationTrainingSchema = z.object({
+const EntityConfigurationTrainingSchema = z.object({
   intent: zId('Intent', z.string({description: 'The assigned intent id of the given text, e.g. "I love %pizza%" could have an intent id "feedback" and "Can I purchase a %pizza%?" could have an intent id "purchase"'})),
   text: z.string({description: 'Text to train the intent field and entities in or entity variances in example sentences or phrase. Ex: "I love %pizza%" and "Can I purchase a %pizza%?"'})
 });
-const entityConfigurationTestSchema = z.object({
+const EntityConfigurationTestSchema = z.object({
   text: z.string({description: 'Text to test the entity detection'}),
   expected: z.object({
     intent: zId('Intent', z.string({description: 'The expected intent id'})),
@@ -33,17 +30,14 @@ const entityConfigurationTestSchema = z.object({
     context: z.any()
   })
 });
-const _entityConfigurationSchema = z.object({
+const _EntityConfigurationSchema = z.object({
   id: zId('Id', z.string({description: 'If not provided, the id will default to the route (folder) name'})).optional(),
-  definitions: z.array(entityConfigurationDefinitionSchema).optional(),
-  training: z.array(entityConfigurationTrainingSchema).optional(),
-  tests: z.array(entityConfigurationTestSchema).optional()
+  definitions: z.array(EntityConfigurationDefinitionSchema).optional(),
+  training: z.array(EntityConfigurationTrainingSchema).optional(),
+  tests: z.array(EntityConfigurationTestSchema).optional()
 }).strict();
 
-/**
- * @typedef {import('zod').infer<typeof entityConfigurationSchema>} IEntityConfiguration
- */
-export const entityConfigurationSchema = _entityConfigurationSchema.refine((data) => {
+export const EntityConfigurationSchema = _EntityConfigurationSchema.refine((data) => {
   // If 'definitions' is provided, then 'training' must also be provided
   if (data.definitions !== undefined) {
     return data.training !== undefined;
@@ -55,28 +49,24 @@ export const entityConfigurationSchema = _entityConfigurationSchema.refine((data
   message: "If 'definitions' is provided, then 'training' must also be provided",
 });
 
-/**
- * @typedef {import('zod').infer<typeof entitiesRootConfigurationSchema>} IEntitiesRootConfiguration
- */
-export const entitiesRootConfigurationSchema = z.array(entityConfigurationSchema);
+export const EntitiesRootConfigurationSchema = z.array(EntityConfigurationSchema);
 
 
-const entityExtendedProjectConfigurationSchema = z.object({
+const EntityExtendedProjectConfigurationSchema = z.object({
   entities: z.array(zId('Entity Folder', z.string()), {description: 'Entity id association, used to handle route params'})
     .min(1, 'Must have at least 1 entity')
     .max(15, 'Cannot have more than 15 entity paths'),
   entity: zId('Entity Folder', z.string()),
-  api: entityApiConfigurationSchema
+  api: EntityApiConfigurationSchema
 });
 
-const _entityRootProjectConfigurationSchema = _entityConfigurationSchema.extend(entityExtendedProjectConfigurationSchema.shape);
-const _entitiesRootProjectConfigurationSchema = z.array(_entityRootProjectConfigurationSchema);
+const _EntityRootProjectConfigurationSchema = _EntityConfigurationSchema.extend(EntityExtendedProjectConfigurationSchema.shape);
+const _EntitiesRootProjectConfigurationSchema = z.array(_EntityRootProjectConfigurationSchema);
 
 /**
  * @TODO why type extend not valid?
- * @typedef {import('zod').infer<typeof entityRootProjectConfigurationSchema>} IEntityRootProjectConfiguration
  */
-export const entityRootProjectConfigurationSchema = _entityConfigurationSchema.extend(entityExtendedProjectConfigurationSchema.shape).refine((data) => {
+export const EntityRootProjectConfigurationSchema = _EntityConfigurationSchema.extend(EntityExtendedProjectConfigurationSchema.shape).refine((data) => {
   // If 'definitions' is provided, then 'training' must also be provided
   if (data.definitions !== undefined) {
     return data.training !== undefined;
@@ -88,7 +78,4 @@ export const entityRootProjectConfigurationSchema = _entityConfigurationSchema.e
   message: "If 'definitions' is provided, then 'training' must also be provided",
 });
 
-/**
- * @typedef {import('zod').infer<typeof entitiesRootProjectConfigurationSchema>} IEntitiesRootProjectConfiguration
- */
-export const entitiesRootProjectConfigurationSchema = z.array(entityRootProjectConfigurationSchema);
+export const EntitiesRootProjectConfigurationSchema = z.array(EntityRootProjectConfigurationSchema);

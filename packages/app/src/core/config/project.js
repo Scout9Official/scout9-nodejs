@@ -55,7 +55,7 @@ export async function loadUserPackageJson({cwd = process.cwd()}) {
 }
 
 /**
- * @returns {Promise<import('../../runtime/client/config.js').IScout9ProjectConfig>}
+ * @returns {Promise<Scout9ProjectConfig>}
  */
 export default async function loadProjectConfig({cwd = process.cwd(), deploying = false, src = 'src', cb = (message) => {}} = {}) {
   // Grab the project tag name (from their package.json)

@@ -2,15 +2,9 @@ import { z } from 'zod';
 import { zId } from './utils.js';
 import { MessageSchema } from './message.js';
 
-/**
- * @typedef {import('zod').infer<typeof customerValueSchema>} ICustomerValue
- */
-export const customerValueSchema = z.union([z.boolean(), z.number(), z.string()]);
+export const CustomerValueSchema = z.union([z.boolean(), z.number(), z.string()]);
 
-/**
- * @typedef {import('zod').infer<typeof customerSchema>} ICustomer
- */
-export const customerSchema = z.object({
+export const CustomerSchema = z.object({
   firstName: z.string().optional(),
   lastName: z.string().optional(),
   name: z.string(),
@@ -28,12 +22,9 @@ export const customerSchema = z.object({
   joined: z.string().nullable().optional(),
   stripe: z.string().nullable().optional(),
   stripeDev: z.string().nullable().optional()
-}).catchall(customerValueSchema);
+}).catchall(CustomerValueSchema);
 
-/**
- * @typedef {import('zod').infer<typeof agentBaseConfigurationSchema>} IAgentBase
- */
-export const agentBaseConfigurationSchema = z.object({
+export const AgentSchema = z.object({
   deployed: z.object({
     web: z.string({description: 'Web URL for agent'}).optional(),
     phone: z.string({description: 'Phone number for agent'}).optional(),
@@ -57,21 +48,36 @@ export const agentBaseConfigurationSchema = z.object({
   audios: z.array(z.any()).optional()
 });
 
-/**
- * @typedef {import('zod').infer<typeof agentBaseConfigurationSchema>} IAgent
- * @typedef {import('zod').infer<typeof agentBaseConfigurationSchema>} IPersona
- */
-export const agentConfigurationSchema = agentBaseConfigurationSchema.extend({
+export const PersonaSchema = AgentSchema;
+
+export const AgentConfigurationSchema = AgentSchema.extend({
   id: zId('Agent ID', {description: 'Unique ID for agent'}),
 });
 
-/**
- * @typedef {import('zod').infer<typeof agentsConfigurationSchema>} IAgentsConfiguration
- */
-export const agentsConfigurationSchema = z.array(agentConfigurationSchema);
+export const PersonaConfigurationSchema = AgentConfigurationSchema.extend({
+  id: zId('Agent ID', {description: 'Unique ID for agent'}),
+});
 
-/**
- * @typedef {import('zod').infer<typeof agentsBaseConfigurationSchema>} IAgentsBaseConfiguration
- */
-export const agentsBaseConfigurationSchema = z.array(agentBaseConfigurationSchema);
+export const AgentsConfigurationSchema = z.array(AgentConfigurationSchema);
 
+export const PersonasConfigurationSchema = z.array(PersonaConfigurationSchema);
+
+export const AgentsSchema = z.array(AgentSchema);
+
+export const PersonasSchema = z.array(PersonaSchema);
+
+
+export const Bus = z.object({
+  foo: z.string(),
+  bar: z.boolean().optional()
+});
+export const Baz = z.object({
+  boo: z.object({
+    one: z.number(),
+    two: z.number().optional()
+  })
+})
+export const TestSchema = z.object({
+  baz: Baz,
+  bus: Bus
+});

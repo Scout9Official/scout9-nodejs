@@ -3,7 +3,7 @@ import { WorkflowConfigurationSchema, WorkflowsConfigurationSchema } from '../..
 
 
 /**
- * @returns {Promise<import('../../runtime/client/workflow.js').IWorkflowsConfiguration>}
+ * @returns {Promise<WorkflowsConfiguration>}
  */
 export default async function loadWorkflowsConfig(
   {
@@ -30,7 +30,7 @@ export default async function loadWorkflowsConfig(
     .map(({path, parents}) => {
 
       // Validate project configuration
-      /** @type {import('../../runtime/client/workflow.js').IWorkflowConfiguration} */
+      /** @type {WorkflowConfiguration} */
       const workflowConfig = {
         entity: parents[0],
         entities: parents.reverse(),

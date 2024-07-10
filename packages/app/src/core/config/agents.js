@@ -4,7 +4,7 @@ import colors from 'kleur';
 import { globSync } from 'glob';
 import { Configuration, Scout9Api } from '@scout9/admin';
 import { checkVariableType, requireProjectFile } from '../../utils/index.js';
-import { agentsBaseConfigurationSchema, agentsConfigurationSchema } from '../../runtime/index.js';
+import { AgentsSchema, AgentsConfigurationSchema } from '../../runtime/index.js';
 import { audioExtensions } from '../../utils/audio-type.js';
 import { fileTypeFromBuffer } from '../../utils/file-type.js';
 import { videoExtensions } from '../../utils/video-type.js';
@@ -313,7 +313,7 @@ export default async function loadAgentConfig({
     }
   }
 
-  const result = (deploying ? agentsConfigurationSchema : agentsBaseConfigurationSchema).safeParse(agents);
+  const result = (deploying ? AgentsConfigurationSchema : AgentsSchema).safeParse(agents);
   if (!result.success) {
     result.error.source = paths[0];
     throw result.error;

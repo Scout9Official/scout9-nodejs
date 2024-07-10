@@ -5,8 +5,6 @@ import { loadConfig } from '../core/config/index.js';
 import { requireProjectFile } from '../utils/index.js';
 import { globSync } from 'glob';
 
-export * from './spirits.js';
-
 import { Spirits } from './spirits.js';
 
 /**
@@ -15,22 +13,22 @@ import { Spirits } from './spirits.js';
 export class Scout9Test {
 
   /**
-   * @type {import('../runtime/client/users.js').ICustomer}
+   * @type {import('@scout9/app').Customer}
    */
   customer;
 
   /**
-   * @type {import('../runtime/client/users.js').IPersona}
+   * @type {import('@scout9/app').Persona}
    */
   persona;
 
   /**
-   * @type {import('../runtime/client/workflow.js').IConversation}
+   * @type {import('@scout9/app').Conversation}
    */
   conversation;
 
   /**
-   * @type {import('../runtime/client/message.js').IMessage[]}
+   * @type {import('@scout9/app').Message[]}
    */
   messages;
 
@@ -41,13 +39,13 @@ export class Scout9Test {
 
   /**
    * @private
-   * @type {import('../runtime/client/config.js').IScout9ProjectBuildConfig | null}
+   * @type {import('@scout9/app').Scout9ProjectBuildConfig | null}
    */
   _project = null;
 
   /**
    * @private
-   * @type {import('../runtime/client/workflow.js').IWorkflowFunction | null}
+   * @type {import('@scout9/app').WorkflowFunction | null}
    */
   _app = null;
 
@@ -86,16 +84,16 @@ export class Scout9Test {
   /**
    * Mimics a customer message to your app (useful for testing)
    * @param props - the Scout9Test properties
-   * @param {import('../runtime/client/users.js').ICustomer | undefined} [props.customer] - customer to use
+   * @param {import('@scout9/app').Customer | undefined} [props.customer] - customer to use
    * @param {any | undefined} [props.context] - prior conversation context
    * @param {string | undefined} [props.persona] id to use
-   * @param {import('../runtime/client/workflow.js').IConversation | undefined} [props.conversation] - existing conversation
+   * @param {import('@scout9/app').Conversation | undefined} [props.conversation] - existing conversation
    * @param {string | undefined} [props.cwd]
    * @param {string | undefined} [props.src]
    * @param {string | undefined} [props.mode]
    * @param {import('@scout9/admin').Scout9Api} [props.api]
-   * @param {import('../runtime/client/workflow.js').IWorkflowFunction} [props.app]
-   * @param {import('../runtime/client/config.js').IScout9ProjectBuildConfig} [props.project]
+   * @param {import('@scout9/app').WorkflowFunction} [props.app]
+   * @param {import('@scout9/app').Scout9ProjectBuildConfig} [props.project]
    */
   constructor(
     {
@@ -195,8 +193,8 @@ export class Scout9Test {
   /**
    * Send a message as a customer to your app
    * @param {string} message - message to send
-   * @param {import('@scout9/app/testing-tools').StatusCallback | boolean} [progress] - progress callback, if true, will log progress, can override with your own callback. If not provided, no logs will be added.
-   * @returns {Promise<ConversationEvent>}
+   * @param {import('@scout9/app/spirits').StatusCallback | boolean} [progress] - progress callback, if true, will log progress, can override with your own callback. If not provided, no logs will be added.
+   * @returns {Promise<import('@scout9/app/spirits').ConversationEvent>}
    */
   async send(message, progress = false) {
     if (!this._loaded) {
@@ -303,8 +301,8 @@ export class Scout9Test {
   /**
    * Runs your local app workflow
    * @param {string} message - the message to run through the workflow
-   * @param {Omit<Partial<import('../runtime/client/workflow.js').IWorkflowEvent>, 'message'> | undefined} [event] - additional event data
-   * @returns {Promise<import('../runtime/client/workflow.js').IWorkflowResponse>}
+   * @param {Omit<Partial<import('@scout9/app').WorkflowEvent>, 'message'> | undefined} [event] - additional event data
+   * @returns {Promise<import('@scout9/app').WorkflowResponse>}
    */
   async workflow(message, event = {}) {
     if (!this._app) {
@@ -324,7 +322,7 @@ export class Scout9Test {
    * @param {Object} [input] - Generation input, defaults to test registered data such as existing messages, context, and persona information.
    * @param {string} [input.personaId] - Persona ID to use, defaults to test registered persona id.
    * @param {Partial<import('@scout9/admin').ConversationCreateRequest>} [input.conversation] - Conversation overrides, defaults to test registered conversation data.
-   * @param {import('../runtime/client/message.js').IMessage[]} [input.messages] - Message overrides, defaults to test registered message data.
+   * @param {import('@scout9/app').Message[]} [input.messages] - Message overrides, defaults to test registered message data.
    * @param {any} [input.context] - Context overrides, defaults to test registered context data.
    * @returns {Promise<import('@scout9/admin').GenerateResponse>}
    */

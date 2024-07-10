@@ -34,7 +34,7 @@ export function loadEnvConfig({
 /**
  * @deprecated use "new ProjectFiles(...).load()" instead
  * @param {{cwd: string; src: string; logger?: ProgressLogger; deploying?: boolean; cb?: (message: string) => void}} - build options
- * @returns {Promise<import('../../runtime/client/config.js').IScout9ProjectBuildConfig>}
+ * @returns {Promise<Scout9ProjectBuildConfig>}
  */
 export async function loadConfig({
   cwd = process.cwd(), src = 'src', dest = '/tmp/project', deploying = false, logger = new ProgressLogger(), cb = (msg) => {
@@ -49,7 +49,7 @@ export async function loadConfig({
   const workflowsConfig = await loadWorkflowsConfig({cwd, src, logger, deploying, cb});
 
   /**
-   * @type {import('../../runtime/client/config.js').IScout9ProjectBuildConfig}
+   * @type {Scout9ProjectBuildConfig}
    */
   const projectConfig = {
     ...baseProjectConfig,

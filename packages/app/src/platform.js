@@ -23,7 +23,7 @@ export const Scout9Platform = {
    * @param {string} [params.cwd=process.cwd()] - the working directory
    * @param {string} [params.src='src'] - the source directory
    * @param {string} [params.mode='production'] - the build mode
-   * @returns {Promise<import('./runtime/client/config.js').IScout9ProjectBuildConfig>}
+   * @returns {Promise<Scout9ProjectBuildConfig>}
    */
   sync: async function ({cwd = process.cwd(), src = 'src', mode = 'production'} = {}) {
     const logger = new ProgressLogger();
@@ -54,7 +54,7 @@ export const Scout9Platform = {
    * @param {string} [params.dest='/tmp/project'] - the destination directory
    * @param {'development' | 'production'} [params.mode='production'] - the build mode
    * @param {boolean} [params.sync=true] - whether to sync the project after deploying
-   * @returns {Promise<import('./runtime/client/config.js').IScout9ProjectBuildConfig>}
+   * @returns {Promise<Scout9ProjectBuildConfig>}
    */
   deploy: async function (
     {
@@ -108,7 +108,7 @@ export const Scout9Platform = {
    * @param {string} [params.src='./src'] - the source directory
    * @param {string} [params.dest='/tmp/project'] - the destination directory
    * @param {'development' | 'production'} [params.mode='production'] - the build mode
-   * @returns {Promise<import('./runtime/client/config.js').IScout9ProjectBuildConfig>}
+   * @returns {Promise<Scout9ProjectBuildConfig>}
    */
   test: async function ({cwd = process.cwd(), src = './src', dest = '/tmp/project', mode = 'production'} = {}) {
     const logger = new ProgressLogger();
@@ -136,7 +136,7 @@ export const Scout9Platform = {
    * @param {string} [params.src='./src'] - the source directory
    * @param {string} [params.dest='/tmp/project'] - the destination directory
    * @param {'development' | 'production'} [params.mode='production'] - the build mode
-   * @returns {Promise<import('./runtime/client/config.js').IScout9ProjectBuildConfig>}
+   * @returns {Promise<Scout9ProjectBuildConfig>}
    */
   build: async function ({cwd = process.cwd(), src = './src', dest = '/tmp/project', mode = 'production'} = {}) {
     const logger = new ProgressLogger();
@@ -168,7 +168,7 @@ export const Scout9Platform = {
    * @param {string} [params.cwd=process.cwd()] - the working directory
    * @param {boolean} [params.local=false] - whether to only load the local config (ignores what's saved on server)
    * @param {string} [params.src='./src'] - the source directory
-   * @returns {Promise<import('./runtime/client/config.js').IScout9ProjectBuildConfig>}
+   * @returns {Promise<Scout9ProjectBuildConfig>}
    */
   config: async function ({cwd = process.cwd(), local = false, src = './src'} = {}) {
     try {
@@ -188,13 +188,13 @@ export const Scout9Platform = {
 
   /**
    * Runs the project in a container
-   * @param {import('./runtime/client/workflow.js').IWorkflowEvent} event - every workflow receives an event object
+   * @param {WorkflowEvent} event - every workflow receives an event object
    * @param {Object} options
    * @param {string} [options.cwd=process.cwd()] - the working directory
    * @param {string} [options.mode='production'] - the build mode
    * @param {string} [options.src='./src'] - the source directory
    * @param {string} options.eventSource - the source of the workflow event
-   * @returns {Promise<import('./runtime/client/workflow.js').IWorkflowResponse>}
+   * @returns {WorkflowResponse}
    */
   run: async function (
     event,

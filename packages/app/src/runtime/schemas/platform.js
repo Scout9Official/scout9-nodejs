@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { eventResponseSchema, EventResponse } from './api.js';
+import { eventResponseSchema } from './api.js';
 
 
 /**

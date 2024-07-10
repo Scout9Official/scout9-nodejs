@@ -1,10 +1,10 @@
 import { globSync } from 'glob';
 import path from 'node:path';
 import {
-  entitiesRootProjectConfigurationSchema,
-  entityApiConfigurationSchema,
-  entityConfigurationSchema,
-  entityRootProjectConfigurationSchema
+  EntitiesRootProjectConfigurationSchema,
+  EntityApiConfigurationSchema,
+  EntityConfigurationSchema,
+  EntityRootProjectConfigurationSchema
 } from '../../runtime/index.js';
 import { checkVariableType, requireOptionalProjectFile, requireProjectFile } from '../module.js';
 
@@ -22,7 +22,7 @@ async function loadEntityApiConfig(cwd, filePath) {
         config[key] = true;
       }
     }
-    entityApiConfigurationSchema.parse(config);
+    EntityApiConfigurationSchema.parse(config);
     return config;
   } else {
     return null;
@@ -83,7 +83,7 @@ export default async function loadEntitiesConfig(
       }
 
       // Validate entity configuration
-      const result = entityConfigurationSchema.safeParse(entityConfig, {path: ['entities', config.length]});
+      const result = EntityConfigurationSchema.safeParse(entityConfig, {path: ['entities', config.length]});
       if (!result.success) {
         result.error.source = filePath;
         throw result.error;
@@ -100,7 +100,7 @@ export default async function loadEntitiesConfig(
       entities: parents.reverse(),
       api
     };
-    entityRootProjectConfigurationSchema.parse(entityProjectConfig);
+    EntityRootProjectConfigurationSchema.parse(entityProjectConfig);
     const existingIndex = config.findIndex(c => c.entity === entityProjectConfig.entity);
     if (existingIndex > -1) {
       if (config[existingIndex].entities.length !== entityProjectConfig.entities.length) {
@@ -138,7 +138,7 @@ export default async function loadEntitiesConfig(
   // }
 
   // Validate the config
-  entitiesRootProjectConfigurationSchema.parse(config);
+  EntitiesRootProjectConfigurationSchema.parse(config);
 
   return config;
 }
