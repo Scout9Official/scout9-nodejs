@@ -52,7 +52,6 @@ export const Scout9Platform = {
    * @param {string} [params.cwd=process.cwd()] - the working directory
    * @param {string} [params.src='./src'] - the source directory
    * @param {string} [params.dest='/tmp/project'] - the destination directory
-   * @param {'development' | 'production'} [params.mode='production'] - the build mode
    * @param {boolean} [params.sync=true] - whether to sync the project after deploying
    * @returns {Promise<Scout9ProjectBuildConfig>}
    */
@@ -61,7 +60,6 @@ export const Scout9Platform = {
       cwd = process.cwd(),
       src = './src',
       dest = '/tmp/project',
-      mode = 'production',
       sync = true
     } = {}
   ) {

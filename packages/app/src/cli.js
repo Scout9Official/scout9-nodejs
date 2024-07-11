@@ -84,7 +84,6 @@ prog
 prog
     .command('deploy')
     .describe('Deploy your scout9 app')
-    .option('--mode', 'Specify a mode for loading environment variables', 'production')
     .option('--src', 'Project source code folder', 'src')
     .option('--sync, -s', 'Syncs project after deploying (overwriting code)', true)
     .option('--dest', 'Project local destination', './build')
