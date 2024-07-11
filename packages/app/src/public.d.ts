@@ -4,7 +4,7 @@
  * Application platform for managing auto reply workflows from personal communication methods
  *
  *
- * NOTE: This file was auto generated 7/10/2024, 2:36:59 PM
+ * NOTE: This file was auto generated 7/10/2024, 3:30:35 PM
  * Do not edit the file manually.
  */
 
@@ -491,6 +491,21 @@ export type ContextExampleWithTrainingData = {
     }[];
 };
 
+export type ConversationAnticipate = {
+    /** Determines the runtime to address the next response */
+    type: "did" | "literal" | "context";
+    slots: {
+        [x: string]: any[];
+    };
+    /** For type 'did' */
+    did?: string | undefined;
+    /** For literal keywords, this map helps point which slot the keyword matches to */
+    map?: {
+        slot: string;
+        keywords: string[];
+    }[] | undefined;
+};
+
 export type ConversationContext = {
     [x: string]: any;
 };
@@ -524,6 +539,20 @@ export type Conversation = {
     intent?: (string | undefined) | null;
     /** Confidence score of the assigned intent */
     intentScore?: (number | undefined) | null;
+    anticipate?: {
+        /** Determines the runtime to address the next response */
+        type: "did" | "literal" | "context";
+        slots: {
+            [x: string]: any[];
+        };
+        /** For type 'did' */
+        did?: string | undefined;
+        /** For literal keywords, this map helps point which slot the keyword matches to */
+        map?: {
+            slot: string;
+            keywords: string[];
+        }[] | undefined;
+    } | undefined;
 };
 
 export type Customer = {
@@ -1243,6 +1272,20 @@ export type WorkflowEvent = {
         intent?: (string | undefined) | null;
         /** Confidence score of the assigned intent */
         intentScore?: (number | undefined) | null;
+        anticipate?: {
+            /** Determines the runtime to address the next response */
+            type: "did" | "literal" | "context";
+            slots: {
+                [x: string]: any[];
+            };
+            /** For type 'did' */
+            did?: string | undefined;
+            /** For literal keywords, this map helps point which slot the keyword matches to */
+            map?: {
+                slot: string;
+                keywords: string[];
+            }[] | undefined;
+        } | undefined;
     };
     context?: any;
     message: {
@@ -1373,6 +1416,20 @@ export type WorkflowFunction = (args_0: {
         intent?: (string | undefined) | null;
         /** Confidence score of the assigned intent */
         intentScore?: (number | undefined) | null;
+        anticipate?: {
+            /** Determines the runtime to address the next response */
+            type: "did" | "literal" | "context";
+            slots: {
+                [x: string]: any[];
+            };
+            /** For type 'did' */
+            did?: string | undefined;
+            /** For literal keywords, this map helps point which slot the keyword matches to */
+            map?: {
+                slot: string;
+                keywords: string[];
+            }[] | undefined;
+        } | undefined;
     };
     context?: any;
     message: {

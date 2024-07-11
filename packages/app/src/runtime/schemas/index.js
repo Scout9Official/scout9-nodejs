@@ -5,5 +5,6 @@ export * from './entity.js';
 export * from './message.js';
 export * from './workflow.js';
 export * from './platform.js';
+export * from './conversation.js';
 export * from './macros.js';
 

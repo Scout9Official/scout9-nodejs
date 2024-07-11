@@ -94,6 +94,7 @@
  * @property {Change<Array<import('@scout9/app').Message>>} messages
  * @property {Change<any>} context
  * @property {Change<import('@scout9/app').Message>} message
+ * @property {Array<import('@scout9/app').Followup>} followup
  */
 export const Spirits = {
 
@@ -118,6 +119,7 @@ export const Spirits = {
       conversation: conversationBefore
     } = input;
     let {conversation, messages, context, message} = input;
+    const followup = [];
 
     // 0. Setup Helpers
     const updateConversation = (previousConversation, conversationUpdates) => {
@@ -360,8 +362,49 @@ export const Spirits = {
       scheduled,
       resetIntent,
       secondsDelay,
-      contextUpsert
+      contextUpsert,
+      anticipate,
+      followup: slotFollowup,
     } of slots) {
+
+      // Anticipate customer response
+      if (anticipate) {
+        if (Array.isArray(anticipate)) {
+          // 'literal' anticipation
+          const slots = {};
+          const map = [];
+          for (let i = 0; i < anticipate.length; i++) {
+            const {keywords, ..._slot} = anticipate[i];
+            const slotId = `${i}`;
+            slots[slotId] = _slot;
+            map.push({
+              slot: slotId,
+              keywords
+            });
+          }
+          updateConversation(conversation, {
+            type: 'literal',
+            slots,
+            map
+          });
+        } else if ('yes' in anticipate && 'no' in anticipate && 'did' in anticipate) {
+          // "did" anticipation
+          updateConversation(conversation, {
+            type: 'did',
+            slots: {
+              yes: anticipate.yes,
+              no: anticipate.no
+            },
+            did: anticipate.did,
+          });
+        } else {
+          throw new Error(`Invalid anticipate payload "${JSON.stringify(anticipate)}"`);
+        }
+      }
+
+      if (slotFollowup) {
+        followup.push(slotFollowup);
+      }
 
       // Forward to agent or other agent
       if (forward) {
@@ -564,7 +607,8 @@ export const Spirits = {
       context: {
         before: contextBefore,
         after: context
-      }
+      },
+      followup
     };
   }
 };

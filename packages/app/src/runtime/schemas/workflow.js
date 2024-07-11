@@ -4,67 +4,8 @@ import { z } from 'zod';
 import { zId } from './utils.js';
 import { AgentConfigurationSchema, CustomerSchema } from './users.js';
 import { MessageSchema } from './message.js';
+import { ConversationSchema, ConversationContext } from './conversation.js';
 
-
-export const WorkflowConfigurationSchema = z.object({
-  entities: z.array(
-    zId('Workflow Folder', z.string()),
-    {description: 'Workflow id association, used to handle route params'}
-  )
-    .min(1, 'Must have at least 1 entity')
-    .max(15, 'Cannot have more than 15 entity paths'),
-  entity: zId('Workflow Folder', z.string())
-});
-
-export const WorkflowsConfigurationSchema = z.array(WorkflowConfigurationSchema);
-
-
-export const ConversationSchema = z.object({
-  $agent: zId('Conversation Agent ID', z.string({description: 'Default agent assigned to the conversation(s)'})),
-  $customer: zId('Conversation Customer ID', z.string({description: 'Customer this conversation is with'})),
-  initialContexts: z.array(z.string(), {description: 'Initial contexts to load when starting the conversation'})
-    .optional(),
-  environment: z.enum(['phone', 'email', 'web']),
-  environmentProps: z.object({
-    subject: z.string({description: 'HTML Subject of the conversation'}).optional(),
-    platformEmailThreadId: z.string({description: 'Used to sync email messages with the conversation'}).optional()
-  }).optional(),
-  locked: z.boolean({description: 'Whether the conversation is locked or not'}).optional().nullable(),
-  lockedReason: z.string({description: 'Why this conversation was locked'}).optional().nullable(),
-  lockAttempts: z.number({description: 'Number attempts made until conversation is locked'}).optional().nullable(),
-  forwardedTo: z.string({description: 'What personaId/phone/email was forwarded'}).optional().nullable(),
-  forwarded: z.string({description: 'Datetime ISO 8601 timestamp when persona was forwarded'}).optional().nullable(),
-  forwardNote: z.string().optional().nullable(),
-  intent: z.string({description: 'Detected intent of conversation'}).optional().nullable(),
-  intentScore: z.number({description: 'Confidence score of the assigned intent'}).optional().nullable()
-});
-
-export const IntentWorkflowEventSchema = z.object({
-  current: z.string().nullable(),
-  flow: z.array(z.string()),
-  initial: z.string().nullable()
-});
-
-export const WorkflowEventSchema = z.object({
-  messages: z.array(MessageSchema),
-  conversation: ConversationSchema,
-  context: z.any(),
-  message: MessageSchema,
-  agent: AgentConfigurationSchema.omit({
-    transcripts: true,
-    audios: true,
-    includedLocations: true,
-    excludedLocations: true,
-    model: true,
-    context: true
-  }),
-  customer: CustomerSchema,
-  intent: IntentWorkflowEventSchema,
-  stagnationCount: z.number(),
-  note: z.string({description: 'Any developer notes to provide'}).optional()
-});
-
-export const ConversationContext = z.record(z.string(), z.any());
 
 export const ForwardSchema = z.union([
   z.boolean(),
@@ -159,6 +100,44 @@ export const FollowupSchema = z.union([
     instructions: InstructionSchema
   })
 ]);
+
+
+export const WorkflowConfigurationSchema = z.object({
+  entities: z.array(
+    zId('Workflow Folder', z.string()),
+    {description: 'Workflow id association, used to handle route params'}
+  )
+    .min(1, 'Must have at least 1 entity')
+    .max(15, 'Cannot have more than 15 entity paths'),
+  entity: zId('Workflow Folder', z.string())
+});
+
+export const WorkflowsConfigurationSchema = z.array(WorkflowConfigurationSchema);
+
+export const IntentWorkflowEventSchema = z.object({
+  current: z.string().nullable(),
+  flow: z.array(z.string()),
+  initial: z.string().nullable()
+});
+
+export const WorkflowEventSchema = z.object({
+  messages: z.array(MessageSchema),
+  conversation: ConversationSchema,
+  context: z.any(),
+  message: MessageSchema,
+  agent: AgentConfigurationSchema.omit({
+    transcripts: true,
+    audios: true,
+    includedLocations: true,
+    excludedLocations: true,
+    model: true,
+    context: true
+  }),
+  customer: CustomerSchema,
+  intent: IntentWorkflowEventSchema,
+  stagnationCount: z.number(),
+  note: z.string({description: 'Any developer notes to provide'}).optional()
+});
 
 /**
  * The workflow response object slot

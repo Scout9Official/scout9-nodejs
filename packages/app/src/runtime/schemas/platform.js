@@ -8,8 +8,8 @@ import { eventResponseSchema } from './api.js';
  * @property {Record<string, string>} params
  */
 const apiFunctionParamsSchema = z.object({
-  searchParams: z.record(z.union([z.string(), z.array(z.string())])),
-  params: z.record(z.string())
+  searchParams: z.record(z.string(), z.union([z.string(), z.array(z.string())])),
+  params: z.record(z.string(), z.string())
 });
 
 /**
