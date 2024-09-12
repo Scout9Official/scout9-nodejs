@@ -1,5 +1,5 @@
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
-import { resolve, join, dirname, basename } from 'node:path';
+import { mkdirSync, readFileSync } from 'node:fs';
+import { basename, dirname, resolve } from 'node:path';
 import ts from 'typescript';
 import { fileURLToPath } from 'node:url';
 import { globSync } from 'glob';
@@ -110,5 +110,5 @@ export default async function generatePublicDts(outputFilePath) {
 
 }
 
-const outputFilePath = resolve(__dirname, '../src/public.d.ts');
+const outputFilePath = resolve(__dirname, '../src/public.temp.d.ts');
 await generatePublicDts(outputFilePath);

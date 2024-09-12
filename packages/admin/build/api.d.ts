@@ -387,17 +387,11 @@ export interface Config200ResponseAllOf {
  */
 export interface Context {
     /**
-     * The name of the context
+     * The id of the context
      * @type {string}
      * @memberof Context
      */
-    'name': string;
-    /**
-     * Whether or not the context is modifiable
-     * @type {boolean}
-     * @memberof Context
-     */
-    'modifiable'?: boolean;
+    'entity': string;
     /**
      * The description of the context
      * @type {string}
@@ -406,46 +400,47 @@ export interface Context {
     'description'?: string;
     /**
      *
-     * @type {ContextDetectionParams}
+     * @type {Array<ContextDefinitionsInner>}
      * @memberof Context
      */
-    'detection'?: ContextDetectionParams;
-    /**
-     * The API to use for context detection
-     * @type {string}
-     * @memberof Context
-     */
-    'detectionApi'?: string;
-    /**
-     * The ID column of the context
-     * @type {string}
-     * @memberof Context
-     */
-    'idColumn'?: string;
-    /**
-     * The columns of the context
-     * @type {Array<string>}
-     * @memberof Context
-     */
-    'columns'?: Array<string>;
-    /**
-     * The required columns of the context
-     * @type {Array<string>}
-     * @memberof Context
-     */
-    'requiredColumns'?: Array<string>;
-    /**
-     * Whether or not to force NER
-     * @type {boolean}
-     * @memberof Context
-     */
-    'forceNER'?: boolean;
+    'definitions': Array<ContextDefinitionsInner>;
     /**
      *
-     * @type {ContextModel}
+     * @type {Array<ContextTrainingInner>}
      * @memberof Context
      */
-    'model'?: ContextModel;
+    'training': Array<ContextTrainingInner>;
+    /**
+     *
+     * @type {Array<string>}
+     * @memberof Context
+     */
+    'entities'?: Array<string>;
+}
+/**
+ *
+ * @export
+ * @interface ContextDefinitionsInner
+ */
+export interface ContextDefinitionsInner {
+    /**
+     * Utterance category assignment for this definition (if none provided, defaults to entity value)
+     * @type {string}
+     * @memberof ContextDefinitionsInner
+     */
+    'utterance'?: string;
+    /**
+     * Unique value assigned to this utterance category
+     * @type {string}
+     * @memberof ContextDefinitionsInner
+     */
+    'value': string;
+    /**
+     *
+     * @type {Array<string>}
+     * @memberof ContextDefinitionsInner
+     */
+    'text': Array<string>;
 }
 /**
  *
@@ -506,37 +501,6 @@ export interface ContextDetectionEntity {
 /**
  *
  * @export
- * @interface ContextDetectionParams
- */
-export interface ContextDetectionParams {
-    /**
-     *
-     * @type {Array<ContextDetectionEntity>}
-     * @memberof ContextDetectionParams
-     */
-    'entities': Array<ContextDetectionEntity>;
-    /**
-     *
-     * @type {Array<ContextDetectionDocument>}
-     * @memberof ContextDetectionParams
-     */
-    'documents': Array<ContextDetectionDocument>;
-    /**
-     * The activation intent of the context
-     * @type {string}
-     * @memberof ContextDetectionParams
-     */
-    'activationIntent'?: string;
-    /**
-     *
-     * @type {Array<ContextDetectionTest>}
-     * @memberof ContextDetectionParams
-     */
-    'test'?: Array<ContextDetectionTest>;
-}
-/**
- *
- * @export
  * @interface ContextDetectionTest
  */
 export interface ContextDetectionTest {
@@ -577,25 +541,6 @@ export interface ContextDetectionTestExpected {
      * @memberof ContextDetectionTestExpected
      */
     'entities': Array<ParsedContextEntity>;
-}
-/**
- * The model to use for context detection
- * @export
- * @interface ContextModel
- */
-export interface ContextModel {
-    /**
-     * The last time the model was updated
-     * @type {string}
-     * @memberof ContextModel
-     */
-    'lastUpdate': string;
-    /**
-     * The reference to the model
-     * @type {string}
-     * @memberof ContextModel
-     */
-    'ref': string;
 }
 /**
  * @type ContextRowValue
@@ -665,6 +610,25 @@ export interface ContextTestResponse {
      * @memberof ContextTestResponse
      */
     'success': number;
+}
+/**
+ *
+ * @export
+ * @interface ContextTrainingInner
+ */
+export interface ContextTrainingInner {
+    /**
+     * The assigned intent associated with the training text
+     * @type {string}
+     * @memberof ContextTrainingInner
+     */
+    'intent': string;
+    /**
+     * The parameterized text to train definition values on
+     * @type {string}
+     * @memberof ContextTrainingInner
+     */
+    'text': string;
 }
 /**
  *
@@ -1562,17 +1526,11 @@ export interface CreateContextDataResponse {
  */
 export interface CreateContextRequest {
     /**
-     * The name of the context
+     * The id of the context
      * @type {string}
      * @memberof CreateContextRequest
      */
-    'name': string;
-    /**
-     * Whether or not the context is modifiable
-     * @type {boolean}
-     * @memberof CreateContextRequest
-     */
-    'modifiable'?: boolean;
+    'entity': string;
     /**
      * The description of the context
      * @type {string}
@@ -1581,46 +1539,22 @@ export interface CreateContextRequest {
     'description'?: string;
     /**
      *
-     * @type {ContextDetectionParams}
+     * @type {Array<ContextDefinitionsInner>}
      * @memberof CreateContextRequest
      */
-    'detection'?: ContextDetectionParams;
-    /**
-     * The API to use for context detection
-     * @type {string}
-     * @memberof CreateContextRequest
-     */
-    'detectionApi'?: string;
-    /**
-     * The ID column of the context
-     * @type {string}
-     * @memberof CreateContextRequest
-     */
-    'idColumn'?: string;
-    /**
-     * The columns of the context
-     * @type {Array<string>}
-     * @memberof CreateContextRequest
-     */
-    'columns'?: Array<string>;
-    /**
-     * The required columns of the context
-     * @type {Array<string>}
-     * @memberof CreateContextRequest
-     */
-    'requiredColumns'?: Array<string>;
-    /**
-     * Whether or not to force NER
-     * @type {boolean}
-     * @memberof CreateContextRequest
-     */
-    'forceNER'?: boolean;
+    'definitions': Array<ContextDefinitionsInner>;
     /**
      *
-     * @type {ContextModel}
+     * @type {Array<ContextTrainingInner>}
      * @memberof CreateContextRequest
      */
-    'model'?: ContextModel;
+    'training': Array<ContextTrainingInner>;
+    /**
+     *
+     * @type {Array<string>}
+     * @memberof CreateContextRequest
+     */
+    'entities'?: Array<string>;
 }
 /**
  * The response from creating a context
@@ -1667,17 +1601,11 @@ export interface CreateContextsRequest {
  */
 export interface CreateContextsRequestContextsInner {
     /**
-     * The name of the context
+     * The id of the context
      * @type {string}
      * @memberof CreateContextsRequestContextsInner
      */
-    'name': string;
-    /**
-     * Whether or not the context is modifiable
-     * @type {boolean}
-     * @memberof CreateContextsRequestContextsInner
-     */
-    'modifiable'?: boolean;
+    'entity': string;
     /**
      * The description of the context
      * @type {string}
@@ -1686,46 +1614,22 @@ export interface CreateContextsRequestContextsInner {
     'description'?: string;
     /**
      *
-     * @type {ContextDetectionParams}
+     * @type {Array<ContextDefinitionsInner>}
      * @memberof CreateContextsRequestContextsInner
      */
-    'detection'?: ContextDetectionParams;
-    /**
-     * The API to use for context detection
-     * @type {string}
-     * @memberof CreateContextsRequestContextsInner
-     */
-    'detectionApi'?: string;
-    /**
-     * The ID column of the context
-     * @type {string}
-     * @memberof CreateContextsRequestContextsInner
-     */
-    'idColumn'?: string;
-    /**
-     * The columns of the context
-     * @type {Array<string>}
-     * @memberof CreateContextsRequestContextsInner
-     */
-    'columns'?: Array<string>;
-    /**
-     * The required columns of the context
-     * @type {Array<string>}
-     * @memberof CreateContextsRequestContextsInner
-     */
-    'requiredColumns'?: Array<string>;
-    /**
-     * Whether or not to force NER
-     * @type {boolean}
-     * @memberof CreateContextsRequestContextsInner
-     */
-    'forceNER'?: boolean;
+    'definitions': Array<ContextDefinitionsInner>;
     /**
      *
-     * @type {ContextModel}
+     * @type {Array<ContextTrainingInner>}
      * @memberof CreateContextsRequestContextsInner
      */
-    'model'?: ContextModel;
+    'training': Array<ContextTrainingInner>;
+    /**
+     *
+     * @type {Array<string>}
+     * @memberof CreateContextsRequestContextsInner
+     */
+    'entities'?: Array<string>;
 }
 /**
  *
@@ -1892,197 +1796,6 @@ export interface CreateFileRequestWithStringPurpose {
      * @memberof CreateFileRequestWithStringPurpose
      */
     'entity': string;
-}
-/**
- *
- * @export
- * @interface CreateWorkflowRequest
- */
-export interface CreateWorkflowRequest {
-    /**
-     *
-     * @type {PurposeEnum}
-     * @memberof CreateWorkflowRequest
-     */
-    'purpose'?: PurposeEnum;
-    /**
-     * The name of the workflow
-     * @type {string}
-     * @memberof CreateWorkflowRequest
-     */
-    'name': string;
-    /**
-     *
-     * @type {ContextDetectionParams}
-     * @memberof CreateWorkflowRequest
-     */
-    'initiators': ContextDetectionParams;
-    /**
-     * The fields of the workflow
-     * @type {Array<ConversationContextField>}
-     * @memberof CreateWorkflowRequest
-     */
-    'fields': Array<ConversationContextField>;
-    /**
-     * About this conversation - used as initial context
-     * @type {string}
-     * @memberof CreateWorkflowRequest
-     */
-    'context': string;
-    /**
-     * The webhook to call when a workflow is created
-     * @type {string}
-     * @memberof CreateWorkflowRequest
-     */
-    'onCreated'?: string;
-    /**
-     * The webhook to call when a workflow is updated
-     * @type {string}
-     * @memberof CreateWorkflowRequest
-     */
-    'onUpdated'?: string;
-    /**
-     * The webhook to call when a workflow is deleted
-     * @type {string}
-     * @memberof CreateWorkflowRequest
-     */
-    'onDeleted'?: string;
-    /**
-     * The webhook to call when a workflow has an error
-     * @type {string}
-     * @memberof CreateWorkflowRequest
-     */
-    'onError'?: string;
-    /**
-     * The priority of the workflow in relation to other workflows (determines activation order)
-     * @type {number}
-     * @memberof CreateWorkflowRequest
-     */
-    'priority': number;
-}
-/**
- *
- * @export
- * @interface CreateWorkflowResponse
- */
-export interface CreateWorkflowResponse {
-    /**
-     *
-     * @type {boolean}
-     * @memberof CreateWorkflowResponse
-     */
-    'success': boolean;
-    /**
-     *
-     * @type {Error}
-     * @memberof CreateWorkflowResponse
-     */
-    'error'?: Error;
-    /**
-     * The id of the document that was created, updated, or deleted
-     * @type {string}
-     * @memberof CreateWorkflowResponse
-     */
-    'id': string;
-}
-/**
- *
- * @export
- * @interface CreateWorkflowsRequest
- */
-export interface CreateWorkflowsRequest {
-    /**
-     *
-     * @type {Array<CreateWorkflowsRequestWorkflowsInner>}
-     * @memberof CreateWorkflowsRequest
-     */
-    'workflows'?: Array<CreateWorkflowsRequestWorkflowsInner>;
-}
-/**
- *
- * @export
- * @interface CreateWorkflowsRequestWorkflowsInner
- */
-export interface CreateWorkflowsRequestWorkflowsInner {
-    /**
-     *
-     * @type {PurposeEnum}
-     * @memberof CreateWorkflowsRequestWorkflowsInner
-     */
-    'purpose'?: PurposeEnum;
-    /**
-     * The name of the workflow
-     * @type {string}
-     * @memberof CreateWorkflowsRequestWorkflowsInner
-     */
-    'name': string;
-    /**
-     *
-     * @type {ContextDetectionParams}
-     * @memberof CreateWorkflowsRequestWorkflowsInner
-     */
-    'initiators': ContextDetectionParams;
-    /**
-     * The fields of the workflow
-     * @type {Array<ConversationContextField>}
-     * @memberof CreateWorkflowsRequestWorkflowsInner
-     */
-    'fields': Array<ConversationContextField>;
-    /**
-     * About this conversation - used as initial context
-     * @type {string}
-     * @memberof CreateWorkflowsRequestWorkflowsInner
-     */
-    'context': string;
-    /**
-     * The webhook to call when a workflow is created
-     * @type {string}
-     * @memberof CreateWorkflowsRequestWorkflowsInner
-     */
-    'onCreated'?: string;
-    /**
-     * The webhook to call when a workflow is updated
-     * @type {string}
-     * @memberof CreateWorkflowsRequestWorkflowsInner
-     */
-    'onUpdated'?: string;
-    /**
-     * The webhook to call when a workflow is deleted
-     * @type {string}
-     * @memberof CreateWorkflowsRequestWorkflowsInner
-     */
-    'onDeleted'?: string;
-    /**
-     * The webhook to call when a workflow has an error
-     * @type {string}
-     * @memberof CreateWorkflowsRequestWorkflowsInner
-     */
-    'onError'?: string;
-    /**
-     * The priority of the workflow in relation to other workflows (determines activation order)
-     * @type {number}
-     * @memberof CreateWorkflowsRequestWorkflowsInner
-     */
-    'priority': number;
-}
-/**
- *
- * @export
- * @interface CreateWorkflowsResponse
- */
-export interface CreateWorkflowsResponse {
-    /**
-     * ISO 8601 datetime string of when the operation was queued
-     * @type {string}
-     * @memberof CreateWorkflowsResponse
-     */
-    'queued': string;
-    /**
-     * The operation id to view the operation end results
-     * @type {string}
-     * @memberof CreateWorkflowsResponse
-     */
-    '$operation': string;
 }
 /**
  * Represents a customer for your business or organization
@@ -2506,50 +2219,6 @@ export interface DeleteFileResponse {
      * @memberof DeleteFileResponse
      */
     'deleted': boolean;
-}
-/**
- *
- * @export
- * @interface DeleteWorkflowResponse
- */
-export interface DeleteWorkflowResponse {
-    /**
-     *
-     * @type {boolean}
-     * @memberof DeleteWorkflowResponse
-     */
-    'success': boolean;
-    /**
-     *
-     * @type {Error}
-     * @memberof DeleteWorkflowResponse
-     */
-    'error'?: Error;
-    /**
-     * The id of the document that was created, updated, or deleted
-     * @type {string}
-     * @memberof DeleteWorkflowResponse
-     */
-    'id': string;
-}
-/**
- *
- * @export
- * @interface DeleteWorkflowsResponse
- */
-export interface DeleteWorkflowsResponse {
-    /**
-     * ISO 8601 datetime string of when the operation was queued
-     * @type {string}
-     * @memberof DeleteWorkflowsResponse
-     */
-    'queued': string;
-    /**
-     * The operation id to view the operation end results
-     * @type {string}
-     * @memberof DeleteWorkflowsResponse
-     */
-    '$operation': string;
 }
 /**
  *
@@ -3282,17 +2951,11 @@ export interface GetContextDataResponse {
  */
 export interface GetContextResponse {
     /**
-     * The name of the context
+     * The id of the context
      * @type {string}
      * @memberof GetContextResponse
      */
-    'name': string;
-    /**
-     * Whether or not the context is modifiable
-     * @type {boolean}
-     * @memberof GetContextResponse
-     */
-    'modifiable'?: boolean;
+    'entity': string;
     /**
      * The description of the context
      * @type {string}
@@ -3301,46 +2964,22 @@ export interface GetContextResponse {
     'description'?: string;
     /**
      *
-     * @type {ContextDetectionParams}
+     * @type {Array<ContextDefinitionsInner>}
      * @memberof GetContextResponse
      */
-    'detection'?: ContextDetectionParams;
-    /**
-     * The API to use for context detection
-     * @type {string}
-     * @memberof GetContextResponse
-     */
-    'detectionApi'?: string;
-    /**
-     * The ID column of the context
-     * @type {string}
-     * @memberof GetContextResponse
-     */
-    'idColumn'?: string;
-    /**
-     * The columns of the context
-     * @type {Array<string>}
-     * @memberof GetContextResponse
-     */
-    'columns'?: Array<string>;
-    /**
-     * The required columns of the context
-     * @type {Array<string>}
-     * @memberof GetContextResponse
-     */
-    'requiredColumns'?: Array<string>;
-    /**
-     * Whether or not to force NER
-     * @type {boolean}
-     * @memberof GetContextResponse
-     */
-    'forceNER'?: boolean;
+    'definitions': Array<ContextDefinitionsInner>;
     /**
      *
-     * @type {ContextModel}
+     * @type {Array<ContextTrainingInner>}
      * @memberof GetContextResponse
      */
-    'model'?: ContextModel;
+    'training': Array<ContextTrainingInner>;
+    /**
+     *
+     * @type {Array<string>}
+     * @memberof GetContextResponse
+     */
+    'entities'?: Array<string>;
     /**
      * The ID of the context
      * @type {string}
@@ -3562,92 +3201,6 @@ export interface GetCustomerResponseAllOf {
 /**
  *
  * @export
- * @interface GetWorkflowResponse
- */
-export interface GetWorkflowResponse {
-    /**
-     *
-     * @type {PurposeEnum}
-     * @memberof GetWorkflowResponse
-     */
-    'purpose'?: PurposeEnum;
-    /**
-     * The name of the workflow
-     * @type {string}
-     * @memberof GetWorkflowResponse
-     */
-    'name': string;
-    /**
-     *
-     * @type {ContextDetectionParams}
-     * @memberof GetWorkflowResponse
-     */
-    'initiators': ContextDetectionParams;
-    /**
-     * The fields of the workflow
-     * @type {Array<ConversationContextField>}
-     * @memberof GetWorkflowResponse
-     */
-    'fields': Array<ConversationContextField>;
-    /**
-     * About this conversation - used as initial context
-     * @type {string}
-     * @memberof GetWorkflowResponse
-     */
-    'context': string;
-    /**
-     * The webhook to call when a workflow is created
-     * @type {string}
-     * @memberof GetWorkflowResponse
-     */
-    'onCreated'?: string;
-    /**
-     * The webhook to call when a workflow is updated
-     * @type {string}
-     * @memberof GetWorkflowResponse
-     */
-    'onUpdated'?: string;
-    /**
-     * The webhook to call when a workflow is deleted
-     * @type {string}
-     * @memberof GetWorkflowResponse
-     */
-    'onDeleted'?: string;
-    /**
-     * The webhook to call when a workflow has an error
-     * @type {string}
-     * @memberof GetWorkflowResponse
-     */
-    'onError'?: string;
-    /**
-     * The priority of the workflow in relation to other workflows (determines activation order)
-     * @type {number}
-     * @memberof GetWorkflowResponse
-     */
-    'priority': number;
-    /**
-     * The ID of the workflow
-     * @type {string}
-     * @memberof GetWorkflowResponse
-     */
-    '$id': string;
-}
-/**
- *
- * @export
- * @interface GetWorkflowResponseAllOf
- */
-export interface GetWorkflowResponseAllOf {
-    /**
-     * The ID of the workflow
-     * @type {string}
-     * @memberof GetWorkflowResponseAllOf
-     */
-    '$id': string;
-}
-/**
- *
- * @export
  * @interface Instruction
  */
 export interface Instruction {
@@ -3817,17 +3370,11 @@ export interface ListApiOperationsResponseInnerAllOf {
  */
 export interface ListContextsResponseInner {
     /**
-     * The name of the context
+     * The id of the context
      * @type {string}
      * @memberof ListContextsResponseInner
      */
-    'name': string;
-    /**
-     * Whether or not the context is modifiable
-     * @type {boolean}
-     * @memberof ListContextsResponseInner
-     */
-    'modifiable'?: boolean;
+    'entity': string;
     /**
      * The description of the context
      * @type {string}
@@ -3836,46 +3383,22 @@ export interface ListContextsResponseInner {
     'description'?: string;
     /**
      *
-     * @type {ContextDetectionParams}
+     * @type {Array<ContextDefinitionsInner>}
      * @memberof ListContextsResponseInner
      */
-    'detection'?: ContextDetectionParams;
-    /**
-     * The API to use for context detection
-     * @type {string}
-     * @memberof ListContextsResponseInner
-     */
-    'detectionApi'?: string;
-    /**
-     * The ID column of the context
-     * @type {string}
-     * @memberof ListContextsResponseInner
-     */
-    'idColumn'?: string;
-    /**
-     * The columns of the context
-     * @type {Array<string>}
-     * @memberof ListContextsResponseInner
-     */
-    'columns'?: Array<string>;
-    /**
-     * The required columns of the context
-     * @type {Array<string>}
-     * @memberof ListContextsResponseInner
-     */
-    'requiredColumns'?: Array<string>;
-    /**
-     * Whether or not to force NER
-     * @type {boolean}
-     * @memberof ListContextsResponseInner
-     */
-    'forceNER'?: boolean;
+    'definitions': Array<ContextDefinitionsInner>;
     /**
      *
-     * @type {ContextModel}
+     * @type {Array<ContextTrainingInner>}
      * @memberof ListContextsResponseInner
      */
-    'model'?: ContextModel;
+    'training': Array<ContextTrainingInner>;
+    /**
+     *
+     * @type {Array<string>}
+     * @memberof ListContextsResponseInner
+     */
+    'entities'?: Array<string>;
     /**
      * The ID of the context
      * @type {string}
@@ -4247,92 +3770,6 @@ export interface ListQueryOperationsInner {
      * @memberof ListQueryOperationsInner
      */
     'value': AnyValue;
-}
-/**
- *
- * @export
- * @interface ListWorkflowsResponseInner
- */
-export interface ListWorkflowsResponseInner {
-    /**
-     *
-     * @type {PurposeEnum}
-     * @memberof ListWorkflowsResponseInner
-     */
-    'purpose'?: PurposeEnum;
-    /**
-     * The name of the workflow
-     * @type {string}
-     * @memberof ListWorkflowsResponseInner
-     */
-    'name': string;
-    /**
-     *
-     * @type {ContextDetectionParams}
-     * @memberof ListWorkflowsResponseInner
-     */
-    'initiators': ContextDetectionParams;
-    /**
-     * The fields of the workflow
-     * @type {Array<ConversationContextField>}
-     * @memberof ListWorkflowsResponseInner
-     */
-    'fields': Array<ConversationContextField>;
-    /**
-     * About this conversation - used as initial context
-     * @type {string}
-     * @memberof ListWorkflowsResponseInner
-     */
-    'context': string;
-    /**
-     * The webhook to call when a workflow is created
-     * @type {string}
-     * @memberof ListWorkflowsResponseInner
-     */
-    'onCreated'?: string;
-    /**
-     * The webhook to call when a workflow is updated
-     * @type {string}
-     * @memberof ListWorkflowsResponseInner
-     */
-    'onUpdated'?: string;
-    /**
-     * The webhook to call when a workflow is deleted
-     * @type {string}
-     * @memberof ListWorkflowsResponseInner
-     */
-    'onDeleted'?: string;
-    /**
-     * The webhook to call when a workflow has an error
-     * @type {string}
-     * @memberof ListWorkflowsResponseInner
-     */
-    'onError'?: string;
-    /**
-     * The priority of the workflow in relation to other workflows (determines activation order)
-     * @type {number}
-     * @memberof ListWorkflowsResponseInner
-     */
-    'priority': number;
-    /**
-     * The ID of the workflow
-     * @type {string}
-     * @memberof ListWorkflowsResponseInner
-     */
-    '$id': string;
-}
-/**
- *
- * @export
- * @interface ListWorkflowsResponseInnerAllOf
- */
-export interface ListWorkflowsResponseInnerAllOf {
-    /**
-     * The ID of the workflow
-     * @type {string}
-     * @memberof ListWorkflowsResponseInnerAllOf
-     */
-    '$id': string;
 }
 /**
  * @type LlmConfig
@@ -6460,17 +5897,11 @@ export interface UpdateContextDataResponse {
  */
 export interface UpdateContextRequest {
     /**
-     * The name of the context
+     * The id of the context
      * @type {string}
      * @memberof UpdateContextRequest
      */
-    'name': string;
-    /**
-     * Whether or not the context is modifiable
-     * @type {boolean}
-     * @memberof UpdateContextRequest
-     */
-    'modifiable'?: boolean;
+    'entity': string;
     /**
      * The description of the context
      * @type {string}
@@ -6479,46 +5910,22 @@ export interface UpdateContextRequest {
     'description'?: string;
     /**
      *
-     * @type {ContextDetectionParams}
+     * @type {Array<ContextDefinitionsInner>}
      * @memberof UpdateContextRequest
      */
-    'detection'?: ContextDetectionParams;
-    /**
-     * The API to use for context detection
-     * @type {string}
-     * @memberof UpdateContextRequest
-     */
-    'detectionApi'?: string;
-    /**
-     * The ID column of the context
-     * @type {string}
-     * @memberof UpdateContextRequest
-     */
-    'idColumn'?: string;
-    /**
-     * The columns of the context
-     * @type {Array<string>}
-     * @memberof UpdateContextRequest
-     */
-    'columns'?: Array<string>;
-    /**
-     * The required columns of the context
-     * @type {Array<string>}
-     * @memberof UpdateContextRequest
-     */
-    'requiredColumns'?: Array<string>;
-    /**
-     * Whether or not to force NER
-     * @type {boolean}
-     * @memberof UpdateContextRequest
-     */
-    'forceNER'?: boolean;
+    'definitions': Array<ContextDefinitionsInner>;
     /**
      *
-     * @type {ContextModel}
+     * @type {Array<ContextTrainingInner>}
      * @memberof UpdateContextRequest
      */
-    'model'?: ContextModel;
+    'training': Array<ContextTrainingInner>;
+    /**
+     *
+     * @type {Array<string>}
+     * @memberof UpdateContextRequest
+     */
+    'entities'?: Array<string>;
     /**
      * The ID of the context to update
      * @type {string}
@@ -6886,216 +6293,6 @@ export interface UpdateCustomersResponse {
 /**
  *
  * @export
- * @interface UpdateWorkflowRequest
- */
-export interface UpdateWorkflowRequest {
-    /**
-     * The ID of the workflow to update
-     * @type {string}
-     * @memberof UpdateWorkflowRequest
-     */
-    '$id': string;
-    /**
-     *
-     * @type {PurposeEnum}
-     * @memberof UpdateWorkflowRequest
-     */
-    'purpose'?: PurposeEnum;
-    /**
-     * The name of the workflow
-     * @type {string}
-     * @memberof UpdateWorkflowRequest
-     */
-    'name'?: string;
-    /**
-     *
-     * @type {ContextDetectionParams}
-     * @memberof UpdateWorkflowRequest
-     */
-    'initiators'?: ContextDetectionParams;
-    /**
-     * The fields of the workflow
-     * @type {Array<ConversationContextField>}
-     * @memberof UpdateWorkflowRequest
-     */
-    'fields'?: Array<ConversationContextField>;
-    /**
-     * About this conversation - used as initial context
-     * @type {string}
-     * @memberof UpdateWorkflowRequest
-     */
-    'context'?: string;
-    /**
-     * The webhook to call when a workflow is created
-     * @type {string}
-     * @memberof UpdateWorkflowRequest
-     */
-    'onCreated'?: string;
-    /**
-     * The webhook to call when a workflow is updated
-     * @type {string}
-     * @memberof UpdateWorkflowRequest
-     */
-    'onUpdated'?: string;
-    /**
-     * The webhook to call when a workflow is deleted
-     * @type {string}
-     * @memberof UpdateWorkflowRequest
-     */
-    'onDeleted'?: string;
-    /**
-     * The webhook to call when a workflow has an error
-     * @type {string}
-     * @memberof UpdateWorkflowRequest
-     */
-    'onError'?: string;
-    /**
-     * The priority of the workflow in relation to other workflows (determines activation order)
-     * @type {number}
-     * @memberof UpdateWorkflowRequest
-     */
-    'priority'?: number;
-}
-/**
- *
- * @export
- * @interface UpdateWorkflowRequestAllOf
- */
-export interface UpdateWorkflowRequestAllOf {
-    /**
-     * The ID of the workflow to update
-     * @type {string}
-     * @memberof UpdateWorkflowRequestAllOf
-     */
-    '$id': string;
-}
-/**
- *
- * @export
- * @interface UpdateWorkflowResponse
- */
-export interface UpdateWorkflowResponse {
-    /**
-     *
-     * @type {boolean}
-     * @memberof UpdateWorkflowResponse
-     */
-    'success': boolean;
-    /**
-     *
-     * @type {Error}
-     * @memberof UpdateWorkflowResponse
-     */
-    'error'?: Error;
-    /**
-     * The id of the document that was created, updated, or deleted
-     * @type {string}
-     * @memberof UpdateWorkflowResponse
-     */
-    'id': string;
-}
-/**
- *
- * @export
- * @interface UpdateWorkflowsRequest
- */
-export interface UpdateWorkflowsRequest {
-    /**
-     *
-     * @type {Array<ListWorkflowsResponseInner>}
-     * @memberof UpdateWorkflowsRequest
-     */
-    'workflows'?: Array<ListWorkflowsResponseInner>;
-}
-/**
- *
- * @export
- * @interface UpdateWorkflowsResponse
- */
-export interface UpdateWorkflowsResponse {
-    /**
-     * ISO 8601 datetime string of when the operation was queued
-     * @type {string}
-     * @memberof UpdateWorkflowsResponse
-     */
-    'queued': string;
-    /**
-     * The operation id to view the operation end results
-     * @type {string}
-     * @memberof UpdateWorkflowsResponse
-     */
-    '$operation': string;
-}
-/**
- *
- * @export
- * @interface Workflow
- */
-export interface Workflow {
-    /**
-     *
-     * @type {PurposeEnum}
-     * @memberof Workflow
-     */
-    'purpose'?: PurposeEnum;
-    /**
-     * The name of the workflow
-     * @type {string}
-     * @memberof Workflow
-     */
-    'name': string;
-    /**
-     *
-     * @type {ContextDetectionParams}
-     * @memberof Workflow
-     */
-    'initiators': ContextDetectionParams;
-    /**
-     * The fields of the workflow
-     * @type {Array<ConversationContextField>}
-     * @memberof Workflow
-     */
-    'fields': Array<ConversationContextField>;
-    /**
-     * About this conversation - used as initial context
-     * @type {string}
-     * @memberof Workflow
-     */
-    'context': string;
-    /**
-     * The webhook to call when a workflow is created
-     * @type {string}
-     * @memberof Workflow
-     */
-    'onCreated'?: string;
-    /**
-     * The webhook to call when a workflow is updated
-     * @type {string}
-     * @memberof Workflow
-     */
-    'onUpdated'?: string;
-    /**
-     * The webhook to call when a workflow is deleted
-     * @type {string}
-     * @memberof Workflow
-     */
-    'onDeleted'?: string;
-    /**
-     * The webhook to call when a workflow has an error
-     * @type {string}
-     * @memberof Workflow
-     */
-    'onError'?: string;
-    /**
-     * The priority of the workflow in relation to other workflows (determines activation order)
-     * @type {number}
-     * @memberof Workflow
-     */
-    'priority': number;
-}
-/**
- *
- * @export
  * @interface WorkflowEvent
  */
 export interface WorkflowEvent {
@@ -7149,73 +6346,6 @@ export interface WorkflowEvent {
      * @memberof WorkflowEvent
      */
     'stagnationCount': number;
-}
-/**
- *
- * @export
- * @interface WorkflowPartial
- */
-export interface WorkflowPartial {
-    /**
-     *
-     * @type {PurposeEnum}
-     * @memberof WorkflowPartial
-     */
-    'purpose'?: PurposeEnum;
-    /**
-     * The name of the workflow
-     * @type {string}
-     * @memberof WorkflowPartial
-     */
-    'name'?: string;
-    /**
-     *
-     * @type {ContextDetectionParams}
-     * @memberof WorkflowPartial
-     */
-    'initiators'?: ContextDetectionParams;
-    /**
-     * The fields of the workflow
-     * @type {Array<ConversationContextField>}
-     * @memberof WorkflowPartial
-     */
-    'fields'?: Array<ConversationContextField>;
-    /**
-     * About this conversation - used as initial context
-     * @type {string}
-     * @memberof WorkflowPartial
-     */
-    'context'?: string;
-    /**
-     * The webhook to call when a workflow is created
-     * @type {string}
-     * @memberof WorkflowPartial
-     */
-    'onCreated'?: string;
-    /**
-     * The webhook to call when a workflow is updated
-     * @type {string}
-     * @memberof WorkflowPartial
-     */
-    'onUpdated'?: string;
-    /**
-     * The webhook to call when a workflow is deleted
-     * @type {string}
-     * @memberof WorkflowPartial
-     */
-    'onDeleted'?: string;
-    /**
-     * The webhook to call when a workflow has an error
-     * @type {string}
-     * @memberof WorkflowPartial
-     */
-    'onError'?: string;
-    /**
-     * The priority of the workflow in relation to other workflows (determines activation order)
-     * @type {number}
-     * @memberof WorkflowPartial
-     */
-    'priority'?: number;
 }
 /**
  * @type WorkflowResponse

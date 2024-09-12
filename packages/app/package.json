@@ -1,6 +1,6 @@
 {
   "name": "@scout9/app",
-  "version": "1.0.0-alpha.0.2.0",
+  "version": "1.0.0-alpha.0.2.4",
   "description": "Build and deploy your Scout9 app for SMS auto replies",
   "publishConfig": {
     "access": "public"
@@ -19,7 +19,7 @@
     "postinstall": "node postinstall.js",
     "prepublishOnly": "npm run build",
     "generate:types": "node scripts/generate-dts.js",
-    "prebuild": "rimraf dist/",
+    "prebuild": "rimraf dist/ && rimraf types/index.d.ts && rimraf types/index.d.ts.map",
     "build": "rollup -c",
     "postbuild": "npm run generate:types && node scripts/post-build.js && npx tsc --noEmit",
     "build-no-test": "npm run prebuild && rollup -c"
