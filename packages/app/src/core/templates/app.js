@@ -5,7 +5,7 @@ import bodyParser from 'body-parser';
 import colors from 'kleur';
 import { config as dotenv } from 'dotenv';
 import { Configuration, Scout9Api } from '@scout9/admin';
-import { EventResponse, WorkflowEventSchema } from '@scout9/app';
+import { EventResponse, WorkflowEventSchema, WorkflowResponseSchema } from '@scout9/app';
 import path, { resolve } from 'node:path';
 import fs from 'node:fs';
 import https from 'node:https';
@@ -179,7 +179,7 @@ app.post(dev ? '/dev/workflow' : '/', async (req, res) => {
       const formattedErrors = error.format();
       res.writeHead(400, {'Content-Type': 'application/json'});
       res.end(JSON.stringify({
-        status: 'WorkflowInvalidResponseType',
+        status: 'Invalid WorkflowEvent',
         errors: formattedErrors
       }));
       console.log(colors.red(`${colors.bold(`Bad Input Event:`)}: Received: ${JSON.stringify(req.body.event, null, 2)}\n\nErrors:\n\n${JSON.stringify(formattedErrors, null, 2)}`));
@@ -195,15 +195,26 @@ app.post(dev ? '/dev/workflow' : '/', async (req, res) => {
 
   try {
     const response = await projectApp(workflowEvent);
+    const formattedResponse = WorkflowEventSchema.parse(response);
     if (dev) {
       console.log(colors.green(`Workflow Sending Response:`));
-      console.log(colors.grey(JSON.stringify(response, null, 2)));
+      console.log(colors.grey(JSON.stringify(formattedResponse, null, 2)));
     }
     res.writeHead(200, {'Content-Type': 'application/json'});
-    res.end(JSON.stringify(response));
+    res.end(JSON.stringify(formattedResponse));
   } catch (error) {
-    error.message = `Workflow Template Runtime Error: ` + error.message
-    handleError(error, res);
+    if (error instanceof ZodError) {
+      const formattedErrors = error.format();
+      res.writeHead(500, {'Content-Type': 'application/json'});
+      res.end(JSON.stringify({
+        status: 'Invalid WorkflowResponse',
+        errors: formattedErrors
+      }));
+      console.log(colors.red(`${colors.bold(`Input Workflow Response`)}: Fix needed\n\n${JSON.stringify(formattedErrors, null, 2)}`));
+    } else {
+      error.message = `Workflow Template Runtime Error: ` + error.message
+      handleError(error, res);
+    }
   }
 });
 
