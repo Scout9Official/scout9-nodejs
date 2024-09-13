@@ -65,19 +65,3 @@ export const PersonasConfigurationSchema = z.array(PersonaConfigurationSchema);
 export const AgentsSchema = z.array(AgentSchema);
 
 export const PersonasSchema = z.array(PersonaSchema);
-
-
-export const Bus = z.object({
-  foo: z.string(),
-  bar: z.boolean().optional()
-});
-export const Baz = z.object({
-  boo: z.object({
-    one: z.number(),
-    two: z.number().optional()
-  })
-})
-export const TestSchema = z.object({
-  baz: Baz,
-  bus: Bus
-});

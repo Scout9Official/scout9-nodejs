@@ -25,7 +25,7 @@ export function run(event: WorkflowEvent, options: {
  * @param {ResponseInit | undefined} [init]
  * @returns {EventResponse<T>}
  */
-export function json<T>(data: T, init?: ResponseInit | undefined): EventResponse<T>;
+export function json<T = any>(data: T, init?: ResponseInit | undefined): EventResponse<T>;
 /**
  * @param {WorkflowEvent} event - every workflow receives an event object
  * @param {Object} options
@@ -47,7 +47,7 @@ export function sendEvent(event: WorkflowEvent, options: {
  * Utility runtime class used to guide event output
  * @template T
  */
-export class EventResponse<T> {
+export class EventResponse<T = any> {
     /**
      * Create a new EventResponse instance with a JSON body.
      * @template T

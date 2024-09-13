@@ -8,7 +8,8 @@ export default {
   input: {
     index: './src/index.js',
     'testing-tools': './src/testing-tools/index.js',
-    'spirits': './src/testing-tools/spirits.js',
+    spirits: './src/testing-tools/spirits.js',
+    schemas: './src/schemas.js'
   },
   output: {
     dir: 'dist',

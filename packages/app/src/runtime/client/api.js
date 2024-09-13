@@ -9,7 +9,7 @@ export class EventResponse {
    * @template T
    * @param {T} body - The body of the response.
    * @param {ResponseInit} [options] - Additional options for the response.
-   * @returns {EventResponse<T>} A new EventResponse instance.
+   * @returns {EventResponse<T = any>} A new EventResponse instance.
    */
   static json(body, options) {
     return new EventResponse(body, options);
