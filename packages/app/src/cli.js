@@ -87,14 +87,13 @@ prog
     .option('--src', 'Project source code folder', 'src')
     .option('--sync, -s', 'Syncs project after deploying (overwriting code)', true)
     .option('--dest', 'Project local destination', './build')
-    .action(async ({mode, src, dest, sync}) => {
+    .action(async ({src, dest, sync}) => {
         if (!fs.existsSync('.env')) {
             console.warn(`Missing ${path.resolve('.env')} — skipping`);
             return;
         }
-        mode = coerceMode(mode);
         try {
-            await Scout9Platform.deploy({cwd: process.cwd(), mode: coerceMode(mode), src, dest, sync});
+            await Scout9Platform.deploy({cwd: process.cwd(), mode: 'production', src, dest, sync});
             process.exit(0);
         } catch (e) {
             handle_error(e);
