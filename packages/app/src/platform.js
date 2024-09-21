@@ -60,7 +60,7 @@ export const Scout9Platform = {
       cwd = process.cwd(),
       src = './src',
       dest = '/tmp/project',
-      sync = true
+      sync = false
     } = {}
   ) {
     const logger = new ProgressLogger();
@@ -215,6 +215,12 @@ export const Scout9Platform = {
     const error = coalesceToError(e);
 
     switch (error.name) {
+      case 'AxiosError':
+        const {request, response} = error;
+        const { path, method } = request;
+        const {status, data} = response;
+        console.error(colors.red(colors.bold(`${method} ${path} Scout9 ApiError (${status})`) + ': ' + JSON.stringify(data)));
+        throw new Error(JSON.stringify(data));
       case 'SyntaxError':
         throw error;
       case 'ZodError':

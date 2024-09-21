@@ -85,7 +85,7 @@ prog
     .command('deploy')
     .describe('Deploy your scout9 app')
     .option('--src', 'Project source code folder', 'src')
-    .option('--sync, -s', 'Syncs project after deploying (overwriting code)', true)
+    .option('--sync, -s', 'Syncs project after deploying (overwriting code)', false)
     .option('--dest', 'Project local destination', './build')
     .action(async ({src, dest, sync}) => {
         if (!fs.existsSync('.env')) {

@@ -77,8 +77,11 @@ export const WorkflowResponseMessageApiResponse = z.union([
 /**
  * The workflow response object slot
  */
-export const InstructionSchema = z.union([z.string(), InstructionObjectSchema, z.array(z.string()), z.array(
-  InstructionObjectSchema)]);
+export const InstructionSchema = z.union([
+  z.string(),
+  InstructionObjectSchema,
+  z.array(z.union([z.string(), InstructionObjectSchema]))
+]);
 
 /**
  * Base follow up schema to follow up with the client

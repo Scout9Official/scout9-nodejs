@@ -3460,7 +3460,7 @@ declare module '@scout9/app/schemas' {
 		content: string;
 		id?: string | undefined;
 		persist?: boolean | undefined;
-	}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+	}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 		id: z.ZodOptional<z.ZodString>;
 		persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 		content: z.ZodString;
@@ -3472,7 +3472,7 @@ declare module '@scout9/app/schemas' {
 		content: string;
 		id?: string | undefined;
 		persist?: boolean | undefined;
-	}>, "many">]>;
+	}>]>, "many">]>;
 	/**
 	 * Base follow up schema to follow up with the client
 	 */
@@ -3523,7 +3523,7 @@ declare module '@scout9/app/schemas' {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+		}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 			id: z.ZodOptional<z.ZodString>;
 			persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 			content: z.ZodString;
@@ -3535,47 +3535,47 @@ declare module '@scout9/app/schemas' {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		}>, "many">]>;
+		}>]>, "many">]>;
 	}, "strip", z.ZodTypeAny, {
 		scheduled: number;
-		instructions: (string | string[] | {
+		instructions: (string | {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		} | {
+		} | (string | {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		}[]) & (string | string[] | {
+		})[]) & (string | {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		} | {
+		} | (string | {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		}[] | undefined);
+		})[] | undefined);
 		cancelIf?: Record<string, any> | undefined;
 		overrideLock?: boolean | undefined;
 	}, {
 		scheduled: number;
-		instructions: (string | string[] | {
+		instructions: (string | {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		} | {
+		} | (string | {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		}[]) & (string | string[] | {
+		})[]) & (string | {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		} | {
+		} | (string | {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		}[] | undefined);
+		})[] | undefined);
 		cancelIf?: Record<string, any> | undefined;
 		overrideLock?: boolean | undefined;
 	}>]>;
@@ -4187,7 +4187,7 @@ declare module '@scout9/app/schemas' {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+		}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 			id: z.ZodOptional<z.ZodString>;
 			persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 			content: z.ZodString;
@@ -4199,7 +4199,7 @@ declare module '@scout9/app/schemas' {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		}>, "many">]>>;
+		}>]>, "many">]>>;
 		removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 		message: z.ZodOptional<z.ZodString>;
 		secondsDelay: z.ZodOptional<z.ZodNumber>;
@@ -4237,7 +4237,7 @@ declare module '@scout9/app/schemas' {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+			}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 				id: z.ZodOptional<z.ZodString>;
 				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 				content: z.ZodString;
@@ -4249,47 +4249,47 @@ declare module '@scout9/app/schemas' {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}>, "many">]>;
+			}>]>, "many">]>;
 		}, "strip", z.ZodTypeAny, {
 			scheduled: number;
-			instructions: (string | string[] | {
+			instructions: (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[]) & (string | string[] | {
+			})[]) & (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined);
+			})[] | undefined);
 			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}, {
 			scheduled: number;
-			instructions: (string | string[] | {
+			instructions: (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[]) & (string | string[] | {
+			})[]) & (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined);
+			})[] | undefined);
 			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}>]>>;
@@ -4300,15 +4300,15 @@ declare module '@scout9/app/schemas' {
 			note?: string | undefined;
 		} | undefined;
 		forwardNote?: string | undefined;
-		instructions?: string | string[] | {
+		instructions?: string | {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		} | {
+		} | (string | {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		}[] | undefined;
+		})[] | undefined;
 		removeInstructions?: string[] | undefined;
 		message?: string | undefined;
 		secondsDelay?: number | undefined;
@@ -4322,23 +4322,23 @@ declare module '@scout9/app/schemas' {
 			overrideLock?: boolean | undefined;
 		} | {
 			scheduled: number;
-			instructions: (string | string[] | {
+			instructions: (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[]) & (string | string[] | {
+			})[]) & (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined);
+			})[] | undefined);
 			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | undefined;
@@ -4349,15 +4349,15 @@ declare module '@scout9/app/schemas' {
 			note?: string | undefined;
 		} | undefined;
 		forwardNote?: string | undefined;
-		instructions?: string | string[] | {
+		instructions?: string | {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		} | {
+		} | (string | {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		}[] | undefined;
+		})[] | undefined;
 		removeInstructions?: string[] | undefined;
 		message?: string | undefined;
 		secondsDelay?: number | undefined;
@@ -4371,23 +4371,23 @@ declare module '@scout9/app/schemas' {
 			overrideLock?: boolean | undefined;
 		} | {
 			scheduled: number;
-			instructions: (string | string[] | {
+			instructions: (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[]) & (string | string[] | {
+			})[]) & (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined);
+			})[] | undefined);
 			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | undefined;
@@ -4424,7 +4424,7 @@ declare module '@scout9/app/schemas' {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+		}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 			id: z.ZodOptional<z.ZodString>;
 			persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 			content: z.ZodString;
@@ -4436,7 +4436,7 @@ declare module '@scout9/app/schemas' {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		}>, "many">]>>;
+		}>]>, "many">]>>;
 		removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 		secondsDelay: z.ZodOptional<z.ZodNumber>;
 		contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>;
@@ -4472,7 +4472,7 @@ declare module '@scout9/app/schemas' {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+			}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 				id: z.ZodOptional<z.ZodString>;
 				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 				content: z.ZodString;
@@ -4484,47 +4484,47 @@ declare module '@scout9/app/schemas' {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}>, "many">]>;
+			}>]>, "many">]>;
 		}, "strip", z.ZodTypeAny, {
 			scheduled: number;
-			instructions: (string | string[] | {
+			instructions: (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[]) & (string | string[] | {
+			})[]) & (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined);
+			})[] | undefined);
 			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}, {
 			scheduled: number;
-			instructions: (string | string[] | {
+			instructions: (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[]) & (string | string[] | {
+			})[]) & (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined);
+			})[] | undefined);
 			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}>]>>;
@@ -4557,7 +4557,7 @@ declare module '@scout9/app/schemas' {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 					id: z.ZodOptional<z.ZodString>;
 					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 					content: z.ZodString;
@@ -4569,7 +4569,7 @@ declare module '@scout9/app/schemas' {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}>, "many">]>>;
+				}>]>, "many">]>>;
 				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 				message: z.ZodOptional<z.ZodString>;
 				secondsDelay: z.ZodOptional<z.ZodNumber>;
@@ -4607,7 +4607,7 @@ declare module '@scout9/app/schemas' {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 						id: z.ZodOptional<z.ZodString>;
 						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 						content: z.ZodString;
@@ -4619,47 +4619,47 @@ declare module '@scout9/app/schemas' {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}>, "many">]>;
+					}>]>, "many">]>;
 				}, "strip", z.ZodTypeAny, {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}, {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}>]>>;
@@ -4670,15 +4670,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -4692,23 +4692,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -4719,15 +4719,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -4741,23 +4741,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -4789,7 +4789,7 @@ declare module '@scout9/app/schemas' {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 					id: z.ZodOptional<z.ZodString>;
 					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 					content: z.ZodString;
@@ -4801,7 +4801,7 @@ declare module '@scout9/app/schemas' {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}>, "many">]>>;
+				}>]>, "many">]>>;
 				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 				message: z.ZodOptional<z.ZodString>;
 				secondsDelay: z.ZodOptional<z.ZodNumber>;
@@ -4839,7 +4839,7 @@ declare module '@scout9/app/schemas' {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 						id: z.ZodOptional<z.ZodString>;
 						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 						content: z.ZodString;
@@ -4851,47 +4851,47 @@ declare module '@scout9/app/schemas' {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}>, "many">]>;
+					}>]>, "many">]>;
 				}, "strip", z.ZodTypeAny, {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}, {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}>]>>;
@@ -4902,15 +4902,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -4924,23 +4924,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -4951,15 +4951,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -4973,23 +4973,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -5003,15 +5003,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -5025,23 +5025,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -5053,15 +5053,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -5075,23 +5075,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -5105,15 +5105,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -5127,23 +5127,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -5155,15 +5155,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -5177,23 +5177,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -5227,7 +5227,7 @@ declare module '@scout9/app/schemas' {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+			}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 				id: z.ZodOptional<z.ZodString>;
 				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 				content: z.ZodString;
@@ -5239,7 +5239,7 @@ declare module '@scout9/app/schemas' {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}>, "many">]>>;
+			}>]>, "many">]>>;
 			removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 			secondsDelay: z.ZodOptional<z.ZodNumber>;
 			contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>;
@@ -5275,7 +5275,7 @@ declare module '@scout9/app/schemas' {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 					id: z.ZodOptional<z.ZodString>;
 					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 					content: z.ZodString;
@@ -5287,47 +5287,47 @@ declare module '@scout9/app/schemas' {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}>, "many">]>;
+				}>]>, "many">]>;
 			}, "strip", z.ZodTypeAny, {
 				scheduled: number;
-				instructions: (string | string[] | {
+				instructions: (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[]) & (string | string[] | {
+				})[]) & (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined);
+				})[] | undefined);
 				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			}, {
 				scheduled: number;
-				instructions: (string | string[] | {
+				instructions: (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[]) & (string | string[] | {
+				})[]) & (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined);
+				})[] | undefined);
 				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			}>]>>;
@@ -5342,15 +5342,15 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 			scheduled?: number | undefined;
 			forwardNote?: string | undefined;
-			instructions?: string | string[] | {
+			instructions?: string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined;
+			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
 			contextUpsert?: Record<string, any> | undefined;
@@ -5362,23 +5362,23 @@ declare module '@scout9/app/schemas' {
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
-				instructions: (string | string[] | {
+				instructions: (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[]) & (string | string[] | {
+				})[]) & (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined);
+				})[] | undefined);
 				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
@@ -5392,15 +5392,15 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 			scheduled?: number | undefined;
 			forwardNote?: string | undefined;
-			instructions?: string | string[] | {
+			instructions?: string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined;
+			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
 			contextUpsert?: Record<string, any> | undefined;
@@ -5412,23 +5412,23 @@ declare module '@scout9/app/schemas' {
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
-				instructions: (string | string[] | {
+				instructions: (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[]) & (string | string[] | {
+				})[]) & (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined);
+				})[] | undefined);
 				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
@@ -5442,15 +5442,15 @@ declare module '@scout9/app/schemas' {
 		} | undefined;
 		scheduled?: number | undefined;
 		forwardNote?: string | undefined;
-		instructions?: string | string[] | {
+		instructions?: string | {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		} | {
+		} | (string | {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		}[] | undefined;
+		})[] | undefined;
 		removeInstructions?: string[] | undefined;
 		secondsDelay?: number | undefined;
 		contextUpsert?: Record<string, any> | undefined;
@@ -5462,23 +5462,23 @@ declare module '@scout9/app/schemas' {
 			overrideLock?: boolean | undefined;
 		} | {
 			scheduled: number;
-			instructions: (string | string[] | {
+			instructions: (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[]) & (string | string[] | {
+			})[]) & (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined);
+			})[] | undefined);
 			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | undefined;
@@ -5491,15 +5491,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -5513,23 +5513,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -5541,15 +5541,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -5563,23 +5563,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -5594,15 +5594,15 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 			scheduled?: number | undefined;
 			forwardNote?: string | undefined;
-			instructions?: string | string[] | {
+			instructions?: string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined;
+			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
 			contextUpsert?: Record<string, any> | undefined;
@@ -5614,23 +5614,23 @@ declare module '@scout9/app/schemas' {
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
-				instructions: (string | string[] | {
+				instructions: (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[]) & (string | string[] | {
+				})[]) & (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined);
+				})[] | undefined);
 				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
@@ -5644,15 +5644,15 @@ declare module '@scout9/app/schemas' {
 		} | undefined;
 		scheduled?: number | undefined;
 		forwardNote?: string | undefined;
-		instructions?: string | string[] | {
+		instructions?: string | {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		} | {
+		} | (string | {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		}[] | undefined;
+		})[] | undefined;
 		removeInstructions?: string[] | undefined;
 		secondsDelay?: number | undefined;
 		contextUpsert?: Record<string, any> | undefined;
@@ -5664,23 +5664,23 @@ declare module '@scout9/app/schemas' {
 			overrideLock?: boolean | undefined;
 		} | {
 			scheduled: number;
-			instructions: (string | string[] | {
+			instructions: (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[]) & (string | string[] | {
+			})[]) & (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined);
+			})[] | undefined);
 			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | undefined;
@@ -5693,15 +5693,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -5715,23 +5715,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -5743,15 +5743,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -5765,23 +5765,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -5796,15 +5796,15 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 			scheduled?: number | undefined;
 			forwardNote?: string | undefined;
-			instructions?: string | string[] | {
+			instructions?: string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined;
+			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
 			contextUpsert?: Record<string, any> | undefined;
@@ -5816,23 +5816,23 @@ declare module '@scout9/app/schemas' {
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
-				instructions: (string | string[] | {
+				instructions: (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[]) & (string | string[] | {
+				})[]) & (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined);
+				})[] | undefined);
 				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
@@ -5870,7 +5870,7 @@ declare module '@scout9/app/schemas' {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+		}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 			id: z.ZodOptional<z.ZodString>;
 			persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 			content: z.ZodString;
@@ -5882,7 +5882,7 @@ declare module '@scout9/app/schemas' {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		}>, "many">]>>;
+		}>]>, "many">]>>;
 		removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 		secondsDelay: z.ZodOptional<z.ZodNumber>;
 		contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>;
@@ -5918,7 +5918,7 @@ declare module '@scout9/app/schemas' {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+			}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 				id: z.ZodOptional<z.ZodString>;
 				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 				content: z.ZodString;
@@ -5930,47 +5930,47 @@ declare module '@scout9/app/schemas' {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}>, "many">]>;
+			}>]>, "many">]>;
 		}, "strip", z.ZodTypeAny, {
 			scheduled: number;
-			instructions: (string | string[] | {
+			instructions: (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[]) & (string | string[] | {
+			})[]) & (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined);
+			})[] | undefined);
 			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}, {
 			scheduled: number;
-			instructions: (string | string[] | {
+			instructions: (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[]) & (string | string[] | {
+			})[]) & (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined);
+			})[] | undefined);
 			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}>]>>;
@@ -6003,7 +6003,7 @@ declare module '@scout9/app/schemas' {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 					id: z.ZodOptional<z.ZodString>;
 					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 					content: z.ZodString;
@@ -6015,7 +6015,7 @@ declare module '@scout9/app/schemas' {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}>, "many">]>>;
+				}>]>, "many">]>>;
 				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 				message: z.ZodOptional<z.ZodString>;
 				secondsDelay: z.ZodOptional<z.ZodNumber>;
@@ -6053,7 +6053,7 @@ declare module '@scout9/app/schemas' {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 						id: z.ZodOptional<z.ZodString>;
 						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 						content: z.ZodString;
@@ -6065,47 +6065,47 @@ declare module '@scout9/app/schemas' {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}>, "many">]>;
+					}>]>, "many">]>;
 				}, "strip", z.ZodTypeAny, {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}, {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}>]>>;
@@ -6116,15 +6116,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -6138,23 +6138,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -6165,15 +6165,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -6187,23 +6187,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -6235,7 +6235,7 @@ declare module '@scout9/app/schemas' {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 					id: z.ZodOptional<z.ZodString>;
 					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 					content: z.ZodString;
@@ -6247,7 +6247,7 @@ declare module '@scout9/app/schemas' {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}>, "many">]>>;
+				}>]>, "many">]>>;
 				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 				message: z.ZodOptional<z.ZodString>;
 				secondsDelay: z.ZodOptional<z.ZodNumber>;
@@ -6285,7 +6285,7 @@ declare module '@scout9/app/schemas' {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 						id: z.ZodOptional<z.ZodString>;
 						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 						content: z.ZodString;
@@ -6297,47 +6297,47 @@ declare module '@scout9/app/schemas' {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}>, "many">]>;
+					}>]>, "many">]>;
 				}, "strip", z.ZodTypeAny, {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}, {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}>]>>;
@@ -6348,15 +6348,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -6370,23 +6370,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -6397,15 +6397,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -6419,23 +6419,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -6449,15 +6449,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -6471,23 +6471,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -6499,15 +6499,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -6521,23 +6521,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -6551,15 +6551,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -6573,23 +6573,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -6601,15 +6601,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -6623,23 +6623,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -6673,7 +6673,7 @@ declare module '@scout9/app/schemas' {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+			}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 				id: z.ZodOptional<z.ZodString>;
 				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 				content: z.ZodString;
@@ -6685,7 +6685,7 @@ declare module '@scout9/app/schemas' {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}>, "many">]>>;
+			}>]>, "many">]>>;
 			removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 			secondsDelay: z.ZodOptional<z.ZodNumber>;
 			contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>;
@@ -6721,7 +6721,7 @@ declare module '@scout9/app/schemas' {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 					id: z.ZodOptional<z.ZodString>;
 					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 					content: z.ZodString;
@@ -6733,47 +6733,47 @@ declare module '@scout9/app/schemas' {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}>, "many">]>;
+				}>]>, "many">]>;
 			}, "strip", z.ZodTypeAny, {
 				scheduled: number;
-				instructions: (string | string[] | {
+				instructions: (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[]) & (string | string[] | {
+				})[]) & (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined);
+				})[] | undefined);
 				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			}, {
 				scheduled: number;
-				instructions: (string | string[] | {
+				instructions: (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[]) & (string | string[] | {
+				})[]) & (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined);
+				})[] | undefined);
 				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			}>]>>;
@@ -6788,15 +6788,15 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 			scheduled?: number | undefined;
 			forwardNote?: string | undefined;
-			instructions?: string | string[] | {
+			instructions?: string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined;
+			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
 			contextUpsert?: Record<string, any> | undefined;
@@ -6808,23 +6808,23 @@ declare module '@scout9/app/schemas' {
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
-				instructions: (string | string[] | {
+				instructions: (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[]) & (string | string[] | {
+				})[]) & (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined);
+				})[] | undefined);
 				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
@@ -6838,15 +6838,15 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 			scheduled?: number | undefined;
 			forwardNote?: string | undefined;
-			instructions?: string | string[] | {
+			instructions?: string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined;
+			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
 			contextUpsert?: Record<string, any> | undefined;
@@ -6858,23 +6858,23 @@ declare module '@scout9/app/schemas' {
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
-				instructions: (string | string[] | {
+				instructions: (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[]) & (string | string[] | {
+				})[]) & (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined);
+				})[] | undefined);
 				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
@@ -6888,15 +6888,15 @@ declare module '@scout9/app/schemas' {
 		} | undefined;
 		scheduled?: number | undefined;
 		forwardNote?: string | undefined;
-		instructions?: string | string[] | {
+		instructions?: string | {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		} | {
+		} | (string | {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		}[] | undefined;
+		})[] | undefined;
 		removeInstructions?: string[] | undefined;
 		secondsDelay?: number | undefined;
 		contextUpsert?: Record<string, any> | undefined;
@@ -6908,23 +6908,23 @@ declare module '@scout9/app/schemas' {
 			overrideLock?: boolean | undefined;
 		} | {
 			scheduled: number;
-			instructions: (string | string[] | {
+			instructions: (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[]) & (string | string[] | {
+			})[]) & (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined);
+			})[] | undefined);
 			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | undefined;
@@ -6937,15 +6937,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -6959,23 +6959,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -6987,15 +6987,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -7009,23 +7009,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -7040,15 +7040,15 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 			scheduled?: number | undefined;
 			forwardNote?: string | undefined;
-			instructions?: string | string[] | {
+			instructions?: string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined;
+			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
 			contextUpsert?: Record<string, any> | undefined;
@@ -7060,23 +7060,23 @@ declare module '@scout9/app/schemas' {
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
-				instructions: (string | string[] | {
+				instructions: (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[]) & (string | string[] | {
+				})[]) & (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined);
+				})[] | undefined);
 				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
@@ -7090,15 +7090,15 @@ declare module '@scout9/app/schemas' {
 		} | undefined;
 		scheduled?: number | undefined;
 		forwardNote?: string | undefined;
-		instructions?: string | string[] | {
+		instructions?: string | {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		} | {
+		} | (string | {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		}[] | undefined;
+		})[] | undefined;
 		removeInstructions?: string[] | undefined;
 		secondsDelay?: number | undefined;
 		contextUpsert?: Record<string, any> | undefined;
@@ -7110,23 +7110,23 @@ declare module '@scout9/app/schemas' {
 			overrideLock?: boolean | undefined;
 		} | {
 			scheduled: number;
-			instructions: (string | string[] | {
+			instructions: (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[]) & (string | string[] | {
+			})[]) & (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined);
+			})[] | undefined);
 			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | undefined;
@@ -7139,15 +7139,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -7161,23 +7161,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -7189,15 +7189,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -7211,23 +7211,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -7242,15 +7242,15 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 			scheduled?: number | undefined;
 			forwardNote?: string | undefined;
-			instructions?: string | string[] | {
+			instructions?: string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined;
+			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
 			contextUpsert?: Record<string, any> | undefined;
@@ -7262,23 +7262,23 @@ declare module '@scout9/app/schemas' {
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
-				instructions: (string | string[] | {
+				instructions: (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[]) & (string | string[] | {
+				})[]) & (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined);
+				})[] | undefined);
 				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
@@ -7312,7 +7312,7 @@ declare module '@scout9/app/schemas' {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+		}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 			id: z.ZodOptional<z.ZodString>;
 			persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 			content: z.ZodString;
@@ -7324,7 +7324,7 @@ declare module '@scout9/app/schemas' {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		}>, "many">]>>;
+		}>]>, "many">]>>;
 		removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 		secondsDelay: z.ZodOptional<z.ZodNumber>;
 		contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>;
@@ -7360,7 +7360,7 @@ declare module '@scout9/app/schemas' {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+			}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 				id: z.ZodOptional<z.ZodString>;
 				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 				content: z.ZodString;
@@ -7372,47 +7372,47 @@ declare module '@scout9/app/schemas' {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}>, "many">]>;
+			}>]>, "many">]>;
 		}, "strip", z.ZodTypeAny, {
 			scheduled: number;
-			instructions: (string | string[] | {
+			instructions: (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[]) & (string | string[] | {
+			})[]) & (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined);
+			})[] | undefined);
 			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}, {
 			scheduled: number;
-			instructions: (string | string[] | {
+			instructions: (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[]) & (string | string[] | {
+			})[]) & (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined);
+			})[] | undefined);
 			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}>]>>;
@@ -7445,7 +7445,7 @@ declare module '@scout9/app/schemas' {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 					id: z.ZodOptional<z.ZodString>;
 					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 					content: z.ZodString;
@@ -7457,7 +7457,7 @@ declare module '@scout9/app/schemas' {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}>, "many">]>>;
+				}>]>, "many">]>>;
 				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 				message: z.ZodOptional<z.ZodString>;
 				secondsDelay: z.ZodOptional<z.ZodNumber>;
@@ -7495,7 +7495,7 @@ declare module '@scout9/app/schemas' {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 						id: z.ZodOptional<z.ZodString>;
 						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 						content: z.ZodString;
@@ -7507,47 +7507,47 @@ declare module '@scout9/app/schemas' {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}>, "many">]>;
+					}>]>, "many">]>;
 				}, "strip", z.ZodTypeAny, {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}, {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}>]>>;
@@ -7558,15 +7558,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -7580,23 +7580,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -7607,15 +7607,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -7629,23 +7629,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -7677,7 +7677,7 @@ declare module '@scout9/app/schemas' {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 					id: z.ZodOptional<z.ZodString>;
 					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 					content: z.ZodString;
@@ -7689,7 +7689,7 @@ declare module '@scout9/app/schemas' {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}>, "many">]>>;
+				}>]>, "many">]>>;
 				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 				message: z.ZodOptional<z.ZodString>;
 				secondsDelay: z.ZodOptional<z.ZodNumber>;
@@ -7727,7 +7727,7 @@ declare module '@scout9/app/schemas' {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 						id: z.ZodOptional<z.ZodString>;
 						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 						content: z.ZodString;
@@ -7739,47 +7739,47 @@ declare module '@scout9/app/schemas' {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}>, "many">]>;
+					}>]>, "many">]>;
 				}, "strip", z.ZodTypeAny, {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}, {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}>]>>;
@@ -7790,15 +7790,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -7812,23 +7812,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -7839,15 +7839,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -7861,23 +7861,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -7891,15 +7891,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -7913,23 +7913,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -7941,15 +7941,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -7963,23 +7963,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -7993,15 +7993,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -8015,23 +8015,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -8043,15 +8043,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -8065,23 +8065,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -8115,7 +8115,7 @@ declare module '@scout9/app/schemas' {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+			}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 				id: z.ZodOptional<z.ZodString>;
 				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 				content: z.ZodString;
@@ -8127,7 +8127,7 @@ declare module '@scout9/app/schemas' {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}>, "many">]>>;
+			}>]>, "many">]>>;
 			removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 			secondsDelay: z.ZodOptional<z.ZodNumber>;
 			contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>;
@@ -8163,7 +8163,7 @@ declare module '@scout9/app/schemas' {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 					id: z.ZodOptional<z.ZodString>;
 					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 					content: z.ZodString;
@@ -8175,47 +8175,47 @@ declare module '@scout9/app/schemas' {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}>, "many">]>;
+				}>]>, "many">]>;
 			}, "strip", z.ZodTypeAny, {
 				scheduled: number;
-				instructions: (string | string[] | {
+				instructions: (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[]) & (string | string[] | {
+				})[]) & (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined);
+				})[] | undefined);
 				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			}, {
 				scheduled: number;
-				instructions: (string | string[] | {
+				instructions: (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[]) & (string | string[] | {
+				})[]) & (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined);
+				})[] | undefined);
 				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			}>]>>;
@@ -8230,15 +8230,15 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 			scheduled?: number | undefined;
 			forwardNote?: string | undefined;
-			instructions?: string | string[] | {
+			instructions?: string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined;
+			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
 			contextUpsert?: Record<string, any> | undefined;
@@ -8250,23 +8250,23 @@ declare module '@scout9/app/schemas' {
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
-				instructions: (string | string[] | {
+				instructions: (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[]) & (string | string[] | {
+				})[]) & (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined);
+				})[] | undefined);
 				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
@@ -8280,15 +8280,15 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 			scheduled?: number | undefined;
 			forwardNote?: string | undefined;
-			instructions?: string | string[] | {
+			instructions?: string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined;
+			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
 			contextUpsert?: Record<string, any> | undefined;
@@ -8300,23 +8300,23 @@ declare module '@scout9/app/schemas' {
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
-				instructions: (string | string[] | {
+				instructions: (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[]) & (string | string[] | {
+				})[]) & (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined);
+				})[] | undefined);
 				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
@@ -8330,15 +8330,15 @@ declare module '@scout9/app/schemas' {
 		} | undefined;
 		scheduled?: number | undefined;
 		forwardNote?: string | undefined;
-		instructions?: string | string[] | {
+		instructions?: string | {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		} | {
+		} | (string | {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		}[] | undefined;
+		})[] | undefined;
 		removeInstructions?: string[] | undefined;
 		secondsDelay?: number | undefined;
 		contextUpsert?: Record<string, any> | undefined;
@@ -8350,23 +8350,23 @@ declare module '@scout9/app/schemas' {
 			overrideLock?: boolean | undefined;
 		} | {
 			scheduled: number;
-			instructions: (string | string[] | {
+			instructions: (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[]) & (string | string[] | {
+			})[]) & (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined);
+			})[] | undefined);
 			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | undefined;
@@ -8379,15 +8379,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -8401,23 +8401,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -8429,15 +8429,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -8451,23 +8451,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -8482,15 +8482,15 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 			scheduled?: number | undefined;
 			forwardNote?: string | undefined;
-			instructions?: string | string[] | {
+			instructions?: string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined;
+			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
 			contextUpsert?: Record<string, any> | undefined;
@@ -8502,23 +8502,23 @@ declare module '@scout9/app/schemas' {
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
-				instructions: (string | string[] | {
+				instructions: (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[]) & (string | string[] | {
+				})[]) & (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined);
+				})[] | undefined);
 				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
@@ -8532,15 +8532,15 @@ declare module '@scout9/app/schemas' {
 		} | undefined;
 		scheduled?: number | undefined;
 		forwardNote?: string | undefined;
-		instructions?: string | string[] | {
+		instructions?: string | {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		} | {
+		} | (string | {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		}[] | undefined;
+		})[] | undefined;
 		removeInstructions?: string[] | undefined;
 		secondsDelay?: number | undefined;
 		contextUpsert?: Record<string, any> | undefined;
@@ -8552,23 +8552,23 @@ declare module '@scout9/app/schemas' {
 			overrideLock?: boolean | undefined;
 		} | {
 			scheduled: number;
-			instructions: (string | string[] | {
+			instructions: (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[]) & (string | string[] | {
+			})[]) & (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined);
+			})[] | undefined);
 			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | undefined;
@@ -8581,15 +8581,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -8603,23 +8603,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -8631,15 +8631,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -8653,23 +8653,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -8684,15 +8684,15 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 			scheduled?: number | undefined;
 			forwardNote?: string | undefined;
-			instructions?: string | string[] | {
+			instructions?: string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined;
+			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
 			contextUpsert?: Record<string, any> | undefined;
@@ -8704,23 +8704,23 @@ declare module '@scout9/app/schemas' {
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
-				instructions: (string | string[] | {
+				instructions: (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[]) & (string | string[] | {
+				})[]) & (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined);
+				})[] | undefined);
 				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
@@ -9299,7 +9299,7 @@ declare module '@scout9/app/schemas' {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+		}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 			id: z.ZodOptional<z.ZodString>;
 			persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 			content: z.ZodString;
@@ -9311,7 +9311,7 @@ declare module '@scout9/app/schemas' {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		}>, "many">]>>;
+		}>]>, "many">]>>;
 		removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 		secondsDelay: z.ZodOptional<z.ZodNumber>;
 		contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>;
@@ -9347,7 +9347,7 @@ declare module '@scout9/app/schemas' {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+			}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 				id: z.ZodOptional<z.ZodString>;
 				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 				content: z.ZodString;
@@ -9359,47 +9359,47 @@ declare module '@scout9/app/schemas' {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}>, "many">]>;
+			}>]>, "many">]>;
 		}, "strip", z.ZodTypeAny, {
 			scheduled: number;
-			instructions: (string | string[] | {
+			instructions: (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[]) & (string | string[] | {
+			})[]) & (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined);
+			})[] | undefined);
 			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}, {
 			scheduled: number;
-			instructions: (string | string[] | {
+			instructions: (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[]) & (string | string[] | {
+			})[]) & (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined);
+			})[] | undefined);
 			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}>]>>;
@@ -9432,7 +9432,7 @@ declare module '@scout9/app/schemas' {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 					id: z.ZodOptional<z.ZodString>;
 					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 					content: z.ZodString;
@@ -9444,7 +9444,7 @@ declare module '@scout9/app/schemas' {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}>, "many">]>>;
+				}>]>, "many">]>>;
 				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 				message: z.ZodOptional<z.ZodString>;
 				secondsDelay: z.ZodOptional<z.ZodNumber>;
@@ -9482,7 +9482,7 @@ declare module '@scout9/app/schemas' {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 						id: z.ZodOptional<z.ZodString>;
 						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 						content: z.ZodString;
@@ -9494,47 +9494,47 @@ declare module '@scout9/app/schemas' {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}>, "many">]>;
+					}>]>, "many">]>;
 				}, "strip", z.ZodTypeAny, {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}, {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}>]>>;
@@ -9545,15 +9545,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -9567,23 +9567,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -9594,15 +9594,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -9616,23 +9616,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -9664,7 +9664,7 @@ declare module '@scout9/app/schemas' {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 					id: z.ZodOptional<z.ZodString>;
 					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 					content: z.ZodString;
@@ -9676,7 +9676,7 @@ declare module '@scout9/app/schemas' {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}>, "many">]>>;
+				}>]>, "many">]>>;
 				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 				message: z.ZodOptional<z.ZodString>;
 				secondsDelay: z.ZodOptional<z.ZodNumber>;
@@ -9714,7 +9714,7 @@ declare module '@scout9/app/schemas' {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 						id: z.ZodOptional<z.ZodString>;
 						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 						content: z.ZodString;
@@ -9726,47 +9726,47 @@ declare module '@scout9/app/schemas' {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}>, "many">]>;
+					}>]>, "many">]>;
 				}, "strip", z.ZodTypeAny, {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}, {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}>]>>;
@@ -9777,15 +9777,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -9799,23 +9799,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -9826,15 +9826,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -9848,23 +9848,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -9878,15 +9878,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -9900,23 +9900,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -9928,15 +9928,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -9950,23 +9950,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -9980,15 +9980,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -10002,23 +10002,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -10030,15 +10030,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -10052,23 +10052,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -10102,7 +10102,7 @@ declare module '@scout9/app/schemas' {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+			}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 				id: z.ZodOptional<z.ZodString>;
 				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 				content: z.ZodString;
@@ -10114,7 +10114,7 @@ declare module '@scout9/app/schemas' {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}>, "many">]>>;
+			}>]>, "many">]>>;
 			removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 			secondsDelay: z.ZodOptional<z.ZodNumber>;
 			contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>;
@@ -10150,7 +10150,7 @@ declare module '@scout9/app/schemas' {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 					id: z.ZodOptional<z.ZodString>;
 					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 					content: z.ZodString;
@@ -10162,47 +10162,47 @@ declare module '@scout9/app/schemas' {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}>, "many">]>;
+				}>]>, "many">]>;
 			}, "strip", z.ZodTypeAny, {
 				scheduled: number;
-				instructions: (string | string[] | {
+				instructions: (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[]) & (string | string[] | {
+				})[]) & (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined);
+				})[] | undefined);
 				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			}, {
 				scheduled: number;
-				instructions: (string | string[] | {
+				instructions: (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[]) & (string | string[] | {
+				})[]) & (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined);
+				})[] | undefined);
 				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			}>]>>;
@@ -10217,15 +10217,15 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 			scheduled?: number | undefined;
 			forwardNote?: string | undefined;
-			instructions?: string | string[] | {
+			instructions?: string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined;
+			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
 			contextUpsert?: Record<string, any> | undefined;
@@ -10237,23 +10237,23 @@ declare module '@scout9/app/schemas' {
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
-				instructions: (string | string[] | {
+				instructions: (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[]) & (string | string[] | {
+				})[]) & (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined);
+				})[] | undefined);
 				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
@@ -10267,15 +10267,15 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 			scheduled?: number | undefined;
 			forwardNote?: string | undefined;
-			instructions?: string | string[] | {
+			instructions?: string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined;
+			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
 			contextUpsert?: Record<string, any> | undefined;
@@ -10287,23 +10287,23 @@ declare module '@scout9/app/schemas' {
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
-				instructions: (string | string[] | {
+				instructions: (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[]) & (string | string[] | {
+				})[]) & (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined);
+				})[] | undefined);
 				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
@@ -10317,15 +10317,15 @@ declare module '@scout9/app/schemas' {
 		} | undefined;
 		scheduled?: number | undefined;
 		forwardNote?: string | undefined;
-		instructions?: string | string[] | {
+		instructions?: string | {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		} | {
+		} | (string | {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		}[] | undefined;
+		})[] | undefined;
 		removeInstructions?: string[] | undefined;
 		secondsDelay?: number | undefined;
 		contextUpsert?: Record<string, any> | undefined;
@@ -10337,23 +10337,23 @@ declare module '@scout9/app/schemas' {
 			overrideLock?: boolean | undefined;
 		} | {
 			scheduled: number;
-			instructions: (string | string[] | {
+			instructions: (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[]) & (string | string[] | {
+			})[]) & (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined);
+			})[] | undefined);
 			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | undefined;
@@ -10366,15 +10366,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -10388,23 +10388,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -10416,15 +10416,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -10438,23 +10438,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -10469,15 +10469,15 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 			scheduled?: number | undefined;
 			forwardNote?: string | undefined;
-			instructions?: string | string[] | {
+			instructions?: string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined;
+			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
 			contextUpsert?: Record<string, any> | undefined;
@@ -10489,23 +10489,23 @@ declare module '@scout9/app/schemas' {
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
-				instructions: (string | string[] | {
+				instructions: (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[]) & (string | string[] | {
+				})[]) & (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined);
+				})[] | undefined);
 				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
@@ -10519,15 +10519,15 @@ declare module '@scout9/app/schemas' {
 		} | undefined;
 		scheduled?: number | undefined;
 		forwardNote?: string | undefined;
-		instructions?: string | string[] | {
+		instructions?: string | {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		} | {
+		} | (string | {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		}[] | undefined;
+		})[] | undefined;
 		removeInstructions?: string[] | undefined;
 		secondsDelay?: number | undefined;
 		contextUpsert?: Record<string, any> | undefined;
@@ -10539,23 +10539,23 @@ declare module '@scout9/app/schemas' {
 			overrideLock?: boolean | undefined;
 		} | {
 			scheduled: number;
-			instructions: (string | string[] | {
+			instructions: (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[]) & (string | string[] | {
+			})[]) & (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined);
+			})[] | undefined);
 			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | undefined;
@@ -10568,15 +10568,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -10590,23 +10590,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -10618,15 +10618,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -10640,23 +10640,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -10671,15 +10671,15 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 			scheduled?: number | undefined;
 			forwardNote?: string | undefined;
-			instructions?: string | string[] | {
+			instructions?: string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined;
+			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
 			contextUpsert?: Record<string, any> | undefined;
@@ -10691,23 +10691,23 @@ declare module '@scout9/app/schemas' {
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
-				instructions: (string | string[] | {
+				instructions: (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[]) & (string | string[] | {
+				})[]) & (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined);
+				})[] | undefined);
 				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
@@ -10741,7 +10741,7 @@ declare module '@scout9/app/schemas' {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+		}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 			id: z.ZodOptional<z.ZodString>;
 			persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 			content: z.ZodString;
@@ -10753,7 +10753,7 @@ declare module '@scout9/app/schemas' {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		}>, "many">]>>;
+		}>]>, "many">]>>;
 		removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 		secondsDelay: z.ZodOptional<z.ZodNumber>;
 		contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>;
@@ -10789,7 +10789,7 @@ declare module '@scout9/app/schemas' {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+			}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 				id: z.ZodOptional<z.ZodString>;
 				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 				content: z.ZodString;
@@ -10801,47 +10801,47 @@ declare module '@scout9/app/schemas' {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}>, "many">]>;
+			}>]>, "many">]>;
 		}, "strip", z.ZodTypeAny, {
 			scheduled: number;
-			instructions: (string | string[] | {
+			instructions: (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[]) & (string | string[] | {
+			})[]) & (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined);
+			})[] | undefined);
 			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}, {
 			scheduled: number;
-			instructions: (string | string[] | {
+			instructions: (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[]) & (string | string[] | {
+			})[]) & (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined);
+			})[] | undefined);
 			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}>]>>;
@@ -10874,7 +10874,7 @@ declare module '@scout9/app/schemas' {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 					id: z.ZodOptional<z.ZodString>;
 					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 					content: z.ZodString;
@@ -10886,7 +10886,7 @@ declare module '@scout9/app/schemas' {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}>, "many">]>>;
+				}>]>, "many">]>>;
 				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 				message: z.ZodOptional<z.ZodString>;
 				secondsDelay: z.ZodOptional<z.ZodNumber>;
@@ -10924,7 +10924,7 @@ declare module '@scout9/app/schemas' {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 						id: z.ZodOptional<z.ZodString>;
 						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 						content: z.ZodString;
@@ -10936,47 +10936,47 @@ declare module '@scout9/app/schemas' {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}>, "many">]>;
+					}>]>, "many">]>;
 				}, "strip", z.ZodTypeAny, {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}, {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}>]>>;
@@ -10987,15 +10987,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -11009,23 +11009,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -11036,15 +11036,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -11058,23 +11058,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -11106,7 +11106,7 @@ declare module '@scout9/app/schemas' {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 					id: z.ZodOptional<z.ZodString>;
 					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 					content: z.ZodString;
@@ -11118,7 +11118,7 @@ declare module '@scout9/app/schemas' {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}>, "many">]>>;
+				}>]>, "many">]>>;
 				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 				message: z.ZodOptional<z.ZodString>;
 				secondsDelay: z.ZodOptional<z.ZodNumber>;
@@ -11156,7 +11156,7 @@ declare module '@scout9/app/schemas' {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 						id: z.ZodOptional<z.ZodString>;
 						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 						content: z.ZodString;
@@ -11168,47 +11168,47 @@ declare module '@scout9/app/schemas' {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}>, "many">]>;
+					}>]>, "many">]>;
 				}, "strip", z.ZodTypeAny, {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}, {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}>]>>;
@@ -11219,15 +11219,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -11241,23 +11241,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -11268,15 +11268,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -11290,23 +11290,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -11320,15 +11320,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -11342,23 +11342,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -11370,15 +11370,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -11392,23 +11392,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -11422,15 +11422,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -11444,23 +11444,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -11472,15 +11472,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -11494,23 +11494,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -11544,7 +11544,7 @@ declare module '@scout9/app/schemas' {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+			}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 				id: z.ZodOptional<z.ZodString>;
 				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 				content: z.ZodString;
@@ -11556,7 +11556,7 @@ declare module '@scout9/app/schemas' {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}>, "many">]>>;
+			}>]>, "many">]>>;
 			removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 			secondsDelay: z.ZodOptional<z.ZodNumber>;
 			contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>;
@@ -11592,7 +11592,7 @@ declare module '@scout9/app/schemas' {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 					id: z.ZodOptional<z.ZodString>;
 					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 					content: z.ZodString;
@@ -11604,47 +11604,47 @@ declare module '@scout9/app/schemas' {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}>, "many">]>;
+				}>]>, "many">]>;
 			}, "strip", z.ZodTypeAny, {
 				scheduled: number;
-				instructions: (string | string[] | {
+				instructions: (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[]) & (string | string[] | {
+				})[]) & (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined);
+				})[] | undefined);
 				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			}, {
 				scheduled: number;
-				instructions: (string | string[] | {
+				instructions: (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[]) & (string | string[] | {
+				})[]) & (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined);
+				})[] | undefined);
 				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			}>]>>;
@@ -11659,15 +11659,15 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 			scheduled?: number | undefined;
 			forwardNote?: string | undefined;
-			instructions?: string | string[] | {
+			instructions?: string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined;
+			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
 			contextUpsert?: Record<string, any> | undefined;
@@ -11679,23 +11679,23 @@ declare module '@scout9/app/schemas' {
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
-				instructions: (string | string[] | {
+				instructions: (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[]) & (string | string[] | {
+				})[]) & (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined);
+				})[] | undefined);
 				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
@@ -11709,15 +11709,15 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 			scheduled?: number | undefined;
 			forwardNote?: string | undefined;
-			instructions?: string | string[] | {
+			instructions?: string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined;
+			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
 			contextUpsert?: Record<string, any> | undefined;
@@ -11729,23 +11729,23 @@ declare module '@scout9/app/schemas' {
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
-				instructions: (string | string[] | {
+				instructions: (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[]) & (string | string[] | {
+				})[]) & (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined);
+				})[] | undefined);
 				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
@@ -11759,15 +11759,15 @@ declare module '@scout9/app/schemas' {
 		} | undefined;
 		scheduled?: number | undefined;
 		forwardNote?: string | undefined;
-		instructions?: string | string[] | {
+		instructions?: string | {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		} | {
+		} | (string | {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		}[] | undefined;
+		})[] | undefined;
 		removeInstructions?: string[] | undefined;
 		secondsDelay?: number | undefined;
 		contextUpsert?: Record<string, any> | undefined;
@@ -11779,23 +11779,23 @@ declare module '@scout9/app/schemas' {
 			overrideLock?: boolean | undefined;
 		} | {
 			scheduled: number;
-			instructions: (string | string[] | {
+			instructions: (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[]) & (string | string[] | {
+			})[]) & (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined);
+			})[] | undefined);
 			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | undefined;
@@ -11808,15 +11808,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -11830,23 +11830,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -11858,15 +11858,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -11880,23 +11880,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -11911,15 +11911,15 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 			scheduled?: number | undefined;
 			forwardNote?: string | undefined;
-			instructions?: string | string[] | {
+			instructions?: string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined;
+			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
 			contextUpsert?: Record<string, any> | undefined;
@@ -11931,23 +11931,23 @@ declare module '@scout9/app/schemas' {
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
-				instructions: (string | string[] | {
+				instructions: (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[]) & (string | string[] | {
+				})[]) & (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined);
+				})[] | undefined);
 				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
@@ -11961,15 +11961,15 @@ declare module '@scout9/app/schemas' {
 		} | undefined;
 		scheduled?: number | undefined;
 		forwardNote?: string | undefined;
-		instructions?: string | string[] | {
+		instructions?: string | {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		} | {
+		} | (string | {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		}[] | undefined;
+		})[] | undefined;
 		removeInstructions?: string[] | undefined;
 		secondsDelay?: number | undefined;
 		contextUpsert?: Record<string, any> | undefined;
@@ -11981,23 +11981,23 @@ declare module '@scout9/app/schemas' {
 			overrideLock?: boolean | undefined;
 		} | {
 			scheduled: number;
-			instructions: (string | string[] | {
+			instructions: (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[]) & (string | string[] | {
+			})[]) & (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined);
+			})[] | undefined);
 			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | undefined;
@@ -12010,15 +12010,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -12032,23 +12032,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -12060,15 +12060,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -12082,23 +12082,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -12113,15 +12113,15 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 			scheduled?: number | undefined;
 			forwardNote?: string | undefined;
-			instructions?: string | string[] | {
+			instructions?: string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined;
+			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
 			contextUpsert?: Record<string, any> | undefined;
@@ -12133,23 +12133,23 @@ declare module '@scout9/app/schemas' {
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
-				instructions: (string | string[] | {
+				instructions: (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[]) & (string | string[] | {
+				})[]) & (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined);
+				})[] | undefined);
 				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
@@ -12183,7 +12183,7 @@ declare module '@scout9/app/schemas' {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+		}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 			id: z.ZodOptional<z.ZodString>;
 			persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 			content: z.ZodString;
@@ -12195,7 +12195,7 @@ declare module '@scout9/app/schemas' {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		}>, "many">]>>;
+		}>]>, "many">]>>;
 		removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 		secondsDelay: z.ZodOptional<z.ZodNumber>;
 		contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>;
@@ -12231,7 +12231,7 @@ declare module '@scout9/app/schemas' {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+			}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 				id: z.ZodOptional<z.ZodString>;
 				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 				content: z.ZodString;
@@ -12243,47 +12243,47 @@ declare module '@scout9/app/schemas' {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}>, "many">]>;
+			}>]>, "many">]>;
 		}, "strip", z.ZodTypeAny, {
 			scheduled: number;
-			instructions: (string | string[] | {
+			instructions: (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[]) & (string | string[] | {
+			})[]) & (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined);
+			})[] | undefined);
 			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}, {
 			scheduled: number;
-			instructions: (string | string[] | {
+			instructions: (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[]) & (string | string[] | {
+			})[]) & (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined);
+			})[] | undefined);
 			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}>]>>;
@@ -12316,7 +12316,7 @@ declare module '@scout9/app/schemas' {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 					id: z.ZodOptional<z.ZodString>;
 					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 					content: z.ZodString;
@@ -12328,7 +12328,7 @@ declare module '@scout9/app/schemas' {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}>, "many">]>>;
+				}>]>, "many">]>>;
 				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 				message: z.ZodOptional<z.ZodString>;
 				secondsDelay: z.ZodOptional<z.ZodNumber>;
@@ -12366,7 +12366,7 @@ declare module '@scout9/app/schemas' {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 						id: z.ZodOptional<z.ZodString>;
 						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 						content: z.ZodString;
@@ -12378,47 +12378,47 @@ declare module '@scout9/app/schemas' {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}>, "many">]>;
+					}>]>, "many">]>;
 				}, "strip", z.ZodTypeAny, {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}, {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}>]>>;
@@ -12429,15 +12429,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -12451,23 +12451,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -12478,15 +12478,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -12500,23 +12500,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -12548,7 +12548,7 @@ declare module '@scout9/app/schemas' {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 					id: z.ZodOptional<z.ZodString>;
 					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 					content: z.ZodString;
@@ -12560,7 +12560,7 @@ declare module '@scout9/app/schemas' {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}>, "many">]>>;
+				}>]>, "many">]>>;
 				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 				message: z.ZodOptional<z.ZodString>;
 				secondsDelay: z.ZodOptional<z.ZodNumber>;
@@ -12598,7 +12598,7 @@ declare module '@scout9/app/schemas' {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 						id: z.ZodOptional<z.ZodString>;
 						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 						content: z.ZodString;
@@ -12610,47 +12610,47 @@ declare module '@scout9/app/schemas' {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}>, "many">]>;
+					}>]>, "many">]>;
 				}, "strip", z.ZodTypeAny, {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}, {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}>]>>;
@@ -12661,15 +12661,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -12683,23 +12683,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -12710,15 +12710,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -12732,23 +12732,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -12762,15 +12762,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -12784,23 +12784,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -12812,15 +12812,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -12834,23 +12834,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -12864,15 +12864,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -12886,23 +12886,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -12914,15 +12914,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -12936,23 +12936,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -12986,7 +12986,7 @@ declare module '@scout9/app/schemas' {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+			}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 				id: z.ZodOptional<z.ZodString>;
 				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 				content: z.ZodString;
@@ -12998,7 +12998,7 @@ declare module '@scout9/app/schemas' {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}>, "many">]>>;
+			}>]>, "many">]>>;
 			removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 			secondsDelay: z.ZodOptional<z.ZodNumber>;
 			contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>;
@@ -13034,7 +13034,7 @@ declare module '@scout9/app/schemas' {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 					id: z.ZodOptional<z.ZodString>;
 					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 					content: z.ZodString;
@@ -13046,47 +13046,47 @@ declare module '@scout9/app/schemas' {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}>, "many">]>;
+				}>]>, "many">]>;
 			}, "strip", z.ZodTypeAny, {
 				scheduled: number;
-				instructions: (string | string[] | {
+				instructions: (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[]) & (string | string[] | {
+				})[]) & (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined);
+				})[] | undefined);
 				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			}, {
 				scheduled: number;
-				instructions: (string | string[] | {
+				instructions: (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[]) & (string | string[] | {
+				})[]) & (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined);
+				})[] | undefined);
 				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			}>]>>;
@@ -13101,15 +13101,15 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 			scheduled?: number | undefined;
 			forwardNote?: string | undefined;
-			instructions?: string | string[] | {
+			instructions?: string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined;
+			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
 			contextUpsert?: Record<string, any> | undefined;
@@ -13121,23 +13121,23 @@ declare module '@scout9/app/schemas' {
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
-				instructions: (string | string[] | {
+				instructions: (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[]) & (string | string[] | {
+				})[]) & (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined);
+				})[] | undefined);
 				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
@@ -13151,15 +13151,15 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 			scheduled?: number | undefined;
 			forwardNote?: string | undefined;
-			instructions?: string | string[] | {
+			instructions?: string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined;
+			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
 			contextUpsert?: Record<string, any> | undefined;
@@ -13171,23 +13171,23 @@ declare module '@scout9/app/schemas' {
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
-				instructions: (string | string[] | {
+				instructions: (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[]) & (string | string[] | {
+				})[]) & (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined);
+				})[] | undefined);
 				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
@@ -13201,15 +13201,15 @@ declare module '@scout9/app/schemas' {
 		} | undefined;
 		scheduled?: number | undefined;
 		forwardNote?: string | undefined;
-		instructions?: string | string[] | {
+		instructions?: string | {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		} | {
+		} | (string | {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		}[] | undefined;
+		})[] | undefined;
 		removeInstructions?: string[] | undefined;
 		secondsDelay?: number | undefined;
 		contextUpsert?: Record<string, any> | undefined;
@@ -13221,23 +13221,23 @@ declare module '@scout9/app/schemas' {
 			overrideLock?: boolean | undefined;
 		} | {
 			scheduled: number;
-			instructions: (string | string[] | {
+			instructions: (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[]) & (string | string[] | {
+			})[]) & (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined);
+			})[] | undefined);
 			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | undefined;
@@ -13250,15 +13250,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -13272,23 +13272,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -13300,15 +13300,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -13322,23 +13322,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -13353,15 +13353,15 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 			scheduled?: number | undefined;
 			forwardNote?: string | undefined;
-			instructions?: string | string[] | {
+			instructions?: string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined;
+			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
 			contextUpsert?: Record<string, any> | undefined;
@@ -13373,23 +13373,23 @@ declare module '@scout9/app/schemas' {
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
-				instructions: (string | string[] | {
+				instructions: (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[]) & (string | string[] | {
+				})[]) & (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined);
+				})[] | undefined);
 				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
@@ -13403,15 +13403,15 @@ declare module '@scout9/app/schemas' {
 		} | undefined;
 		scheduled?: number | undefined;
 		forwardNote?: string | undefined;
-		instructions?: string | string[] | {
+		instructions?: string | {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		} | {
+		} | (string | {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		}[] | undefined;
+		})[] | undefined;
 		removeInstructions?: string[] | undefined;
 		secondsDelay?: number | undefined;
 		contextUpsert?: Record<string, any> | undefined;
@@ -13423,23 +13423,23 @@ declare module '@scout9/app/schemas' {
 			overrideLock?: boolean | undefined;
 		} | {
 			scheduled: number;
-			instructions: (string | string[] | {
+			instructions: (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[]) & (string | string[] | {
+			})[]) & (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined);
+			})[] | undefined);
 			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | undefined;
@@ -13452,15 +13452,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -13474,23 +13474,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -13502,15 +13502,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -13524,23 +13524,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -13555,15 +13555,15 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 			scheduled?: number | undefined;
 			forwardNote?: string | undefined;
-			instructions?: string | string[] | {
+			instructions?: string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined;
+			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
 			contextUpsert?: Record<string, any> | undefined;
@@ -13575,23 +13575,23 @@ declare module '@scout9/app/schemas' {
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
-				instructions: (string | string[] | {
+				instructions: (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[]) & (string | string[] | {
+				})[]) & (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined);
+				})[] | undefined);
 				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
@@ -13625,7 +13625,7 @@ declare module '@scout9/app/schemas' {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+		}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 			id: z.ZodOptional<z.ZodString>;
 			persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 			content: z.ZodString;
@@ -13637,7 +13637,7 @@ declare module '@scout9/app/schemas' {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		}>, "many">]>>;
+		}>]>, "many">]>>;
 		removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 		secondsDelay: z.ZodOptional<z.ZodNumber>;
 		contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>;
@@ -13673,7 +13673,7 @@ declare module '@scout9/app/schemas' {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+			}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 				id: z.ZodOptional<z.ZodString>;
 				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 				content: z.ZodString;
@@ -13685,47 +13685,47 @@ declare module '@scout9/app/schemas' {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}>, "many">]>;
+			}>]>, "many">]>;
 		}, "strip", z.ZodTypeAny, {
 			scheduled: number;
-			instructions: (string | string[] | {
+			instructions: (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[]) & (string | string[] | {
+			})[]) & (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined);
+			})[] | undefined);
 			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}, {
 			scheduled: number;
-			instructions: (string | string[] | {
+			instructions: (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[]) & (string | string[] | {
+			})[]) & (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined);
+			})[] | undefined);
 			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}>]>>;
@@ -13758,7 +13758,7 @@ declare module '@scout9/app/schemas' {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 					id: z.ZodOptional<z.ZodString>;
 					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 					content: z.ZodString;
@@ -13770,7 +13770,7 @@ declare module '@scout9/app/schemas' {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}>, "many">]>>;
+				}>]>, "many">]>>;
 				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 				message: z.ZodOptional<z.ZodString>;
 				secondsDelay: z.ZodOptional<z.ZodNumber>;
@@ -13808,7 +13808,7 @@ declare module '@scout9/app/schemas' {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 						id: z.ZodOptional<z.ZodString>;
 						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 						content: z.ZodString;
@@ -13820,47 +13820,47 @@ declare module '@scout9/app/schemas' {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}>, "many">]>;
+					}>]>, "many">]>;
 				}, "strip", z.ZodTypeAny, {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}, {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}>]>>;
@@ -13871,15 +13871,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -13893,23 +13893,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -13920,15 +13920,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -13942,23 +13942,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -13990,7 +13990,7 @@ declare module '@scout9/app/schemas' {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 					id: z.ZodOptional<z.ZodString>;
 					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 					content: z.ZodString;
@@ -14002,7 +14002,7 @@ declare module '@scout9/app/schemas' {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}>, "many">]>>;
+				}>]>, "many">]>>;
 				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 				message: z.ZodOptional<z.ZodString>;
 				secondsDelay: z.ZodOptional<z.ZodNumber>;
@@ -14040,7 +14040,7 @@ declare module '@scout9/app/schemas' {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+					}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 						id: z.ZodOptional<z.ZodString>;
 						persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 						content: z.ZodString;
@@ -14052,47 +14052,47 @@ declare module '@scout9/app/schemas' {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}>, "many">]>;
+					}>]>, "many">]>;
 				}, "strip", z.ZodTypeAny, {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}, {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}>]>>;
@@ -14103,15 +14103,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -14125,23 +14125,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -14152,15 +14152,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -14174,23 +14174,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -14204,15 +14204,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -14226,23 +14226,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -14254,15 +14254,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -14276,23 +14276,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -14306,15 +14306,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -14328,23 +14328,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -14356,15 +14356,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -14378,23 +14378,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -14428,7 +14428,7 @@ declare module '@scout9/app/schemas' {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+			}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 				id: z.ZodOptional<z.ZodString>;
 				persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 				content: z.ZodString;
@@ -14440,7 +14440,7 @@ declare module '@scout9/app/schemas' {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}>, "many">]>>;
+			}>]>, "many">]>>;
 			removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 			secondsDelay: z.ZodOptional<z.ZodNumber>;
 			contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>;
@@ -14476,7 +14476,7 @@ declare module '@scout9/app/schemas' {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}>, z.ZodArray<z.ZodString, "many">, z.ZodArray<z.ZodObject<{
+				}>, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodObject<{
 					id: z.ZodOptional<z.ZodString>;
 					persist: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
 					content: z.ZodString;
@@ -14488,47 +14488,47 @@ declare module '@scout9/app/schemas' {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}>, "many">]>;
+				}>]>, "many">]>;
 			}, "strip", z.ZodTypeAny, {
 				scheduled: number;
-				instructions: (string | string[] | {
+				instructions: (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[]) & (string | string[] | {
+				})[]) & (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined);
+				})[] | undefined);
 				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			}, {
 				scheduled: number;
-				instructions: (string | string[] | {
+				instructions: (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[]) & (string | string[] | {
+				})[]) & (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined);
+				})[] | undefined);
 				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			}>]>>;
@@ -14543,15 +14543,15 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 			scheduled?: number | undefined;
 			forwardNote?: string | undefined;
-			instructions?: string | string[] | {
+			instructions?: string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined;
+			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
 			contextUpsert?: Record<string, any> | undefined;
@@ -14563,23 +14563,23 @@ declare module '@scout9/app/schemas' {
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
-				instructions: (string | string[] | {
+				instructions: (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[]) & (string | string[] | {
+				})[]) & (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined);
+				})[] | undefined);
 				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
@@ -14593,15 +14593,15 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 			scheduled?: number | undefined;
 			forwardNote?: string | undefined;
-			instructions?: string | string[] | {
+			instructions?: string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined;
+			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
 			contextUpsert?: Record<string, any> | undefined;
@@ -14613,23 +14613,23 @@ declare module '@scout9/app/schemas' {
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
-				instructions: (string | string[] | {
+				instructions: (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[]) & (string | string[] | {
+				})[]) & (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined);
+				})[] | undefined);
 				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
@@ -14643,15 +14643,15 @@ declare module '@scout9/app/schemas' {
 		} | undefined;
 		scheduled?: number | undefined;
 		forwardNote?: string | undefined;
-		instructions?: string | string[] | {
+		instructions?: string | {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		} | {
+		} | (string | {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		}[] | undefined;
+		})[] | undefined;
 		removeInstructions?: string[] | undefined;
 		secondsDelay?: number | undefined;
 		contextUpsert?: Record<string, any> | undefined;
@@ -14663,23 +14663,23 @@ declare module '@scout9/app/schemas' {
 			overrideLock?: boolean | undefined;
 		} | {
 			scheduled: number;
-			instructions: (string | string[] | {
+			instructions: (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[]) & (string | string[] | {
+			})[]) & (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined);
+			})[] | undefined);
 			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | undefined;
@@ -14692,15 +14692,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -14714,23 +14714,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -14742,15 +14742,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -14764,23 +14764,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -14795,15 +14795,15 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 			scheduled?: number | undefined;
 			forwardNote?: string | undefined;
-			instructions?: string | string[] | {
+			instructions?: string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined;
+			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
 			contextUpsert?: Record<string, any> | undefined;
@@ -14815,23 +14815,23 @@ declare module '@scout9/app/schemas' {
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
-				instructions: (string | string[] | {
+				instructions: (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[]) & (string | string[] | {
+				})[]) & (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined);
+				})[] | undefined);
 				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
@@ -14845,15 +14845,15 @@ declare module '@scout9/app/schemas' {
 		} | undefined;
 		scheduled?: number | undefined;
 		forwardNote?: string | undefined;
-		instructions?: string | string[] | {
+		instructions?: string | {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		} | {
+		} | (string | {
 			content: string;
 			id?: string | undefined;
 			persist?: boolean | undefined;
-		}[] | undefined;
+		})[] | undefined;
 		removeInstructions?: string[] | undefined;
 		secondsDelay?: number | undefined;
 		contextUpsert?: Record<string, any> | undefined;
@@ -14865,23 +14865,23 @@ declare module '@scout9/app/schemas' {
 			overrideLock?: boolean | undefined;
 		} | {
 			scheduled: number;
-			instructions: (string | string[] | {
+			instructions: (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[]) & (string | string[] | {
+			})[]) & (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined);
+			})[] | undefined);
 			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | undefined;
@@ -14894,15 +14894,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -14916,23 +14916,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -14944,15 +14944,15 @@ declare module '@scout9/app/schemas' {
 					note?: string | undefined;
 				} | undefined;
 				forwardNote?: string | undefined;
-				instructions?: string | string[] | {
+				instructions?: string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined;
+				})[] | undefined;
 				removeInstructions?: string[] | undefined;
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
@@ -14966,23 +14966,23 @@ declare module '@scout9/app/schemas' {
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
-					instructions: (string | string[] | {
+					instructions: (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[]) & (string | string[] | {
+					})[]) & (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					} | {
+					} | (string | {
 						content: string;
 						id?: string | undefined;
 						persist?: boolean | undefined;
-					}[] | undefined);
+					})[] | undefined);
 					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
@@ -14997,15 +14997,15 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 			scheduled?: number | undefined;
 			forwardNote?: string | undefined;
-			instructions?: string | string[] | {
+			instructions?: string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			} | {
+			} | (string | {
 				content: string;
 				id?: string | undefined;
 				persist?: boolean | undefined;
-			}[] | undefined;
+			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
 			contextUpsert?: Record<string, any> | undefined;
@@ -15017,23 +15017,23 @@ declare module '@scout9/app/schemas' {
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
-				instructions: (string | string[] | {
+				instructions: (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[]) & (string | string[] | {
+				})[]) & (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				} | {
+				} | (string | {
 					content: string;
 					id?: string | undefined;
 					persist?: boolean | undefined;
-				}[] | undefined);
+				})[] | undefined);
 				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
