@@ -219,10 +219,25 @@ export const Scout9Platform = {
         const {request, response} = error;
         const { path, method } = request;
         const {status, data} = response;
-        console.error(colors.red(colors.bold(`${method} ${path} Scout9 ApiError (${status})`) + ': ' + JSON.stringify(data)));
-        throw new Error(JSON.stringify(data));
+        switch (path) {
+          case '/v1-parse':
+            console.error(colors.red(JSON.stringify(data)));
+            break;
+          default:
+            console.error(colors.red(colors.bold(`${method} ${path} Scout9 ApiError (${status})`) + ': ' + JSON.stringify(data)));
+        }
+        break;
       case 'SyntaxError':
-        throw error;
+        let {message, cause} = error;
+        if (cause) {
+          try {
+            message += `\nCause: ${JSON.stringify(cause)}`;
+          } catch (e) {
+            //
+          }
+        }
+        console.error(colors.red(colors.bold('SyntaxError') + `: ${message}`));
+        break;
       case 'ZodError':
         logUserValidationError(error, error.source || 'src/index.js|ts');
         break;

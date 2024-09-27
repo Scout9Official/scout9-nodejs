@@ -106,6 +106,9 @@ export const instruct: (message: string, options?: OptionsInstruct) => EventMacr
  *
  * Calling this method will lock the conversation and prevent auto replies from being sent to the user.
  *
+ * @example - basic forward
+ * forward()
+ *
  * @example - end of workflow
  * forward("User wants 1 cheese pizza ready for pick");
  *
@@ -117,7 +120,7 @@ export const instruct: (message: string, options?: OptionsInstruct) => EventMacr
  *
  * @type {(message: string, options?: OptionsForward) => EventMacros}
  */
-export const forward: (message: string, options?: OptionsForward) => EventMacros;
+export const forward: (message?: string, options?: OptionsForward) => EventMacros;
 /**
  * Manual message to send to the customer from the workflow.
  *
@@ -177,6 +180,8 @@ export type OptionsForward = {
      * - another phone or email to forward to instead of owner
      */
     to?: string;
+
+    resetIntent?: boolean;
 };
 /**
  * - Extends `WorkflowResponseSlotBase` to include keywords.
@@ -214,8 +219,7 @@ export type ContextExampleWithTrainingData = {
     output: Record<string, any>[];
 }
 
-
-export type ConversationContext = Record<string, any>;
+export type ConversationContext = Record<string, string | number | boolean | null | Array<string | number | boolean | null>>;
 
 export type ContextExamples = (ContextExampleWithTrainingData | ConversationContext)[];
 export type ContextOutput = Record<string, any>;
@@ -525,7 +529,15 @@ export type Scout9ProjectConfig = {
 };
 
 export type Scout9ProjectBuildConfig = Scout9ProjectConfig & {
-    agents: Agent[];
+    agents: AgentsConfiguration;
+    /**
+     * @deprecated use agents
+     */
+    personas?: AgentsConfiguration;
+    /**
+     * @deprecated use agents
+     */
+    persona?: AgentsConfiguration;
     entities: EntityRootProjectConfiguration[];
     workflows: WorkflowConfiguration[];
 };

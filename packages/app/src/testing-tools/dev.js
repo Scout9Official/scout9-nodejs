@@ -268,7 +268,7 @@ export class Scout9Test {
         console.error(`Invalid forward result`, result.conversation.forward);
         this.conversation.forwardedTo = 'Invalid Forward';
       }
-      this.conversation.forwarded = new Date().toString();
+      this.conversation.forwarded = new Date().toISOString();
       this.conversation.forwardNote = result.conversation.forwardNote || '';
       this.conversation.locked = true;
       this.conversation.lockedReason = result.conversation.forwardNote ?? ('Forwarded to ' + this.conversation.forwardedTo);

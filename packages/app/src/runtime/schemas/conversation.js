@@ -1,7 +1,17 @@
 import { z } from 'zod';
 import { zId } from './utils.js';
 
-export const ConversationContext = z.record(z.string(), z.any());
+export const ConversationContext = z.record(
+  z.union([
+    z.string(),
+    z.number(),
+    z.boolean(),
+    z.null(),
+    z.array(
+      z.union([z.string(), z.number(), z.boolean(), z.null()])
+    )
+  ])
+);
 
 export const ConversationAnticipateSchema = z.object({
   type: z.enum(['did', 'literal', 'context'], {description: "Determines the runtime to address the next response"}),

@@ -112,7 +112,7 @@ const handleError = (e, res = undefined) => {
 const handleZodError = ({error, res = undefined, code = 500, status, name, bodyLabel = 'Provided Input', body = undefined, action = ''}) => {
   res?.writeHead?.(code, {'Content-Type': 'application/json'});
   if (error instanceof ZodError) {
-    const formattedErrors = JSON.stringify(error.errors, null, 2);
+    const formattedErrors = JSON.stringify(error.format(), null, 2);
     res?.end?.(JSON.stringify({
       status,
       errors: formattedErrors
@@ -224,7 +224,14 @@ app.post(dev ? '/dev/workflow' : '/', async (req, res) => {
   }
   let response;
   try {
-    response = await projectApp(workflowEvent);
+    response = await projectApp(workflowEvent)
+      .then((response) => {
+        if ('toJSON' in response) {
+          return response.toJSON();
+        } else {
+          return response;
+        }
+      })
   } catch (error) {
     error.message = `Workflow Template Runtime Error: ` + error.message;
     handleError(error, res);

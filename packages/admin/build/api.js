@@ -16,7 +16,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Scout9Api = exports.Scout9ApiGenerated = exports.Scout9ApiFactory = exports.Scout9ApiFp = exports.Scout9ApiAxiosParamCreator = exports.CustomContextApi = exports.CustomContextApiFactory = exports.CustomContextApiFp = exports.CustomContextApiAxiosParamCreator = exports.WorkflowResponseSlotForwardOneOfModeEnum = exports.PurposeEnum = exports.PmtConfigModelEnum = exports.PmtConfigEngineEnum = exports.MessageGetResponseInnerRoleEnum = exports.MessageCreateRequestRoleEnum = exports.MessageBaseRoleEnum = exports.MessageRoleEnum = exports.MacroResultTypeEnum = exports.MacroDidResultTypeEnum = exports.MacroContextResultTypeEnum = exports.LlmConfigOneOf2EngineEnum = exports.LlmConfigOneOf1EngineEnum = exports.LlmConfigOneOfModelEnum = exports.LlmConfigOneOfEngineEnum = exports.ListApiOperationsResponseInnerMethodEnum = exports.GetApiOperationResponseMethodEnum = exports.ForwardRequestLatestMessageRoleEnum = exports.ForwardRequestForwardOneOfModeEnum = exports.ExistenceOperator = exports.EqualityOperator = exports.ConversationEnvironment = exports.ConversationContextFieldConditionOperatorEnum = exports.ApiOperationMethodEnum = void 0;
+exports.Scout9Api = exports.Scout9ApiGenerated = exports.Scout9ApiFactory = exports.Scout9ApiFp = exports.Scout9ApiAxiosParamCreator = exports.WorkflowResponseSlotForwardOneOfModeEnum = exports.PurposeEnum = exports.PmtConfigModelEnum = exports.PmtConfigEngineEnum = exports.MessageGetResponseInnerRoleEnum = exports.MessageCreateRequestRoleEnum = exports.MessageBaseRoleEnum = exports.MessageRoleEnum = exports.MacroResultTypeEnum = exports.MacroDidResultTypeEnum = exports.MacroContextResultTypeEnum = exports.LlmConfigOneOf2EngineEnum = exports.LlmConfigOneOf1EngineEnum = exports.LlmConfigOneOfModelEnum = exports.LlmConfigOneOfEngineEnum = exports.ListApiOperationsResponseInnerMethodEnum = exports.GetApiOperationResponseMethodEnum = exports.ForwardRequestLatestMessageRoleEnum = exports.ForwardRequestForwardOneOfModeEnum = exports.ExistenceOperator = exports.EqualityOperator = exports.ConversationEnvironment = exports.ConversationContextFieldConditionOperatorEnum = exports.ApiOperationMethodEnum = void 0;
 const axios_1 = __importDefault(require("axios"));
 // Some imports not used depending on template conditions
 // @ts-ignore
@@ -192,106 +192,6 @@ exports.WorkflowResponseSlotForwardOneOfModeEnum = {
     AfterReply: 'after-reply',
     Immediately: 'immediately'
 };
-/**
- * CustomContextApi - axios parameter creator
- * @export
- */
-const CustomContextApiAxiosParamCreator = function (configuration) {
-    return {
-        /**
-         *
-         * @summary Test a custom context before training
-         * @param {ContextTestRequest} contextTestRequest
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        contextTest: async (contextTestRequest, options = {}) => {
-            // verify required parameter 'contextTestRequest' is not null or undefined
-            (0, common_1.assertParamExists)('contextTest', 'contextTestRequest', contextTestRequest);
-            const localVarPath = `/v1-contextTest`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options };
-            const localVarHeaderParameter = {};
-            const localVarQueryParameter = {};
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
-            localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(contextTestRequest, localVarRequestOptions, configuration);
-            return {
-                url: (0, common_1.toPathString)(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-    };
-};
-exports.CustomContextApiAxiosParamCreator = CustomContextApiAxiosParamCreator;
-/**
- * CustomContextApi - functional programming interface
- * @export
- */
-const CustomContextApiFp = function (configuration) {
-    const localVarAxiosParamCreator = (0, exports.CustomContextApiAxiosParamCreator)(configuration);
-    return {
-        /**
-         *
-         * @summary Test a custom context before training
-         * @param {ContextTestRequest} contextTestRequest
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async contextTest(contextTestRequest, options) {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.contextTest(contextTestRequest, options);
-            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
-        },
-    };
-};
-exports.CustomContextApiFp = CustomContextApiFp;
-/**
- * CustomContextApi - factory interface
- * @export
- */
-const CustomContextApiFactory = function (configuration, basePath, axios) {
-    const localVarFp = (0, exports.CustomContextApiFp)(configuration);
-    return {
-        /**
-         *
-         * @summary Test a custom context before training
-         * @param {ContextTestRequest} contextTestRequest
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        contextTest(contextTestRequest, options) {
-            return localVarFp.contextTest(contextTestRequest, options).then((request) => request(axios, basePath));
-        },
-    };
-};
-exports.CustomContextApiFactory = CustomContextApiFactory;
-/**
- * CustomContextApi - object-oriented interface
- * @export
- * @class CustomContextApi
- * @extends {BaseAPI}
- */
-class CustomContextApi extends base_1.BaseAPI {
-    /**
-     *
-     * @summary Test a custom context before training
-     * @param {ContextTestRequest} contextTestRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof CustomContextApi
-     */
-    contextTest(contextTestRequest, options) {
-        return (0, exports.CustomContextApiFp)(this.configuration).contextTest(contextTestRequest, options).then((request) => request(this.axios, this.basePath));
-    }
-}
-exports.CustomContextApi = CustomContextApi;
 /**
  * Scout9Api - axios parameter creator
  * @export
@@ -637,410 +537,6 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         },
         /**
          *
-         * @summary Gets a context. Don\'t use, create your context entities within your Scout9 application.
-         * @param {string} id id of entity to query
-         * @param {*} [options] Override http request option.
-         * @deprecated
-         * @throws {RequiredError}
-         */
-        context: async (id, options = {}) => {
-            // verify required parameter 'id' is not null or undefined
-            (0, common_1.assertParamExists)('context', 'id', id);
-            const localVarPath = `/v1-context`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options };
-            const localVarHeaderParameter = {};
-            const localVarQueryParameter = {};
-            if (id !== undefined) {
-                localVarQueryParameter['id'] = id;
-            }
-            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
-            return {
-                url: (0, common_1.toPathString)(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         *
-         * @summary Create a new context. Don\'t use, create your context entities within your Scout9 application.
-         * @param {CreateContextRequest} createContextRequest
-         * @param {*} [options] Override http request option.
-         * @deprecated
-         * @throws {RequiredError}
-         */
-        contextCreate: async (createContextRequest, options = {}) => {
-            // verify required parameter 'createContextRequest' is not null or undefined
-            (0, common_1.assertParamExists)('contextCreate', 'createContextRequest', createContextRequest);
-            const localVarPath = `/v1-context`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options };
-            const localVarHeaderParameter = {};
-            const localVarQueryParameter = {};
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
-            localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(createContextRequest, localVarRequestOptions, configuration);
-            return {
-                url: (0, common_1.toPathString)(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         *
-         * @summary Gets context data
-         * @param {string} id id of entity to query
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        contextData: async (id, options = {}) => {
-            // verify required parameter 'id' is not null or undefined
-            (0, common_1.assertParamExists)('contextData', 'id', id);
-            const localVarPath = `/v1-contextDatas`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options };
-            const localVarHeaderParameter = {};
-            const localVarQueryParameter = {};
-            if (id !== undefined) {
-                localVarQueryParameter['id'] = id;
-            }
-            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
-            return {
-                url: (0, common_1.toPathString)(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         *
-         * @summary Create a new context data
-         * @param {CreateContextDataRequest} createContextDataRequest
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        contextDataCreate: async (createContextDataRequest, options = {}) => {
-            // verify required parameter 'createContextDataRequest' is not null or undefined
-            (0, common_1.assertParamExists)('contextDataCreate', 'createContextDataRequest', createContextDataRequest);
-            const localVarPath = `/v1-contextDatas`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options };
-            const localVarHeaderParameter = {};
-            const localVarQueryParameter = {};
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
-            localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(createContextDataRequest, localVarRequestOptions, configuration);
-            return {
-                url: (0, common_1.toPathString)(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         *
-         * @summary Deletes a schedule
-         * @param {string} id id of entity to query
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        contextDataDelete: async (id, options = {}) => {
-            // verify required parameter 'id' is not null or undefined
-            (0, common_1.assertParamExists)('contextDataDelete', 'id', id);
-            const localVarPath = `/v1-contextDatas`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options };
-            const localVarHeaderParameter = {};
-            const localVarQueryParameter = {};
-            if (id !== undefined) {
-                localVarQueryParameter['id'] = id;
-            }
-            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
-            return {
-                url: (0, common_1.toPathString)(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         *
-         * @summary Update a context data
-         * @param {UpdateContextDataRequest} updateContextDataRequest
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        contextDataUpdate: async (updateContextDataRequest, options = {}) => {
-            // verify required parameter 'updateContextDataRequest' is not null or undefined
-            (0, common_1.assertParamExists)('contextDataUpdate', 'updateContextDataRequest', updateContextDataRequest);
-            const localVarPath = `/v1-contextDatas`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options };
-            const localVarHeaderParameter = {};
-            const localVarQueryParameter = {};
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
-            localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(updateContextDataRequest, localVarRequestOptions, configuration);
-            return {
-                url: (0, common_1.toPathString)(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         *
-         * @summary Deletes a context entity. Don\'t use, create your context entities within your Scout9 application.
-         * @param {string} id id of entity to query
-         * @param {*} [options] Override http request option.
-         * @deprecated
-         * @throws {RequiredError}
-         */
-        contextDelete: async (id, options = {}) => {
-            // verify required parameter 'id' is not null or undefined
-            (0, common_1.assertParamExists)('contextDelete', 'id', id);
-            const localVarPath = `/v1-context`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options };
-            const localVarHeaderParameter = {};
-            const localVarQueryParameter = {};
-            if (id !== undefined) {
-                localVarQueryParameter['id'] = id;
-            }
-            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
-            return {
-                url: (0, common_1.toPathString)(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         *
-         * @summary Test a custom context before training
-         * @param {ContextTestRequest} contextTestRequest
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        contextTest: async (contextTestRequest, options = {}) => {
-            // verify required parameter 'contextTestRequest' is not null or undefined
-            (0, common_1.assertParamExists)('contextTest', 'contextTestRequest', contextTestRequest);
-            const localVarPath = `/v1-contextTest`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options };
-            const localVarHeaderParameter = {};
-            const localVarQueryParameter = {};
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
-            localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(contextTestRequest, localVarRequestOptions, configuration);
-            return {
-                url: (0, common_1.toPathString)(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * Update a context. . Don\'t use, create your context entities within your Scout9 application.
-         * @summary Update a context
-         * @param {UpdateContextRequest} updateContextRequest
-         * @param {*} [options] Override http request option.
-         * @deprecated
-         * @throws {RequiredError}
-         */
-        contextUpdate: async (updateContextRequest, options = {}) => {
-            // verify required parameter 'updateContextRequest' is not null or undefined
-            (0, common_1.assertParamExists)('contextUpdate', 'updateContextRequest', updateContextRequest);
-            const localVarPath = `/v1-context`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options };
-            const localVarHeaderParameter = {};
-            const localVarQueryParameter = {};
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
-            localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(updateContextRequest, localVarRequestOptions, configuration);
-            return {
-                url: (0, common_1.toPathString)(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         *
-         * @summary Gets all or specific set of contexts. Don\'t use, create your context entities within your Scout9 application.
-         * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
-         * @param {Array<string>} [id] ids for the entities this id belongs to
-         * @param {*} [options] Override http request option.
-         * @deprecated
-         * @throws {RequiredError}
-         */
-        contexts: async (q, id, options = {}) => {
-            const localVarPath = `/v1-contexts`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options };
-            const localVarHeaderParameter = {};
-            const localVarQueryParameter = {};
-            if (q !== undefined) {
-                localVarQueryParameter['q'] = q;
-            }
-            if (id) {
-                localVarQueryParameter['id'] = id;
-            }
-            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
-            return {
-                url: (0, common_1.toPathString)(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         *
-         * @summary Creates new contexts. Don\'t use, create your context entities within your Scout9 application.
-         * @param {CreateContextsRequest} createContextsRequest
-         * @param {*} [options] Override http request option.
-         * @deprecated
-         * @throws {RequiredError}
-         */
-        contextsCreate: async (createContextsRequest, options = {}) => {
-            // verify required parameter 'createContextsRequest' is not null or undefined
-            (0, common_1.assertParamExists)('contextsCreate', 'createContextsRequest', createContextsRequest);
-            const localVarPath = `/v1-contexts`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options };
-            const localVarHeaderParameter = {};
-            const localVarQueryParameter = {};
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
-            localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(createContextsRequest, localVarRequestOptions, configuration);
-            return {
-                url: (0, common_1.toPathString)(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         *
-         * @summary Deletes multiple contexts. Don\'t use, create your context entities within your Scout9 application.
-         * @param {Array<string>} [id] ids for the entities this id belongs to
-         * @param {*} [options] Override http request option.
-         * @deprecated
-         * @throws {RequiredError}
-         */
-        contextsDelete: async (id, options = {}) => {
-            const localVarPath = `/v1-contexts`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options };
-            const localVarHeaderParameter = {};
-            const localVarQueryParameter = {};
-            if (id) {
-                localVarQueryParameter['id'] = id;
-            }
-            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
-            return {
-                url: (0, common_1.toPathString)(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         *
-         * @summary Updates multiple contexts. Don\'t use, create your context entities within your Scout9 application.
-         * @param {UpdateContextRequest} updateContextRequest
-         * @param {*} [options] Override http request option.
-         * @deprecated
-         * @throws {RequiredError}
-         */
-        contextsUpdate: async (updateContextRequest, options = {}) => {
-            // verify required parameter 'updateContextRequest' is not null or undefined
-            (0, common_1.assertParamExists)('contextsUpdate', 'updateContextRequest', updateContextRequest);
-            const localVarPath = `/v1-contexts`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options };
-            const localVarHeaderParameter = {};
-            const localVarQueryParameter = {};
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
-            localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(updateContextRequest, localVarRequestOptions, configuration);
-            return {
-                url: (0, common_1.toPathString)(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         *
          * @summary Gets a conversation
          * @param {string} id id of entity to query
          * @param {*} [options] Override http request option.
@@ -1065,6 +561,67 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
             (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
+            return {
+                url: (0, common_1.toPathString)(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
+         * @summary Gets a conversation
+         * @param {string} id id of entity to query
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        conversationContext: async (id, options = {}) => {
+            // verify required parameter 'id' is not null or undefined
+            (0, common_1.assertParamExists)('conversationContext', 'id', id);
+            const localVarPath = `/v1-conversationContext`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options };
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            if (id !== undefined) {
+                localVarQueryParameter['id'] = id;
+            }
+            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
+            return {
+                url: (0, common_1.toPathString)(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
+         * @summary Update a conversation
+         * @param {ConversationContextUpdateRequest} conversationContextUpdateRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        conversationContextUpdate: async (conversationContextUpdateRequest, options = {}) => {
+            // verify required parameter 'conversationContextUpdateRequest' is not null or undefined
+            (0, common_1.assertParamExists)('conversationContextUpdate', 'conversationContextUpdateRequest', conversationContextUpdateRequest);
+            const localVarPath = `/v1-conversationContext`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options };
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
+            localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(conversationContextUpdateRequest, localVarRequestOptions, configuration);
             return {
                 url: (0, common_1.toPathString)(localVarUrlObj),
                 options: localVarRequestOptions,
@@ -2519,154 +2076,13 @@ const Scout9ApiFp = function (configuration) {
         },
         /**
          *
-         * @summary Gets a context. Don\'t use, create your context entities within your Scout9 application.
-         * @param {string} id id of entity to query
-         * @param {*} [options] Override http request option.
-         * @deprecated
-         * @throws {RequiredError}
-         */
-        async context(id, options) {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.context(id, options);
-            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
-        },
-        /**
-         *
-         * @summary Create a new context. Don\'t use, create your context entities within your Scout9 application.
-         * @param {CreateContextRequest} createContextRequest
-         * @param {*} [options] Override http request option.
-         * @deprecated
-         * @throws {RequiredError}
-         */
-        async contextCreate(createContextRequest, options) {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.contextCreate(createContextRequest, options);
-            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
-        },
-        /**
-         *
-         * @summary Gets context data
+         * @summary Gets a conversation
          * @param {string} id id of entity to query
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async contextData(id, options) {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.contextData(id, options);
-            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
-        },
-        /**
-         *
-         * @summary Create a new context data
-         * @param {CreateContextDataRequest} createContextDataRequest
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async contextDataCreate(createContextDataRequest, options) {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.contextDataCreate(createContextDataRequest, options);
-            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
-        },
-        /**
-         *
-         * @summary Deletes a schedule
-         * @param {string} id id of entity to query
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async contextDataDelete(id, options) {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.contextDataDelete(id, options);
-            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
-        },
-        /**
-         *
-         * @summary Update a context data
-         * @param {UpdateContextDataRequest} updateContextDataRequest
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async contextDataUpdate(updateContextDataRequest, options) {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.contextDataUpdate(updateContextDataRequest, options);
-            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
-        },
-        /**
-         *
-         * @summary Deletes a context entity. Don\'t use, create your context entities within your Scout9 application.
-         * @param {string} id id of entity to query
-         * @param {*} [options] Override http request option.
-         * @deprecated
-         * @throws {RequiredError}
-         */
-        async contextDelete(id, options) {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.contextDelete(id, options);
-            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
-        },
-        /**
-         *
-         * @summary Test a custom context before training
-         * @param {ContextTestRequest} contextTestRequest
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async contextTest(contextTestRequest, options) {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.contextTest(contextTestRequest, options);
-            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
-        },
-        /**
-         * Update a context. . Don\'t use, create your context entities within your Scout9 application.
-         * @summary Update a context
-         * @param {UpdateContextRequest} updateContextRequest
-         * @param {*} [options] Override http request option.
-         * @deprecated
-         * @throws {RequiredError}
-         */
-        async contextUpdate(updateContextRequest, options) {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.contextUpdate(updateContextRequest, options);
-            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
-        },
-        /**
-         *
-         * @summary Gets all or specific set of contexts. Don\'t use, create your context entities within your Scout9 application.
-         * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
-         * @param {Array<string>} [id] ids for the entities this id belongs to
-         * @param {*} [options] Override http request option.
-         * @deprecated
-         * @throws {RequiredError}
-         */
-        async contexts(q, id, options) {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.contexts(q, id, options);
-            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
-        },
-        /**
-         *
-         * @summary Creates new contexts. Don\'t use, create your context entities within your Scout9 application.
-         * @param {CreateContextsRequest} createContextsRequest
-         * @param {*} [options] Override http request option.
-         * @deprecated
-         * @throws {RequiredError}
-         */
-        async contextsCreate(createContextsRequest, options) {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.contextsCreate(createContextsRequest, options);
-            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
-        },
-        /**
-         *
-         * @summary Deletes multiple contexts. Don\'t use, create your context entities within your Scout9 application.
-         * @param {Array<string>} [id] ids for the entities this id belongs to
-         * @param {*} [options] Override http request option.
-         * @deprecated
-         * @throws {RequiredError}
-         */
-        async contextsDelete(id, options) {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.contextsDelete(id, options);
-            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
-        },
-        /**
-         *
-         * @summary Updates multiple contexts. Don\'t use, create your context entities within your Scout9 application.
-         * @param {UpdateContextRequest} updateContextRequest
-         * @param {*} [options] Override http request option.
-         * @deprecated
-         * @throws {RequiredError}
-         */
-        async contextsUpdate(updateContextRequest, options) {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.contextsUpdate(updateContextRequest, options);
+        async conversation(id, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.conversation(id, options);
             return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
         },
         /**
@@ -2676,8 +2092,19 @@ const Scout9ApiFp = function (configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async conversation(id, options) {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.conversation(id, options);
+        async conversationContext(id, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.conversationContext(id, options);
+            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+        },
+        /**
+         *
+         * @summary Update a conversation
+         * @param {ConversationContextUpdateRequest} conversationContextUpdateRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async conversationContextUpdate(conversationContextUpdateRequest, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.conversationContextUpdate(conversationContextUpdateRequest, options);
             return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
         },
         /**
@@ -3275,142 +2702,13 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
         },
         /**
          *
-         * @summary Gets a context. Don\'t use, create your context entities within your Scout9 application.
-         * @param {string} id id of entity to query
-         * @param {*} [options] Override http request option.
-         * @deprecated
-         * @throws {RequiredError}
-         */
-        context(id, options) {
-            return localVarFp.context(id, options).then((request) => request(axios, basePath));
-        },
-        /**
-         *
-         * @summary Create a new context. Don\'t use, create your context entities within your Scout9 application.
-         * @param {CreateContextRequest} createContextRequest
-         * @param {*} [options] Override http request option.
-         * @deprecated
-         * @throws {RequiredError}
-         */
-        contextCreate(createContextRequest, options) {
-            return localVarFp.contextCreate(createContextRequest, options).then((request) => request(axios, basePath));
-        },
-        /**
-         *
-         * @summary Gets context data
+         * @summary Gets a conversation
          * @param {string} id id of entity to query
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        contextData(id, options) {
-            return localVarFp.contextData(id, options).then((request) => request(axios, basePath));
-        },
-        /**
-         *
-         * @summary Create a new context data
-         * @param {CreateContextDataRequest} createContextDataRequest
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        contextDataCreate(createContextDataRequest, options) {
-            return localVarFp.contextDataCreate(createContextDataRequest, options).then((request) => request(axios, basePath));
-        },
-        /**
-         *
-         * @summary Deletes a schedule
-         * @param {string} id id of entity to query
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        contextDataDelete(id, options) {
-            return localVarFp.contextDataDelete(id, options).then((request) => request(axios, basePath));
-        },
-        /**
-         *
-         * @summary Update a context data
-         * @param {UpdateContextDataRequest} updateContextDataRequest
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        contextDataUpdate(updateContextDataRequest, options) {
-            return localVarFp.contextDataUpdate(updateContextDataRequest, options).then((request) => request(axios, basePath));
-        },
-        /**
-         *
-         * @summary Deletes a context entity. Don\'t use, create your context entities within your Scout9 application.
-         * @param {string} id id of entity to query
-         * @param {*} [options] Override http request option.
-         * @deprecated
-         * @throws {RequiredError}
-         */
-        contextDelete(id, options) {
-            return localVarFp.contextDelete(id, options).then((request) => request(axios, basePath));
-        },
-        /**
-         *
-         * @summary Test a custom context before training
-         * @param {ContextTestRequest} contextTestRequest
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        contextTest(contextTestRequest, options) {
-            return localVarFp.contextTest(contextTestRequest, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * Update a context. . Don\'t use, create your context entities within your Scout9 application.
-         * @summary Update a context
-         * @param {UpdateContextRequest} updateContextRequest
-         * @param {*} [options] Override http request option.
-         * @deprecated
-         * @throws {RequiredError}
-         */
-        contextUpdate(updateContextRequest, options) {
-            return localVarFp.contextUpdate(updateContextRequest, options).then((request) => request(axios, basePath));
-        },
-        /**
-         *
-         * @summary Gets all or specific set of contexts. Don\'t use, create your context entities within your Scout9 application.
-         * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
-         * @param {Array<string>} [id] ids for the entities this id belongs to
-         * @param {*} [options] Override http request option.
-         * @deprecated
-         * @throws {RequiredError}
-         */
-        contexts(q, id, options) {
-            return localVarFp.contexts(q, id, options).then((request) => request(axios, basePath));
-        },
-        /**
-         *
-         * @summary Creates new contexts. Don\'t use, create your context entities within your Scout9 application.
-         * @param {CreateContextsRequest} createContextsRequest
-         * @param {*} [options] Override http request option.
-         * @deprecated
-         * @throws {RequiredError}
-         */
-        contextsCreate(createContextsRequest, options) {
-            return localVarFp.contextsCreate(createContextsRequest, options).then((request) => request(axios, basePath));
-        },
-        /**
-         *
-         * @summary Deletes multiple contexts. Don\'t use, create your context entities within your Scout9 application.
-         * @param {Array<string>} [id] ids for the entities this id belongs to
-         * @param {*} [options] Override http request option.
-         * @deprecated
-         * @throws {RequiredError}
-         */
-        contextsDelete(id, options) {
-            return localVarFp.contextsDelete(id, options).then((request) => request(axios, basePath));
-        },
-        /**
-         *
-         * @summary Updates multiple contexts. Don\'t use, create your context entities within your Scout9 application.
-         * @param {UpdateContextRequest} updateContextRequest
-         * @param {*} [options] Override http request option.
-         * @deprecated
-         * @throws {RequiredError}
-         */
-        contextsUpdate(updateContextRequest, options) {
-            return localVarFp.contextsUpdate(updateContextRequest, options).then((request) => request(axios, basePath));
+        conversation(id, options) {
+            return localVarFp.conversation(id, options).then((request) => request(axios, basePath));
         },
         /**
          *
@@ -3419,8 +2717,18 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        conversation(id, options) {
-            return localVarFp.conversation(id, options).then((request) => request(axios, basePath));
+        conversationContext(id, options) {
+            return localVarFp.conversationContext(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
+         * @summary Update a conversation
+         * @param {ConversationContextUpdateRequest} conversationContextUpdateRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        conversationContextUpdate(conversationContextUpdateRequest, options) {
+            return localVarFp.conversationContextUpdate(conversationContextUpdateRequest, options).then((request) => request(axios, basePath));
         },
         /**
          *
@@ -3987,155 +3295,14 @@ class Scout9ApiGenerated extends base_1.BaseAPI {
     }
     /**
      *
-     * @summary Gets a context. Don\'t use, create your context entities within your Scout9 application.
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    context(id, options) {
-        return (0, exports.Scout9ApiFp)(this.configuration).context(id, options).then((request) => request(this.axios, this.basePath));
-    }
-    /**
-     *
-     * @summary Create a new context. Don\'t use, create your context entities within your Scout9 application.
-     * @param {CreateContextRequest} createContextRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    contextCreate(createContextRequest, options) {
-        return (0, exports.Scout9ApiFp)(this.configuration).contextCreate(createContextRequest, options).then((request) => request(this.axios, this.basePath));
-    }
-    /**
-     *
-     * @summary Gets context data
+     * @summary Gets a conversation
      * @param {string} id id of entity to query
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
-    contextData(id, options) {
-        return (0, exports.Scout9ApiFp)(this.configuration).contextData(id, options).then((request) => request(this.axios, this.basePath));
-    }
-    /**
-     *
-     * @summary Create a new context data
-     * @param {CreateContextDataRequest} createContextDataRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    contextDataCreate(createContextDataRequest, options) {
-        return (0, exports.Scout9ApiFp)(this.configuration).contextDataCreate(createContextDataRequest, options).then((request) => request(this.axios, this.basePath));
-    }
-    /**
-     *
-     * @summary Deletes a schedule
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    contextDataDelete(id, options) {
-        return (0, exports.Scout9ApiFp)(this.configuration).contextDataDelete(id, options).then((request) => request(this.axios, this.basePath));
-    }
-    /**
-     *
-     * @summary Update a context data
-     * @param {UpdateContextDataRequest} updateContextDataRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    contextDataUpdate(updateContextDataRequest, options) {
-        return (0, exports.Scout9ApiFp)(this.configuration).contextDataUpdate(updateContextDataRequest, options).then((request) => request(this.axios, this.basePath));
-    }
-    /**
-     *
-     * @summary Deletes a context entity. Don\'t use, create your context entities within your Scout9 application.
-     * @param {string} id id of entity to query
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    contextDelete(id, options) {
-        return (0, exports.Scout9ApiFp)(this.configuration).contextDelete(id, options).then((request) => request(this.axios, this.basePath));
-    }
-    /**
-     *
-     * @summary Test a custom context before training
-     * @param {ContextTestRequest} contextTestRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    contextTest(contextTestRequest, options) {
-        return (0, exports.Scout9ApiFp)(this.configuration).contextTest(contextTestRequest, options).then((request) => request(this.axios, this.basePath));
-    }
-    /**
-     * Update a context. . Don\'t use, create your context entities within your Scout9 application.
-     * @summary Update a context
-     * @param {UpdateContextRequest} updateContextRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    contextUpdate(updateContextRequest, options) {
-        return (0, exports.Scout9ApiFp)(this.configuration).contextUpdate(updateContextRequest, options).then((request) => request(this.axios, this.basePath));
-    }
-    /**
-     *
-     * @summary Gets all or specific set of contexts. Don\'t use, create your context entities within your Scout9 application.
-     * @param {string} [q] Query search string to filter results ({field},{operator},{value}) (example firstName,equals,Patrick)
-     * @param {Array<string>} [id] ids for the entities this id belongs to
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    contexts(q, id, options) {
-        return (0, exports.Scout9ApiFp)(this.configuration).contexts(q, id, options).then((request) => request(this.axios, this.basePath));
-    }
-    /**
-     *
-     * @summary Creates new contexts. Don\'t use, create your context entities within your Scout9 application.
-     * @param {CreateContextsRequest} createContextsRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    contextsCreate(createContextsRequest, options) {
-        return (0, exports.Scout9ApiFp)(this.configuration).contextsCreate(createContextsRequest, options).then((request) => request(this.axios, this.basePath));
-    }
-    /**
-     *
-     * @summary Deletes multiple contexts. Don\'t use, create your context entities within your Scout9 application.
-     * @param {Array<string>} [id] ids for the entities this id belongs to
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    contextsDelete(id, options) {
-        return (0, exports.Scout9ApiFp)(this.configuration).contextsDelete(id, options).then((request) => request(this.axios, this.basePath));
-    }
-    /**
-     *
-     * @summary Updates multiple contexts. Don\'t use, create your context entities within your Scout9 application.
-     * @param {UpdateContextRequest} updateContextRequest
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    contextsUpdate(updateContextRequest, options) {
-        return (0, exports.Scout9ApiFp)(this.configuration).contextsUpdate(updateContextRequest, options).then((request) => request(this.axios, this.basePath));
+    conversation(id, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).conversation(id, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      *
@@ -4145,8 +3312,19 @@ class Scout9ApiGenerated extends base_1.BaseAPI {
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
-    conversation(id, options) {
-        return (0, exports.Scout9ApiFp)(this.configuration).conversation(id, options).then((request) => request(this.axios, this.basePath));
+    conversationContext(id, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).conversationContext(id, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     *
+     * @summary Update a conversation
+     * @param {ConversationContextUpdateRequest} conversationContextUpdateRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    conversationContextUpdate(conversationContextUpdateRequest, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).conversationContextUpdate(conversationContextUpdateRequest, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      *

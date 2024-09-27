@@ -268,12 +268,13 @@ function EventMacrosFactory() {
     },
     /**
      * Returns event payload
+     * @param {boolean} flush - if true, will reset the data payload
      * @return {Array<WorkflowResponseSlot>}
      */
     toJSON(flush = true) {
       if (flush) {
         const copy = [...slots];
-        slots =[];
+        slots = [];
         return copy;
       } else {
         return slots;

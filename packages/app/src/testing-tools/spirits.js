@@ -235,9 +235,9 @@ export const Spirits = {
     if (!conversation.$agent) {
       throw new Error(`SpiritsError: No agent found in conversation, must define ".$agent" in the conversation`);
     }
-    const persona = (config.persona || config.agents).find(p => p.id === conversation.$agent);
+    const persona = (config.persona || config.personas || config.agents).find(p => p.id === conversation.$agent);
     if (!persona) {
-      if ((config.persona || config.agents).some(a => !a.id)) {
+      if ((config.persona || config.personas || config.agents).some(a => !a.id)) {
         throw new Error(`SpiritsError: No persona found ("${conversation.$agent}") in provided config, some persona's did not contain an "id" (Internal Mapping Error)`);
       }
       throw new Error(`SpiritsError: No persona found ("${conversation.$agent}") in provided config`);
