@@ -9,6 +9,8 @@ function handleAxiosResponse(res) {
   if (res.status === 200) {
     return res.data;
   } else {
+    // @TODO remove log
+    console.error('Macro Failed To Run', res.status, res.statusText, res.data);
     throw new Error(`${res.status} ${res.statusText}`)
   }
 }
@@ -20,11 +22,22 @@ function handleAxiosResponse(res) {
  */
 export async function did(prompt) {
   const convoId = MacroGlobals.$convo();
+  const event = MacroGlobals.event();
+  event.conversation.$id = convoId;
+  event.conversation.id = convoId;
   if (!convoId) {
     throw new Error(`Internal: Unable to contextualize did response for "${prompt}"`);
   }
-  const {value} = (await (new Scout9Api(new Configuration({apiKey: process.env.SCOUT9_API_KEY}))).did({prompt, convoId})
-    .then(handleAxiosResponse));
+  const {value} = (await (new Scout9Api(new Configuration({apiKey: process.env.SCOUT9_API_KEY}))).did({
+    prompt,
+    convoId,
+    event
+  })
+    .then(handleAxiosResponse)
+    .catch((err) => {
+      console.error('Error in did macro', err);
+      throw err;
+    }));
   return value;
 }
 
@@ -52,14 +65,22 @@ export async function did(prompt) {
  */
 export async function context(prompt, examples) {
   const convoId = MacroGlobals.$convo();
+  const event = MacroGlobals.event();
+  event.conversation.$id = convoId;
+  event.conversation.id = convoId;
   if (!convoId) {
     throw new Error(`Internal: Unable to contextualize did response for "${prompt}"`);
   }
   const {value} = (await (new Scout9Api(new Configuration({apiKey: process.env.SCOUT9_API_KEY}))).captureContext({
     prompt,
     examples,
-    convoId
+    convoId,
+    event,
   })
-    .then(handleAxiosResponse));
+    .then(handleAxiosResponse)
+    .catch((err) => {
+      console.error('Error in context macro', err);
+      throw err;
+    }));
   return value;
 }

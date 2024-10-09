@@ -10,5 +10,13 @@ export default class MacroGlobals {
     return $convo;
   }
 
+  static event() {
+    const event = globalThis?.SCOUT9;
+    if (!event) {
+      throw new Error(`No runtime context, ${MacroGlobals.#hint}`);
+    }
+    return event;
+  }
+
   static #hint = `make sure the context is properly instantiated before running workflow.`;
 }

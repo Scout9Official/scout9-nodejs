@@ -1,3 +1,13 @@
+import { fromError } from 'zod-validation-error';
+
+export function simplifyError(error, tag = undefined) {
+  const validationError = fromError(error);
+  if (tag) {
+    validationError.message = validationError.message.replace('Validation error', tag);
+  }
+  return validationError;
+}
+
 /**
  * @param {unknown} err
  * @return {Error}

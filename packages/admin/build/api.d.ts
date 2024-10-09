@@ -604,6 +604,12 @@ export interface Conversation {
      * @memberof Conversation
      */
     'environment': ConversationEnvironment;
+    /**
+     * Whether this conversation is a test or not
+     * @type {boolean}
+     * @memberof Conversation
+     */
+    'test'?: boolean;
 }
 /**
  *
@@ -630,6 +636,12 @@ export interface ConversationAllOf {
      * @memberof ConversationAllOf
      */
     'environment': ConversationEnvironment;
+    /**
+     * Whether this conversation is a test or not
+     * @type {boolean}
+     * @memberof ConversationAllOf
+     */
+    'test'?: boolean;
 }
 /**
  * Base props all conversation types will have
@@ -642,7 +654,7 @@ export interface ConversationBase {
      * @type {string}
      * @memberof ConversationBase
      */
-    '$agent': string;
+    '$agent'?: string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -875,6 +887,12 @@ export interface ConversationCreateRequest {
      */
     'environment': ConversationEnvironment;
     /**
+     * Whether this conversation is a test or not
+     * @type {boolean}
+     * @memberof ConversationCreateRequest
+     */
+    'test'?: boolean;
+    /**
      * Appends a prefix to the conversation id, if a conversation id is prefixed with test, or dev, it will mute text messages
      * @type {string}
      * @memberof ConversationCreateRequest
@@ -1011,6 +1029,12 @@ export interface ConversationGetResponse {
      */
     'environment': ConversationEnvironment;
     /**
+     * Whether this conversation is a test or not
+     * @type {boolean}
+     * @memberof ConversationGetResponse
+     */
+    'test'?: boolean;
+    /**
      * The client web url of the conversation
      * @type {string}
      * @memberof ConversationGetResponse
@@ -1121,7 +1145,7 @@ export interface ConversationUpdateRequest {
      * @type {string}
      * @memberof ConversationUpdateRequest
      */
-    '$agent': string;
+    '$agent'?: string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -1134,25 +1158,6 @@ export interface ConversationUpdateRequest {
      * @memberof ConversationUpdateRequest
      */
     'environmentProps'?: ConversationBaseEnvironmentProps;
-    /**
-     * User for this conversation
-     * @type {string}
-     * @memberof ConversationUpdateRequest
-     */
-    '$user': string;
-    /**
-     * Customer this conversation is with (use $user instead)
-     * @type {string}
-     * @memberof ConversationUpdateRequest
-     * @deprecated
-     */
-    '$customer'?: string;
-    /**
-     *
-     * @type {ConversationEnvironment}
-     * @memberof ConversationUpdateRequest
-     */
-    'environment': ConversationEnvironment;
     /**
      * The ID of the conversation to update
      * @type {string}
@@ -1266,6 +1271,12 @@ export interface ConversationWithId {
      * @memberof ConversationWithId
      */
     'environment': ConversationEnvironment;
+    /**
+     * Whether this conversation is a test or not
+     * @type {boolean}
+     * @memberof ConversationWithId
+     */
+    'test'?: boolean;
     /**
      * The ID of the conversation
      * @type {string}
@@ -2872,20 +2883,7 @@ export interface GetCustomerResponse {
      * @type {string}
      * @memberof GetCustomerResponse
      */
-    '$id'?: string;
-}
-/**
- *
- * @export
- * @interface GetCustomerResponseAllOf
- */
-export interface GetCustomerResponseAllOf {
-    /**
-     * The ID of the customer
-     * @type {string}
-     * @memberof GetCustomerResponseAllOf
-     */
-    '$id'?: string;
+    '$id': string;
 }
 /**
  *
@@ -3095,6 +3093,12 @@ export interface ListConversationsResponseInner {
      * @memberof ListConversationsResponseInner
      */
     'environment': ConversationEnvironment;
+    /**
+     * Whether this conversation is a test or not
+     * @type {boolean}
+     * @memberof ListConversationsResponseInner
+     */
+    'test'?: boolean;
     /**
      * The client web url of the conversation
      * @type {string}
@@ -3622,6 +3626,12 @@ export interface MacroContextInput {
     'convoId': string;
     /**
      *
+     * @type {WorkflowEvent}
+     * @memberof MacroContextInput
+     */
+    'event'?: WorkflowEvent;
+    /**
+     *
      * @type {MacroContextInputExamples}
      * @memberof MacroContextInput
      */
@@ -3718,6 +3728,12 @@ export interface MacroDidInput {
      * @memberof MacroDidInput
      */
     'prompt': string;
+    /**
+     *
+     * @type {WorkflowEvent}
+     * @memberof MacroDidInput
+     */
+    'event'?: WorkflowEvent;
     /**
      *
      * @type {string}
@@ -4455,6 +4471,12 @@ export interface ScheduleCreateRequest {
      */
     'environment': ConversationEnvironment;
     /**
+     * Whether this conversation is a test or not
+     * @type {boolean}
+     * @memberof ScheduleCreateRequest
+     */
+    'test'?: boolean;
+    /**
      * ISO 8601 datetime string
      * @type {string}
      * @memberof ScheduleCreateRequest
@@ -4567,6 +4589,12 @@ export interface ScheduleGetResponse {
      */
     'environment': ConversationEnvironment;
     /**
+     * Whether this conversation is a test or not
+     * @type {boolean}
+     * @memberof ScheduleGetResponse
+     */
+    'test'?: boolean;
+    /**
      * ISO 8601 datetime string
      * @type {string}
      * @memberof ScheduleGetResponse
@@ -4620,7 +4648,7 @@ export interface ScheduleGroupCreateRequest {
      * @type {string}
      * @memberof ScheduleGroupCreateRequest
      */
-    '$agent': string;
+    '$agent'?: string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -4718,7 +4746,7 @@ export interface ScheduleGroupGetResponse {
      * @type {string}
      * @memberof ScheduleGroupGetResponse
      */
-    '$agent': string;
+    '$agent'?: string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -4835,7 +4863,7 @@ export interface ScheduleGroupUpdateRequest {
      * @type {string}
      * @memberof ScheduleGroupUpdateRequest
      */
-    '$agent': string;
+    '$agent'?: string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -4998,6 +5026,12 @@ export interface ScheduleUpdateRequest {
      */
     'environment': ConversationEnvironment;
     /**
+     * Whether this conversation is a test or not
+     * @type {boolean}
+     * @memberof ScheduleUpdateRequest
+     */
+    'test'?: boolean;
+    /**
      * ISO 8601 datetime string
      * @type {string}
      * @memberof ScheduleUpdateRequest
@@ -5110,6 +5144,12 @@ export interface ScheduledConversation {
      */
     'environment': ConversationEnvironment;
     /**
+     * Whether this conversation is a test or not
+     * @type {boolean}
+     * @memberof ScheduledConversation
+     */
+    'test'?: boolean;
+    /**
      * ISO 8601 datetime string
      * @type {string}
      * @memberof ScheduledConversation
@@ -5158,7 +5198,7 @@ export interface ScheduledConversationGroup {
      * @type {string}
      * @memberof ScheduledConversationGroup
      */
-    '$agent': string;
+    '$agent'?: string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -5844,17 +5884,47 @@ export interface WorkflowEvent {
      */
     'customer': Customer;
     /**
-     * The intent of the message
-     * @type {string}
+     *
+     * @type {WorkflowEventIntent}
      * @memberof WorkflowEvent
      */
-    'intent': string;
+    'intent': WorkflowEventIntent;
     /**
      * The number of times the workflow has been triggered without a response
      * @type {number}
      * @memberof WorkflowEvent
      */
     'stagnationCount': number;
+}
+/**
+ * @type WorkflowEventIntent
+ * @export
+ */
+export type WorkflowEventIntent = WorkflowEventIntentOneOf | string;
+/**
+ *
+ * @export
+ * @interface WorkflowEventIntentOneOf
+ */
+export interface WorkflowEventIntentOneOf {
+    /**
+     *
+     * @type {string}
+     * @memberof WorkflowEventIntentOneOf
+     */
+    'current'?: string;
+    /**
+     *
+     * @type {Array<string>}
+     * @memberof WorkflowEventIntentOneOf
+     */
+    'flow'?: Array<string>;
+    /**
+     *
+     * @type {string}
+     * @memberof WorkflowEventIntentOneOf
+     */
+    'initial'?: string;
 }
 /**
  * @type WorkflowResponse
@@ -6105,11 +6175,11 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
     /**
      *
      * @summary Gets a customer
-     * @param {string} id id of entity to query
+     * @param {string} idOrEmailOrPhone Either customers id, phone number or email
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    customer: (id: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    customer: (idOrEmailOrPhone: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
      * @summary Creates a new customer
@@ -6575,11 +6645,11 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
     /**
      *
      * @summary Gets a customer
-     * @param {string} id id of entity to query
+     * @param {string} idOrEmailOrPhone Either customers id, phone number or email
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    customer(id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetCustomerResponse>>;
+    customer(idOrEmailOrPhone: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetCustomerResponse>>;
     /**
      *
      * @summary Creates a new customer
@@ -7047,11 +7117,11 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
     /**
      *
      * @summary Gets a customer
-     * @param {string} id id of entity to query
+     * @param {string} idOrEmailOrPhone Either customers id, phone number or email
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    customer(id: string, options?: any): AxiosPromise<GetCustomerResponse>;
+    customer(idOrEmailOrPhone: string, options?: any): AxiosPromise<GetCustomerResponse>;
     /**
      *
      * @summary Creates a new customer
@@ -7539,12 +7609,12 @@ export declare class Scout9ApiGenerated extends BaseAPI {
     /**
      *
      * @summary Gets a customer
-     * @param {string} id id of entity to query
+     * @param {string} idOrEmailOrPhone Either customers id, phone number or email
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
-    customer(id: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<GetCustomerResponse, any>>;
+    customer(idOrEmailOrPhone: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<GetCustomerResponse, any>>;
     /**
      *
      * @summary Creates a new customer

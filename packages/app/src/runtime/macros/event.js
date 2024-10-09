@@ -1,5 +1,6 @@
 import { WorkflowResponseSlotBaseSchema, WorkflowResponseSlotSchema } from '../schemas/workflow.js';
 import { MacroUtils } from './utils.js';
+import { simplifyError } from '../../utils/index.js';
 
 
 /**
@@ -79,12 +80,19 @@ function EventMacrosFactory() {
 
     /**
      * Sets context into the conversation context for later use
-     * @param {Record<string, any>} updates
+     * @param {Record<string, string | boolean | null | number | Array<string | boolean | null | number>>} updates
      * @return {EventMacros}
      */
     upsert(updates) {
-      const slot = {contextUpsert: updates}
-      slots.push(WorkflowResponseSlotSchema.parse(slot));
+      const slot = {contextUpsert: updates};
+      try {
+        slots.push(WorkflowResponseSlotSchema.parse(slot));
+      } catch (e) {
+        throw simplifyError(
+          e,
+          'Invalid upsert, input must be a Record<string, string | boolean | null | number | Array<string | boolean | null | number>>'
+        );
+      }
       return this;
     },
 
@@ -99,7 +107,8 @@ function EventMacrosFactory() {
     followup(instruction, options) {
       let slot;
       if (!options) {
-        throw new Error('Missing second argument in followup(instruction, options) \'options\' argument needs to be included')
+        throw new Error(
+          'Missing second argument in followup(instruction, options) \'options\' argument needs to be included');
       }
       // Check if it's date value
       const {success, ...rest} = MacroUtils.scheduledToUnixSafe(options);
@@ -116,7 +125,7 @@ function EventMacrosFactory() {
           followup: {
             scheduled: MacroUtils.scheduledToUnix(options.scheduled)
           }
-        }
+        };
         if (options.literal) {
           slot.followup.message = instruction;
         } else {
@@ -136,10 +145,14 @@ function EventMacrosFactory() {
             instructions: instruction,
             scheduled: rest.data
           }
-        }
+        };
 
       }
-      slots.push(WorkflowResponseSlotSchema.parse(slot));
+      try {
+        slots.push(WorkflowResponseSlotSchema.parse(slot));
+      } catch (e) {
+        throw simplifyError(e, 'Invalid followup() input');
+      }
       return this;
     },
 
@@ -158,7 +171,7 @@ function EventMacrosFactory() {
     anticipate(instruction, yes, no) {
       const slot = {
         anticipate: []
-      }
+      };
       if (Array.isArray(instruction)) {
         for (const _slot of instruction) {
           if (!Array.isArray(_slot.keywords) || _slot.keywords.length < 1) {
@@ -173,41 +186,61 @@ function EventMacrosFactory() {
         if (!no) {
           throw new Error('Missing "no" option for anticipate');
         }
+        let yesParsed, noParsed;
+        try {
+          yesParsed = WorkflowResponseSlotBaseSchema.parse(yes);
+        } catch (e) {
+          throw simplifyError(e, 'Invalid anticipate.yes input');
+        }
+        try {
+          noParsed = WorkflowResponseSlotBaseSchema.parse(no);
+        } catch (e) {
+          throw simplifyError(e, 'Invalid anticipate.no input');
+        }
+
         slot.anticipate = {
           did: instruction,
-          yes: WorkflowResponseSlotBaseSchema.parse(yes),
-          no: WorkflowResponseSlotBaseSchema.parse(no)
-        }
+          yes: yesParsed,
+          no: noParsed
+        };
       } else {
         throw new Error(`Instruction is not of type "string" or "array"`);
       }
-      slots.push(WorkflowResponseSlotSchema.parse(slot));
+      try {
+        slots.push(WorkflowResponseSlotSchema.parse(slot));
+      } catch (e) {
+        throw simplifyError(e, 'Invalid anticipate() input');
+      }
       return this;
     },
 
     /**
      * Return instructions to guide next auto reply response
      * @param {string} instruction
-     * @param {OptionsFollowup} [options]
+     * @param {OptionsInstruct} [options]
      * @return {EventMacros}
      */
     instruct(instruction, options = {}) {
       const slot = {};
       if (Object.keys(options).length > 0) {
         const instructionObj = {
-          content: instruction,
-        }
+          content: instruction
+        };
         if (options.id) {
-          instructionObj.id = options.id
+          instructionObj.id = options.id;
         }
         if (typeof options.persist === 'boolean') {
-          instructionObj.persist = options.persist
+          instructionObj.persist = options.persist;
         }
         slot.instructions = instructionObj;
       } else {
         slot.instructions = instruction;
       }
-      slots.push(WorkflowResponseSlotSchema.parse(slot));
+      try {
+        slots.push(WorkflowResponseSlotSchema.parse(slot));
+      } catch (e) {
+        throw simplifyError(e, 'Invalid instruct() input');
+      }
       return this;
     },
     /**
@@ -232,7 +265,11 @@ function EventMacrosFactory() {
           slot.secondsDelay = delay;
         }
       }
-      slots.push(WorkflowResponseSlotSchema.parse(slot));
+      try {
+        slots.push(WorkflowResponseSlotSchema.parse(slot));
+      } catch (e) {
+        throw simplifyError(e, 'Invalid reply() input');
+      }
       return this;
     },
     /**
@@ -250,7 +287,7 @@ function EventMacrosFactory() {
             note: message ?? defaultForward
           },
           forwardNote: message ?? defaultForward
-        }
+        };
         if (options.to) {
           slot.forward.to = options.to;
         }
@@ -261,9 +298,13 @@ function EventMacrosFactory() {
         slot = {
           forward: true,
           forwardNote: message ?? defaultForward
-        }
+        };
       }
-      slots.push(WorkflowResponseSlotSchema.parse(slot));
+      try {
+        slots.push(WorkflowResponseSlotSchema.parse(slot));
+      } catch (e) {
+        throw simplifyError(e, 'Invalid forward() input');
+      }
       return this;
     },
     /**
@@ -279,7 +320,7 @@ function EventMacrosFactory() {
       } else {
         return slots;
       }
-    },
+    }
   };
 }
 

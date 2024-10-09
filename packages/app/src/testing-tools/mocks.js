@@ -42,10 +42,20 @@ export const createMockMessage = (content, role = 'customer', time  = moment().t
 }
 
 /**
+ * @param {import('@scout9/app').Conversation['environment']} [environment]
+ * @param {string} [$agent]
+ * @param {string} [$customer]
+ * @param {string} [$id]
  * @returns {import('@scout9/app').Conversation}
  */
-export const createMockConversation = (environment = 'phone', $agent = 'default', $customer = 'default') => {
+export const createMockConversation = (
+  environment = 'phone',
+  $agent = 'default',
+  $customer = 'default',
+  $id = 'default'
+) => {
   return {
+    $id,
     $agent,
     $customer,
     environment

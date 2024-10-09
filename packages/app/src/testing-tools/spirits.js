@@ -322,6 +322,7 @@ export const Spirits = {
 
     // 3. Run the workflow
     progress('Running workflow', 'info', 'SET_PROCESSING', 'system');
+
     const slots = await workflow({
       messages,
       conversation,
@@ -335,8 +336,18 @@ export const Spirits = {
         initial: conversation.intent || null
       },
       stagnationCount: conversation.lockAttempts || 0
-    }).then((res) => Array.isArray(res) ? res : [res]);
-    const hasNoInstructions = slots.every(s => !s.instructions || (Array.isArray(s) && s.instructions.length === 0));
+    })
+      .then((res) => Array.isArray(res) ? res : [res])
+      .then((slots) => slots.reduce((accumulator, slot) => {
+        if ('toJSON' in slot) {
+          const slotJson = slot.toJSON();
+          accumulator.push(...(Array.isArray(slotJson) ? slotJson : [slotJson]));
+        } else {
+          accumulator.push(slot);
+        }
+        return accumulator;
+      }, []));
+    const hasNoInstructions = slots.every(s => !s.instructions || (Array.isArray(s.instructions) && s.instructions.length === 0));
     const hasNoCustomMessage = slots.every(s => !s.message);
     const previousLockAttempt = conversation.lockAttempts || 0; // Used to track
 
@@ -475,7 +486,7 @@ export const Spirits = {
             messages.splice(index, 1);
             progress('Remove instruction', 'info', 'REMOVE_MESSAGE', instructionId);
           } else {
-            console.log('instruction not found', instructionId);
+            console.log(`Instruction not found "${instructionId}", other ids: ${messages.map(m => `"${m.id}"`).join(', ')}`);
           }
         }
       }

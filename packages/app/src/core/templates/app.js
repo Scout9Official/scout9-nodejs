@@ -15,6 +15,9 @@ import projectApp from './src/app.js';
 import config from './config.js';
 import { readdir } from 'fs/promises';
 import { ZodError } from 'zod';
+import { fromError } from 'zod-validation-error';
+
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -71,14 +74,21 @@ const scout9 = new Scout9Api(configuration);
 const cache = new ServerCache();
 cache.reset();
 
+const simplifyZodError = (error, tag = undefined) => {
+  const validationError = fromError(error);
+  if (tag) {
+    validationError.message = validationError.message.replace('Validation error', tag);
+  }
+  return validationError;
+}
 
-const handleError = (e, res = undefined) => {
+const handleError = (e, res = undefined, tag = undefined, body = undefined) => {
   let name = e?.name || 'Runtime Error';
   let message = e?.message || 'Unknown error';
   let code = typeof e?.code === 'number'
-    ? e?.code
+    ? e.code
     : typeof e?.status === 'number'
-      ? e?.status
+      ? e.status
       : 500;
   if ('response' in e) {
     const response = e.response;
@@ -94,11 +104,22 @@ const handleError = (e, res = undefined) => {
       message = response.body;
     }
   }
+  if (body) {
+    console.log(colors.grey(JSON.stringify(body, null, dev ? 2 : undefined)));
+  }
+  if (tag && typeof tag === 'string') {
+    message = `${tag}: ${message}`;
+  }
+  if (typeof e?.constructor?.name === 'string') {
+    message = `(${e?.constructor?.name}) ${message}`;
+  }
   console.log(colors.red(`${colors.bold(`${code} Error`)}: ${message}`));
   if ('stack' in e) {
-    console.log(colors.grey(e.stack));
+    console.log('STACK:', colors.grey(e.stack));
   }
-  console.log(colors);
+  if (body) {
+    console.log('INPUT:', colors.grey(JSON.stringify(body, null, dev ? 2 : undefined)));
+  }
   if (res) {
     res.writeHead(code, {'Content-Type': 'application/json'});
     res.end(JSON.stringify({
@@ -112,22 +133,24 @@ const handleError = (e, res = undefined) => {
 const handleZodError = ({error, res = undefined, code = 500, status, name, bodyLabel = 'Provided Input', body = undefined, action = ''}) => {
   res?.writeHead?.(code, {'Content-Type': 'application/json'});
   if (error instanceof ZodError) {
-    const formattedErrors = JSON.stringify(error.format(), null, 2);
+    const formattedError = simplifyZodError(error);
     res?.end?.(JSON.stringify({
       status,
-      errors: formattedErrors
+      error: formattedError.message,
+      errors: [formattedError.message]
     }));
     console.log(colors.red(`${colors.bold(`${name}`)}:`));
     if (body) {
       console.log(colors.grey(`${bodyLabel}:`));
-      console.log(colors.grey(JSON.stringify(body, null, 2)));
+      console.log(colors.grey(JSON.stringify(body, null, dev ? 2 : undefined)));
     }
-    console.log(colors.red(`${action}${formattedErrors}`));
+    console.log(colors.red(`${action}${formattedError}`));
   } else {
     console.error(error);
     error.message = `${name}: ` + error.message;
     res?.end?.(JSON.stringify({
       status,
+      error: error.message,
       errors: [error.message]
     }));
     throw new Error(`${name}: Provided error was not a ZodError`);
@@ -213,14 +236,13 @@ app.post(dev ? '/dev/workflow' : '/', async (req, res) => {
         status: 'Invalid WorkflowEvent Input'
       });
     } else {
-      error.message = `Workflow Template Event Parse Error: ` + error.message;
-      handleError(error, res);
+      handleError(error, res, 'Workflow Template Event Parse Error', req.body.event);
     }
     return;
   }
 
   if (!workflowEvent) {
-    handleError(new Error('No workflowEvent defined'), res);
+    handleError(new Error('No workflowEvent defined'), res, req.body.event, 'Workflow Template Event No Event');
   }
   let response;
   try {
@@ -233,8 +255,19 @@ app.post(dev ? '/dev/workflow' : '/', async (req, res) => {
         }
       })
   } catch (error) {
-    error.message = `Workflow Template Runtime Error: ` + error.message;
-    handleError(error, res);
+    if (error instanceof ZodError) {
+      handleZodError({
+        error,
+        name: 'Workflow Template Event Request Parse Error',
+        body: req.body.event,
+        bodyLabel: 'Provided WorkflowEvent',
+        code: 400,
+        res,
+        status: 'Invalid WorkflowEvent Input'
+      });
+    } else {
+      handleError(error, res, 'Workflow Template Runtime Error', workflowEvent);
+    }
     return;
   }
 
@@ -262,8 +295,7 @@ app.post(dev ? '/dev/workflow' : '/', async (req, res) => {
         status: 'Invalid WorkflowResponse Output'
       });
     } else {
-      error.message = `Workflow Template Runtime Parse Error: ` + error.message;
-      handleError(error, res);
+      handleError(error, res, 'Workflow Template Runtime Parse Error', response);
     }
   }
 });
@@ -363,13 +395,13 @@ async function runEntityApi(req, res) {
     const response = await api({
       params,
       searchParams: req?.query || {}, body: req?.body || undefined,
-      id: params.id
+      id: params?.id
     });
     if (response instanceof EventResponse || !!response.body) {
       const data = response.body ?? response.data();
       res.writeHead(response.status || 200, {'Content-Type': 'application/json'});
       res.end(JSON.stringify(data));
-      console.log(`${req.method} EntityApi.${params.id}:`);
+      console.log(`${req.method} EntityApi.${lastSegment}:`);
       console.log(colors.grey(JSON.stringify(data)));
     } else {
       throw new Error(`Invalid response: not an EventResponse`);
@@ -522,7 +554,6 @@ if (dev) {
         }
       }
     } catch (e) {
-      console.error(e);
       handleError(e);
     }
   });

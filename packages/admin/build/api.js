@@ -754,13 +754,13 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         /**
          *
          * @summary Gets a customer
-         * @param {string} id id of entity to query
+         * @param {string} idOrEmailOrPhone Either customers id, phone number or email
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        customer: async (id, options = {}) => {
-            // verify required parameter 'id' is not null or undefined
-            (0, common_1.assertParamExists)('customer', 'id', id);
+        customer: async (idOrEmailOrPhone, options = {}) => {
+            // verify required parameter 'idOrEmailOrPhone' is not null or undefined
+            (0, common_1.assertParamExists)('customer', 'idOrEmailOrPhone', idOrEmailOrPhone);
             const localVarPath = `/v1-customer`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
@@ -771,8 +771,8 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
             const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options };
             const localVarHeaderParameter = {};
             const localVarQueryParameter = {};
-            if (id !== undefined) {
-                localVarQueryParameter['id'] = id;
+            if (idOrEmailOrPhone !== undefined) {
+                localVarQueryParameter['idOrEmailOrPhone'] = idOrEmailOrPhone;
             }
             (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -2155,12 +2155,12 @@ const Scout9ApiFp = function (configuration) {
         /**
          *
          * @summary Gets a customer
-         * @param {string} id id of entity to query
+         * @param {string} idOrEmailOrPhone Either customers id, phone number or email
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async customer(id, options) {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.customer(id, options);
+        async customer(idOrEmailOrPhone, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.customer(idOrEmailOrPhone, options);
             return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
         },
         /**
@@ -2774,12 +2774,12 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
         /**
          *
          * @summary Gets a customer
-         * @param {string} id id of entity to query
+         * @param {string} idOrEmailOrPhone Either customers id, phone number or email
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        customer(id, options) {
-            return localVarFp.customer(id, options).then((request) => request(axios, basePath));
+        customer(idOrEmailOrPhone, options) {
+            return localVarFp.customer(idOrEmailOrPhone, options).then((request) => request(axios, basePath));
         },
         /**
          *
@@ -3374,13 +3374,13 @@ class Scout9ApiGenerated extends base_1.BaseAPI {
     /**
      *
      * @summary Gets a customer
-     * @param {string} id id of entity to query
+     * @param {string} idOrEmailOrPhone Either customers id, phone number or email
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
-    customer(id, options) {
-        return (0, exports.Scout9ApiFp)(this.configuration).customer(id, options).then((request) => request(this.axios, this.basePath));
+    customer(idOrEmailOrPhone, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).customer(idOrEmailOrPhone, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      *

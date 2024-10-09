@@ -309,6 +309,7 @@ export type ConversationAnticipate = {
 
 
 export type Conversation = {
+    $id: string;
     /** Default agent assigned to the conversation(s) */
     $agent: string;
     /** Customer this conversation is with */
@@ -588,7 +589,7 @@ export type WorkflowResponseSlot = WorkflowResponseSlotBase & {
     anticipate?: Anticipate | undefined;
 };
 
-export type WorkflowResponse = WorkflowResponseSlot | WorkflowResponseSlot[];
+export type WorkflowResponse = EventMacros | WorkflowResponseSlot | (WorkflowResponseSlot | EventMacros)[];
 
 export type WorkflowFunction = (event: WorkflowEvent) => WorkflowResponse | Promise<WorkflowResponse>;
 

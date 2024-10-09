@@ -24,6 +24,7 @@ export const ConversationAnticipateSchema = z.object({
 });
 
 export const ConversationSchema = z.object({
+  $id: zId('Conversation ID', z.string({description: 'Conversation unique id'})),
   $agent: zId('Conversation Agent ID', z.string({description: 'Default agent assigned to the conversation(s)'})),
   $customer: zId('Conversation Customer ID', z.string({description: 'Customer this conversation is with'})),
   initialContexts: z.array(z.string(), {description: 'Initial contexts to load when starting the conversation'})

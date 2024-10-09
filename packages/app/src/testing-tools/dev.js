@@ -1,5 +1,5 @@
 import { Configuration, Scout9Api } from '@scout9/admin';
-import {grey, italic, bgWhite, black} from 'kleur/colors';
+import { grey, italic, bgWhite, black } from 'kleur/colors';
 import { createMockConversation, createMockWorkflowEvent } from './mocks.js';
 import { loadConfig } from '../core/config/index.js';
 import { requireProjectFile } from '../utils/index.js';
@@ -33,7 +33,7 @@ export class Scout9Test {
   messages;
 
   /**
-   * @type {any}
+   * @type {import('@scout9/app').ConversationContext}
    */
   context;
 
@@ -80,6 +80,11 @@ export class Scout9Test {
    */
   _personaId;
 
+  /**
+   * @private
+   */
+  #defaultLog;
+
 
   /**
    * Mimics a customer message to your app (useful for testing)
@@ -106,7 +111,8 @@ export class Scout9Test {
       mode = 'production',
       api,
       app,
-      project
+      project,
+      log = false
     } = {
       cwd: process.cwd(),
       src: 'src',
@@ -142,6 +148,7 @@ export class Scout9Test {
     this.customer = customer;
     this.context.customer = customer;
     this._personaId = persona;
+    this.#defaultLog = !!log;
   }
 
   /**
@@ -158,7 +165,7 @@ export class Scout9Test {
 
     // Load app configuration (if not already loaded or override true)
     if (override || !this._project) {
-      this._project = await loadConfig({cwd: this._cwd, src: this._src, mode: this._mode})
+      this._project = await loadConfig({cwd: this._cwd, src: this._src, mode: this._mode});
     }
 
     if (override || !this._api) {
@@ -196,7 +203,7 @@ export class Scout9Test {
    * @param {import('@scout9/app/spirits').StatusCallback | boolean} [progress] - progress callback, if true, will log progress, can override with your own callback. If not provided, no logs will be added.
    * @returns {Promise<import('@scout9/app/spirits').ConversationEvent>}
    */
-  async send(message, progress = false) {
+  async send(message, progress = this.#defaultLog) {
     if (!this._loaded) {
       await this.load();
     }
@@ -205,7 +212,7 @@ export class Scout9Test {
       const typeStdout = type ? italic(bgWhite(' ' + black(type) + ' ')) : '';
       const messageStdout = grey(message);
       (console.hasOwnProperty(level) ? console[level] : console.log)(`\t${typeStdout ? typeStdout + ' ' : ''}${messageStdout}`);
-    }
+    };
 
     // If custom logger provided, use it, otherwise use default logger
     let progressInput = typeof progress === 'function' ? progress : defaultProgressLogger;
@@ -215,10 +222,14 @@ export class Scout9Test {
       if (!!progress) {
         progressInput = defaultProgressLogger; // use default logger
       } else {
-        progressInput = () => {}; // use no-op
+        progressInput = () => {
+        }; // use no-op
       }
     }
 
+    /**
+     * @type {import('@scout9/app').Message}
+     */
     const _message = {
       id: 'user_mock_' + Math.random().toString(36).slice(2, 11),
       role: 'customer',
@@ -239,6 +250,10 @@ export class Scout9Test {
         }).then((_res => _res.data));
       },
       workflow: async (event) => {
+        globalThis.SCOUT9 = {
+          ...event,
+          $convo: this.conversation.$id
+        }
         return this._app(event);
       },
       generator: (request) => {
@@ -351,6 +366,16 @@ export class Scout9Test {
       llm: this._project.llm,
       pmt: this._project.pmt
     }).then((_res => _res.data));
+  }
+
+  /**
+   * @param {Partial<import('@scout9/app').ConversationContext>} ctx
+   */
+  set context(ctx) {
+    this.context = {
+      ...this.context,
+      ...ctx
+    };
   }
 
   /**
