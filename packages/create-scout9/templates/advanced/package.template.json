@@ -1,0 +1,17 @@
+{
+  "name": "~TODO~",
+  "version": "0.0.1",
+  "scripts": {
+    "deploy": "scout9 deploy",
+    "build": "scout9 build",
+    "dev": "scout9 dev",
+    "test": "scout9 test",
+    "start": "npm run dev"
+  },
+  "dependencies": {
+    "@scout9/app": "workspace:*",
+    "@scout9/crm": "workspace:*",
+    "moment": "^2.30.1"
+  },
+  "type": "module"
+}

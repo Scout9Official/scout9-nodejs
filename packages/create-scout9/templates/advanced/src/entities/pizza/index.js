@@ -1,9 +1,8 @@
 /**
  * Example entity that breaks down the pizza the user wants to order
- * @returns {IEntityBuildConfig}
+ * @returns {import('@scout9/app').EntityBuildConfig}
  */
 export default async function () {
-
   return {
     definitions: [
       {
