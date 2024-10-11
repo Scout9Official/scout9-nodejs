@@ -1,15 +1,11 @@
-# Scout9's Pocket Scout API
+# Scout9's PMT Admin API
 
-Pocket Scout Node.js API for [Scout9](https://scout9.vercel.app/) - mimics you over your personal phone and email
-for common tasks like scheduling meetings, answering questions, and more.
-
-**⚠️ Danger**: Avoid using Scout9 autopilot your job and personal relationships, this tool is designed for
-workplace productivity and not a substitute for human interaction.
+PMT Node.js API for [Scout9](https://scout9.vercel.app/).
 
 ## Setup
 
-1. Register and grab an API key from [Scout9](https://scout9.vercel.app/)
-2. (Optional) [Purchase](https://scout9.vercel.app/) a Scout9 email or phone number if you prefer
+1. Register and grab an API key from [Scout9](https://scout9.com/)
+2. (Optional) [Purchase](https://scout9.com/) a Scout9 email or phone number if you prefer
 
 ```bash
 npm install @scout9/admin --save

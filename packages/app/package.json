@@ -85,7 +85,7 @@
     "zod-to-ts": "^1.2.0"
   },
   "dependencies": {
-    "@scout9/admin": "^1.0.0-alpha.0.0.39",
+    "@scout9/admin": "^1.0.0-alpha.0.0.50",
     "@scout9/crm": "^1.0.0-alpha.0.0.4",
     "archiver": "^6.0.1",
     "body-parser": "^1.20.2",

@@ -1,6 +1,6 @@
 # create-svelte
 
-A CLI for creating new [Scout9](https://scout9.com) auto reply projects. Just run...
+A CLI for creating new [Scout9 PMT](https://scout9.com) workflow templates. Just run...
 
 ```bash
 npm create scout9@latest my-app
@@ -15,8 +15,8 @@ You can also use `create-scout9` programmatically:
 ```js
 import { create } from 'create-scout9';
 
-await create('my-new-app', {
-  name: 'my-new-app',
+await create('my-new-pmt', {
+  name: 'my-new-pmt',
   template: 'default', // or 'skeleton'
   // types: 'checkjs', // or 'typescript' or null; // @TODO TypeScript support
   prettier: false,

@@ -1,23 +1,17 @@
-# Scout9 Auto Replies
+# Scout9 PMT
 
 Try out the alpha version
 
 `npm create scout9@latest my-app`
 
-
-### Alpha (Not Released)
-
 * Chatbots 🤮
 * One on One Communication 😎
-* Scale?
-* 💎 [Scout9](https://scout9.com) 💎
+* Scale? 🤷‍
+* 💎 [Scout9's PMT](https://scout9.com)
 
-Scout9's Persona Model Transforming (PMT) technology auto crafts messages in your voice on SMS/Email legacy channels. This technology enables you to personally connect with **thousands of customers simultaneously**.
+Scout9's Persona Model Transform (PMT) **guarantees** to craft auto generated messages into your words, so that you can spend less time typing repetitive messages and more time on more pressing customer interactions.
 
-**Perfect for handling repetitive requests**
-
-
-
+**Note**: If your PMT cannot guarantee to transform a particular message in your own words, it will forward the conversation to you to handle personally.
 
 
 #### Thanks to our early backers using Scout9 to improve their customer experience

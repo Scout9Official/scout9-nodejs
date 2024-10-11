@@ -646,13 +646,19 @@ app.listen(process.env.PORT || 8080, err => {
    |\\_________\\|_______|\\|_______|\\|_______|    \\|__|  \\|_______|
    \\|_________|                                                  
 `;
-  const art_auto_reply = `    ___         __           ____             __         __   
-   /   | __  __/ /_____     / __ \\___  ____  / /_  __   / /   
-  / /| |/ / / / __/ __ \\   / /_/ / _ \\/ __ \\/ / / / /  / /    
- / ___ / /_/ / /_/ /_/ /  / _, _/  __/ /_/ / / /_/ /  /_/     
-/_/  |_\\__,_/\\__/\\____/  /_/ |_|\\___/ .___/_/\\__, /  (_)      
-                                   /_/      /____/            
-  
+  const art_pmt = `
+ _______   __       __  ________ 
+|       \ |  \     /  \|        \
+| $$$$$$$\| $$\   /  $$ \$$$$$$$$
+| $$__/ $$| $$$\ /  $$$   | $$   
+| $$    $$| $$$$\  $$$$   | $$   
+| $$$$$$$ | $$\$$ $$ $$   | $$   
+| $$      | $$ \$$$| $$   | $$   
+| $$      | $$  \$ | $$   | $$   
+ \$$       \$$      \$$    \$$   
+                                 
+                                 
+                                 
 `;
   const protocol = process.env.PROTOCOL || 'http';
   const host = process.env.HOST || 'localhost';
@@ -660,7 +666,7 @@ app.listen(process.env.PORT || 8080, err => {
   const fullUrl = `${protocol}://${host}:${port}`;
   if (dev) {
     console.log(colors.bold(colors.green(art_scout9)));
-    console.log(colors.bold(colors.cyan(art_auto_reply)));
+    console.log(colors.bold(colors.cyan(art_pmt)));
     console.log(`${colors.grey(`${colors.cyan('>')} Running ${colors.bold(colors.white('Scout9'))}`)} ${colors.bold(
       colors.red(colors.bgBlack('auto-reply')))} ${colors.grey('dev environment on')} ${fullUrl}`);
   } else {

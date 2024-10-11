@@ -14,7 +14,7 @@
     "type": "git",
     "url": "git://github.com/Scout9Official/scout9-nodejs.git"
   },
-  "author": "Patrick Opie <opiepat@gmail.com>",
+  "author": "Patrick Opie <patrick@scout9.com>",
   "workspaces": [
     "packages/*"
   ],
