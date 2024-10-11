@@ -1,5 +1,7 @@
 # Scout9 PMT
 
+An Human-AI Augmentation solution designed for 1:1 personal conversations.
+
 Try out the alpha version
 
 `npm create scout9@latest my-app`
