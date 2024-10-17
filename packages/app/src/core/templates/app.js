@@ -2,21 +2,21 @@ import polka from 'polka';
 import sirv from 'sirv';
 import compression from 'compression';
 import bodyParser from 'body-parser';
-import colors from 'kleur';
 import { config as dotenv } from 'dotenv';
 import { Configuration, Scout9Api } from '@scout9/admin';
-import { EventResponse } from '@scout9/app';
+import { EventResponse, ProgressLogger } from '@scout9/app';
 import { WorkflowEventSchema, WorkflowResponseSchema } from '@scout9/app/schemas';
+import { Spirits } from '@scout9/app/spirits';
 import path, { resolve } from 'node:path';
 import fs from 'node:fs';
 import https from 'node:https';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import projectApp from './src/app.js';
-import config from './config.js';
 import { readdir } from 'fs/promises';
 import { ZodError } from 'zod';
 import { fromError } from 'zod-validation-error';
-
+import { bgBlack, blue, bold, cyan, green, grey, magenta, red, white } from 'kleur/colors';
+import projectApp from './src/app.js';
+import config from './config.js';
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -80,7 +80,7 @@ const simplifyZodError = (error, tag = undefined) => {
     validationError.message = validationError.message.replace('Validation error', tag);
   }
   return validationError;
-}
+};
 
 const handleError = (e, res = undefined, tag = undefined, body = undefined) => {
   let name = e?.name || 'Runtime Error';
@@ -105,7 +105,7 @@ const handleError = (e, res = undefined, tag = undefined, body = undefined) => {
     }
   }
   if (body) {
-    console.log(colors.grey(JSON.stringify(body, null, dev ? 2 : undefined)));
+    console.log(grey(JSON.stringify(body, null, dev ? 2 : undefined)));
   }
   if (tag && typeof tag === 'string') {
     message = `${tag}: ${message}`;
@@ -113,12 +113,12 @@ const handleError = (e, res = undefined, tag = undefined, body = undefined) => {
   if (typeof e?.constructor?.name === 'string') {
     message = `(${e?.constructor?.name}) ${message}`;
   }
-  console.log(colors.red(`${colors.bold(`${code} Error`)}: ${message}`));
+  console.log(red(`${bold(`${code} Error`)}: ${message}`));
   if ('stack' in e) {
-    console.log('STACK:', colors.grey(e.stack));
+    console.log('STACK:', grey(e.stack));
   }
   if (body) {
-    console.log('INPUT:', colors.grey(JSON.stringify(body, null, dev ? 2 : undefined)));
+    console.log('INPUT:', grey(JSON.stringify(body, null, dev ? 2 : undefined)));
   }
   if (res) {
     res.writeHead(code, {'Content-Type': 'application/json'});
@@ -130,7 +130,16 @@ const handleError = (e, res = undefined, tag = undefined, body = undefined) => {
   }
 };
 
-const handleZodError = ({error, res = undefined, code = 500, status, name, bodyLabel = 'Provided Input', body = undefined, action = ''}) => {
+const handleZodError = ({
+  error,
+  res = undefined,
+  code = 500,
+  status,
+  name,
+  bodyLabel = 'Provided Input',
+  body = undefined,
+  action = ''
+}) => {
   res?.writeHead?.(code, {'Content-Type': 'application/json'});
   if (error instanceof ZodError) {
     const formattedError = simplifyZodError(error);
@@ -139,12 +148,12 @@ const handleZodError = ({error, res = undefined, code = 500, status, name, bodyL
       error: formattedError.message,
       errors: [formattedError.message]
     }));
-    console.log(colors.red(`${colors.bold(`${name}`)}:`));
+    console.log(red(`${bold(`${name}`)}:`));
     if (body) {
-      console.log(colors.grey(`${bodyLabel}:`));
-      console.log(colors.grey(JSON.stringify(body, null, dev ? 2 : undefined)));
+      console.log(grey(`${bodyLabel}:`));
+      console.log(grey(JSON.stringify(body, null, dev ? 2 : undefined)));
     }
-    console.log(colors.red(`${action}${formattedError}`));
+    console.log(red(`${action}${formattedError}`));
   } else {
     console.error(error);
     error.message = `${name}: ` + error.message;
@@ -253,7 +262,7 @@ app.post(dev ? '/dev/workflow' : '/', async (req, res) => {
         } else {
           return response;
         }
-      })
+      });
   } catch (error) {
     if (error instanceof ZodError) {
       handleZodError({
@@ -278,8 +287,8 @@ app.post(dev ? '/dev/workflow' : '/', async (req, res) => {
   try {
     const formattedResponse = WorkflowResponseSchema.parse(response);
     if (dev) {
-      console.log(colors.green(`Workflow Sending Response:`));
-      console.log(colors.grey(JSON.stringify(formattedResponse, null, 2)));
+      console.log(green(`Workflow Sending Response:`));
+      console.log(grey(JSON.stringify(formattedResponse, null, 2)));
     }
     res.writeHead(200, {'Content-Type': 'application/json'});
     res.end(JSON.stringify(formattedResponse));
@@ -402,7 +411,7 @@ async function runEntityApi(req, res) {
       res.writeHead(response.status || 200, {'Content-Type': 'application/json'});
       res.end(JSON.stringify(data));
       console.log(`${req.method} EntityApi.${lastSegment}:`);
-      console.log(colors.grey(JSON.stringify(data)));
+      console.log(grey(JSON.stringify(data)));
     } else {
       throw new Error(`Invalid response: not an EventResponse`);
     }
@@ -429,12 +438,13 @@ async function getFilesRecursive(dir) {
   return results;
 }
 
+
+const commandsDir = resolve(__dirname, `./src/commands`);
+
 async function runCommandApi(req, res) {
   let file;
   const {body, url} = req;
   const params = url.split('/').slice(2).filter(Boolean);
-  const commandsDir = resolve(__dirname, `./src/commands`);
-
   try {
     const files = await getFilesRecursive(commandsDir).then(files => files.map(file => file.replace(commandsDir, '.'))
       .filter(file => params.every(p => file.includes(p))));
@@ -481,7 +491,14 @@ async function runCommandApi(req, res) {
   let result;
 
   try {
-    result = await mod.default(body);
+    result = await mod.default(body)
+      .then((response) => {
+        if ('toJSON' in response) {
+          return response.toJSON();
+        } else {
+          return response;
+        }
+      });
   } catch (e) {
     console.error('Failed to run command', e);
     res.writeHead(500, {'Content-Type': 'application/json'});
@@ -523,6 +540,7 @@ app.post('/entity/:entity/*', runEntityApi);
 app.delete('/entity/:entity/*', runEntityApi);
 
 // For local development: parse a message
+let devProgram;
 if (dev) {
 
   app.get('/dev/config', async (req, res, next) => {
@@ -543,14 +561,14 @@ if (dev) {
       if (!cache.isTested()) {
         const testableEntities = config.entities.filter(e => e?.definitions?.length > 0 || e?.training?.length > 0);
         if (dev && testableEntities.length > 0) {
-          console.log(`${colors.grey(`${colors.cyan('>')} Testing ${colors.bold(colors.white(testableEntities.length))} Entities...`)}`);
+          console.log(`${grey(`${cyan('>')} Testing ${bold(white(testableEntities.length))} Entities...`)}`);
           const _res = await scout9.parse({
             message: 'Dummy message to parse',
             language: 'en',
             entities: testableEntities
           });
           cache.setTested();
-          console.log(`\t${colors.green(`+ ${testableEntities.length} Entities passed`)}`);
+          console.log(`\t${green(`+ ${testableEntities.length} Entities passed`)}`);
         }
       }
     } catch (e) {
@@ -558,80 +576,449 @@ if (dev) {
     }
   });
 
+  const devParse = async (message, language = 'en') => {
+    if (typeof message !== 'string') {
+      throw new Error('Invalid message - expected to be a string');
+    }
+    console.log(`${grey(`${cyan('>')} Parsing "${bold(white(message))}`)}"`);
+    const payload = await scout9.parse({
+      message,
+      language,
+      entities: config.entities
+    }).then((_res => _res.data));
+    let fields = '';
+    for (const [key, value] of Object.entries(payload.context)) {
+      fields += `\n\t\t${bold(white(key))}: ${grey(JSON.stringify(value))}`;
+    }
+    console.log(`\tParsed in ${payload.ms}ms:${grey(`${fields}`)}:`);
+    console.log(grey(JSON.stringify(payload)));
+    return payload;
+  };
+
   app.post('/dev/parse', async (req, res, next) => {
     try {
       // req.body: {message: string}
-      const {message, language} = req.body;
-      if (typeof message !== 'string') {
-        throw new Error('Invalid message - expected to be a string');
-      }
-      console.log(`${colors.grey(`${colors.cyan('>')} Parsing "${colors.bold(colors.white(message))}`)}"`);
-      const payload = await scout9.parse({
-        message,
-        language: 'en',
-        entities: config.entities
-      }).then((_res => _res.data));
-      let fields = '';
-      for (const [key, value] of Object.entries(payload.context)) {
-        fields += `\n\t\t${colors.bold(colors.white(key))}: ${colors.grey(JSON.stringify(value))}`;
-      }
-      console.log(`\tParsed in ${payload.ms}ms:${colors.grey(`${fields}`)}:`);
-      console.log(colors.grey(JSON.stringify(payload)));
+      const {message, language = 'en'} = req.body;
+      const payload = await devParse(message, language);
       res.writeHead(200, {'Content-Type': 'application/json'});
       res.end(JSON.stringify(payload));
     } catch (e) {
       handleError(e, res);
     }
   });
+
+  const devForward = async (convo) => {
+    console.log(`${grey(`${cyan('>')} Forwarding...`)}`);
+    const payload = await scout9.forward({convo}).then((_res => _res.data));
+    console.log(`\tForwarded in ${payload?.ms}ms`);
+    return payload;
+  };
 
   app.post('/dev/forward', async (req, res, next) => {
     try {
       // req.body: {message: string}
       const {convo} = req.body;
-      console.log(`${colors.grey(`${colors.cyan('>')} Forwarding...`)}`);
-      const payload = await scout9.forward({convo}).then((_res => _res.data));
-      console.log(`\tForwarded in ${payload?.ms}ms`);
+      const payload = await devForward(convo);
       res.writeHead(200, {'Content-Type': 'application/json'});
       res.end(JSON.stringify(payload));
     } catch (e) {
       handleError(e, res);
     }
   });
+
+  const devGenerate = async (messages, personaId) => {
+    if (typeof messages !== 'object' || !Array.isArray(messages)) {
+      throw new Error('Invalid messages array - expected to be an array of objects');
+    }
+    if (typeof personaId !== 'string') {
+      throw new Error('Invalid persona - expected to be a string');
+    }
+    const persona = (config.persona || config.agents).find(p => p.id === personaId);
+    if (!persona) {
+      throw new Error(`Could not find persona with id: ${personaId}, ensure your project is sync'd by running "scout9 sync"`);
+    }
+    console.log(`${grey(`${cyan('>')} Determining ${bold(white(persona.firstName))}'s`)} response`);
+    const payload = await scout9.generate({
+      messages,
+      persona,
+      llm: config.llm,
+      pmt: config.pmt
+    }).then((_res => _res.data));
+    console.log(`\t${grey(`Response: ${green('"')}${bold(white(payload.message))}`)}${green(
+      '"')} (elapsed ${payload.ms}ms)`);
+
+    return payload;
+  };
 
   app.post('/dev/generate', async (req, res, next) => {
     try {
       // req.body: {conversation: {}, messages: []}
       const {messages, persona: personaId} = req.body;
-      if (typeof messages !== 'object' || !Array.isArray(messages)) {
-        throw new Error('Invalid messages array - expected to be an array of objects');
-      }
-      if (typeof personaId !== 'string') {
-        throw new Error('Invalid persona - expected to be a string');
-      }
-      const persona = (config.persona || config.agents).find(p => p.id === personaId);
-      if (!persona) {
-        throw new Error(`Could not find persona with id: ${personaId}, ensure your project is sync'd by running "scout9 sync"`);
-      }
-      console.log(`${colors.grey(`${colors.cyan('>')} Generating ${colors.bold(colors.white(persona.firstName))}'s`)} ${colors.bold(
-        colors.red(colors.bgBlack('auto-reply')))}`);
-      const payload = await scout9.generate({
-        messages,
-        persona,
-        llm: config.llm,
-        pmt: config.pmt
-      }).then((_res => _res.data));
-      console.log(`\t${colors.grey(`Response: ${colors.green('"')}${colors.bold(colors.white(payload.message))}`)}${colors.green(
-        '"')} (elapsed ${payload.ms}ms)`);
+      const payload = await devGenerate(messages, personaId);
       res.writeHead(200, {'Content-Type': 'application/json'});
       res.end(JSON.stringify(payload));
     } catch (e) {
       handleError(e, res);
     }
   });
+
+
+  // NOTE: This does not sync with localhost app, that uses its own state
+  devProgram = async () => {
+    // Start program where use can test via command console
+    const {createInterface} = await import('node:readline');
+    const rl = createInterface({
+      input: process.stdin,
+      output: process.stdout
+    });
+
+    const persona = (config.persona || config.agents)?.[0];
+    if (!persona) {
+      throw new Error(`A persona is required before processing`);
+    }
+
+    /**
+     * @returns {Omit<WorkflowEvent, 'message'> & {command?: CommandConfiguration}}
+     */
+    const createState = () => ({
+      messages: [],
+      conversation: {
+        $id: 'dev_console_input',
+        $agent: persona.id,
+        $customer: 'temp',
+        environment: 'web'
+      },
+      context: {},
+      agent: persona,
+      customer: {
+        firstName: 'test',
+        name: 'test'
+      },
+      intent: {current: null, flow: [], initial: null},
+      stagnationCount: 0
+    });
+
+    /** @type {Omit<WorkflowEvent, 'message'> & {command?: CommandConfiguration}} */
+    let state = createState();
+
+
+    async function processCustomerMessage(message, callback) {
+      const messagePayload = {
+        id: `user_test_${Date.now()}`,
+        role: 'customer',
+        content: message,
+        time: new Date().toISOString()
+      };
+      const logger = new ProgressLogger('Processing...');
+      if (state.conversation.locked) {
+        logger.error(`Conversation locked - ${state.conversation.lockedReason ?? 'Unknown reason'}`);
+        return;
+      }
+      const addMessage = (payload) => {
+        state.messages.push(payload);
+        switch (payload.role) {
+          case 'system':
+            logger.write(magenta('system: ' + payload.content));
+            break;
+          case 'user':
+          case 'customer':
+            logger.write(green(`> ${state.agent.firstName ? state.agent.firstName + ': ' : ''}` + payload.content));
+            break;
+          case 'agent':
+          case 'assistant':
+            logger.write(blue(`> ${state.customer.name ? state.customer.name + ': ' : ''}` + payload.content));
+            break;
+          default:
+            logger.write(red(`UNKNOWN (${payload.role}) + ${payload.content}`));
+        }
+      };
+
+      const updateMessage = (payload) => {
+        const index = state.messages.findIndex(m => m.id === payload.id);
+        if (index < 0) {
+          throw new Error(`Cannot find message ${payload.id}`);
+        }
+        state.messages[index] = payload;
+      };
+
+      const removeMessage = (payload) => {
+        if (typeof payload !== 'string') {
+          throw new Error(`Invalid payload`);
+        }
+        const index = state.messages.findIndex(m => m.id === payload.id);
+        if (index < 0) {
+          throw new Error(`Cannot find message ${payload.id}`);
+        }
+        state.messages.splice(index, 1);
+      };
+
+      const updateConversation = (payload) => {
+        Object.assign(state.conversation, payload);
+      };
+
+      const updateContext = (payload) => {
+        Object.assign(state.context, payload);
+      };
+
+      addMessage(messagePayload);
+      const result = await Spirits.customer({
+        customer: state.customer,
+        config,
+        parser: async (_msg, _lng) => {
+          logger.log(`Parsing...`);
+          return devParse(_msg, _lng);
+        },
+        workflow: async (workflowEvent) => {
+          // Set the global variables for the workflows/commands to run Scout9 Macros
+          globalThis.SCOUT9 = {
+            ...workflowEvent,
+            $convo: state.conversation.$id ?? state.conversation.id
+          };
+
+          logger.log(`Gathering ${state.command ? 'Command ' + state.command.entity + ' ' : ''}instructions...`);
+          if (state.command) {
+            const commandFilePath = resolve(commandsDir, state.command.path);
+            let mod;
+            try {
+              mod = await import(commandFilePath);
+            } catch (e) {
+              logger.error(`Unable to resolve command ${state.command.entity} at ${commandFilePath}`);
+              throw new Error('Failed to gather command instructions');
+            }
+
+            if (!mod || !mod.default) {
+              logger.error(`Unable to run command ${state.command.entity} at ${commandFilePath} - must return a default function that returns a WorkflowEvent payload`);
+              throw new Error('Failed to run command instructions');
+            }
+
+            try {
+
+              return mod.default(workflowEvent)
+                .then((response) => {
+                  if ('toJSON' in response) {
+                    return response.toJSON();
+                  } else {
+                    return response;
+                  }
+                })
+                .then(WorkflowResponseSchema.parse);
+            } catch (e) {
+              logger.error(`Failed to run command - ${e.message}`);
+              throw e;
+            }
+
+          } else {
+            return projectApp(workflowEvent)
+              .then((response) => {
+                if ('toJSON' in response) {
+                  return response.toJSON();
+                } else {
+                  return response;
+                }
+              })
+              .then(WorkflowResponseSchema.parse);
+          }
+        },
+        generator: async (request) => {
+          logger.log(`Determining response...`);
+          const personaId = typeof request.persona === 'string' ? request.persona : request.persona.id;
+          return devGenerate(request.messages, personaId);
+        },
+        idGenerator: (prefix) => `${prefix}_test_${Date.now()}`,
+        progress: (
+          message,
+          level,
+          type,
+          payload
+        ) => {
+          callback(message, level);
+          if (type) {
+            switch (type) {
+              case 'ADD_MESSAGE':
+                addMessage(payload);
+                break;
+              case 'UPDATE_MESSAGE':
+                updateMessage(payload);
+                break;
+              case 'REMOVE_MESSAGE':
+                removeMessage(payload);
+                break;
+              case 'UPDATE_CONVERSATION':
+                updateConversation(payload);
+                break;
+              case 'UPDATE_CONTEXT':
+                updateContext(payload);
+                break;
+              case 'SET_PROCESSING':
+                break;
+              default:
+                throw new Error(`Unknown progress type: ${type}`);
+            }
+          }
+        },
+        message: messagePayload,
+        context: state.context,
+        messages: state.messages,
+        conversation: state.conversation
+      });
+
+      // If a forward happens (due to a lock or other reason)
+      if (!!result.conversation.forward) {
+        if (!state.conversation.locked) {
+          // Only forward if conversation is not already locked
+          await devForward(state.conversation.$id);
+        }
+        updateConversation({locked: true});
+        logger.error(`Conversation locked`);
+        return;
+      }
+
+      // Process changes as a success
+
+      // Update conversation (assuming it's changed)
+      if (result.conversation.after) {
+        updateConversation(result.conversation.after);
+      }
+
+      // Update conversation context (assuming it's changed)
+      if (result.context) {
+        updateContext(result.context.after);
+      }
+
+      if (!result.messages.after.find(m => m.id === result.message.after.id)) {
+        console.error(`Message not found in result.messages.after`, result.message.after.id);
+        result.messages.after.push(result.message.after);
+      }
+
+      // Sync messages state update/add/delete
+      for (const message of result.messages.after) {
+        // Did this exist?
+        const existed = !!result.messages.before.find(m => m.id === message.id);
+        if (existed) {
+          updateMessage(message);
+        } else {
+          addMessage(message);
+        }
+      }
+      for (const message of result.messages.before) {
+        const exists = !!result.messages.after.find(m => m.id === message.id);
+        if (!exists) {
+          removeMessage(message.id);
+        }
+      }
+
+      logger.done();
+    }
+
+    /**
+     * @param {CommandConfiguration} command
+     * @param {string} message
+     * @param callback
+     * @returns {Promise<void>}
+     */
+    async function processCommand(command, message, callback) {
+      console.log(magenta(`> command <${command.entity}>`));
+      state = createState();
+      state.command = command;
+      return processCustomerMessage(`Assist me in this ${command.entity} flow`, callback);
+    }
+
+    async function devProgramProcessInput(message, callback) {
+      // Check if internal command
+      switch (message.toLowerCase().trim()) {
+        case 'context':
+          console.log(white('> Current Conversation Context:'));
+          console.log(grey(JSON.stringify(state.context)));
+          return;
+        case 'conversation':
+        case 'convo':
+          console.log(white('> Current Conversation State:'));
+          console.log(grey(JSON.stringify(state.conversation)));
+          return;
+        case 'messages':
+          state.messages.forEach((msg) => {
+            switch (msg.role) {
+              case 'system':
+                console.log(magenta('\t - ' + msg.content));
+                break;
+              case 'user':
+              case 'customer':
+                console.log(green('> ' + msg.content));
+                break;
+              case 'agent':
+              case 'assistant':
+                console.log(blue('> ' + msg.content));
+                break;
+              default:
+                console.log(red(`UNKNOWN (${msg.role}) + ${msg.content}`));
+            }
+          });
+          return;
+      }
+
+      // Check if it's a command
+      const target = message.toLowerCase().trim();
+      const command = config.commands.find(command => {
+        return command.entity === target;
+      });
+      // Run the command
+      if (command) {
+        return processCommand(command, message, callback);
+      }
+
+      // Otherwise default to processing customer message
+      return processCustomerMessage(message, callback);
+    }
+
+    // Function to ask for input, perform the task, and then ask again
+    function promptUser() {
+      rl.question('> ', async (input) => {
+        if (input.toLowerCase() === 'exit') {
+          rl.close();
+        } else {
+          if (input) {
+            await devProgramProcessInput(input, () => {
+              //
+            });
+          }
+          promptUser();
+        }
+      });
+    }
+
+
+
+    console.log(grey(`\nThe following ${bold('commands')} are available...`));
+    [['context', 'logs the state context inserted into the conversation'], ['conversation', 'logs conversation details'], ['messages', 'logs all message history']].forEach(([command, description]) => {
+      console.log(`\t - ${magenta(command)} ${grey(description)}`);
+    });
+
+    if (config.commands.length) {
+      console.log(grey(`\nThe following ${bold('custom commands')} are available...`));
+    }
+    config.commands.forEach((command) => {
+      console.log(magenta(`\t - ${command.entity}`));
+    });
+
+    // Start the first prompt
+
+    console.log(white(`\nType and hit enter to test your PMT responses...\n`));
+    promptUser();
+
+    // Handle Ctrl+C (SIGINT) signal to exit gracefully
+    rl.on('SIGINT', () => {
+      rl.close();
+      process.exit(0);
+    });
+
+
+  };
+
+
 }
 
 
-app.listen(process.env.PORT || 8080, err => {
+app.listen(process.env.PORT || 8080, async (err) => {
   if (err) throw err;
 
   const art_scout9 = `
@@ -647,6 +1034,8 @@ app.listen(process.env.PORT || 8080, err => {
    \\|_________|                                                  
 `;
   const art_pmt = `
+
+  
  _______   __       __  ________ 
 |       \ |  \     /  \|        \
 | $$$$$$$\| $$\   /  $$ \$$$$$$$$
@@ -657,34 +1046,35 @@ app.listen(process.env.PORT || 8080, err => {
 | $$      | $$  \$ | $$   | $$   
  \$$       \$$      \$$    \$$   
                                  
-                                 
-                                 
 `;
   const protocol = process.env.PROTOCOL || 'http';
   const host = process.env.HOST || 'localhost';
   const port = process.env.PORT || 8080;
   const fullUrl = `${protocol}://${host}:${port}`;
   if (dev) {
-    console.log(colors.bold(colors.green(art_scout9)));
-    console.log(colors.bold(colors.cyan(art_pmt)));
-    console.log(`${colors.grey(`${colors.cyan('>')} Running ${colors.bold(colors.white('Scout9'))}`)} ${colors.bold(
-      colors.red(colors.bgBlack('auto-reply')))} ${colors.grey('dev environment on')} ${fullUrl}`);
+    console.log(bold(green(art_scout9)));
+    console.log(bold(cyan(art_pmt)));
+    console.log(`${grey(`${cyan('>')} Running ${bold(white('Scout9'))}`)} ${grey('dev environment on')} ${fullUrl}`);
   } else {
-    console.log(`Running Scout9 auto-reply app on ${fullUrl}`);
+    console.log(`Running Scout9 app on ${fullUrl}`);
   }
   // Run checks
   if (!fs.existsSync(configFilePath)) {
-    console.log(colors.red('Missing .env file, your auto reply application may not work without it.'));
+    console.log(red('Missing .env file, your PMT application may not work without it.'));
   }
 
   if (dev && !process.env.SCOUT9_API_KEY) {
-    console.log(colors.red(
-      'Missing SCOUT9_API_KEY environment variable, your auto reply application may not work without it.'));
+    console.log(red(
+      'Missing SCOUT9_API_KEY environment variable, your PMT application may not work without it.'));
   }
 
   if (process.env.SCOUT9_API_KEY === '<insert-scout9-api-key>') {
-    console.log(`${colors.red('SCOUT9_API_KEY has not been set in your .env file.')} ${colors.grey(
-      'You can find your API key in the Scout9 dashboard.')} ${colors.bold(colors.cyan('https://scout9.com'))}`);
+    console.log(`${red('SCOUT9_API_KEY has not been set in your .env file.')} ${grey(
+      'You can find your API key in the Scout9 dashboard.')} ${bold(cyan('https://scout9.com'))}`);
+  }
+
+  if (dev) {
+    devProgram();
   }
 
 });

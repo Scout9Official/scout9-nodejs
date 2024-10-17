@@ -3,6 +3,7 @@ import { zId } from './utils.js';
 
 export const ConversationContext = z.record(
   z.union([
+    z.any(),
     z.string(),
     z.number(),
     z.boolean(),

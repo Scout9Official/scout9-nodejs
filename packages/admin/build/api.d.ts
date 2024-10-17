@@ -3631,6 +3631,12 @@ export interface MacroContextInput {
      */
     'event'?: WorkflowEvent;
     /**
+     * Whether to use cache state to speed up requests
+     * @type {boolean}
+     * @memberof MacroContextInput
+     */
+    'cache'?: boolean;
+    /**
      *
      * @type {MacroContextInputExamples}
      * @memberof MacroContextInput
@@ -3740,6 +3746,12 @@ export interface MacroDidInput {
      * @memberof MacroDidInput
      */
     'convoId': string;
+    /**
+     * Whether to use cache state to speed up requests
+     * @type {boolean}
+     * @memberof MacroDidInput
+     */
+    'cache'?: boolean;
 }
 /**
  *
@@ -3776,6 +3788,83 @@ export declare const MacroDidResultTypeEnum: {
     readonly Did: "did";
 };
 export type MacroDidResultTypeEnum = typeof MacroDidResultTypeEnum[keyof typeof MacroDidResultTypeEnum];
+/**
+ *
+ * @export
+ * @interface MacroDoesInput
+ */
+export interface MacroDoesInput {
+    /**
+     *
+     * @type {string}
+     * @memberof MacroDoesInput
+     */
+    'prompt': string;
+    /**
+     * Eval on customer\'s immediate message or last agent\'s message? (defaults to \"customer\")
+     * @type {string}
+     * @memberof MacroDoesInput
+     */
+    'role'?: MacroDoesInputRoleEnum;
+    /**
+     * Whether to use cache state to speed up requests
+     * @type {boolean}
+     * @memberof MacroDoesInput
+     */
+    'cache'?: boolean;
+    /**
+     *
+     * @type {WorkflowEvent}
+     * @memberof MacroDoesInput
+     */
+    'event'?: WorkflowEvent;
+    /**
+     *
+     * @type {string}
+     * @memberof MacroDoesInput
+     */
+    'convoId': string;
+}
+export declare const MacroDoesInputRoleEnum: {
+    readonly Customer: "customer";
+    readonly Agent: "agent";
+};
+export type MacroDoesInputRoleEnum = typeof MacroDoesInputRoleEnum[keyof typeof MacroDoesInputRoleEnum];
+/**
+ *
+ * @export
+ * @interface MacroDoesResult
+ */
+export interface MacroDoesResult {
+    /**
+     * The prompt that was used
+     * @type {string}
+     * @memberof MacroDoesResult
+     */
+    'prompt'?: string;
+    /**
+     * Type is hard-coded to \'does\'
+     * @type {string}
+     * @memberof MacroDoesResult
+     */
+    'type'?: MacroDoesResultTypeEnum;
+    /**
+     * The returned value is of type boolean
+     * @type {boolean}
+     * @memberof MacroDoesResult
+     */
+    'value'?: boolean;
+    /**
+     * The number of tokens used to generate this response
+     * @type {number}
+     * @memberof MacroDoesResult
+     */
+    'tokensTotal'?: number;
+}
+export declare const MacroDoesResultTypeEnum: {
+    readonly Does: "does";
+};
+export type MacroDoesResultTypeEnum = typeof MacroDoesResultTypeEnum[keyof typeof MacroDoesResultTypeEnum];
 /**
  *
  * @export
@@ -6021,6 +6110,65 @@ export type WorkflowResponseSlotForwardOneOfModeEnum = typeof WorkflowResponseSl
  */
 export type WorkflowResponseSlotInstructions = Array<Instruction> | Array<string> | Instruction | string;
 /**
+ * NoopApi - axios parameter creator
+ * @export
+ */
+export declare const NoopApiAxiosParamCreator: (configuration?: Configuration) => {
+    /**
+     *
+     * @summary This is used for the generator to include PurposeEnum, because for whatever reason, query params are not included in the generator.
+     * @param {PingRequest} pingRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    ping: (pingRequest: PingRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+};
+/**
+ * NoopApi - functional programming interface
+ * @export
+ */
+export declare const NoopApiFp: (configuration?: Configuration) => {
+    /**
+     *
+     * @summary This is used for the generator to include PurposeEnum, because for whatever reason, query params are not included in the generator.
+     * @param {PingRequest} pingRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    ping(pingRequest: PingRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PingRequest>>;
+};
+/**
+ * NoopApi - factory interface
+ * @export
+ */
+export declare const NoopApiFactory: (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) => {
+    /**
+     *
+     * @summary This is used for the generator to include PurposeEnum, because for whatever reason, query params are not included in the generator.
+     * @param {PingRequest} pingRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    ping(pingRequest: PingRequest, options?: any): AxiosPromise<PingRequest>;
+};
+/**
+ * NoopApi - object-oriented interface
+ * @export
+ * @class NoopApi
+ * @extends {BaseAPI}
+ */
+export declare class NoopApi extends BaseAPI {
+    /**
+     *
+     * @summary This is used for the generator to include PurposeEnum, because for whatever reason, query params are not included in the generator.
+     * @param {PingRequest} pingRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof NoopApi
+     */
+    ping(pingRequest: PingRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<PingRequest, any>>;
+}
+/**
  * Scout9Api - axios parameter creator
  * @export
  */
@@ -6321,6 +6469,14 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
     did: (macroDidInput: MacroDidInput, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
+     * @summary Natural language prompt to resolve to a boolean value in relation to the given immediate message.
+     * @param {MacroDoesInput} macroDoesInput
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    does: (macroDoesInput: MacroDoesInput, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     *
      * @summary Get an entity by type and ID
      * @param {string} type The type of the entity to fetch
      * @param {string} id The unique identifier of the entity
@@ -6436,14 +6592,6 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
      * @throws {RequiredError}
      */
     parse: (parseRequest: ParseRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
-    /**
-     *
-     * @summary This is used for the generator to include PurposeEnum, because for whatever reason, query params are not included in the generator.
-     * @param {PingRequest} pingRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    ping: (pingRequest: PingRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
      * @summary Purchase phone for a given agent.
@@ -6791,6 +6939,14 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
     did(macroDidInput: MacroDidInput, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<MacroDidResult>>;
     /**
      *
+     * @summary Natural language prompt to resolve to a boolean value in relation to the given immediate message.
+     * @param {MacroDoesInput} macroDoesInput
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    does(macroDoesInput: MacroDoesInput, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<MacroDoesResult>>;
+    /**
+     *
      * @summary Get an entity by type and ID
      * @param {string} type The type of the entity to fetch
      * @param {string} id The unique identifier of the entity
@@ -6906,14 +7062,6 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
      * @throws {RequiredError}
      */
     parse(parseRequest: ParseRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ParseResponse>>;
-    /**
-     *
-     * @summary This is used for the generator to include PurposeEnum, because for whatever reason, query params are not included in the generator.
-     * @param {PingRequest} pingRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    ping(pingRequest: PingRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PingRequest>>;
     /**
      *
      * @summary Purchase phone for a given agent.
@@ -7263,6 +7411,14 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
     did(macroDidInput: MacroDidInput, options?: any): AxiosPromise<MacroDidResult>;
     /**
      *
+     * @summary Natural language prompt to resolve to a boolean value in relation to the given immediate message.
+     * @param {MacroDoesInput} macroDoesInput
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    does(macroDoesInput: MacroDoesInput, options?: any): AxiosPromise<MacroDoesResult>;
+    /**
+     *
      * @summary Get an entity by type and ID
      * @param {string} type The type of the entity to fetch
      * @param {string} id The unique identifier of the entity
@@ -7378,14 +7534,6 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
      * @throws {RequiredError}
      */
     parse(parseRequest: ParseRequest, options?: any): AxiosPromise<ParseResponse>;
-    /**
-     *
-     * @summary This is used for the generator to include PurposeEnum, because for whatever reason, query params are not included in the generator.
-     * @param {PingRequest} pingRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    ping(pingRequest: PingRequest, options?: any): AxiosPromise<PingRequest>;
     /**
      *
      * @summary Purchase phone for a given agent.
@@ -7773,6 +7921,15 @@ export declare class Scout9ApiGenerated extends BaseAPI {
     did(macroDidInput: MacroDidInput, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<MacroDidResult, any>>;
     /**
      *
+     * @summary Natural language prompt to resolve to a boolean value in relation to the given immediate message.
+     * @param {MacroDoesInput} macroDoesInput
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    does(macroDoesInput: MacroDoesInput, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<MacroDoesResult, any>>;
+    /**
+     *
      * @summary Get an entity by type and ID
      * @param {string} type The type of the entity to fetch
      * @param {string} id The unique identifier of the entity
@@ -7901,15 +8058,6 @@ export declare class Scout9ApiGenerated extends BaseAPI {
      * @memberof Scout9Api
      */
     parse(parseRequest: ParseRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<ParseResponse, any>>;
-    /**
-     *
-     * @summary This is used for the generator to include PurposeEnum, because for whatever reason, query params are not included in the generator.
-     * @param {PingRequest} pingRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    ping(pingRequest: PingRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<PingRequest, any>>;
     /**
      *
      * @summary Purchase phone for a given agent.

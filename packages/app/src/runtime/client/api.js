@@ -1,5 +1,6 @@
 /**
- * Utility runtime class used to guide event output
+ * Utility runtime class for entity APIs methods
+ * @deprecated this is only valid for entity APIs, not workflow templates
  * @template T
  */
 export class EventResponse {
@@ -55,4 +56,5 @@ export class EventResponse {
   }
 
 }
+
 

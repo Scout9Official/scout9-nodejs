@@ -67,7 +67,17 @@ declare module '@scout9/app' {
    * @example instruct("Ask user if they are looking to order a pizza");
    *
    * */
-  export const instruct: (message: string, options?: OptionsInstruct) => EventMacros;
+  export const instruct: ((instruction: string, options?: OptionsInstruct) => EventMacros) | ((instruction: Array<string | (OptionsInstruct & {content: string})>) => EventMacros);
+
+  /**
+   * If conversation is not stagnant, return instructions to guide next auto reply response, otherwise it will forward the conversation
+   * @param instruction - the instruction to send to the
+   * @example instructSafe("Ask user if they are looking to order a pizza");
+   * @example instructSafe("Ask user if they are looking to order a pizza", {stagnationLimit: 3}); // Allows for 3 stagnate messages before forwarding
+   *
+   * */
+  export const instructSafe: (instruction: string, options?: (OptionsInstruct & OptionsForward & {stagnationLimit?: number})) => EventMacros;
+
   /**
    * Forwards conversation back to you or owner of workflow.
    *
@@ -152,27 +162,74 @@ declare module '@scout9/app' {
 
 	  resetIntent?: boolean;
   };
-  /**
-   * - Extends `WorkflowResponseSlotBase` to include keywords.
-   */
-  export type WorkflowResponseSlotBaseWithKeywords = WorkflowResponseSlotBase & {
-	  keywords: string[];
-  };
-  /**
-   * - Defines the overloads for the `anticipate` function.
-   */
-  export type AnticipateFunction = (instruction: string, yes: WorkflowResponseSlotBase, no: WorkflowResponseSlotBase) => EventMacros | ((instruction: WorkflowResponseSlotBaseWithKeywords[]) => EventMacros);
+
   /**
    * Event macros to be used inside your scout9 auto reply workflows
    */
   export type EventMacros = {
-	  upsert: (arg0: Record<string, any>) => EventMacros;
-	  followup: (arg0: string, arg1: (Date | string | OptionsFollowup)) => EventMacros;
-	  anticipate: AnticipateFunction;
-	  instruct: (arg0: string, arg1: OptionsInstruct | null) => EventMacros;
-	  reply: (arg0: string, arg1: OptionsReply | null) => EventMacros;
-	  forward: (arg0: string | null, arg1: OptionsForward | null) => EventMacros;
-	  toJSON: (arg0: boolean | null) => Array<WorkflowResponseSlot>;
+	  /**
+	   * Sets context into the conversation context for later use
+	   */
+	  upsert(updates: Record<string, any>): EventMacros;
+	  /**
+	   * Similar to `instruction` except that it requires a schedule time parameter that determines when to follow up (and is not an event output macro). This will fire another run job with a new insert system context message, if `options.literal` is set to true, it will be an appended agent message prior to running the workflow app.
+	   */
+	  followup(instruction: string, options: (Date | string | OptionsFollowup)): EventMacros;
+
+	  /**
+	   * Similar to `instruct` except that it requires a schedule time parameter that determines when to follow up (and is not an event output macro). This will fire another run job with a new insert system context message, if `options.literal` is set to true, it will be an appended agent message prior to running the workflow app.
+	   */
+	  anticipate(instruction: string, yes: WorkflowResponseSlotBase, no: WorkflowResponseSlotBase): EventMacros;
+
+	  /**
+	   * Similar to `instruct` except that it requires a schedule time parameter that determines when to follow up (and is not an event output macro). This will fire another run job with a new insert system context message, if `options.literal` is set to true, it will be an appended agent message prior to running the workflow app.
+	   */
+	  anticipate(instruction: Array<WorkflowResponseSlotBase & {keywords: string[]}>): EventMacros;
+
+	  /**
+	   * Resets conversation intent
+	   */
+	  resetIntent(): EventMacros;
+
+	  /**
+	   * Removes instruction(s) from the system
+	   */
+	  instructRemove(idOrIds: string | string[], strict?: boolean): EventMacros
+
+	  /**
+	   * If conversation is not stagnant, return instructions to guide next auto reply response, otherwise it will forward the conversation
+	   * stagnationLimit defaults to 2
+	   */
+	  instructSafe(instruction: string, options?: (OptionsInstruct & OptionsForward & {stagnationLimit?: number})): EventMacros;
+
+	  /**
+	   * Return instructions to guide next auto reply response
+	   */
+	  instruct(instruction: string, options?: OptionsInstruct): EventMacros;
+
+	  /**
+	   * Return instructions to guide next auto reply response
+	   */
+	  instruct(instruction: Array<string | (OptionsInstruct & {content: string})>): EventMacros;
+
+	  /**
+	   * If a manual message must be sent, you can use the `reply` macro
+	   * @param message - the message to manually send to the user
+	   * */
+	  reply(message: string, options?: OptionsReply): EventMacros;
+
+	  /**
+	   * This macro ends the conversation and forwards it the owner of the persona to manually handle the flow. If your app returns undefined or no event, then a default forward is generated.
+	   * @param message - the message to forward to owner of persona
+	   * 
+	   */
+	  forward(message?: string, options?: OptionsForward): EventMacros;
+
+	  /**
+	   * Returns event payload
+	   * @param flush - if true, will reset the data payload
+	   * */
+	  toJSON(flush?: boolean): Array<WorkflowResponseSlot>;
   };
 
 
@@ -180,6 +237,13 @@ declare module '@scout9/app' {
    * The `did` macro takes a given prompt and infers a binary `true` or `false` result in relation to the prompt's subject actor and the prompt's inquiry.
    * */
   export function did(prompt: string): Promise<boolean>;
+
+  /**
+   * The `does` macro takes a given prompt and infers a binary `true` or `false` result in relation to the prompt's subject actor and the prompt's inquiry for the given immediate message
+   *
+   * Only use this if you want to evaluate the latest message, otherwise use did() which uses all messages
+   * */
+  export function does(prompt: string, relation?: 'customer' | 'agent'): Promise<boolean>;
 
   export type ContextExampleWithTrainingData = {
 	  input: string;
@@ -3493,15 +3557,15 @@ declare module '@scout9/app/schemas' {
 	 */
 	export const FollowupBaseSchema: z.ZodObject<{
 		scheduled: z.ZodNumber;
-		cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+		cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 		overrideLock: z.ZodOptional<z.ZodBoolean>;
 	}, "strip", z.ZodTypeAny, {
 		scheduled: number;
-		cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+		cancelIf?: Record<string, any> | undefined;
 		overrideLock?: boolean | undefined;
 	}, {
 		scheduled: number;
-		cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+		cancelIf?: Record<string, any> | undefined;
 		overrideLock?: boolean | undefined;
 	}>;
 	/**
@@ -3509,22 +3573,22 @@ declare module '@scout9/app/schemas' {
 	 */
 	export const FollowupSchema: z.ZodUnion<[z.ZodObject<{
 		scheduled: z.ZodNumber;
-		cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+		cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 		overrideLock: z.ZodOptional<z.ZodBoolean>;
 		message: z.ZodString;
 	}, "strip", z.ZodTypeAny, {
 		message: string;
 		scheduled: number;
-		cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+		cancelIf?: Record<string, any> | undefined;
 		overrideLock?: boolean | undefined;
 	}, {
 		message: string;
 		scheduled: number;
-		cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+		cancelIf?: Record<string, any> | undefined;
 		overrideLock?: boolean | undefined;
 	}>, z.ZodObject<{
 		scheduled: z.ZodNumber;
-		cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+		cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 		overrideLock: z.ZodOptional<z.ZodBoolean>;
 		instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
 			id: z.ZodOptional<z.ZodString>;
@@ -3570,7 +3634,7 @@ declare module '@scout9/app/schemas' {
 			id?: string | undefined;
 			persist?: boolean | undefined;
 		})[] | undefined);
-		cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+		cancelIf?: Record<string, any> | undefined;
 		overrideLock?: boolean | undefined;
 	}, {
 		scheduled: number;
@@ -3591,7 +3655,7 @@ declare module '@scout9/app/schemas' {
 			id?: string | undefined;
 			persist?: boolean | undefined;
 		})[] | undefined);
-		cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+		cancelIf?: Record<string, any> | undefined;
 		overrideLock?: boolean | undefined;
 	}>]>;
 	export const WorkflowConfigurationSchema: z.ZodObject<{
@@ -4224,26 +4288,26 @@ declare module '@scout9/app/schemas' {
 		message: z.ZodOptional<z.ZodString>;
 		secondsDelay: z.ZodOptional<z.ZodNumber>;
 		scheduled: z.ZodOptional<z.ZodNumber>;
-		contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+		contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 		resetIntent: z.ZodOptional<z.ZodBoolean>;
 		followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
 			scheduled: z.ZodNumber;
-			cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+			cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 			overrideLock: z.ZodOptional<z.ZodBoolean>;
 			message: z.ZodString;
 		}, "strip", z.ZodTypeAny, {
 			message: string;
 			scheduled: number;
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}, {
 			message: string;
 			scheduled: number;
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}>, z.ZodObject<{
 			scheduled: z.ZodNumber;
-			cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+			cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 			overrideLock: z.ZodOptional<z.ZodBoolean>;
 			instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
 				id: z.ZodOptional<z.ZodString>;
@@ -4289,7 +4353,7 @@ declare module '@scout9/app/schemas' {
 				id?: string | undefined;
 				persist?: boolean | undefined;
 			})[] | undefined);
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}, {
 			scheduled: number;
@@ -4310,7 +4374,7 @@ declare module '@scout9/app/schemas' {
 				id?: string | undefined;
 				persist?: boolean | undefined;
 			})[] | undefined);
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}>]>>;
 	}, "strip", z.ZodTypeAny, {
@@ -4333,12 +4397,12 @@ declare module '@scout9/app/schemas' {
 		message?: string | undefined;
 		secondsDelay?: number | undefined;
 		scheduled?: number | undefined;
-		contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+		contextUpsert?: Record<string, any> | undefined;
 		resetIntent?: boolean | undefined;
 		followup?: {
 			message: string;
 			scheduled: number;
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | {
 			scheduled: number;
@@ -4359,7 +4423,7 @@ declare module '@scout9/app/schemas' {
 				id?: string | undefined;
 				persist?: boolean | undefined;
 			})[] | undefined);
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | undefined;
 	}, {
@@ -4382,12 +4446,12 @@ declare module '@scout9/app/schemas' {
 		message?: string | undefined;
 		secondsDelay?: number | undefined;
 		scheduled?: number | undefined;
-		contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+		contextUpsert?: Record<string, any> | undefined;
 		resetIntent?: boolean | undefined;
 		followup?: {
 			message: string;
 			scheduled: number;
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | {
 			scheduled: number;
@@ -4408,7 +4472,7 @@ declare module '@scout9/app/schemas' {
 				id?: string | undefined;
 				persist?: boolean | undefined;
 			})[] | undefined);
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | undefined;
 	}>;
@@ -4459,26 +4523,26 @@ declare module '@scout9/app/schemas' {
 		}>]>, "many">]>>;
 		removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 		secondsDelay: z.ZodOptional<z.ZodNumber>;
-		contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+		contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 		resetIntent: z.ZodOptional<z.ZodBoolean>;
 		followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
 			scheduled: z.ZodNumber;
-			cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+			cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 			overrideLock: z.ZodOptional<z.ZodBoolean>;
 			message: z.ZodString;
 		}, "strip", z.ZodTypeAny, {
 			message: string;
 			scheduled: number;
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}, {
 			message: string;
 			scheduled: number;
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}>, z.ZodObject<{
 			scheduled: z.ZodNumber;
-			cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+			cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 			overrideLock: z.ZodOptional<z.ZodBoolean>;
 			instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
 				id: z.ZodOptional<z.ZodString>;
@@ -4524,7 +4588,7 @@ declare module '@scout9/app/schemas' {
 				id?: string | undefined;
 				persist?: boolean | undefined;
 			})[] | undefined);
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}, {
 			scheduled: number;
@@ -4545,7 +4609,7 @@ declare module '@scout9/app/schemas' {
 				id?: string | undefined;
 				persist?: boolean | undefined;
 			})[] | undefined);
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}>]>>;
 		anticipate: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
@@ -4594,26 +4658,26 @@ declare module '@scout9/app/schemas' {
 				message: z.ZodOptional<z.ZodString>;
 				secondsDelay: z.ZodOptional<z.ZodNumber>;
 				scheduled: z.ZodOptional<z.ZodNumber>;
-				contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+				contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 				resetIntent: z.ZodOptional<z.ZodBoolean>;
 				followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
 					scheduled: z.ZodNumber;
-					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 					overrideLock: z.ZodOptional<z.ZodBoolean>;
 					message: z.ZodString;
 				}, "strip", z.ZodTypeAny, {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}, {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}>, z.ZodObject<{
 					scheduled: z.ZodNumber;
-					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 					overrideLock: z.ZodOptional<z.ZodBoolean>;
 					instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
 						id: z.ZodOptional<z.ZodString>;
@@ -4659,7 +4723,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}, {
 					scheduled: number;
@@ -4680,7 +4744,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}>]>>;
 			}, "strip", z.ZodTypeAny, {
@@ -4703,12 +4767,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -4729,7 +4793,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			}, {
@@ -4752,12 +4816,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -4778,7 +4842,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			}>;
@@ -4826,26 +4890,26 @@ declare module '@scout9/app/schemas' {
 				message: z.ZodOptional<z.ZodString>;
 				secondsDelay: z.ZodOptional<z.ZodNumber>;
 				scheduled: z.ZodOptional<z.ZodNumber>;
-				contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+				contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 				resetIntent: z.ZodOptional<z.ZodBoolean>;
 				followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
 					scheduled: z.ZodNumber;
-					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 					overrideLock: z.ZodOptional<z.ZodBoolean>;
 					message: z.ZodString;
 				}, "strip", z.ZodTypeAny, {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}, {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}>, z.ZodObject<{
 					scheduled: z.ZodNumber;
-					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 					overrideLock: z.ZodOptional<z.ZodBoolean>;
 					instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
 						id: z.ZodOptional<z.ZodString>;
@@ -4891,7 +4955,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}, {
 					scheduled: number;
@@ -4912,7 +4976,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}>]>>;
 			}, "strip", z.ZodTypeAny, {
@@ -4935,12 +4999,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -4961,7 +5025,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			}, {
@@ -4984,12 +5048,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -5010,7 +5074,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			}>;
@@ -5036,12 +5100,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -5062,7 +5126,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -5086,12 +5150,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -5112,7 +5176,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -5138,12 +5202,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -5164,7 +5228,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -5188,12 +5252,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -5214,7 +5278,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -5262,26 +5326,26 @@ declare module '@scout9/app/schemas' {
 			}>]>, "many">]>>;
 			removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 			secondsDelay: z.ZodOptional<z.ZodNumber>;
-			contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+			contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 			resetIntent: z.ZodOptional<z.ZodBoolean>;
 			followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
 				scheduled: z.ZodNumber;
-				cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+				cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 				overrideLock: z.ZodOptional<z.ZodBoolean>;
 				message: z.ZodString;
 			}, "strip", z.ZodTypeAny, {
 				message: string;
 				scheduled: number;
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			}, {
 				message: string;
 				scheduled: number;
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			}>, z.ZodObject<{
 				scheduled: z.ZodNumber;
-				cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+				cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 				overrideLock: z.ZodOptional<z.ZodBoolean>;
 				instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
 					id: z.ZodOptional<z.ZodString>;
@@ -5327,7 +5391,7 @@ declare module '@scout9/app/schemas' {
 					id?: string | undefined;
 					persist?: boolean | undefined;
 				})[] | undefined);
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			}, {
 				scheduled: number;
@@ -5348,7 +5412,7 @@ declare module '@scout9/app/schemas' {
 					id?: string | undefined;
 					persist?: boolean | undefined;
 				})[] | undefined);
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			}>]>>;
 			keywords: z.ZodArray<z.ZodString, "many">;
@@ -5373,12 +5437,12 @@ declare module '@scout9/app/schemas' {
 			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
-			contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			contextUpsert?: Record<string, any> | undefined;
 			resetIntent?: boolean | undefined;
 			followup?: {
 				message: string;
 				scheduled: number;
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
@@ -5399,7 +5463,7 @@ declare module '@scout9/app/schemas' {
 					id?: string | undefined;
 					persist?: boolean | undefined;
 				})[] | undefined);
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
 		}, {
@@ -5423,12 +5487,12 @@ declare module '@scout9/app/schemas' {
 			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
-			contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			contextUpsert?: Record<string, any> | undefined;
 			resetIntent?: boolean | undefined;
 			followup?: {
 				message: string;
 				scheduled: number;
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
@@ -5449,7 +5513,7 @@ declare module '@scout9/app/schemas' {
 					id?: string | undefined;
 					persist?: boolean | undefined;
 				})[] | undefined);
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
 		}>, "many">]>>;
@@ -5473,12 +5537,12 @@ declare module '@scout9/app/schemas' {
 		})[] | undefined;
 		removeInstructions?: string[] | undefined;
 		secondsDelay?: number | undefined;
-		contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+		contextUpsert?: Record<string, any> | undefined;
 		resetIntent?: boolean | undefined;
 		followup?: {
 			message: string;
 			scheduled: number;
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | {
 			scheduled: number;
@@ -5499,7 +5563,7 @@ declare module '@scout9/app/schemas' {
 				id?: string | undefined;
 				persist?: boolean | undefined;
 			})[] | undefined);
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | undefined;
 		anticipate?: {
@@ -5524,12 +5588,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -5550,7 +5614,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -5574,12 +5638,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -5600,7 +5664,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -5625,12 +5689,12 @@ declare module '@scout9/app/schemas' {
 			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
-			contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			contextUpsert?: Record<string, any> | undefined;
 			resetIntent?: boolean | undefined;
 			followup?: {
 				message: string;
 				scheduled: number;
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
@@ -5651,7 +5715,7 @@ declare module '@scout9/app/schemas' {
 					id?: string | undefined;
 					persist?: boolean | undefined;
 				})[] | undefined);
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
 		}[] | undefined;
@@ -5675,12 +5739,12 @@ declare module '@scout9/app/schemas' {
 		})[] | undefined;
 		removeInstructions?: string[] | undefined;
 		secondsDelay?: number | undefined;
-		contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+		contextUpsert?: Record<string, any> | undefined;
 		resetIntent?: boolean | undefined;
 		followup?: {
 			message: string;
 			scheduled: number;
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | {
 			scheduled: number;
@@ -5701,7 +5765,7 @@ declare module '@scout9/app/schemas' {
 				id?: string | undefined;
 				persist?: boolean | undefined;
 			})[] | undefined);
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | undefined;
 		anticipate?: {
@@ -5726,12 +5790,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -5752,7 +5816,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -5776,12 +5840,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -5802,7 +5866,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -5827,12 +5891,12 @@ declare module '@scout9/app/schemas' {
 			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
-			contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			contextUpsert?: Record<string, any> | undefined;
 			resetIntent?: boolean | undefined;
 			followup?: {
 				message: string;
 				scheduled: number;
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
@@ -5853,7 +5917,7 @@ declare module '@scout9/app/schemas' {
 					id?: string | undefined;
 					persist?: boolean | undefined;
 				})[] | undefined);
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
 		}[] | undefined;
@@ -5905,26 +5969,26 @@ declare module '@scout9/app/schemas' {
 		}>]>, "many">]>>;
 		removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 		secondsDelay: z.ZodOptional<z.ZodNumber>;
-		contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+		contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 		resetIntent: z.ZodOptional<z.ZodBoolean>;
 		followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
 			scheduled: z.ZodNumber;
-			cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+			cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 			overrideLock: z.ZodOptional<z.ZodBoolean>;
 			message: z.ZodString;
 		}, "strip", z.ZodTypeAny, {
 			message: string;
 			scheduled: number;
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}, {
 			message: string;
 			scheduled: number;
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}>, z.ZodObject<{
 			scheduled: z.ZodNumber;
-			cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+			cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 			overrideLock: z.ZodOptional<z.ZodBoolean>;
 			instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
 				id: z.ZodOptional<z.ZodString>;
@@ -5970,7 +6034,7 @@ declare module '@scout9/app/schemas' {
 				id?: string | undefined;
 				persist?: boolean | undefined;
 			})[] | undefined);
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}, {
 			scheduled: number;
@@ -5991,7 +6055,7 @@ declare module '@scout9/app/schemas' {
 				id?: string | undefined;
 				persist?: boolean | undefined;
 			})[] | undefined);
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}>]>>;
 		anticipate: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
@@ -6040,26 +6104,26 @@ declare module '@scout9/app/schemas' {
 				message: z.ZodOptional<z.ZodString>;
 				secondsDelay: z.ZodOptional<z.ZodNumber>;
 				scheduled: z.ZodOptional<z.ZodNumber>;
-				contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+				contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 				resetIntent: z.ZodOptional<z.ZodBoolean>;
 				followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
 					scheduled: z.ZodNumber;
-					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 					overrideLock: z.ZodOptional<z.ZodBoolean>;
 					message: z.ZodString;
 				}, "strip", z.ZodTypeAny, {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}, {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}>, z.ZodObject<{
 					scheduled: z.ZodNumber;
-					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 					overrideLock: z.ZodOptional<z.ZodBoolean>;
 					instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
 						id: z.ZodOptional<z.ZodString>;
@@ -6105,7 +6169,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}, {
 					scheduled: number;
@@ -6126,7 +6190,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}>]>>;
 			}, "strip", z.ZodTypeAny, {
@@ -6149,12 +6213,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -6175,7 +6239,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			}, {
@@ -6198,12 +6262,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -6224,7 +6288,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			}>;
@@ -6272,26 +6336,26 @@ declare module '@scout9/app/schemas' {
 				message: z.ZodOptional<z.ZodString>;
 				secondsDelay: z.ZodOptional<z.ZodNumber>;
 				scheduled: z.ZodOptional<z.ZodNumber>;
-				contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+				contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 				resetIntent: z.ZodOptional<z.ZodBoolean>;
 				followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
 					scheduled: z.ZodNumber;
-					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 					overrideLock: z.ZodOptional<z.ZodBoolean>;
 					message: z.ZodString;
 				}, "strip", z.ZodTypeAny, {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}, {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}>, z.ZodObject<{
 					scheduled: z.ZodNumber;
-					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 					overrideLock: z.ZodOptional<z.ZodBoolean>;
 					instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
 						id: z.ZodOptional<z.ZodString>;
@@ -6337,7 +6401,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}, {
 					scheduled: number;
@@ -6358,7 +6422,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}>]>>;
 			}, "strip", z.ZodTypeAny, {
@@ -6381,12 +6445,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -6407,7 +6471,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			}, {
@@ -6430,12 +6494,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -6456,7 +6520,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			}>;
@@ -6482,12 +6546,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -6508,7 +6572,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -6532,12 +6596,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -6558,7 +6622,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -6584,12 +6648,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -6610,7 +6674,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -6634,12 +6698,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -6660,7 +6724,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -6708,26 +6772,26 @@ declare module '@scout9/app/schemas' {
 			}>]>, "many">]>>;
 			removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 			secondsDelay: z.ZodOptional<z.ZodNumber>;
-			contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+			contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 			resetIntent: z.ZodOptional<z.ZodBoolean>;
 			followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
 				scheduled: z.ZodNumber;
-				cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+				cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 				overrideLock: z.ZodOptional<z.ZodBoolean>;
 				message: z.ZodString;
 			}, "strip", z.ZodTypeAny, {
 				message: string;
 				scheduled: number;
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			}, {
 				message: string;
 				scheduled: number;
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			}>, z.ZodObject<{
 				scheduled: z.ZodNumber;
-				cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+				cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 				overrideLock: z.ZodOptional<z.ZodBoolean>;
 				instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
 					id: z.ZodOptional<z.ZodString>;
@@ -6773,7 +6837,7 @@ declare module '@scout9/app/schemas' {
 					id?: string | undefined;
 					persist?: boolean | undefined;
 				})[] | undefined);
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			}, {
 				scheduled: number;
@@ -6794,7 +6858,7 @@ declare module '@scout9/app/schemas' {
 					id?: string | undefined;
 					persist?: boolean | undefined;
 				})[] | undefined);
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			}>]>>;
 			keywords: z.ZodArray<z.ZodString, "many">;
@@ -6819,12 +6883,12 @@ declare module '@scout9/app/schemas' {
 			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
-			contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			contextUpsert?: Record<string, any> | undefined;
 			resetIntent?: boolean | undefined;
 			followup?: {
 				message: string;
 				scheduled: number;
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
@@ -6845,7 +6909,7 @@ declare module '@scout9/app/schemas' {
 					id?: string | undefined;
 					persist?: boolean | undefined;
 				})[] | undefined);
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
 		}, {
@@ -6869,12 +6933,12 @@ declare module '@scout9/app/schemas' {
 			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
-			contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			contextUpsert?: Record<string, any> | undefined;
 			resetIntent?: boolean | undefined;
 			followup?: {
 				message: string;
 				scheduled: number;
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
@@ -6895,7 +6959,7 @@ declare module '@scout9/app/schemas' {
 					id?: string | undefined;
 					persist?: boolean | undefined;
 				})[] | undefined);
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
 		}>, "many">]>>;
@@ -6919,12 +6983,12 @@ declare module '@scout9/app/schemas' {
 		})[] | undefined;
 		removeInstructions?: string[] | undefined;
 		secondsDelay?: number | undefined;
-		contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+		contextUpsert?: Record<string, any> | undefined;
 		resetIntent?: boolean | undefined;
 		followup?: {
 			message: string;
 			scheduled: number;
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | {
 			scheduled: number;
@@ -6945,7 +7009,7 @@ declare module '@scout9/app/schemas' {
 				id?: string | undefined;
 				persist?: boolean | undefined;
 			})[] | undefined);
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | undefined;
 		anticipate?: {
@@ -6970,12 +7034,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -6996,7 +7060,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -7020,12 +7084,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -7046,7 +7110,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -7071,12 +7135,12 @@ declare module '@scout9/app/schemas' {
 			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
-			contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			contextUpsert?: Record<string, any> | undefined;
 			resetIntent?: boolean | undefined;
 			followup?: {
 				message: string;
 				scheduled: number;
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
@@ -7097,7 +7161,7 @@ declare module '@scout9/app/schemas' {
 					id?: string | undefined;
 					persist?: boolean | undefined;
 				})[] | undefined);
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
 		}[] | undefined;
@@ -7121,12 +7185,12 @@ declare module '@scout9/app/schemas' {
 		})[] | undefined;
 		removeInstructions?: string[] | undefined;
 		secondsDelay?: number | undefined;
-		contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+		contextUpsert?: Record<string, any> | undefined;
 		resetIntent?: boolean | undefined;
 		followup?: {
 			message: string;
 			scheduled: number;
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | {
 			scheduled: number;
@@ -7147,7 +7211,7 @@ declare module '@scout9/app/schemas' {
 				id?: string | undefined;
 				persist?: boolean | undefined;
 			})[] | undefined);
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | undefined;
 		anticipate?: {
@@ -7172,12 +7236,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -7198,7 +7262,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -7222,12 +7286,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -7248,7 +7312,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -7273,12 +7337,12 @@ declare module '@scout9/app/schemas' {
 			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
-			contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			contextUpsert?: Record<string, any> | undefined;
 			resetIntent?: boolean | undefined;
 			followup?: {
 				message: string;
 				scheduled: number;
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
@@ -7299,7 +7363,7 @@ declare module '@scout9/app/schemas' {
 					id?: string | undefined;
 					persist?: boolean | undefined;
 				})[] | undefined);
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
 		}[] | undefined;
@@ -7347,26 +7411,26 @@ declare module '@scout9/app/schemas' {
 		}>]>, "many">]>>;
 		removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 		secondsDelay: z.ZodOptional<z.ZodNumber>;
-		contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+		contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 		resetIntent: z.ZodOptional<z.ZodBoolean>;
 		followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
 			scheduled: z.ZodNumber;
-			cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+			cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 			overrideLock: z.ZodOptional<z.ZodBoolean>;
 			message: z.ZodString;
 		}, "strip", z.ZodTypeAny, {
 			message: string;
 			scheduled: number;
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}, {
 			message: string;
 			scheduled: number;
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}>, z.ZodObject<{
 			scheduled: z.ZodNumber;
-			cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+			cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 			overrideLock: z.ZodOptional<z.ZodBoolean>;
 			instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
 				id: z.ZodOptional<z.ZodString>;
@@ -7412,7 +7476,7 @@ declare module '@scout9/app/schemas' {
 				id?: string | undefined;
 				persist?: boolean | undefined;
 			})[] | undefined);
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}, {
 			scheduled: number;
@@ -7433,7 +7497,7 @@ declare module '@scout9/app/schemas' {
 				id?: string | undefined;
 				persist?: boolean | undefined;
 			})[] | undefined);
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}>]>>;
 		anticipate: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
@@ -7482,26 +7546,26 @@ declare module '@scout9/app/schemas' {
 				message: z.ZodOptional<z.ZodString>;
 				secondsDelay: z.ZodOptional<z.ZodNumber>;
 				scheduled: z.ZodOptional<z.ZodNumber>;
-				contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+				contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 				resetIntent: z.ZodOptional<z.ZodBoolean>;
 				followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
 					scheduled: z.ZodNumber;
-					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 					overrideLock: z.ZodOptional<z.ZodBoolean>;
 					message: z.ZodString;
 				}, "strip", z.ZodTypeAny, {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}, {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}>, z.ZodObject<{
 					scheduled: z.ZodNumber;
-					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 					overrideLock: z.ZodOptional<z.ZodBoolean>;
 					instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
 						id: z.ZodOptional<z.ZodString>;
@@ -7547,7 +7611,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}, {
 					scheduled: number;
@@ -7568,7 +7632,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}>]>>;
 			}, "strip", z.ZodTypeAny, {
@@ -7591,12 +7655,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -7617,7 +7681,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			}, {
@@ -7640,12 +7704,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -7666,7 +7730,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			}>;
@@ -7714,26 +7778,26 @@ declare module '@scout9/app/schemas' {
 				message: z.ZodOptional<z.ZodString>;
 				secondsDelay: z.ZodOptional<z.ZodNumber>;
 				scheduled: z.ZodOptional<z.ZodNumber>;
-				contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+				contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 				resetIntent: z.ZodOptional<z.ZodBoolean>;
 				followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
 					scheduled: z.ZodNumber;
-					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 					overrideLock: z.ZodOptional<z.ZodBoolean>;
 					message: z.ZodString;
 				}, "strip", z.ZodTypeAny, {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}, {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}>, z.ZodObject<{
 					scheduled: z.ZodNumber;
-					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 					overrideLock: z.ZodOptional<z.ZodBoolean>;
 					instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
 						id: z.ZodOptional<z.ZodString>;
@@ -7779,7 +7843,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}, {
 					scheduled: number;
@@ -7800,7 +7864,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}>]>>;
 			}, "strip", z.ZodTypeAny, {
@@ -7823,12 +7887,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -7849,7 +7913,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			}, {
@@ -7872,12 +7936,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -7898,7 +7962,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			}>;
@@ -7924,12 +7988,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -7950,7 +8014,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -7974,12 +8038,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -8000,7 +8064,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -8026,12 +8090,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -8052,7 +8116,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -8076,12 +8140,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -8102,7 +8166,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -8150,26 +8214,26 @@ declare module '@scout9/app/schemas' {
 			}>]>, "many">]>>;
 			removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 			secondsDelay: z.ZodOptional<z.ZodNumber>;
-			contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+			contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 			resetIntent: z.ZodOptional<z.ZodBoolean>;
 			followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
 				scheduled: z.ZodNumber;
-				cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+				cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 				overrideLock: z.ZodOptional<z.ZodBoolean>;
 				message: z.ZodString;
 			}, "strip", z.ZodTypeAny, {
 				message: string;
 				scheduled: number;
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			}, {
 				message: string;
 				scheduled: number;
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			}>, z.ZodObject<{
 				scheduled: z.ZodNumber;
-				cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+				cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 				overrideLock: z.ZodOptional<z.ZodBoolean>;
 				instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
 					id: z.ZodOptional<z.ZodString>;
@@ -8215,7 +8279,7 @@ declare module '@scout9/app/schemas' {
 					id?: string | undefined;
 					persist?: boolean | undefined;
 				})[] | undefined);
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			}, {
 				scheduled: number;
@@ -8236,7 +8300,7 @@ declare module '@scout9/app/schemas' {
 					id?: string | undefined;
 					persist?: boolean | undefined;
 				})[] | undefined);
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			}>]>>;
 			keywords: z.ZodArray<z.ZodString, "many">;
@@ -8261,12 +8325,12 @@ declare module '@scout9/app/schemas' {
 			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
-			contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			contextUpsert?: Record<string, any> | undefined;
 			resetIntent?: boolean | undefined;
 			followup?: {
 				message: string;
 				scheduled: number;
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
@@ -8287,7 +8351,7 @@ declare module '@scout9/app/schemas' {
 					id?: string | undefined;
 					persist?: boolean | undefined;
 				})[] | undefined);
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
 		}, {
@@ -8311,12 +8375,12 @@ declare module '@scout9/app/schemas' {
 			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
-			contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			contextUpsert?: Record<string, any> | undefined;
 			resetIntent?: boolean | undefined;
 			followup?: {
 				message: string;
 				scheduled: number;
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
@@ -8337,7 +8401,7 @@ declare module '@scout9/app/schemas' {
 					id?: string | undefined;
 					persist?: boolean | undefined;
 				})[] | undefined);
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
 		}>, "many">]>>;
@@ -8361,12 +8425,12 @@ declare module '@scout9/app/schemas' {
 		})[] | undefined;
 		removeInstructions?: string[] | undefined;
 		secondsDelay?: number | undefined;
-		contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+		contextUpsert?: Record<string, any> | undefined;
 		resetIntent?: boolean | undefined;
 		followup?: {
 			message: string;
 			scheduled: number;
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | {
 			scheduled: number;
@@ -8387,7 +8451,7 @@ declare module '@scout9/app/schemas' {
 				id?: string | undefined;
 				persist?: boolean | undefined;
 			})[] | undefined);
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | undefined;
 		anticipate?: {
@@ -8412,12 +8476,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -8438,7 +8502,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -8462,12 +8526,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -8488,7 +8552,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -8513,12 +8577,12 @@ declare module '@scout9/app/schemas' {
 			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
-			contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			contextUpsert?: Record<string, any> | undefined;
 			resetIntent?: boolean | undefined;
 			followup?: {
 				message: string;
 				scheduled: number;
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
@@ -8539,7 +8603,7 @@ declare module '@scout9/app/schemas' {
 					id?: string | undefined;
 					persist?: boolean | undefined;
 				})[] | undefined);
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
 		}[] | undefined;
@@ -8563,12 +8627,12 @@ declare module '@scout9/app/schemas' {
 		})[] | undefined;
 		removeInstructions?: string[] | undefined;
 		secondsDelay?: number | undefined;
-		contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+		contextUpsert?: Record<string, any> | undefined;
 		resetIntent?: boolean | undefined;
 		followup?: {
 			message: string;
 			scheduled: number;
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | {
 			scheduled: number;
@@ -8589,7 +8653,7 @@ declare module '@scout9/app/schemas' {
 				id?: string | undefined;
 				persist?: boolean | undefined;
 			})[] | undefined);
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | undefined;
 		anticipate?: {
@@ -8614,12 +8678,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -8640,7 +8704,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -8664,12 +8728,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -8690,7 +8754,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -8715,12 +8779,12 @@ declare module '@scout9/app/schemas' {
 			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
-			contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			contextUpsert?: Record<string, any> | undefined;
 			resetIntent?: boolean | undefined;
 			followup?: {
 				message: string;
 				scheduled: number;
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
@@ -8741,7 +8805,7 @@ declare module '@scout9/app/schemas' {
 					id?: string | undefined;
 					persist?: boolean | undefined;
 				})[] | undefined);
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
 		}[] | undefined;
@@ -9339,26 +9403,26 @@ declare module '@scout9/app/schemas' {
 		}>]>, "many">]>>;
 		removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 		secondsDelay: z.ZodOptional<z.ZodNumber>;
-		contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+		contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 		resetIntent: z.ZodOptional<z.ZodBoolean>;
 		followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
 			scheduled: z.ZodNumber;
-			cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+			cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 			overrideLock: z.ZodOptional<z.ZodBoolean>;
 			message: z.ZodString;
 		}, "strip", z.ZodTypeAny, {
 			message: string;
 			scheduled: number;
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}, {
 			message: string;
 			scheduled: number;
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}>, z.ZodObject<{
 			scheduled: z.ZodNumber;
-			cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+			cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 			overrideLock: z.ZodOptional<z.ZodBoolean>;
 			instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
 				id: z.ZodOptional<z.ZodString>;
@@ -9404,7 +9468,7 @@ declare module '@scout9/app/schemas' {
 				id?: string | undefined;
 				persist?: boolean | undefined;
 			})[] | undefined);
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}, {
 			scheduled: number;
@@ -9425,7 +9489,7 @@ declare module '@scout9/app/schemas' {
 				id?: string | undefined;
 				persist?: boolean | undefined;
 			})[] | undefined);
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}>]>>;
 		anticipate: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
@@ -9474,26 +9538,26 @@ declare module '@scout9/app/schemas' {
 				message: z.ZodOptional<z.ZodString>;
 				secondsDelay: z.ZodOptional<z.ZodNumber>;
 				scheduled: z.ZodOptional<z.ZodNumber>;
-				contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+				contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 				resetIntent: z.ZodOptional<z.ZodBoolean>;
 				followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
 					scheduled: z.ZodNumber;
-					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 					overrideLock: z.ZodOptional<z.ZodBoolean>;
 					message: z.ZodString;
 				}, "strip", z.ZodTypeAny, {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}, {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}>, z.ZodObject<{
 					scheduled: z.ZodNumber;
-					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 					overrideLock: z.ZodOptional<z.ZodBoolean>;
 					instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
 						id: z.ZodOptional<z.ZodString>;
@@ -9539,7 +9603,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}, {
 					scheduled: number;
@@ -9560,7 +9624,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}>]>>;
 			}, "strip", z.ZodTypeAny, {
@@ -9583,12 +9647,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -9609,7 +9673,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			}, {
@@ -9632,12 +9696,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -9658,7 +9722,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			}>;
@@ -9706,26 +9770,26 @@ declare module '@scout9/app/schemas' {
 				message: z.ZodOptional<z.ZodString>;
 				secondsDelay: z.ZodOptional<z.ZodNumber>;
 				scheduled: z.ZodOptional<z.ZodNumber>;
-				contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+				contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 				resetIntent: z.ZodOptional<z.ZodBoolean>;
 				followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
 					scheduled: z.ZodNumber;
-					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 					overrideLock: z.ZodOptional<z.ZodBoolean>;
 					message: z.ZodString;
 				}, "strip", z.ZodTypeAny, {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}, {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}>, z.ZodObject<{
 					scheduled: z.ZodNumber;
-					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 					overrideLock: z.ZodOptional<z.ZodBoolean>;
 					instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
 						id: z.ZodOptional<z.ZodString>;
@@ -9771,7 +9835,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}, {
 					scheduled: number;
@@ -9792,7 +9856,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}>]>>;
 			}, "strip", z.ZodTypeAny, {
@@ -9815,12 +9879,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -9841,7 +9905,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			}, {
@@ -9864,12 +9928,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -9890,7 +9954,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			}>;
@@ -9916,12 +9980,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -9942,7 +10006,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -9966,12 +10030,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -9992,7 +10056,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -10018,12 +10082,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -10044,7 +10108,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -10068,12 +10132,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -10094,7 +10158,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -10142,26 +10206,26 @@ declare module '@scout9/app/schemas' {
 			}>]>, "many">]>>;
 			removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 			secondsDelay: z.ZodOptional<z.ZodNumber>;
-			contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+			contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 			resetIntent: z.ZodOptional<z.ZodBoolean>;
 			followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
 				scheduled: z.ZodNumber;
-				cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+				cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 				overrideLock: z.ZodOptional<z.ZodBoolean>;
 				message: z.ZodString;
 			}, "strip", z.ZodTypeAny, {
 				message: string;
 				scheduled: number;
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			}, {
 				message: string;
 				scheduled: number;
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			}>, z.ZodObject<{
 				scheduled: z.ZodNumber;
-				cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+				cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 				overrideLock: z.ZodOptional<z.ZodBoolean>;
 				instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
 					id: z.ZodOptional<z.ZodString>;
@@ -10207,7 +10271,7 @@ declare module '@scout9/app/schemas' {
 					id?: string | undefined;
 					persist?: boolean | undefined;
 				})[] | undefined);
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			}, {
 				scheduled: number;
@@ -10228,7 +10292,7 @@ declare module '@scout9/app/schemas' {
 					id?: string | undefined;
 					persist?: boolean | undefined;
 				})[] | undefined);
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			}>]>>;
 			keywords: z.ZodArray<z.ZodString, "many">;
@@ -10253,12 +10317,12 @@ declare module '@scout9/app/schemas' {
 			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
-			contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			contextUpsert?: Record<string, any> | undefined;
 			resetIntent?: boolean | undefined;
 			followup?: {
 				message: string;
 				scheduled: number;
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
@@ -10279,7 +10343,7 @@ declare module '@scout9/app/schemas' {
 					id?: string | undefined;
 					persist?: boolean | undefined;
 				})[] | undefined);
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
 		}, {
@@ -10303,12 +10367,12 @@ declare module '@scout9/app/schemas' {
 			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
-			contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			contextUpsert?: Record<string, any> | undefined;
 			resetIntent?: boolean | undefined;
 			followup?: {
 				message: string;
 				scheduled: number;
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
@@ -10329,7 +10393,7 @@ declare module '@scout9/app/schemas' {
 					id?: string | undefined;
 					persist?: boolean | undefined;
 				})[] | undefined);
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
 		}>, "many">]>>;
@@ -10353,12 +10417,12 @@ declare module '@scout9/app/schemas' {
 		})[] | undefined;
 		removeInstructions?: string[] | undefined;
 		secondsDelay?: number | undefined;
-		contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+		contextUpsert?: Record<string, any> | undefined;
 		resetIntent?: boolean | undefined;
 		followup?: {
 			message: string;
 			scheduled: number;
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | {
 			scheduled: number;
@@ -10379,7 +10443,7 @@ declare module '@scout9/app/schemas' {
 				id?: string | undefined;
 				persist?: boolean | undefined;
 			})[] | undefined);
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | undefined;
 		anticipate?: {
@@ -10404,12 +10468,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -10430,7 +10494,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -10454,12 +10518,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -10480,7 +10544,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -10505,12 +10569,12 @@ declare module '@scout9/app/schemas' {
 			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
-			contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			contextUpsert?: Record<string, any> | undefined;
 			resetIntent?: boolean | undefined;
 			followup?: {
 				message: string;
 				scheduled: number;
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
@@ -10531,7 +10595,7 @@ declare module '@scout9/app/schemas' {
 					id?: string | undefined;
 					persist?: boolean | undefined;
 				})[] | undefined);
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
 		}[] | undefined;
@@ -10555,12 +10619,12 @@ declare module '@scout9/app/schemas' {
 		})[] | undefined;
 		removeInstructions?: string[] | undefined;
 		secondsDelay?: number | undefined;
-		contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+		contextUpsert?: Record<string, any> | undefined;
 		resetIntent?: boolean | undefined;
 		followup?: {
 			message: string;
 			scheduled: number;
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | {
 			scheduled: number;
@@ -10581,7 +10645,7 @@ declare module '@scout9/app/schemas' {
 				id?: string | undefined;
 				persist?: boolean | undefined;
 			})[] | undefined);
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | undefined;
 		anticipate?: {
@@ -10606,12 +10670,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -10632,7 +10696,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -10656,12 +10720,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -10682,7 +10746,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -10707,12 +10771,12 @@ declare module '@scout9/app/schemas' {
 			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
-			contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			contextUpsert?: Record<string, any> | undefined;
 			resetIntent?: boolean | undefined;
 			followup?: {
 				message: string;
 				scheduled: number;
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
@@ -10733,7 +10797,7 @@ declare module '@scout9/app/schemas' {
 					id?: string | undefined;
 					persist?: boolean | undefined;
 				})[] | undefined);
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
 		}[] | undefined;
@@ -10781,26 +10845,26 @@ declare module '@scout9/app/schemas' {
 		}>]>, "many">]>>;
 		removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 		secondsDelay: z.ZodOptional<z.ZodNumber>;
-		contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+		contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 		resetIntent: z.ZodOptional<z.ZodBoolean>;
 		followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
 			scheduled: z.ZodNumber;
-			cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+			cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 			overrideLock: z.ZodOptional<z.ZodBoolean>;
 			message: z.ZodString;
 		}, "strip", z.ZodTypeAny, {
 			message: string;
 			scheduled: number;
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}, {
 			message: string;
 			scheduled: number;
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}>, z.ZodObject<{
 			scheduled: z.ZodNumber;
-			cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+			cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 			overrideLock: z.ZodOptional<z.ZodBoolean>;
 			instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
 				id: z.ZodOptional<z.ZodString>;
@@ -10846,7 +10910,7 @@ declare module '@scout9/app/schemas' {
 				id?: string | undefined;
 				persist?: boolean | undefined;
 			})[] | undefined);
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}, {
 			scheduled: number;
@@ -10867,7 +10931,7 @@ declare module '@scout9/app/schemas' {
 				id?: string | undefined;
 				persist?: boolean | undefined;
 			})[] | undefined);
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}>]>>;
 		anticipate: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
@@ -10916,26 +10980,26 @@ declare module '@scout9/app/schemas' {
 				message: z.ZodOptional<z.ZodString>;
 				secondsDelay: z.ZodOptional<z.ZodNumber>;
 				scheduled: z.ZodOptional<z.ZodNumber>;
-				contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+				contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 				resetIntent: z.ZodOptional<z.ZodBoolean>;
 				followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
 					scheduled: z.ZodNumber;
-					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 					overrideLock: z.ZodOptional<z.ZodBoolean>;
 					message: z.ZodString;
 				}, "strip", z.ZodTypeAny, {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}, {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}>, z.ZodObject<{
 					scheduled: z.ZodNumber;
-					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 					overrideLock: z.ZodOptional<z.ZodBoolean>;
 					instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
 						id: z.ZodOptional<z.ZodString>;
@@ -10981,7 +11045,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}, {
 					scheduled: number;
@@ -11002,7 +11066,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}>]>>;
 			}, "strip", z.ZodTypeAny, {
@@ -11025,12 +11089,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -11051,7 +11115,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			}, {
@@ -11074,12 +11138,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -11100,7 +11164,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			}>;
@@ -11148,26 +11212,26 @@ declare module '@scout9/app/schemas' {
 				message: z.ZodOptional<z.ZodString>;
 				secondsDelay: z.ZodOptional<z.ZodNumber>;
 				scheduled: z.ZodOptional<z.ZodNumber>;
-				contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+				contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 				resetIntent: z.ZodOptional<z.ZodBoolean>;
 				followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
 					scheduled: z.ZodNumber;
-					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 					overrideLock: z.ZodOptional<z.ZodBoolean>;
 					message: z.ZodString;
 				}, "strip", z.ZodTypeAny, {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}, {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}>, z.ZodObject<{
 					scheduled: z.ZodNumber;
-					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 					overrideLock: z.ZodOptional<z.ZodBoolean>;
 					instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
 						id: z.ZodOptional<z.ZodString>;
@@ -11213,7 +11277,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}, {
 					scheduled: number;
@@ -11234,7 +11298,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}>]>>;
 			}, "strip", z.ZodTypeAny, {
@@ -11257,12 +11321,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -11283,7 +11347,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			}, {
@@ -11306,12 +11370,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -11332,7 +11396,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			}>;
@@ -11358,12 +11422,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -11384,7 +11448,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -11408,12 +11472,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -11434,7 +11498,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -11460,12 +11524,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -11486,7 +11550,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -11510,12 +11574,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -11536,7 +11600,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -11584,26 +11648,26 @@ declare module '@scout9/app/schemas' {
 			}>]>, "many">]>>;
 			removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 			secondsDelay: z.ZodOptional<z.ZodNumber>;
-			contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+			contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 			resetIntent: z.ZodOptional<z.ZodBoolean>;
 			followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
 				scheduled: z.ZodNumber;
-				cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+				cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 				overrideLock: z.ZodOptional<z.ZodBoolean>;
 				message: z.ZodString;
 			}, "strip", z.ZodTypeAny, {
 				message: string;
 				scheduled: number;
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			}, {
 				message: string;
 				scheduled: number;
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			}>, z.ZodObject<{
 				scheduled: z.ZodNumber;
-				cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+				cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 				overrideLock: z.ZodOptional<z.ZodBoolean>;
 				instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
 					id: z.ZodOptional<z.ZodString>;
@@ -11649,7 +11713,7 @@ declare module '@scout9/app/schemas' {
 					id?: string | undefined;
 					persist?: boolean | undefined;
 				})[] | undefined);
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			}, {
 				scheduled: number;
@@ -11670,7 +11734,7 @@ declare module '@scout9/app/schemas' {
 					id?: string | undefined;
 					persist?: boolean | undefined;
 				})[] | undefined);
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			}>]>>;
 			keywords: z.ZodArray<z.ZodString, "many">;
@@ -11695,12 +11759,12 @@ declare module '@scout9/app/schemas' {
 			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
-			contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			contextUpsert?: Record<string, any> | undefined;
 			resetIntent?: boolean | undefined;
 			followup?: {
 				message: string;
 				scheduled: number;
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
@@ -11721,7 +11785,7 @@ declare module '@scout9/app/schemas' {
 					id?: string | undefined;
 					persist?: boolean | undefined;
 				})[] | undefined);
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
 		}, {
@@ -11745,12 +11809,12 @@ declare module '@scout9/app/schemas' {
 			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
-			contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			contextUpsert?: Record<string, any> | undefined;
 			resetIntent?: boolean | undefined;
 			followup?: {
 				message: string;
 				scheduled: number;
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
@@ -11771,7 +11835,7 @@ declare module '@scout9/app/schemas' {
 					id?: string | undefined;
 					persist?: boolean | undefined;
 				})[] | undefined);
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
 		}>, "many">]>>;
@@ -11795,12 +11859,12 @@ declare module '@scout9/app/schemas' {
 		})[] | undefined;
 		removeInstructions?: string[] | undefined;
 		secondsDelay?: number | undefined;
-		contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+		contextUpsert?: Record<string, any> | undefined;
 		resetIntent?: boolean | undefined;
 		followup?: {
 			message: string;
 			scheduled: number;
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | {
 			scheduled: number;
@@ -11821,7 +11885,7 @@ declare module '@scout9/app/schemas' {
 				id?: string | undefined;
 				persist?: boolean | undefined;
 			})[] | undefined);
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | undefined;
 		anticipate?: {
@@ -11846,12 +11910,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -11872,7 +11936,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -11896,12 +11960,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -11922,7 +11986,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -11947,12 +12011,12 @@ declare module '@scout9/app/schemas' {
 			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
-			contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			contextUpsert?: Record<string, any> | undefined;
 			resetIntent?: boolean | undefined;
 			followup?: {
 				message: string;
 				scheduled: number;
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
@@ -11973,7 +12037,7 @@ declare module '@scout9/app/schemas' {
 					id?: string | undefined;
 					persist?: boolean | undefined;
 				})[] | undefined);
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
 		}[] | undefined;
@@ -11997,12 +12061,12 @@ declare module '@scout9/app/schemas' {
 		})[] | undefined;
 		removeInstructions?: string[] | undefined;
 		secondsDelay?: number | undefined;
-		contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+		contextUpsert?: Record<string, any> | undefined;
 		resetIntent?: boolean | undefined;
 		followup?: {
 			message: string;
 			scheduled: number;
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | {
 			scheduled: number;
@@ -12023,7 +12087,7 @@ declare module '@scout9/app/schemas' {
 				id?: string | undefined;
 				persist?: boolean | undefined;
 			})[] | undefined);
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | undefined;
 		anticipate?: {
@@ -12048,12 +12112,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -12074,7 +12138,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -12098,12 +12162,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -12124,7 +12188,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -12149,12 +12213,12 @@ declare module '@scout9/app/schemas' {
 			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
-			contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			contextUpsert?: Record<string, any> | undefined;
 			resetIntent?: boolean | undefined;
 			followup?: {
 				message: string;
 				scheduled: number;
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
@@ -12175,7 +12239,7 @@ declare module '@scout9/app/schemas' {
 					id?: string | undefined;
 					persist?: boolean | undefined;
 				})[] | undefined);
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
 		}[] | undefined;
@@ -12223,26 +12287,26 @@ declare module '@scout9/app/schemas' {
 		}>]>, "many">]>>;
 		removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 		secondsDelay: z.ZodOptional<z.ZodNumber>;
-		contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+		contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 		resetIntent: z.ZodOptional<z.ZodBoolean>;
 		followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
 			scheduled: z.ZodNumber;
-			cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+			cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 			overrideLock: z.ZodOptional<z.ZodBoolean>;
 			message: z.ZodString;
 		}, "strip", z.ZodTypeAny, {
 			message: string;
 			scheduled: number;
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}, {
 			message: string;
 			scheduled: number;
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}>, z.ZodObject<{
 			scheduled: z.ZodNumber;
-			cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+			cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 			overrideLock: z.ZodOptional<z.ZodBoolean>;
 			instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
 				id: z.ZodOptional<z.ZodString>;
@@ -12288,7 +12352,7 @@ declare module '@scout9/app/schemas' {
 				id?: string | undefined;
 				persist?: boolean | undefined;
 			})[] | undefined);
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}, {
 			scheduled: number;
@@ -12309,7 +12373,7 @@ declare module '@scout9/app/schemas' {
 				id?: string | undefined;
 				persist?: boolean | undefined;
 			})[] | undefined);
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}>]>>;
 		anticipate: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
@@ -12358,26 +12422,26 @@ declare module '@scout9/app/schemas' {
 				message: z.ZodOptional<z.ZodString>;
 				secondsDelay: z.ZodOptional<z.ZodNumber>;
 				scheduled: z.ZodOptional<z.ZodNumber>;
-				contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+				contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 				resetIntent: z.ZodOptional<z.ZodBoolean>;
 				followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
 					scheduled: z.ZodNumber;
-					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 					overrideLock: z.ZodOptional<z.ZodBoolean>;
 					message: z.ZodString;
 				}, "strip", z.ZodTypeAny, {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}, {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}>, z.ZodObject<{
 					scheduled: z.ZodNumber;
-					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 					overrideLock: z.ZodOptional<z.ZodBoolean>;
 					instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
 						id: z.ZodOptional<z.ZodString>;
@@ -12423,7 +12487,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}, {
 					scheduled: number;
@@ -12444,7 +12508,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}>]>>;
 			}, "strip", z.ZodTypeAny, {
@@ -12467,12 +12531,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -12493,7 +12557,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			}, {
@@ -12516,12 +12580,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -12542,7 +12606,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			}>;
@@ -12590,26 +12654,26 @@ declare module '@scout9/app/schemas' {
 				message: z.ZodOptional<z.ZodString>;
 				secondsDelay: z.ZodOptional<z.ZodNumber>;
 				scheduled: z.ZodOptional<z.ZodNumber>;
-				contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+				contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 				resetIntent: z.ZodOptional<z.ZodBoolean>;
 				followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
 					scheduled: z.ZodNumber;
-					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 					overrideLock: z.ZodOptional<z.ZodBoolean>;
 					message: z.ZodString;
 				}, "strip", z.ZodTypeAny, {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}, {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}>, z.ZodObject<{
 					scheduled: z.ZodNumber;
-					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 					overrideLock: z.ZodOptional<z.ZodBoolean>;
 					instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
 						id: z.ZodOptional<z.ZodString>;
@@ -12655,7 +12719,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}, {
 					scheduled: number;
@@ -12676,7 +12740,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}>]>>;
 			}, "strip", z.ZodTypeAny, {
@@ -12699,12 +12763,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -12725,7 +12789,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			}, {
@@ -12748,12 +12812,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -12774,7 +12838,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			}>;
@@ -12800,12 +12864,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -12826,7 +12890,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -12850,12 +12914,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -12876,7 +12940,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -12902,12 +12966,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -12928,7 +12992,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -12952,12 +13016,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -12978,7 +13042,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -13026,26 +13090,26 @@ declare module '@scout9/app/schemas' {
 			}>]>, "many">]>>;
 			removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 			secondsDelay: z.ZodOptional<z.ZodNumber>;
-			contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+			contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 			resetIntent: z.ZodOptional<z.ZodBoolean>;
 			followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
 				scheduled: z.ZodNumber;
-				cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+				cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 				overrideLock: z.ZodOptional<z.ZodBoolean>;
 				message: z.ZodString;
 			}, "strip", z.ZodTypeAny, {
 				message: string;
 				scheduled: number;
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			}, {
 				message: string;
 				scheduled: number;
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			}>, z.ZodObject<{
 				scheduled: z.ZodNumber;
-				cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+				cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 				overrideLock: z.ZodOptional<z.ZodBoolean>;
 				instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
 					id: z.ZodOptional<z.ZodString>;
@@ -13091,7 +13155,7 @@ declare module '@scout9/app/schemas' {
 					id?: string | undefined;
 					persist?: boolean | undefined;
 				})[] | undefined);
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			}, {
 				scheduled: number;
@@ -13112,7 +13176,7 @@ declare module '@scout9/app/schemas' {
 					id?: string | undefined;
 					persist?: boolean | undefined;
 				})[] | undefined);
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			}>]>>;
 			keywords: z.ZodArray<z.ZodString, "many">;
@@ -13137,12 +13201,12 @@ declare module '@scout9/app/schemas' {
 			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
-			contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			contextUpsert?: Record<string, any> | undefined;
 			resetIntent?: boolean | undefined;
 			followup?: {
 				message: string;
 				scheduled: number;
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
@@ -13163,7 +13227,7 @@ declare module '@scout9/app/schemas' {
 					id?: string | undefined;
 					persist?: boolean | undefined;
 				})[] | undefined);
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
 		}, {
@@ -13187,12 +13251,12 @@ declare module '@scout9/app/schemas' {
 			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
-			contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			contextUpsert?: Record<string, any> | undefined;
 			resetIntent?: boolean | undefined;
 			followup?: {
 				message: string;
 				scheduled: number;
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
@@ -13213,7 +13277,7 @@ declare module '@scout9/app/schemas' {
 					id?: string | undefined;
 					persist?: boolean | undefined;
 				})[] | undefined);
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
 		}>, "many">]>>;
@@ -13237,12 +13301,12 @@ declare module '@scout9/app/schemas' {
 		})[] | undefined;
 		removeInstructions?: string[] | undefined;
 		secondsDelay?: number | undefined;
-		contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+		contextUpsert?: Record<string, any> | undefined;
 		resetIntent?: boolean | undefined;
 		followup?: {
 			message: string;
 			scheduled: number;
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | {
 			scheduled: number;
@@ -13263,7 +13327,7 @@ declare module '@scout9/app/schemas' {
 				id?: string | undefined;
 				persist?: boolean | undefined;
 			})[] | undefined);
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | undefined;
 		anticipate?: {
@@ -13288,12 +13352,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -13314,7 +13378,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -13338,12 +13402,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -13364,7 +13428,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -13389,12 +13453,12 @@ declare module '@scout9/app/schemas' {
 			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
-			contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			contextUpsert?: Record<string, any> | undefined;
 			resetIntent?: boolean | undefined;
 			followup?: {
 				message: string;
 				scheduled: number;
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
@@ -13415,7 +13479,7 @@ declare module '@scout9/app/schemas' {
 					id?: string | undefined;
 					persist?: boolean | undefined;
 				})[] | undefined);
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
 		}[] | undefined;
@@ -13439,12 +13503,12 @@ declare module '@scout9/app/schemas' {
 		})[] | undefined;
 		removeInstructions?: string[] | undefined;
 		secondsDelay?: number | undefined;
-		contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+		contextUpsert?: Record<string, any> | undefined;
 		resetIntent?: boolean | undefined;
 		followup?: {
 			message: string;
 			scheduled: number;
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | {
 			scheduled: number;
@@ -13465,7 +13529,7 @@ declare module '@scout9/app/schemas' {
 				id?: string | undefined;
 				persist?: boolean | undefined;
 			})[] | undefined);
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | undefined;
 		anticipate?: {
@@ -13490,12 +13554,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -13516,7 +13580,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -13540,12 +13604,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -13566,7 +13630,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -13591,12 +13655,12 @@ declare module '@scout9/app/schemas' {
 			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
-			contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			contextUpsert?: Record<string, any> | undefined;
 			resetIntent?: boolean | undefined;
 			followup?: {
 				message: string;
 				scheduled: number;
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
@@ -13617,7 +13681,7 @@ declare module '@scout9/app/schemas' {
 					id?: string | undefined;
 					persist?: boolean | undefined;
 				})[] | undefined);
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
 		}[] | undefined;
@@ -13665,26 +13729,26 @@ declare module '@scout9/app/schemas' {
 		}>]>, "many">]>>;
 		removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 		secondsDelay: z.ZodOptional<z.ZodNumber>;
-		contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+		contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 		resetIntent: z.ZodOptional<z.ZodBoolean>;
 		followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
 			scheduled: z.ZodNumber;
-			cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+			cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 			overrideLock: z.ZodOptional<z.ZodBoolean>;
 			message: z.ZodString;
 		}, "strip", z.ZodTypeAny, {
 			message: string;
 			scheduled: number;
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}, {
 			message: string;
 			scheduled: number;
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}>, z.ZodObject<{
 			scheduled: z.ZodNumber;
-			cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+			cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 			overrideLock: z.ZodOptional<z.ZodBoolean>;
 			instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
 				id: z.ZodOptional<z.ZodString>;
@@ -13730,7 +13794,7 @@ declare module '@scout9/app/schemas' {
 				id?: string | undefined;
 				persist?: boolean | undefined;
 			})[] | undefined);
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}, {
 			scheduled: number;
@@ -13751,7 +13815,7 @@ declare module '@scout9/app/schemas' {
 				id?: string | undefined;
 				persist?: boolean | undefined;
 			})[] | undefined);
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		}>]>>;
 		anticipate: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
@@ -13800,26 +13864,26 @@ declare module '@scout9/app/schemas' {
 				message: z.ZodOptional<z.ZodString>;
 				secondsDelay: z.ZodOptional<z.ZodNumber>;
 				scheduled: z.ZodOptional<z.ZodNumber>;
-				contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+				contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 				resetIntent: z.ZodOptional<z.ZodBoolean>;
 				followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
 					scheduled: z.ZodNumber;
-					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 					overrideLock: z.ZodOptional<z.ZodBoolean>;
 					message: z.ZodString;
 				}, "strip", z.ZodTypeAny, {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}, {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}>, z.ZodObject<{
 					scheduled: z.ZodNumber;
-					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 					overrideLock: z.ZodOptional<z.ZodBoolean>;
 					instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
 						id: z.ZodOptional<z.ZodString>;
@@ -13865,7 +13929,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}, {
 					scheduled: number;
@@ -13886,7 +13950,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}>]>>;
 			}, "strip", z.ZodTypeAny, {
@@ -13909,12 +13973,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -13935,7 +13999,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			}, {
@@ -13958,12 +14022,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -13984,7 +14048,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			}>;
@@ -14032,26 +14096,26 @@ declare module '@scout9/app/schemas' {
 				message: z.ZodOptional<z.ZodString>;
 				secondsDelay: z.ZodOptional<z.ZodNumber>;
 				scheduled: z.ZodOptional<z.ZodNumber>;
-				contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+				contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 				resetIntent: z.ZodOptional<z.ZodBoolean>;
 				followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
 					scheduled: z.ZodNumber;
-					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 					overrideLock: z.ZodOptional<z.ZodBoolean>;
 					message: z.ZodString;
 				}, "strip", z.ZodTypeAny, {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}, {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}>, z.ZodObject<{
 					scheduled: z.ZodNumber;
-					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+					cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 					overrideLock: z.ZodOptional<z.ZodBoolean>;
 					instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
 						id: z.ZodOptional<z.ZodString>;
@@ -14097,7 +14161,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}, {
 					scheduled: number;
@@ -14118,7 +14182,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				}>]>>;
 			}, "strip", z.ZodTypeAny, {
@@ -14141,12 +14205,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -14167,7 +14231,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			}, {
@@ -14190,12 +14254,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -14216,7 +14280,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			}>;
@@ -14242,12 +14306,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -14268,7 +14332,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -14292,12 +14356,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -14318,7 +14382,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -14344,12 +14408,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -14370,7 +14434,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -14394,12 +14458,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -14420,7 +14484,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -14468,26 +14532,26 @@ declare module '@scout9/app/schemas' {
 			}>]>, "many">]>>;
 			removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 			secondsDelay: z.ZodOptional<z.ZodNumber>;
-			contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+			contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 			resetIntent: z.ZodOptional<z.ZodBoolean>;
 			followup: z.ZodOptional<z.ZodUnion<[z.ZodObject<{
 				scheduled: z.ZodNumber;
-				cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+				cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 				overrideLock: z.ZodOptional<z.ZodBoolean>;
 				message: z.ZodString;
 			}, "strip", z.ZodTypeAny, {
 				message: string;
 				scheduled: number;
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			}, {
 				message: string;
 				scheduled: number;
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			}>, z.ZodObject<{
 				scheduled: z.ZodNumber;
-				cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
+				cancelIf: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
 				overrideLock: z.ZodOptional<z.ZodBoolean>;
 				instructions: z.ZodUnion<[z.ZodString, z.ZodObject<{
 					id: z.ZodOptional<z.ZodString>;
@@ -14533,7 +14597,7 @@ declare module '@scout9/app/schemas' {
 					id?: string | undefined;
 					persist?: boolean | undefined;
 				})[] | undefined);
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			}, {
 				scheduled: number;
@@ -14554,7 +14618,7 @@ declare module '@scout9/app/schemas' {
 					id?: string | undefined;
 					persist?: boolean | undefined;
 				})[] | undefined);
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			}>]>>;
 			keywords: z.ZodArray<z.ZodString, "many">;
@@ -14579,12 +14643,12 @@ declare module '@scout9/app/schemas' {
 			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
-			contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			contextUpsert?: Record<string, any> | undefined;
 			resetIntent?: boolean | undefined;
 			followup?: {
 				message: string;
 				scheduled: number;
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
@@ -14605,7 +14669,7 @@ declare module '@scout9/app/schemas' {
 					id?: string | undefined;
 					persist?: boolean | undefined;
 				})[] | undefined);
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
 		}, {
@@ -14629,12 +14693,12 @@ declare module '@scout9/app/schemas' {
 			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
-			contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			contextUpsert?: Record<string, any> | undefined;
 			resetIntent?: boolean | undefined;
 			followup?: {
 				message: string;
 				scheduled: number;
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
@@ -14655,7 +14719,7 @@ declare module '@scout9/app/schemas' {
 					id?: string | undefined;
 					persist?: boolean | undefined;
 				})[] | undefined);
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
 		}>, "many">]>>;
@@ -14679,12 +14743,12 @@ declare module '@scout9/app/schemas' {
 		})[] | undefined;
 		removeInstructions?: string[] | undefined;
 		secondsDelay?: number | undefined;
-		contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+		contextUpsert?: Record<string, any> | undefined;
 		resetIntent?: boolean | undefined;
 		followup?: {
 			message: string;
 			scheduled: number;
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | {
 			scheduled: number;
@@ -14705,7 +14769,7 @@ declare module '@scout9/app/schemas' {
 				id?: string | undefined;
 				persist?: boolean | undefined;
 			})[] | undefined);
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | undefined;
 		anticipate?: {
@@ -14730,12 +14794,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -14756,7 +14820,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -14780,12 +14844,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -14806,7 +14870,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -14831,12 +14895,12 @@ declare module '@scout9/app/schemas' {
 			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
-			contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			contextUpsert?: Record<string, any> | undefined;
 			resetIntent?: boolean | undefined;
 			followup?: {
 				message: string;
 				scheduled: number;
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
@@ -14857,7 +14921,7 @@ declare module '@scout9/app/schemas' {
 					id?: string | undefined;
 					persist?: boolean | undefined;
 				})[] | undefined);
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
 		}[] | undefined;
@@ -14881,12 +14945,12 @@ declare module '@scout9/app/schemas' {
 		})[] | undefined;
 		removeInstructions?: string[] | undefined;
 		secondsDelay?: number | undefined;
-		contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+		contextUpsert?: Record<string, any> | undefined;
 		resetIntent?: boolean | undefined;
 		followup?: {
 			message: string;
 			scheduled: number;
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | {
 			scheduled: number;
@@ -14907,7 +14971,7 @@ declare module '@scout9/app/schemas' {
 				id?: string | undefined;
 				persist?: boolean | undefined;
 			})[] | undefined);
-			cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			cancelIf?: Record<string, any> | undefined;
 			overrideLock?: boolean | undefined;
 		} | undefined;
 		anticipate?: {
@@ -14932,12 +14996,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -14958,7 +15022,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -14982,12 +15046,12 @@ declare module '@scout9/app/schemas' {
 				message?: string | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
-				contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				contextUpsert?: Record<string, any> | undefined;
 				resetIntent?: boolean | undefined;
 				followup?: {
 					message: string;
 					scheduled: number;
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | {
 					scheduled: number;
@@ -15008,7 +15072,7 @@ declare module '@scout9/app/schemas' {
 						id?: string | undefined;
 						persist?: boolean | undefined;
 					})[] | undefined);
-					cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+					cancelIf?: Record<string, any> | undefined;
 					overrideLock?: boolean | undefined;
 				} | undefined;
 			};
@@ -15033,12 +15097,12 @@ declare module '@scout9/app/schemas' {
 			})[] | undefined;
 			removeInstructions?: string[] | undefined;
 			secondsDelay?: number | undefined;
-			contextUpsert?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+			contextUpsert?: Record<string, any> | undefined;
 			resetIntent?: boolean | undefined;
 			followup?: {
 				message: string;
 				scheduled: number;
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | {
 				scheduled: number;
@@ -15059,7 +15123,7 @@ declare module '@scout9/app/schemas' {
 					id?: string | undefined;
 					persist?: boolean | undefined;
 				})[] | undefined);
-				cancelIf?: Record<string, string | number | boolean | (string | number | boolean | null)[] | null> | undefined;
+				cancelIf?: Record<string, any> | undefined;
 				overrideLock?: boolean | undefined;
 			} | undefined;
 		}[] | undefined;
@@ -15346,7 +15410,7 @@ declare module '@scout9/app/schemas' {
 			headers?: any;
 		} | undefined;
 	}>>>;
-	export const ConversationContext: z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>;
+	export const ConversationContext: z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>;
 	export const ConversationAnticipateSchema: z.ZodObject<{
 		type: z.ZodEnum<["did", "literal", "context"]>;
 		slots: z.ZodRecord<z.ZodString, z.ZodArray<z.ZodAny, "many">>;

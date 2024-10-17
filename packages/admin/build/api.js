@@ -16,7 +16,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Scout9Api = exports.Scout9ApiGenerated = exports.Scout9ApiFactory = exports.Scout9ApiFp = exports.Scout9ApiAxiosParamCreator = exports.WorkflowResponseSlotForwardOneOfModeEnum = exports.PurposeEnum = exports.PmtConfigModelEnum = exports.PmtConfigEngineEnum = exports.MessageGetResponseInnerRoleEnum = exports.MessageCreateRequestRoleEnum = exports.MessageBaseRoleEnum = exports.MessageRoleEnum = exports.MacroResultTypeEnum = exports.MacroDidResultTypeEnum = exports.MacroContextResultTypeEnum = exports.LlmConfigOneOf2EngineEnum = exports.LlmConfigOneOf1EngineEnum = exports.LlmConfigOneOfModelEnum = exports.LlmConfigOneOfEngineEnum = exports.ListApiOperationsResponseInnerMethodEnum = exports.GetApiOperationResponseMethodEnum = exports.ForwardRequestLatestMessageRoleEnum = exports.ForwardRequestForwardOneOfModeEnum = exports.ExistenceOperator = exports.EqualityOperator = exports.ConversationEnvironment = exports.ConversationContextFieldConditionOperatorEnum = exports.ApiOperationMethodEnum = void 0;
+exports.Scout9Api = exports.Scout9ApiGenerated = exports.Scout9ApiFactory = exports.Scout9ApiFp = exports.Scout9ApiAxiosParamCreator = exports.NoopApi = exports.NoopApiFactory = exports.NoopApiFp = exports.NoopApiAxiosParamCreator = exports.WorkflowResponseSlotForwardOneOfModeEnum = exports.PurposeEnum = exports.PmtConfigModelEnum = exports.PmtConfigEngineEnum = exports.MessageGetResponseInnerRoleEnum = exports.MessageCreateRequestRoleEnum = exports.MessageBaseRoleEnum = exports.MessageRoleEnum = exports.MacroResultTypeEnum = exports.MacroDoesResultTypeEnum = exports.MacroDoesInputRoleEnum = exports.MacroDidResultTypeEnum = exports.MacroContextResultTypeEnum = exports.LlmConfigOneOf2EngineEnum = exports.LlmConfigOneOf1EngineEnum = exports.LlmConfigOneOfModelEnum = exports.LlmConfigOneOfEngineEnum = exports.ListApiOperationsResponseInnerMethodEnum = exports.GetApiOperationResponseMethodEnum = exports.ForwardRequestLatestMessageRoleEnum = exports.ForwardRequestForwardOneOfModeEnum = exports.ExistenceOperator = exports.EqualityOperator = exports.ConversationEnvironment = exports.ConversationContextFieldConditionOperatorEnum = exports.ApiOperationMethodEnum = void 0;
 const axios_1 = __importDefault(require("axios"));
 // Some imports not used depending on template conditions
 // @ts-ignore
@@ -147,6 +147,13 @@ exports.MacroContextResultTypeEnum = {
 exports.MacroDidResultTypeEnum = {
     Did: 'did'
 };
+exports.MacroDoesInputRoleEnum = {
+    Customer: 'customer',
+    Agent: 'agent'
+};
+exports.MacroDoesResultTypeEnum = {
+    Does: 'does'
+};
 exports.MacroResultTypeEnum = {
     Did: 'did',
     Context: 'context'
@@ -192,6 +199,106 @@ exports.WorkflowResponseSlotForwardOneOfModeEnum = {
     AfterReply: 'after-reply',
     Immediately: 'immediately'
 };
+/**
+ * NoopApi - axios parameter creator
+ * @export
+ */
+const NoopApiAxiosParamCreator = function (configuration) {
+    return {
+        /**
+         *
+         * @summary This is used for the generator to include PurposeEnum, because for whatever reason, query params are not included in the generator.
+         * @param {PingRequest} pingRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        ping: async (pingRequest, options = {}) => {
+            // verify required parameter 'pingRequest' is not null or undefined
+            (0, common_1.assertParamExists)('ping', 'pingRequest', pingRequest);
+            const localVarPath = `/v1-utils-ping`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options };
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
+            localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(pingRequest, localVarRequestOptions, configuration);
+            return {
+                url: (0, common_1.toPathString)(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    };
+};
+exports.NoopApiAxiosParamCreator = NoopApiAxiosParamCreator;
+/**
+ * NoopApi - functional programming interface
+ * @export
+ */
+const NoopApiFp = function (configuration) {
+    const localVarAxiosParamCreator = (0, exports.NoopApiAxiosParamCreator)(configuration);
+    return {
+        /**
+         *
+         * @summary This is used for the generator to include PurposeEnum, because for whatever reason, query params are not included in the generator.
+         * @param {PingRequest} pingRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async ping(pingRequest, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.ping(pingRequest, options);
+            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+        },
+    };
+};
+exports.NoopApiFp = NoopApiFp;
+/**
+ * NoopApi - factory interface
+ * @export
+ */
+const NoopApiFactory = function (configuration, basePath, axios) {
+    const localVarFp = (0, exports.NoopApiFp)(configuration);
+    return {
+        /**
+         *
+         * @summary This is used for the generator to include PurposeEnum, because for whatever reason, query params are not included in the generator.
+         * @param {PingRequest} pingRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        ping(pingRequest, options) {
+            return localVarFp.ping(pingRequest, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+exports.NoopApiFactory = NoopApiFactory;
+/**
+ * NoopApi - object-oriented interface
+ * @export
+ * @class NoopApi
+ * @extends {BaseAPI}
+ */
+class NoopApi extends base_1.BaseAPI {
+    /**
+     *
+     * @summary This is used for the generator to include PurposeEnum, because for whatever reason, query params are not included in the generator.
+     * @param {PingRequest} pingRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof NoopApi
+     */
+    ping(pingRequest, options) {
+        return (0, exports.NoopApiFp)(this.configuration).ping(pingRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+exports.NoopApi = NoopApi;
 /**
  * Scout9Api - axios parameter creator
  * @export
@@ -1304,6 +1411,36 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         },
         /**
          *
+         * @summary Natural language prompt to resolve to a boolean value in relation to the given immediate message.
+         * @param {MacroDoesInput} macroDoesInput
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        does: async (macroDoesInput, options = {}) => {
+            // verify required parameter 'macroDoesInput' is not null or undefined
+            (0, common_1.assertParamExists)('does', 'macroDoesInput', macroDoesInput);
+            const localVarPath = `/v1-utils-macros-does`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options };
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
+            localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(macroDoesInput, localVarRequestOptions, configuration);
+            return {
+                url: (0, common_1.toPathString)(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         *
          * @summary Get an entity by type and ID
          * @param {string} type The type of the entity to fetch
          * @param {string} id The unique identifier of the entity
@@ -1747,36 +1884,6 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
             localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(parseRequest, localVarRequestOptions, configuration);
-            return {
-                url: (0, common_1.toPathString)(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         *
-         * @summary This is used for the generator to include PurposeEnum, because for whatever reason, query params are not included in the generator.
-         * @param {PingRequest} pingRequest
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        ping: async (pingRequest, options = {}) => {
-            // verify required parameter 'pingRequest' is not null or undefined
-            (0, common_1.assertParamExists)('ping', 'pingRequest', pingRequest);
-            const localVarPath = `/v1-utils-ping`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options };
-            const localVarHeaderParameter = {};
-            const localVarQueryParameter = {};
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
-            localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(pingRequest, localVarRequestOptions, configuration);
             return {
                 url: (0, common_1.toPathString)(localVarUrlObj),
                 options: localVarRequestOptions,
@@ -2355,6 +2462,17 @@ const Scout9ApiFp = function (configuration) {
         },
         /**
          *
+         * @summary Natural language prompt to resolve to a boolean value in relation to the given immediate message.
+         * @param {MacroDoesInput} macroDoesInput
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async does(macroDoesInput, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.does(macroDoesInput, options);
+            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+        },
+        /**
+         *
          * @summary Get an entity by type and ID
          * @param {string} type The type of the entity to fetch
          * @param {string} id The unique identifier of the entity
@@ -2507,17 +2625,6 @@ const Scout9ApiFp = function (configuration) {
          */
         async parse(parseRequest, options) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.parse(parseRequest, options);
-            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
-        },
-        /**
-         *
-         * @summary This is used for the generator to include PurposeEnum, because for whatever reason, query params are not included in the generator.
-         * @param {PingRequest} pingRequest
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async ping(pingRequest, options) {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.ping(pingRequest, options);
             return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
         },
         /**
@@ -2956,6 +3063,16 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
         },
         /**
          *
+         * @summary Natural language prompt to resolve to a boolean value in relation to the given immediate message.
+         * @param {MacroDoesInput} macroDoesInput
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        does(macroDoesInput, options) {
+            return localVarFp.does(macroDoesInput, options).then((request) => request(axios, basePath));
+        },
+        /**
+         *
          * @summary Get an entity by type and ID
          * @param {string} type The type of the entity to fetch
          * @param {string} id The unique identifier of the entity
@@ -3096,16 +3213,6 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
          */
         parse(parseRequest, options) {
             return localVarFp.parse(parseRequest, options).then((request) => request(axios, basePath));
-        },
-        /**
-         *
-         * @summary This is used for the generator to include PurposeEnum, because for whatever reason, query params are not included in the generator.
-         * @param {PingRequest} pingRequest
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        ping(pingRequest, options) {
-            return localVarFp.ping(pingRequest, options).then((request) => request(axios, basePath));
         },
         /**
          *
@@ -3574,6 +3681,17 @@ class Scout9ApiGenerated extends base_1.BaseAPI {
     }
     /**
      *
+     * @summary Natural language prompt to resolve to a boolean value in relation to the given immediate message.
+     * @param {MacroDoesInput} macroDoesInput
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    does(macroDoesInput, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).does(macroDoesInput, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     *
      * @summary Get an entity by type and ID
      * @param {string} type The type of the entity to fetch
      * @param {string} id The unique identifier of the entity
@@ -3727,17 +3845,6 @@ class Scout9ApiGenerated extends base_1.BaseAPI {
      */
     parse(parseRequest, options) {
         return (0, exports.Scout9ApiFp)(this.configuration).parse(parseRequest, options).then((request) => request(this.axios, this.basePath));
-    }
-    /**
-     *
-     * @summary This is used for the generator to include PurposeEnum, because for whatever reason, query params are not included in the generator.
-     * @param {PingRequest} pingRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof Scout9Api
-     */
-    ping(pingRequest, options) {
-        return (0, exports.Scout9ApiFp)(this.configuration).ping(pingRequest, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      *

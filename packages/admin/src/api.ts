@@ -2504,23 +2504,11 @@ export type GenerateRequest = GenerateRequestOneOf | string;
  */
 export interface GenerateRequestOneOf {
   /**
-   *
-   * @type {ConversationCreateRequest}
-   * @memberof GenerateRequestOneOf
-   */
-  'convo'?: ConversationCreateRequest;
-  /**
    * Conversation messages and context to generate message from
    * @type {Array<Message>}
    * @memberof GenerateRequestOneOf
    */
   'messages': Array<Message>;
-  /**
-   * Any key,value information about the conversation, customer, or offer goes here
-   * @type {{ [key: string]: any; }}
-   * @memberof GenerateRequestOneOf
-   */
-  'context'?: { [key: string]: any; };
   /**
    *
    * @type {GenerateRequestOneOfPersona}
@@ -3695,6 +3683,12 @@ export interface MacroContextInput {
    */
   'event'?: WorkflowEvent;
   /**
+   * Whether to use cache state to speed up requests
+   * @type {boolean}
+   * @memberof MacroContextInput
+   */
+  'cache'?: boolean;
+  /**
    *
    * @type {MacroContextInputExamples}
    * @memberof MacroContextInput
@@ -3800,6 +3794,12 @@ export interface MacroDidInput {
    * @memberof MacroDidInput
    */
   'convoId': string;
+  /**
+   * Whether to use cache state to speed up requests
+   * @type {boolean}
+   * @memberof MacroDidInput
+   */
+  'cache'?: boolean;
 }
 /**
  *
@@ -3838,6 +3838,89 @@ export const MacroDidResultTypeEnum = {
 } as const;
 
 export type MacroDidResultTypeEnum = typeof MacroDidResultTypeEnum[keyof typeof MacroDidResultTypeEnum];
+
+/**
+ *
+ * @export
+ * @interface MacroDoesInput
+ */
+export interface MacroDoesInput {
+  /**
+   *
+   * @type {string}
+   * @memberof MacroDoesInput
+   */
+  'prompt': string;
+  /**
+   * Eval on customer\'s immediate message or last agent\'s message? (defaults to \"customer\")
+   * @type {string}
+   * @memberof MacroDoesInput
+   */
+  'role'?: MacroDoesInputRoleEnum;
+  /**
+   * Whether to use cache state to speed up requests
+   * @type {boolean}
+   * @memberof MacroDoesInput
+   */
+  'cache'?: boolean;
+  /**
+   *
+   * @type {WorkflowEvent}
+   * @memberof MacroDoesInput
+   */
+  'event'?: WorkflowEvent;
+  /**
+   *
+   * @type {string}
+   * @memberof MacroDoesInput
+   */
+  'convoId': string;
+}
+
+export const MacroDoesInputRoleEnum = {
+  Customer: 'customer',
+  Agent: 'agent'
+} as const;
+
+export type MacroDoesInputRoleEnum = typeof MacroDoesInputRoleEnum[keyof typeof MacroDoesInputRoleEnum];
+
+/**
+ *
+ * @export
+ * @interface MacroDoesResult
+ */
+export interface MacroDoesResult {
+  /**
+   * The prompt that was used
+   * @type {string}
+   * @memberof MacroDoesResult
+   */
+  'prompt'?: string;
+  /**
+   * Type is hard-coded to \'does\'
+   * @type {string}
+   * @memberof MacroDoesResult
+   */
+  'type'?: MacroDoesResultTypeEnum;
+  /**
+   * The returned value is of type boolean
+   * @type {boolean}
+   * @memberof MacroDoesResult
+   */
+  'value'?: boolean;
+  /**
+   * The number of tokens used to generate this response
+   * @type {number}
+   * @memberof MacroDoesResult
+   */
+  'tokensTotal'?: number;
+}
+
+export const MacroDoesResultTypeEnum = {
+  Does: 'does'
+} as const;
+
+export type MacroDoesResultTypeEnum = typeof MacroDoesResultTypeEnum[keyof typeof MacroDoesResultTypeEnum];
 
 /**
  *
@@ -4081,6 +4164,25 @@ export interface MessageCreateResponse {
    * @memberof MessageCreateResponse
    */
   'id': string;
+  /**
+   * The ID of the conversation
+   * @type {string}
+   * @memberof MessageCreateResponse
+   */
+  'convo': string;
+}
+/**
+ *
+ * @export
+ * @interface MessageCreateResponseAllOf
+ */
+export interface MessageCreateResponseAllOf {
+  /**
+   * The ID of the conversation
+   * @type {string}
+   * @memberof MessageCreateResponseAllOf
+   */
+  'convo': string;
 }
 /**
  *
@@ -6124,6 +6226,113 @@ export type WorkflowResponseSlotInstructions = Array<Instruction> | Array<string
 
 
 /**
+ * NoopApi - axios parameter creator
+ * @export
+ */
+export const NoopApiAxiosParamCreator = function (configuration?: Configuration) {
+  return {
+    /**
+     *
+     * @summary This is used for the generator to include PurposeEnum, because for whatever reason, query params are not included in the generator.
+     * @param {PingRequest} pingRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    ping: async (pingRequest: PingRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'pingRequest' is not null or undefined
+      assertParamExists('ping', 'pingRequest', pingRequest)
+      const localVarPath = `/v1-utils-ping`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+      localVarRequestOptions.data = serializeDataIfNeeded(pingRequest, localVarRequestOptions, configuration)
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+  }
+};
+
+/**
+ * NoopApi - functional programming interface
+ * @export
+ */
+export const NoopApiFp = function(configuration?: Configuration) {
+  const localVarAxiosParamCreator = NoopApiAxiosParamCreator(configuration)
+  return {
+    /**
+     *
+     * @summary This is used for the generator to include PurposeEnum, because for whatever reason, query params are not included in the generator.
+     * @param {PingRequest} pingRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async ping(pingRequest: PingRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PingRequest>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.ping(pingRequest, options);
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+    },
+  }
+};
+
+/**
+ * NoopApi - factory interface
+ * @export
+ */
+export const NoopApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+  const localVarFp = NoopApiFp(configuration)
+  return {
+    /**
+     *
+     * @summary This is used for the generator to include PurposeEnum, because for whatever reason, query params are not included in the generator.
+     * @param {PingRequest} pingRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    ping(pingRequest: PingRequest, options?: any): AxiosPromise<PingRequest> {
+      return localVarFp.ping(pingRequest, options).then((request) => request(axios, basePath));
+    },
+  };
+};
+
+/**
+ * NoopApi - object-oriented interface
+ * @export
+ * @class NoopApi
+ * @extends {BaseAPI}
+ */
+export class NoopApi extends BaseAPI {
+  /**
+   *
+   * @summary This is used for the generator to include PurposeEnum, because for whatever reason, query params are not included in the generator.
+   * @param {PingRequest} pingRequest
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof NoopApi
+   */
+  public ping(pingRequest: PingRequest, options?: AxiosRequestConfig) {
+    return NoopApiFp(this.configuration).ping(pingRequest, options).then((request) => request(this.axios, this.basePath));
+  }
+}
+
+
+/**
  * Scout9Api - axios parameter creator
  * @export
  */
@@ -7453,6 +7662,42 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
     },
     /**
      *
+     * @summary Natural language prompt to resolve to a boolean value in relation to the given immediate message.
+     * @param {MacroDoesInput} macroDoesInput
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    does: async (macroDoesInput: MacroDoesInput, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'macroDoesInput' is not null or undefined
+      assertParamExists('does', 'macroDoesInput', macroDoesInput)
+      const localVarPath = `/v1-utils-macros-does`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+      localVarRequestOptions.data = serializeDataIfNeeded(macroDoesInput, localVarRequestOptions, configuration)
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
      * @summary Get an entity by type and ID
      * @param {string} type The type of the entity to fetch
      * @param {string} id The unique identifier of the entity
@@ -7728,10 +7973,11 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
      * Generates a message in the agent\'s voice based on the state of the given conversation. This is useful for testing and debugging. The message will not be sent to the conversation, you must run .message() with the body of the generated message to send it to the conversation.
      * @summary Generate a message from conversation
      * @param {GenerateRequest} generateRequest
+     * @param {string} [convo] In relation to which conversation
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    generate: async (generateRequest: GenerateRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+    generate: async (generateRequest: GenerateRequest, convo?: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
       // verify required parameter 'generateRequest' is not null or undefined
       assertParamExists('generate', 'generateRequest', generateRequest)
       const localVarPath = `/v1-generate`;
@@ -7745,6 +7991,10 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
       const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
+
+      if (convo !== undefined) {
+        localVarQueryParameter['convo'] = convo;
+      }
 
 
 
@@ -7985,42 +8235,6 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
       localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
       localVarRequestOptions.data = serializeDataIfNeeded(parseRequest, localVarRequestOptions, configuration)
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      };
-    },
-    /**
-     *
-     * @summary This is used for the generator to include PurposeEnum, because for whatever reason, query params are not included in the generator.
-     * @param {PingRequest} pingRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    ping: async (pingRequest: PingRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-      // verify required parameter 'pingRequest' is not null or undefined
-      assertParamExists('ping', 'pingRequest', pingRequest)
-      const localVarPath = `/v1-utils-ping`;
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-      let baseOptions;
-      if (configuration) {
-        baseOptions = configuration.baseOptions;
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
-
-
-
-      localVarHeaderParameter['Content-Type'] = 'application/json';
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter);
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-      localVarRequestOptions.data = serializeDataIfNeeded(pingRequest, localVarRequestOptions, configuration)
 
       return {
         url: toPathString(localVarUrlObj),
@@ -8629,6 +8843,17 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
     },
     /**
      *
+     * @summary Natural language prompt to resolve to a boolean value in relation to the given immediate message.
+     * @param {MacroDoesInput} macroDoesInput
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async does(macroDoesInput: MacroDoesInput, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<MacroDoesResult>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.does(macroDoesInput, options);
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+    },
+    /**
+     *
      * @summary Get an entity by type and ID
      * @param {string} type The type of the entity to fetch
      * @param {string} id The unique identifier of the entity
@@ -8707,11 +8932,12 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
      * Generates a message in the agent\'s voice based on the state of the given conversation. This is useful for testing and debugging. The message will not be sent to the conversation, you must run .message() with the body of the generated message to send it to the conversation.
      * @summary Generate a message from conversation
      * @param {GenerateRequest} generateRequest
+     * @param {string} [convo] In relation to which conversation
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async generate(generateRequest: GenerateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GenerateResponse>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.generate(generateRequest, options);
+    async generate(generateRequest: GenerateRequest, convo?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GenerateResponse>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.generate(generateRequest, convo, options);
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
     },
     /**
@@ -8781,17 +9007,6 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
      */
     async parse(parseRequest: ParseRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ParseResponse>> {
       const localVarAxiosArgs = await localVarAxiosParamCreator.parse(parseRequest, options);
-      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-    },
-    /**
-     *
-     * @summary This is used for the generator to include PurposeEnum, because for whatever reason, query params are not included in the generator.
-     * @param {PingRequest} pingRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async ping(pingRequest: PingRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PingRequest>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.ping(pingRequest, options);
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
     },
     /**
@@ -9230,6 +9445,16 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
     },
     /**
      *
+     * @summary Natural language prompt to resolve to a boolean value in relation to the given immediate message.
+     * @param {MacroDoesInput} macroDoesInput
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    does(macroDoesInput: MacroDoesInput, options?: any): AxiosPromise<MacroDoesResult> {
+      return localVarFp.does(macroDoesInput, options).then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @summary Get an entity by type and ID
      * @param {string} type The type of the entity to fetch
      * @param {string} id The unique identifier of the entity
@@ -9302,11 +9527,12 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
      * Generates a message in the agent\'s voice based on the state of the given conversation. This is useful for testing and debugging. The message will not be sent to the conversation, you must run .message() with the body of the generated message to send it to the conversation.
      * @summary Generate a message from conversation
      * @param {GenerateRequest} generateRequest
+     * @param {string} [convo] In relation to which conversation
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    generate(generateRequest: GenerateRequest, options?: any): AxiosPromise<GenerateResponse> {
-      return localVarFp.generate(generateRequest, options).then((request) => request(axios, basePath));
+    generate(generateRequest: GenerateRequest, convo?: string, options?: any): AxiosPromise<GenerateResponse> {
+      return localVarFp.generate(generateRequest, convo, options).then((request) => request(axios, basePath));
     },
     /**
      * Returns log data for a given range, specified by start and end Unix timestamps.
@@ -9370,16 +9596,6 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
      */
     parse(parseRequest: ParseRequest, options?: any): AxiosPromise<ParseResponse> {
       return localVarFp.parse(parseRequest, options).then((request) => request(axios, basePath));
-    },
-    /**
-     *
-     * @summary This is used for the generator to include PurposeEnum, because for whatever reason, query params are not included in the generator.
-     * @param {PingRequest} pingRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    ping(pingRequest: PingRequest, options?: any): AxiosPromise<PingRequest> {
-      return localVarFp.ping(pingRequest, options).then((request) => request(axios, basePath));
     },
     /**
      *
@@ -9884,6 +10100,18 @@ export class Scout9ApiGenerated extends BaseAPI {
 
   /**
    *
+   * @summary Natural language prompt to resolve to a boolean value in relation to the given immediate message.
+   * @param {MacroDoesInput} macroDoesInput
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof Scout9Api
+   */
+  public does(macroDoesInput: MacroDoesInput, options?: AxiosRequestConfig) {
+    return Scout9ApiFp(this.configuration).does(macroDoesInput, options).then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
    * @summary Get an entity by type and ID
    * @param {string} type The type of the entity to fetch
    * @param {string} id The unique identifier of the entity
@@ -9968,12 +10196,13 @@ export class Scout9ApiGenerated extends BaseAPI {
    * Generates a message in the agent\'s voice based on the state of the given conversation. This is useful for testing and debugging. The message will not be sent to the conversation, you must run .message() with the body of the generated message to send it to the conversation.
    * @summary Generate a message from conversation
    * @param {GenerateRequest} generateRequest
+   * @param {string} [convo] In relation to which conversation
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof Scout9Api
    */
-  public generate(generateRequest: GenerateRequest, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).generate(generateRequest, options).then((request) => request(this.axios, this.basePath));
+  public generate(generateRequest: GenerateRequest, convo?: string, options?: AxiosRequestConfig) {
+    return Scout9ApiFp(this.configuration).generate(generateRequest, convo, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -10049,18 +10278,6 @@ export class Scout9ApiGenerated extends BaseAPI {
    */
   public parse(parseRequest: ParseRequest, options?: AxiosRequestConfig) {
     return Scout9ApiFp(this.configuration).parse(parseRequest, options).then((request) => request(this.axios, this.basePath));
-  }
-
-  /**
-   *
-   * @summary This is used for the generator to include PurposeEnum, because for whatever reason, query params are not included in the generator.
-   * @param {PingRequest} pingRequest
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof Scout9Api
-   */
-  public ping(pingRequest: PingRequest, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).ping(pingRequest, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**

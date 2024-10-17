@@ -92,11 +92,28 @@ export class EventResponse<T = any> {
  * @param {OptionsInstruct} [options]
  * @return {EventMacros}
  *
+ * @overload
+ * @param {Array<string | (OptionsInstruct & {content: string})>} instruction
+ *
  * @example instruct("Ask user if they are looking to order a pizza");
  *
  * @type {(message: string, options?: OptionsInstruct) => EventMacros}
  */
-export const instruct: (message: string, options?: OptionsInstruct) => EventMacros;
+export const instruct: ((instruction: string, options?: OptionsInstruct) => EventMacros) | ((instruction: Array<string | (OptionsInstruct & {content: string})>) => EventMacros);
+
+/**
+ * If conversation is not stagnant, return instructions to guide next auto reply response, otherwise it will forward the conversation
+ * @param {string} instruction - the instruction to send to the
+ * @param {OptionsInstruct} [options]
+ * @return {EventMacros}
+ *
+ * @example instructSafe("Ask user if they are looking to order a pizza");
+ * @example instructSafe("Ask user if they are looking to order a pizza", {stagnationLimit: 3}); // Allows for 3 stagnate messages before forwarding
+ *
+ * @type {(message: string, options?: OptionsInstruct) => EventMacros}
+ */
+export const instructSafe: (instruction: string, options?: (OptionsInstruct & OptionsForward & {stagnationLimit?: number})) => EventMacros;
+
 /**
  * Forwards conversation back to you or owner of workflow.
  *
@@ -183,27 +200,77 @@ export type OptionsForward = {
 
     resetIntent?: boolean;
 };
-/**
- * - Extends `WorkflowResponseSlotBase` to include keywords.
- */
-export type WorkflowResponseSlotBaseWithKeywords = WorkflowResponseSlotBase & {
-    keywords: string[];
-};
-/**
- * - Defines the overloads for the `anticipate` function.
- */
-export type AnticipateFunction = (instruction: string, yes: WorkflowResponseSlotBase, no: WorkflowResponseSlotBase) => EventMacros | ((instruction: WorkflowResponseSlotBaseWithKeywords[]) => EventMacros);
+
 /**
  * Event macros to be used inside your scout9 auto reply workflows
  */
 export type EventMacros = {
-    upsert: (arg0: Record<string, any>) => EventMacros;
-    followup: (arg0: string, arg1: (Date | string | OptionsFollowup)) => EventMacros;
-    anticipate: AnticipateFunction;
-    instruct: (arg0: string, arg1: OptionsInstruct | null) => EventMacros;
-    reply: (arg0: string, arg1: OptionsReply | null) => EventMacros;
-    forward: (arg0: string | null, arg1: OptionsForward | null) => EventMacros;
-    toJSON: (arg0: boolean | null) => Array<WorkflowResponseSlot>;
+    /**
+     * Sets context into the conversation context for later use
+     */
+    upsert(updates: Record<string, any>): EventMacros;
+    /**
+     * Similar to `instruction` except that it requires a schedule time parameter that determines when to follow up (and is not an event output macro). This will fire another run job with a new insert system context message, if `options.literal` is set to true, it will be an appended agent message prior to running the workflow app.
+     */
+    followup(instruction: string, options: (Date | string | OptionsFollowup)): EventMacros;
+
+    /**
+     * Similar to `instruct` except that it requires a schedule time parameter that determines when to follow up (and is not an event output macro). This will fire another run job with a new insert system context message, if `options.literal` is set to true, it will be an appended agent message prior to running the workflow app.
+     */
+    anticipate(instruction: string, yes: WorkflowResponseSlotBase, no: WorkflowResponseSlotBase): EventMacros;
+
+    /**
+     * Similar to `instruct` except that it requires a schedule time parameter that determines when to follow up (and is not an event output macro). This will fire another run job with a new insert system context message, if `options.literal` is set to true, it will be an appended agent message prior to running the workflow app.
+     */
+    anticipate(instruction: Array<WorkflowResponseSlotBase & {keywords: string[]}>): EventMacros;
+
+    /**
+     * Resets conversation intent
+     */
+    resetIntent(): EventMacros;
+
+    /**
+     * Removes instruction(s) from the system
+     */
+    instructRemove(idOrIds: string | string[], strict?: boolean): EventMacros
+
+    /**
+     * If conversation is not stagnant, return instructions to guide next auto reply response, otherwise it will forward the conversation
+     * stagnationLimit defaults to 2
+     */
+    instructSafe(instruction: string, options?: (OptionsInstruct & OptionsForward & {stagnationLimit?: number})): EventMacros;
+
+    /**
+     * Return instructions to guide next auto reply response
+     */
+    instruct(instruction: string, options?: OptionsInstruct): EventMacros;
+
+    /**
+     * Return instructions to guide next auto reply response
+     */
+    instruct(instruction: Array<string | (OptionsInstruct & {content: string})>): EventMacros;
+
+    /**
+     * If a manual message must be sent, you can use the `reply` macro
+     * @param {string} message - the message to manually send to the user
+     * @param {OptionsReply} [options]
+     * @return {EventMacros}
+     */
+    reply(message: string, options?: OptionsReply): EventMacros;
+
+    /**
+     * This macro ends the conversation and forwards it the owner of the persona to manually handle the flow. If your app returns undefined or no event, then a default forward is generated.
+     * @param {string} [message] - the message to forward to owner of persona
+     * @param {OptionsForward} [options]
+     */
+    forward(message?: string, options?: OptionsForward): EventMacros;
+
+    /**
+     * Returns event payload
+     * @param {boolean} flush - if true, will reset the data payload
+     * @return {Array<WorkflowResponseSlot>}
+     */
+    toJSON(flush?: boolean): Array<WorkflowResponseSlot>;
 };
 
 
@@ -213,6 +280,16 @@ export type EventMacros = {
  * @return {Promise<boolean>}
  */
 export function did(prompt: string): Promise<boolean>;
+
+/**
+ * The `does` macro takes a given prompt and infers a binary `true` or `false` result in relation to the prompt's subject actor and the prompt's inquiry for the given immediate message
+ *
+ * Only use this if you want to evaluate the latest message, otherwise use did() which uses all messages
+ * @param {string} prompt
+ * @param {'customer' | 'agent'} [relation]
+ * @return {Promise<boolean>}
+ */
+export function does(prompt: string, relation?: 'customer' | 'agent'): Promise<boolean>;
 
 export type ContextExampleWithTrainingData = {
     input: string;
@@ -360,8 +437,6 @@ export type Customer = {
     state?: (string | null) | undefined;
     town?: (string | null) | undefined;
     joined?: (string | null) | undefined;
-    stripe?: (string | null) | undefined;
-    stripeDev?: (string | null) | undefined;
 } & {[key: string]: CustomerValue};
 
 export type EntityDefinition = {
@@ -494,6 +569,10 @@ export type WorkflowConfiguration = {
     entity: string;
 };
 
+export type CommandConfiguration = {
+    entity: string;
+    path: string;
+};
 
 export type Scout9ProjectConfig = {
     tag?: string | undefined;
@@ -541,6 +620,7 @@ export type Scout9ProjectBuildConfig = Scout9ProjectConfig & {
     persona?: AgentsConfiguration;
     entities: EntityRootProjectConfiguration[];
     workflows: WorkflowConfiguration[];
+    commands: CommandConfiguration[];
 };
 
 export type WorkflowEvent = {

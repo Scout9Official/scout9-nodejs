@@ -7,6 +7,7 @@ import loadProjectConfig from './project.js';
 import loadWorkflowsConfig from './workflow.js';
 import { Scout9ProjectBuildConfigSchema } from '../../runtime/index.js';
 import { ProgressLogger } from '../../utils/index.js';
+import loadCommandsConfig from './commands.js';
 
 
 export function loadEnvConfig({
@@ -47,6 +48,7 @@ export async function loadConfig({
   const entitiesConfig = await loadEntitiesConfig({cwd, src, logger, cb, deploying});
   const agentsConfig = await loadAgentConfig({cwd, src, logger, cb, deploying, dest});
   const workflowsConfig = await loadWorkflowsConfig({cwd, src, logger, deploying, cb});
+  const commandsConfig = await loadCommandsConfig({cwd, src, logger, deploying, cb});
 
   /**
    * @type {Scout9ProjectBuildConfig}
@@ -55,7 +57,8 @@ export async function loadConfig({
     ...baseProjectConfig,
     entities: entitiesConfig,
     agents: agentsConfig,
-    workflows: workflowsConfig
+    workflows: workflowsConfig,
+    commands: commandsConfig
   };
 
   // Validate the config

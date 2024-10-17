@@ -2,6 +2,7 @@ import { Scout9Platform } from './platform.js';
 import { EventResponse } from './runtime/index.js';
 
 export { EventResponse } from './runtime/index.js';
+export { ProgressLogger } from './utils/logger.js';
 
 export * from './testing-tools/index.js';
 export * from './runtime/client/index.js';

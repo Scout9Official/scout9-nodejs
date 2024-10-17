@@ -1,6 +1,7 @@
 import { WorkflowResponseSlotBaseSchema, WorkflowResponseSlotSchema } from '../schemas/workflow.js';
 import { MacroUtils } from './utils.js';
 import { simplifyError } from '../../utils/index.js';
+import MacroGlobals from './globals.js';
 
 
 /**
@@ -61,19 +62,43 @@ import { simplifyError } from '../../utils/index.js';
  * @property {WorkflowResponseSlotBaseWithKeywords[]} withoutCondition.instruction - Array of slots with keywords.
  */
 
+// export type WorkflowResponseSlotBase = {
+//   /** Forward input information of a conversation */
+//   forward?: Forward | undefined;
+//   /** Note to provide to the agent, recommend using forward object api instead */
+//   forwardNote?: string | undefined;
+//   instructions?: Instruction[] | undefined;
+//   removeInstructions?: string[] | undefined;
+//   message?: string | undefined;
+//   secondsDelay?: number | undefined;
+//   scheduled?: number | undefined;
+//   contextUpsert?: {
+//     [x: string]: any;
+// } | undefined;
+// resetIntent?: boolean | undefined;
+// followup?: Followup | undefined;
+// };
+
+
 /**
  * Event macros to be used inside your scout9 auto reply workflows
  * @typedef {Object} EventMacros
  * @property {function(Record<string, any>): EventMacros} upsert
  * @property {function(string, (Date | string | OptionsFollowup)): EventMacros} followup
  * @property {AnticipateFunction} anticipate
- * @property {function(string, OptionsInstruct?): EventMacros} instruct
+ * @property {function(): EventMacros} resetIntent
+ * @property {function(string | string[], boolean?): EventMacros} instructRemove
+ * @property {function(string, (OptionsInstruct & OptionsForward & {stagnationLimit?: number})?): EventMacros} instructSafe
+ * @property {function(string | Array<string | (OptionsInstruct & {content: string})>, OptionsInstruct?): EventMacros} instruct
  * @property {function(string, OptionsReply?): EventMacros} reply
  * @property {function(string?, OptionsForward?): EventMacros} forward
  * @property {function(boolean?): Array<WorkflowResponseSlot>} toJSON
  */
 function EventMacrosFactory() {
 
+  /**
+   * @type {Array<WorkflowResponseSlot>}
+   */
   let slots = [];
 
   return {
@@ -215,27 +240,12 @@ function EventMacrosFactory() {
     },
 
     /**
-     * Return instructions to guide next auto reply response
-     * @param {string} instruction
-     * @param {OptionsInstruct} [options]
-     * @return {EventMacros}
+     * Resets the conversation intent
+     * @returns {EventMacros}
      */
-    instruct(instruction, options = {}) {
-      const slot = {};
-      if (Object.keys(options).length > 0) {
-        const instructionObj = {
-          content: instruction
-        };
-        if (options.id) {
-          instructionObj.id = options.id;
-        }
-        if (typeof options.persist === 'boolean') {
-          instructionObj.persist = options.persist;
-        }
-        slot.instructions = instructionObj;
-      } else {
-        slot.instructions = instruction;
-      }
+    resetIntent() {
+      /** @type {WorkflowResponseSlot} */
+      const slot = {resetIntent: true};
       try {
         slots.push(WorkflowResponseSlotSchema.parse(slot));
       } catch (e) {
@@ -243,6 +253,129 @@ function EventMacrosFactory() {
       }
       return this;
     },
+
+    /**
+     * Removes instruction(s) from the system
+     * @param {string | string[]} idOrIds - the instruction ids to remove
+     * @param {boolean} [strict] - if true, throw error if no id exists
+     */
+    instructRemove(idOrIds, strict = false) {
+      /** @type {WorkflowResponseSlot} */
+      const slot = {};
+      const ids = Array.isArray(idOrIds) ? idOrIds : typeof idOrIds === 'string' ? [idOrIds] : [];
+      if (!ids.length) {
+        throw new Error(`Given an empty or invalid value for instructRemove, given: ${JSON.stringify(idOrIds)}, expect a type string or type Array<string>`);
+      }
+      const event = MacroGlobals.event(); // Check the event to eval ids to remove
+      ids.forEach((id) => {
+        const message = event.messages.find(m => m.id === id);
+        if (!message) {
+          const msg = `Cannot remove "${id}", no instruction found`;
+          if (strict) {
+            throw new Error(msg);
+          } else {
+            console.warn(msg);
+          }
+        }
+      });
+      slot.removeInstructions = ids;
+      try {
+        slots.push(WorkflowResponseSlotSchema.parse(slot));
+      } catch (e) {
+        throw simplifyError(e, 'Invalid instruct() input');
+      }
+      return this;
+    },
+
+    /**
+     * If conversation is not stagnant, return instructions to guide next auto reply response, otherwise it will forward the conversation
+     * @param {string} instruction
+     * @param {OptionsInstruct & OptionsForward & {stagnationLimit?: number}} [options] - stagnationCountLimit, defaults to 2
+     * @return {EventMacros}
+     */
+    instructSafe(instruction, options = {stagnationLimit: 2}) {
+      const {stagnationLimit = 2} = options;
+      const event = MacroGlobals.event(); // Check the event to eval stagnation
+      if (event.stagnationCount < stagnationLimit) {
+        return this.instruct(instruction, options);
+      } else {
+        return this.forward(`Instruct Exceeds event.stagnationCount >= ${stagnationLimit}: ${instruction}`, options);
+      }
+    },
+
+
+    /**
+     * Return instructions to guide next response
+     *
+     * @overload
+     * @param {string} instruction
+     * @param {OptionsInstruct} [options]
+     *
+     * @overload
+     * @param {Array<string | (OptionsInstruct & {content: string})>} instruction
+     * @return {EventMacros}
+     */
+    instruct(instruction, options = {}) {
+
+      if (Array.isArray(instruction)) {
+
+        instruction.forEach((_instruction) => {
+            /** @type {WorkflowResponseSlot} */
+            const slot = {};
+            if (typeof _instruction === 'object' && 'content' in _instruction) {
+                /** @type {Instruction} */
+                const instructionObj = {
+                    content: instruction
+                };
+                if (options.id) {
+                    instructionObj.id = options.id;
+                }
+                if (typeof options.persist === 'boolean') {
+                    instructionObj.persist = options.persist;
+                }
+                slot.instructions = instructionObj;
+            } else if (typeof _instruction === 'string') {
+                slot.instructions = instruction;
+            } else {
+              console.warn(`Invalid instruction type ${JSON.stringify(_instruction)}, omitted from slot`);
+            }
+            try {
+                slots.push(WorkflowResponseSlotSchema.parse(slot));
+            } catch (e) {
+                throw simplifyError(e, 'Invalid instruct() input');
+            }
+        });
+      } else if (typeof instruction === 'string') {
+          /** @type {WorkflowResponseSlot} */
+          const slot = {};
+          if (Object.keys(options).length > 0) {
+              /** @type {Instruction} */
+              const instructionObj = {
+                  content: instruction
+              };
+              if (options.id) {
+                  instructionObj.id = options.id;
+              }
+              if (typeof options.persist === 'boolean') {
+                  instructionObj.persist = options.persist;
+              }
+              slot.instructions = instructionObj;
+          } else {
+              slot.instructions = instruction;
+          }
+          try {
+              slots.push(WorkflowResponseSlotSchema.parse(slot));
+          } catch (e) {
+              throw simplifyError(e, 'Invalid instruct() input');
+          }
+      } else {
+        throw new Error(`Invalid instruction param ${JSON.stringify(instruction)}, expected a string or array`);
+      }
+
+      return this;
+    },
+
+
     /**
      * If a manual message must be sent, you can use the `reply` macro
      * @param {string} message - the message to manually send to the user
@@ -272,6 +405,7 @@ function EventMacrosFactory() {
       }
       return this;
     },
+
     /**
      * This macro ends the conversation and forwards it the owner of the persona to manually handle the flow. If your app returns undefined or no event, then a default forward is generated.
      * @param {string} [message] - the message to forward to owner of persona
@@ -307,6 +441,7 @@ function EventMacrosFactory() {
       }
       return this;
     },
+
     /**
      * Returns event payload
      * @param {boolean} flush - if true, will reset the data payload
@@ -327,16 +462,35 @@ function EventMacrosFactory() {
 const eventMacros = EventMacrosFactory();
 
 /**
- * Return instructions to guide next auto reply response
+ * Return instructions to guide next response
+ *
+ * @example instruct("Ask user if they are looking to order a pizza");
+ *
+ * @overload
+ * @param {string} instruction
+ * @param {OptionsInstruct} [options]
+ *
+ * @overload
+ * @param {Array<string | (OptionsInstruct & {content: string})>} instruction
+ * @return {EventMacros}
+ *
+ *
+ * @type {(instruction: string | Array<string | (OptionsInstruct & {content: string})>, options?: OptionsInstruct) => EventMacros}
+ */
+export const instruct = eventMacros.instruct.bind(eventMacros);
+
+/**
+ * If conversation is not stagnant, return instructions to guide next auto reply response, otherwise it will forward the conversation
  * @param {string} instruction - the instruction to send to the
  * @param {OptionsInstruct} [options]
  * @return {EventMacros}
  *
- * @example instruct("Ask user if they are looking to order a pizza");
+ * @example instructSafe("Ask user if they are looking to order a pizza");
+ * @example instructSafe("Ask user if they are looking to order a pizza", {stagnationLimit: 3}); // Allows for 3 stagnate messages before forwarding
  *
  * @type {(message: string, options?: OptionsInstruct) => EventMacros}
  */
-export const instruct = eventMacros.instruct.bind(eventMacros);
+export const instructSafe = eventMacros.instructSafe.bind(eventMacros);
 
 /**
  * Forwards conversation back to you or owner of workflow.

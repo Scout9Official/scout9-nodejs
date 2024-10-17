@@ -443,10 +443,6 @@ export async function test(
 ) {
 
   const testableEntities = config.entities.filter(e => e?.definitions?.length > 0 || e?.training?.length > 0);
-  if (testableEntities.length === 0) {
-    throw new Error(
-      'No testable entities found - make sure you have at least one entity with definitions or training data - learn more at https://scout9.com/docs');
-  }
 
   const tests = testableEntities.reduce((accumulator, entity) => accumulator += (entity?.tests || []).length, 0);
 

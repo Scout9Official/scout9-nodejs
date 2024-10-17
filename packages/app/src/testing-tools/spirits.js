@@ -470,10 +470,10 @@ export const Spirits = {
               addInstruction(instruction.content, previousLockAttempt, instruction.id);
             }
           }
-        } else if (typeof instructions === 'object' && 'content' in instructions && 'id' in instructions) {
+        } else if (typeof instructions === 'object' && 'content' in instructions) {
           addInstruction(instructions.content, previousLockAttempt, instructions.id);
         } else {
-          throw new Error('SpiritsError: instructions must be a string or array or {content: "", id: ""}');
+          throw new Error(`SpiritsError: instructions must be a string or array or {content: "<instruction>"}, got: ${JSON.stringify(instructions)}`);
         }
       }
 
