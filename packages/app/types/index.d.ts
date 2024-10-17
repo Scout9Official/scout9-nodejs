@@ -387,8 +387,6 @@ declare module '@scout9/app' {
 	  state?: (string | null) | undefined;
 	  town?: (string | null) | undefined;
 	  joined?: (string | null) | undefined;
-	  stripe?: (string | null) | undefined;
-	  stripeDev?: (string | null) | undefined;
   } & {[key: string]: CustomerValue};
 
   export type EntityDefinition = {
@@ -521,6 +519,10 @@ declare module '@scout9/app' {
 	  entity: string;
   };
 
+  export type CommandConfiguration = {
+	  entity: string;
+	  path: string;
+  };
 
   export type Scout9ProjectConfig = {
 	  tag?: string | undefined;
@@ -568,6 +570,7 @@ declare module '@scout9/app' {
 	  persona?: AgentsConfiguration;
 	  entities: EntityRootProjectConfiguration[];
 	  workflows: WorkflowConfiguration[];
+	  commands: CommandConfiguration[];
   };
 
   export type WorkflowEvent = {
@@ -695,9 +698,10 @@ declare module '@scout9/app/testing-tools' {
 		 * @param props.context - prior conversation context
 		 * @param props.persona id to use
 		 * @param props.conversation - existing conversation
+		 * @param props.command - if provided it will use the command runtime instead of the app runtime
 		 * 
 		 */
-		constructor({ persona, customer, context, conversation, cwd, src, mode, api, app, project, log }?: {
+		constructor({ persona, customer, context, conversation, cwd, src, mode, api, app, command, project, log }?: {
 			cwd?: string;
 			src?: string;
 			mode?: string;
@@ -707,6 +711,7 @@ declare module '@scout9/app/testing-tools' {
 			conversation?: any;
 			api: any;
 			app: any;
+			command?: null | undefined;
 			project: any;
 			log?: boolean | undefined;
 		});
@@ -720,22 +725,6 @@ declare module '@scout9/app/testing-tools' {
 		messages: any[];
 		
 		context: any;
-		
-		private _project;
-		
-		private _app;
-		
-		private _api;
-		
-		private _cwd;
-		
-		private _src;
-		
-		private _mode;
-		
-		private _loaded;
-		
-		private _personaId;
 		/**
 		 * Loads the test environment
 		 * @param override - defaults to false, if true, it will override the current loaded state such as the scout9 api, workflow function, and project config
@@ -773,8 +762,6 @@ declare module '@scout9/app/testing-tools' {
 			messages?: any[] | undefined;
 			context?: any;
 		} | undefined): Promise<import('@scout9/admin').GenerateResponse>;
-		
-		private _loadApp;
 		#private;
 	}
 }
@@ -3677,6 +3664,26 @@ declare module '@scout9/app/schemas' {
 	}, {
 		entity: string;
 		entities: string[];
+	}>, "many">;
+	export const CommandSchema: z.ZodObject<{
+		path: z.ZodString;
+		entity: z.ZodString;
+	}, "strip", z.ZodTypeAny, {
+		path: string;
+		entity: string;
+	}, {
+		path: string;
+		entity: string;
+	}>;
+	export const CommandsSchema: z.ZodArray<z.ZodObject<{
+		path: z.ZodString;
+		entity: z.ZodString;
+	}, "strip", z.ZodTypeAny, {
+		path: string;
+		entity: string;
+	}, {
+		path: string;
+		entity: string;
 	}>, "many">;
 	export const IntentWorkflowEventSchema: z.ZodObject<{
 		current: z.ZodNullable<z.ZodString>;
