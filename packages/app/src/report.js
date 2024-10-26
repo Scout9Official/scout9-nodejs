@@ -1,16 +1,17 @@
 import { red, cyan, green, dim, white, grey, bold, italic, magenta, yellow } from 'kleur/colors';
-import { ProgressLogger } from './utils/index.js';
+import { ProgressLogger, simplifyError } from './utils/index.js';
 
 /**
  *
  * @param {import('zod').ZodError} zodError
  * @param {string} source
+ * @returns {import('zod-validation-error').ValidationError}
  */
 export function logUserValidationError(
   zodError,
   source,
 ) {
-  const issues = zodError.issues || [];
+  const issues = zodError?.issues || [];
 
   console.log(red(`Scout9 Schema Validation Error at ${bold(source)}, fix these issues and rerun`));
   for (const {code, expected, received, path, message} of issues) {
@@ -29,6 +30,11 @@ export function logUserValidationError(
     }
     console.log('\t', objectPath, grey(`${text}`));
   }
+
+  const simplifiedError = simplifyError(zodError);
+  console.error(`\n${red(simplifiedError.message)}\n`);
+
+  return simplifiedError;
 }
 
 

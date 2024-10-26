@@ -22,7 +22,7 @@ export const CustomerSchema = z.object({
   joined: z.string().nullable().optional(),
   stripe: z.string().nullable().optional(),
   stripeDev: z.string().nullable().optional()
-}).catchall(CustomerValueSchema);
+}).catchall(CustomerValueSchema.optional());
 
 export const AgentSchema = z.object({
   deployed: z.object({

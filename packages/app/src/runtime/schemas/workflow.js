@@ -117,13 +117,6 @@ export const WorkflowConfigurationSchema = z.object({
 
 export const WorkflowsConfigurationSchema = z.array(WorkflowConfigurationSchema);
 
-export const CommandSchema = z.object({
-  path: z.string(),
-  entity: zId('Command ID', z.string())
-});
-
-export const CommandsSchema = z.array(CommandSchema);
-
 export const IntentWorkflowEventSchema = z.object({
   current: z.string().nullable(),
   flow: z.array(z.string()),

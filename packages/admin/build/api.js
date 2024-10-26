@@ -862,10 +862,11 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
          *
          * @summary Gets a customer
          * @param {string} idOrEmailOrPhone Either customers id, phone number or email
+         * @param {boolean} [resolve] If a email or phone is provided and the user doesn\&#39;t exist, it will automatically create one
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        customer: async (idOrEmailOrPhone, options = {}) => {
+        customer: async (idOrEmailOrPhone, resolve, options = {}) => {
             // verify required parameter 'idOrEmailOrPhone' is not null or undefined
             (0, common_1.assertParamExists)('customer', 'idOrEmailOrPhone', idOrEmailOrPhone);
             const localVarPath = `/v1-customer`;
@@ -880,6 +881,9 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
             const localVarQueryParameter = {};
             if (idOrEmailOrPhone !== undefined) {
                 localVarQueryParameter['idOrEmailOrPhone'] = idOrEmailOrPhone;
+            }
+            if (resolve !== undefined) {
+                localVarQueryParameter['resolve'] = resolve;
             }
             (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -1671,10 +1675,11 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
          * Generates a message in the agent\'s voice based on the state of the given conversation. This is useful for testing and debugging. The message will not be sent to the conversation, you must run .message() with the body of the generated message to send it to the conversation.
          * @summary Generate a message from conversation
          * @param {GenerateRequest} generateRequest
+         * @param {string} [convo] In relation to which conversation
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        generate: async (generateRequest, options = {}) => {
+        generate: async (generateRequest, convo, options = {}) => {
             // verify required parameter 'generateRequest' is not null or undefined
             (0, common_1.assertParamExists)('generate', 'generateRequest', generateRequest);
             const localVarPath = `/v1-generate`;
@@ -1687,6 +1692,9 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
             const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options };
             const localVarHeaderParameter = {};
             const localVarQueryParameter = {};
+            if (convo !== undefined) {
+                localVarQueryParameter['convo'] = convo;
+            }
             localVarHeaderParameter['Content-Type'] = 'application/json';
             (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -2011,6 +2019,40 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
             };
         },
         /**
+         * xxx
+         * @summary xxx
+         * @param {GenerateRequest} generateRequest
+         * @param {string} [convo] xxx
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        temp: async (generateRequest, convo, options = {}) => {
+            // verify required parameter 'generateRequest' is not null or undefined
+            (0, common_1.assertParamExists)('temp', 'generateRequest', generateRequest);
+            const localVarPath = `/v1-temp`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options };
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            if (convo !== undefined) {
+                localVarQueryParameter['convo'] = convo;
+            }
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
+            localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(generateRequest, localVarRequestOptions, configuration);
+            return {
+                url: (0, common_1.toPathString)(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Updates an existing entity with the specified type and ID.
          * @summary Update an existing entity
          * @param {string} type
@@ -2263,11 +2305,12 @@ const Scout9ApiFp = function (configuration) {
          *
          * @summary Gets a customer
          * @param {string} idOrEmailOrPhone Either customers id, phone number or email
+         * @param {boolean} [resolve] If a email or phone is provided and the user doesn\&#39;t exist, it will automatically create one
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async customer(idOrEmailOrPhone, options) {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.customer(idOrEmailOrPhone, options);
+        async customer(idOrEmailOrPhone, resolve, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.customer(idOrEmailOrPhone, resolve, options);
             return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
         },
         /**
@@ -2551,11 +2594,12 @@ const Scout9ApiFp = function (configuration) {
          * Generates a message in the agent\'s voice based on the state of the given conversation. This is useful for testing and debugging. The message will not be sent to the conversation, you must run .message() with the body of the generated message to send it to the conversation.
          * @summary Generate a message from conversation
          * @param {GenerateRequest} generateRequest
+         * @param {string} [convo] In relation to which conversation
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async generate(generateRequest, options) {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.generate(generateRequest, options);
+        async generate(generateRequest, convo, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.generate(generateRequest, convo, options);
             return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
         },
         /**
@@ -2670,6 +2714,18 @@ const Scout9ApiFp = function (configuration) {
          */
         async runPlatformConfig(options) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.runPlatformConfig(options);
+            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+        },
+        /**
+         * xxx
+         * @summary xxx
+         * @param {GenerateRequest} generateRequest
+         * @param {string} [convo] xxx
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async temp(generateRequest, convo, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.temp(generateRequest, convo, options);
             return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
         },
         /**
@@ -2882,11 +2938,12 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
          *
          * @summary Gets a customer
          * @param {string} idOrEmailOrPhone Either customers id, phone number or email
+         * @param {boolean} [resolve] If a email or phone is provided and the user doesn\&#39;t exist, it will automatically create one
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        customer(idOrEmailOrPhone, options) {
-            return localVarFp.customer(idOrEmailOrPhone, options).then((request) => request(axios, basePath));
+        customer(idOrEmailOrPhone, resolve, options) {
+            return localVarFp.customer(idOrEmailOrPhone, resolve, options).then((request) => request(axios, basePath));
         },
         /**
          *
@@ -3145,11 +3202,12 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
          * Generates a message in the agent\'s voice based on the state of the given conversation. This is useful for testing and debugging. The message will not be sent to the conversation, you must run .message() with the body of the generated message to send it to the conversation.
          * @summary Generate a message from conversation
          * @param {GenerateRequest} generateRequest
+         * @param {string} [convo] In relation to which conversation
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        generate(generateRequest, options) {
-            return localVarFp.generate(generateRequest, options).then((request) => request(axios, basePath));
+        generate(generateRequest, convo, options) {
+            return localVarFp.generate(generateRequest, convo, options).then((request) => request(axios, basePath));
         },
         /**
          * Returns log data for a given range, specified by start and end Unix timestamps.
@@ -3254,6 +3312,17 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
          */
         runPlatformConfig(options) {
             return localVarFp.runPlatformConfig(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * xxx
+         * @summary xxx
+         * @param {GenerateRequest} generateRequest
+         * @param {string} [convo] xxx
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        temp(generateRequest, convo, options) {
+            return localVarFp.temp(generateRequest, convo, options).then((request) => request(axios, basePath));
         },
         /**
          * Updates an existing entity with the specified type and ID.
@@ -3482,12 +3551,13 @@ class Scout9ApiGenerated extends base_1.BaseAPI {
      *
      * @summary Gets a customer
      * @param {string} idOrEmailOrPhone Either customers id, phone number or email
+     * @param {boolean} [resolve] If a email or phone is provided and the user doesn\&#39;t exist, it will automatically create one
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
-    customer(idOrEmailOrPhone, options) {
-        return (0, exports.Scout9ApiFp)(this.configuration).customer(idOrEmailOrPhone, options).then((request) => request(this.axios, this.basePath));
+    customer(idOrEmailOrPhone, resolve, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).customer(idOrEmailOrPhone, resolve, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      *
@@ -3770,12 +3840,13 @@ class Scout9ApiGenerated extends base_1.BaseAPI {
      * Generates a message in the agent\'s voice based on the state of the given conversation. This is useful for testing and debugging. The message will not be sent to the conversation, you must run .message() with the body of the generated message to send it to the conversation.
      * @summary Generate a message from conversation
      * @param {GenerateRequest} generateRequest
+     * @param {string} [convo] In relation to which conversation
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
-    generate(generateRequest, options) {
-        return (0, exports.Scout9ApiFp)(this.configuration).generate(generateRequest, options).then((request) => request(this.axios, this.basePath));
+    generate(generateRequest, convo, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).generate(generateRequest, convo, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      * Returns log data for a given range, specified by start and end Unix timestamps.
@@ -3890,6 +3961,18 @@ class Scout9ApiGenerated extends base_1.BaseAPI {
      */
     runPlatformConfig(options) {
         return (0, exports.Scout9ApiFp)(this.configuration).runPlatformConfig(options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     * xxx
+     * @summary xxx
+     * @param {GenerateRequest} generateRequest
+     * @param {string} [convo] xxx
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    temp(generateRequest, convo, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).temp(generateRequest, convo, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      * Updates an existing entity with the specified type and ID.

@@ -3,7 +3,7 @@ import fs from 'node:fs/promises';
 import colors from 'kleur';
 import { globSync } from 'glob';
 import { Configuration, Scout9Api } from '@scout9/admin';
-import { checkVariableType, requireProjectFile } from '../../utils/index.js';
+import { checkVariableType, requireProjectFile, simplifyError } from '../../utils/index.js';
 import { AgentsSchema, AgentsConfigurationSchema } from '../../runtime/index.js';
 import { audioExtensions } from '../../utils/audio-type.js';
 import { fileTypeFromBuffer } from '../../utils/file-type.js';
@@ -315,8 +315,7 @@ export default async function loadAgentConfig({
 
   const result = (deploying ? AgentsConfigurationSchema : AgentsSchema).safeParse(agents);
   if (!result.success) {
-    result.error.source = paths[0];
-    throw result.error;
+    throw simplifyError(result.error);
   }
 
   if (serverDeployed) {

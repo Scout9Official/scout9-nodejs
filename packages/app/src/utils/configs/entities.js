@@ -7,6 +7,8 @@ import {
   EntityRootProjectConfigurationSchema
 } from '../../runtime/index.js';
 import { checkVariableType, requireOptionalProjectFile, requireProjectFile } from '../module.js';
+import { logUserValidationError } from '../../report.js';
+import { simplifyError } from '../error.js';
 
 async function loadEntityApiConfig(cwd, filePath) {
   const dir = path.dirname(filePath);
@@ -86,7 +88,7 @@ export default async function loadEntitiesConfig(
       const result = EntityConfigurationSchema.safeParse(entityConfig, {path: ['entities', config.length]});
       if (!result.success) {
         result.error.source = filePath;
-        throw result.error;
+        throw logUserValidationError(result.error, filePath);
       }
     } else if (isSpecial && (fileName === 'index' || fileName === 'config')) {
       // If this is a special entity file, then ignore as we will capture it another method
@@ -100,7 +102,12 @@ export default async function loadEntitiesConfig(
       entities: parents.reverse(),
       api
     };
-    EntityRootProjectConfigurationSchema.parse(entityProjectConfig);
+
+    try {
+      EntityRootProjectConfigurationSchema.parse(entityProjectConfig);
+    } catch (e) {
+      throw simplifyError(e);
+    }
     const existingIndex = config.findIndex(c => c.entity === entityProjectConfig.entity);
     if (existingIndex > -1) {
       if (config[existingIndex].entities.length !== entityProjectConfig.entities.length) {
@@ -138,8 +145,11 @@ export default async function loadEntitiesConfig(
   // }
 
   // Validate the config
-  EntitiesRootProjectConfigurationSchema.parse(config);
+  try {
+    return EntitiesRootProjectConfigurationSchema.parse(config);
+  } catch (e) {
+    throw simplifyError(e);
+  }
 
-  return config;
 }
 

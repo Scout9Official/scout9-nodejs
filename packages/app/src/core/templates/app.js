@@ -86,10 +86,10 @@ const handleError = (e, res = undefined, tag = undefined, body = undefined) => {
   let name = e?.name || 'Runtime Error';
   let message = e?.message || 'Unknown error';
   let code = typeof e?.code === 'number'
-    ? e.code
-    : typeof e?.status === 'number'
-      ? e.status
-      : 500;
+      ? e.code
+      : typeof e?.status === 'number'
+          ? e.status
+          : 500;
   if ('response' in e) {
     const response = e.response;
     if (response?.status) {
@@ -131,15 +131,15 @@ const handleError = (e, res = undefined, tag = undefined, body = undefined) => {
 };
 
 const handleZodError = ({
-  error,
-  res = undefined,
-  code = 500,
-  status,
-  name,
-  bodyLabel = 'Provided Input',
-  body = undefined,
-  action = ''
-}) => {
+                          error,
+                          res = undefined,
+                          code = 500,
+                          status,
+                          name,
+                          bodyLabel = 'Provided Input',
+                          body = undefined,
+                          action = ''
+                        }) => {
   res?.writeHead?.(code, {'Content-Type': 'application/json'});
   if (error instanceof ZodError) {
     const formattedError = simplifyZodError(error);
@@ -165,6 +165,64 @@ const handleZodError = ({
     throw new Error(`${name}: Provided error was not a ZodError`);
   }
 };
+
+const handleWorkflowResponse = async ({fun, workflowEvent, tag, expressRes: res, expressReq: req}) => {
+  let response;
+  try {
+    response = await fun(workflowEvent)
+        .then((slots) => {
+          if ('toJSON' in slots) {
+            return slots.toJSON();
+          } else {
+            return slots;
+          }
+        });
+  } catch (error) {
+    if (error instanceof ZodError) {
+      handleZodError({
+        error,
+        name: `${tag} Event Request Parse Error`,
+        body: req.body.event,
+        bodyLabel: `Provided ${tag}`,
+        code: 400,
+        res,
+        status: `Invalid ${tag} Input`
+      });
+    } else {
+      handleError(error, res, `${tag} Runtime Error`, workflowEvent);
+    }
+    return;
+  }
+
+  if (!response) {
+    throw new Error('No response');
+  }
+
+  try {
+    const formattedResponse = WorkflowResponseSchema.parse(response);
+    if (dev) {
+      console.log(green(`${tag} Sending Response:`));
+      console.log(grey(JSON.stringify(formattedResponse, null, 2)));
+    }
+    res.writeHead(200, {'Content-Type': 'application/json'});
+    res.end(JSON.stringify(formattedResponse));
+  } catch (error) {
+    if (error instanceof ZodError) {
+      handleZodError({
+        error,
+        name: `${tag} Event Response Parse Error`,
+        body: response,
+        bodyLabel: `Provided ${tag}Response`,
+        code: 500,
+        res,
+        status: `Invalid ${tag}Response Output`
+      });
+    } else {
+      handleError(error, res, `${tag} Runtime Parse Error`, response);
+    }
+  }
+
+}
 
 const makeRequest = async (options, maxRedirects = 10) => {
   return new Promise((resolve, reject) => {
@@ -223,8 +281,7 @@ if (dev) {
   app.use(sirv(path.resolve(__dirname, 'public'), {dev: true}));
 }
 
-// Root application POST endpoint will run the scout9 app
-app.post(dev ? '/dev/workflow' : '/', async (req, res) => {
+function parseWorkflowEvent(req, res) {
   let workflowEvent;
 
   try {
@@ -252,61 +309,25 @@ app.post(dev ? '/dev/workflow' : '/', async (req, res) => {
 
   if (!workflowEvent) {
     handleError(new Error('No workflowEvent defined'), res, req.body.event, 'Workflow Template Event No Event');
+  } else {
+    return workflowEvent;
   }
-  let response;
-  try {
-    response = await projectApp(workflowEvent)
-      .then((response) => {
-        if ('toJSON' in response) {
-          return response.toJSON();
-        } else {
-          return response;
-        }
-      });
-  } catch (error) {
-    if (error instanceof ZodError) {
-      handleZodError({
-        error,
-        name: 'Workflow Template Event Request Parse Error',
-        body: req.body.event,
-        bodyLabel: 'Provided WorkflowEvent',
-        code: 400,
-        res,
-        status: 'Invalid WorkflowEvent Input'
-      });
-    } else {
-      handleError(error, res, 'Workflow Template Runtime Error', workflowEvent);
-    }
+}
+
+// Root application POST endpoint will run the scout9 app
+app.post(dev ? '/dev/workflow' : '/', async (req, res) => {
+  const workflowEvent = parseWorkflowEvent(req, res);
+  if (!workflowEvent) {
     return;
   }
-
-  if (!response) {
-    throw new Error('No response');
-  }
-
-  try {
-    const formattedResponse = WorkflowResponseSchema.parse(response);
-    if (dev) {
-      console.log(green(`Workflow Sending Response:`));
-      console.log(grey(JSON.stringify(formattedResponse, null, 2)));
-    }
-    res.writeHead(200, {'Content-Type': 'application/json'});
-    res.end(JSON.stringify(formattedResponse));
-  } catch (error) {
-    if (error instanceof ZodError) {
-      handleZodError({
-        error,
-        name: 'Workflow Template Event Response Parse Error',
-        body: response,
-        bodyLabel: 'Provided WorkflowResponse',
-        code: 500,
-        res,
-        status: 'Invalid WorkflowResponse Output'
-      });
-    } else {
-      handleError(error, res, 'Workflow Template Runtime Parse Error', response);
-    }
-  }
+  await handleWorkflowResponse({
+    fun: projectApp,
+    workflowEvent,
+    tag: "PMTFlow",
+    expressRes: res,
+    expressReq: req,
+  });
+  return;
 });
 
 function isSurroundedByBrackets(str) {
@@ -340,17 +361,17 @@ async function resolveEntityApi(entity, method) {
   }
   const {api, entities} = resolveEntity(entity, method);
   const mod = await import(pathToFileURL(path.resolve(__dirname, `./src/entities/${entities.join('/')}/api.js`)).href)
-    .catch((e) => {
-      switch (e.code) {
-        case 'ERR_MODULE_NOT_FOUND':
-        case 'MODULE_NOT_FOUND':
-          console.error(e);
-          throw new Error(`Invalid entity: no API method`);
-        default:
-          console.error(e);
-          throw new Error(`Invalid entity: Internal system error`);
-      }
-    });
+      .catch((e) => {
+        switch (e.code) {
+          case 'ERR_MODULE_NOT_FOUND':
+          case 'MODULE_NOT_FOUND':
+            console.error(e);
+            throw new Error(`Invalid entity: no API method`);
+          default:
+            console.error(e);
+            throw new Error(`Invalid entity: Internal system error`);
+        }
+      });
   if (mod[method]) {
     return mod[method];
   }
@@ -447,7 +468,7 @@ async function runCommandApi(req, res) {
   const params = url.split('/').slice(2).filter(Boolean);
   try {
     const files = await getFilesRecursive(commandsDir).then(files => files.map(file => file.replace(commandsDir, '.'))
-      .filter(file => params.every(p => file.includes(p))));
+        .filter(file => params.every(p => file.includes(p))));
     file = files?.[0];
   } catch (e) {
     console.log('No commands found', e.message);
@@ -464,7 +485,9 @@ async function runCommandApi(req, res) {
 
   let mod;
   try {
-    mod = await import(pathToFileURL(path.resolve(commandsDir, file)).href);
+    const href = pathToFileURL(path.resolve(commandsDir, file)).href;
+    console.log(grey(`Command "${href}"`));
+    mod = await import(href);
   } catch (e) {
     if ('code' in e) {
       switch (e.code) {
@@ -488,42 +511,12 @@ async function runCommandApi(req, res) {
     return;
   }
 
-  let result;
-
-  try {
-    result = await mod.default(body)
-      .then((response) => {
-        if ('toJSON' in response) {
-          return response.toJSON();
-        } else {
-          return response;
-        }
-      });
-  } catch (e) {
-    console.error('Failed to run command', e);
-    res.writeHead(500, {'Content-Type': 'application/json'});
-    res.end(JSON.stringify({error: `Failed to run command: ${e.message}`}));
+  const workflowEvent = parseWorkflowEvent(req, res);
+  if (!workflowEvent) {
     return;
   }
 
-  let responseBody = {};
-  let code = 500;
-  if (result) {
-    if (typeof result === 'string') {
-      responseBody = {message: result};
-      code = 200;
-    } else if (typeof result === 'object' && 'message' in result) {
-      responseBody = result;
-      code = 200;
-    } else {
-      responseBody.error = `Invalid Command Response, must either return a string or {"message": "<your message>"}`;
-    }
-  } else {
-    responseBody.error = `No command response provided`;
-  }
-
-  res.writeHead(code, {'Content-Type': 'application/json'});
-  res.end(JSON.stringify(responseBody));
+  await handleWorkflowResponse({fun: mod.default, workflowEvent, tag: `${params.join('_').toUpperCase()} Command`, expressReq: req, expressRes: res});
 }
 
 app.post('/commands/:command', runCommandApi);
@@ -645,7 +638,7 @@ if (dev) {
       pmt: config.pmt
     }).then((_res => _res.data));
     console.log(`\t${grey(`Response: ${green('"')}${bold(white(payload.message))}`)}${green(
-      '"')} (elapsed ${payload.ms}ms)`);
+        '"')} (elapsed ${payload.ms}ms)`);
 
     return payload;
   };
@@ -794,6 +787,21 @@ if (dev) {
             try {
 
               return mod.default(workflowEvent)
+                  .then((response) => {
+                    if ('toJSON' in response) {
+                      return response.toJSON();
+                    } else {
+                      return response;
+                    }
+                  })
+                  .then(WorkflowResponseSchema.parse);
+            } catch (e) {
+              logger.error(`Failed to run command - ${e.message}`);
+              throw e;
+            }
+
+          } else {
+            return projectApp(workflowEvent)
                 .then((response) => {
                   if ('toJSON' in response) {
                     return response.toJSON();
@@ -802,21 +810,6 @@ if (dev) {
                   }
                 })
                 .then(WorkflowResponseSchema.parse);
-            } catch (e) {
-              logger.error(`Failed to run command - ${e.message}`);
-              throw e;
-            }
-
-          } else {
-            return projectApp(workflowEvent)
-              .then((response) => {
-                if ('toJSON' in response) {
-                  return response.toJSON();
-                } else {
-                  return response;
-                }
-              })
-              .then(WorkflowResponseSchema.parse);
           }
         },
         generator: async (request) => {
@@ -826,10 +819,10 @@ if (dev) {
         },
         idGenerator: (prefix) => `${prefix}_test_${Date.now()}`,
         progress: (
-          message,
-          level,
-          type,
-          payload
+            message,
+            level,
+            type,
+            payload
         ) => {
           callback(message, level);
           if (type) {
@@ -1053,7 +1046,7 @@ app.listen(process.env.PORT || 8080, async (err) => {
   const fullUrl = `${protocol}://${host}:${port}`;
   if (dev) {
     console.log(bold(green(art_scout9)));
-    console.log(bold(cyan(art_pmt)));
+    // console.log(bold(cyan(art_pmt)));
     console.log(`${grey(`${cyan('>')} Running ${bold(white('Scout9'))}`)} ${grey('dev environment on')} ${fullUrl}`);
   } else {
     console.log(`Running Scout9 app on ${fullUrl}`);
@@ -1065,12 +1058,12 @@ app.listen(process.env.PORT || 8080, async (err) => {
 
   if (dev && !process.env.SCOUT9_API_KEY) {
     console.log(red(
-      'Missing SCOUT9_API_KEY environment variable, your PMT application may not work without it.'));
+        'Missing SCOUT9_API_KEY environment variable, your PMT application may not work without it.'));
   }
 
   if (process.env.SCOUT9_API_KEY === '<insert-scout9-api-key>') {
     console.log(`${red('SCOUT9_API_KEY has not been set in your .env file.')} ${grey(
-      'You can find your API key in the Scout9 dashboard.')} ${bold(cyan('https://scout9.com'))}`);
+        'You can find your API key in the Scout9 dashboard.')} ${bold(cyan('https://scout9.com'))}`);
   }
 
   if (dev) {

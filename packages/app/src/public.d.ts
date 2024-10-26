@@ -417,6 +417,8 @@ export type Conversation = {
     intentScore?: (number | undefined) | null;
     /** Used to handle anticipating outcome */
     anticipate?: ConversationAnticipate | undefined;
+    /** If conversation is assigned to a command */
+    command?: CommandConfiguration | undefined;
 };
 
 export type CustomerValue = boolean | number | string;

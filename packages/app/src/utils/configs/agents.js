@@ -3,6 +3,7 @@ import colors from 'kleur';
 import { globSync } from 'glob';
 import { checkVariableType, requireProjectFile } from '../../utils/index.js';
 import { AgentsConfigurationSchema, AgentsSchema } from '../../runtime/index.js';
+import { logUserValidationError } from '../../report.js';
 
 /**
  * @param {Array<Agent>} agents
@@ -29,7 +30,7 @@ export function validateAgentConfig(agents) {
   const result = AgentsSchema.safeParse(agents);
   if (!result.success) {
     result.error.source = `src/entities/agents.js|ts`;
-    throw result.error;
+    throw logUserValidationError(result.error, `src/entities/agents.js|ts`)
   }
   return agents;
 }

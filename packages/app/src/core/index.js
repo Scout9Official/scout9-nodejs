@@ -6,7 +6,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import fetch, { FormData } from 'node-fetch';
 import { Configuration, Scout9Api } from '@scout9/admin';
-import { checkVariableType, ProgressLogger, requireProjectFile } from '../utils/index.js';
+import { checkVariableType, ProgressLogger, requireProjectFile, simplifyError } from '../utils/index.js';
 import decompress from 'decompress';
 import { loadUserPackageJson } from './config/project.js';
 import { platformApi } from './data.js';
@@ -300,8 +300,7 @@ export async function getAgentContacts() {
 export async function run(event, {eventSource} = {}) {
   const result = WorkflowEventSchema.safeParse(event);
   if (!result.success) {
-    logUserValidationError(result.error, eventSource);
-    throw result.error;
+    throw logUserValidationError(result.error, eventSource);
   }
   const configuration = new Configuration({
     apiKey: process.env.SCOUT9_API_KEY

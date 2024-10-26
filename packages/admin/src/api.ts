@@ -2495,44 +2495,75 @@ export interface ForwardResponse {
  * Either a conversation ID or a conversation object with messages and context metadata to generate from
  * @export
  */
-export type GenerateRequest = GenerateRequestOneOf | string;
+export type GenerateRequest = GenerateRequestOneOf | GenerateRequestOneOf1;
 
 /**
- *
+ * Conversation ID to generate message from
  * @export
  * @interface GenerateRequestOneOf
  */
 export interface GenerateRequestOneOf {
   /**
+   * The conversation ID to generate message from
+   * @type {string}
+   * @memberof GenerateRequestOneOf
+   */
+  'convo'?: string;
+  /**
+   * Instruction to generate from
+   * @type {string}
+   * @memberof GenerateRequestOneOf
+   */
+  'instruction'?: string;
+  /**
+   * the customer ID, phone, or email this message is targeted for transformation
+   * @type {string}
+   * @memberof GenerateRequestOneOf
+   */
+  'customerIdOrPhoneOrEmail'?: string;
+}
+/**
+ *
+ * @export
+ * @interface GenerateRequestOneOf1
+ */
+export interface GenerateRequestOneOf1 {
+  /**
    * Conversation messages and context to generate message from
    * @type {Array<Message>}
-   * @memberof GenerateRequestOneOf
+   * @memberof GenerateRequestOneOf1
    */
   'messages': Array<Message>;
   /**
-   *
-   * @type {GenerateRequestOneOfPersona}
-   * @memberof GenerateRequestOneOf
+   * the customer ID, phone, or email this message is targeted for transformation
+   * @type {string}
+   * @memberof GenerateRequestOneOf1
    */
-  'persona': GenerateRequestOneOfPersona;
+  'customerIdOrPhoneOrEmail'?: string;
+  /**
+   *
+   * @type {GenerateRequestOneOf1Persona}
+   * @memberof GenerateRequestOneOf1
+   */
+  'persona': GenerateRequestOneOf1Persona;
   /**
    *
    * @type {LlmConfig}
-   * @memberof GenerateRequestOneOf
+   * @memberof GenerateRequestOneOf1
    */
   'llm'?: LlmConfig;
   /**
    *
    * @type {PmtConfig}
-   * @memberof GenerateRequestOneOf
+   * @memberof GenerateRequestOneOf1
    */
   'pmt'?: PmtConfig;
 }
 /**
- * @type GenerateRequestOneOfPersona
+ * @type GenerateRequestOneOf1Persona
  * @export
  */
-export type GenerateRequestOneOfPersona = Agent | string;
+export type GenerateRequestOneOf1Persona = Agent | string;
 
 /**
  *
@@ -7004,10 +7035,11 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
      *
      * @summary Gets a customer
      * @param {string} idOrEmailOrPhone Either customers id, phone number or email
+     * @param {boolean} [resolve] If a email or phone is provided and the user doesn\&#39;t exist, it will automatically create one
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    customer: async (idOrEmailOrPhone: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+    customer: async (idOrEmailOrPhone: string, resolve?: boolean, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
       // verify required parameter 'idOrEmailOrPhone' is not null or undefined
       assertParamExists('customer', 'idOrEmailOrPhone', idOrEmailOrPhone)
       const localVarPath = `/v1-customer`;
@@ -7024,6 +7056,10 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
 
       if (idOrEmailOrPhone !== undefined) {
         localVarQueryParameter['idOrEmailOrPhone'] = idOrEmailOrPhone;
+      }
+
+      if (resolve !== undefined) {
+        localVarQueryParameter['resolve'] = resolve;
       }
 
 
@@ -8386,6 +8422,47 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
       };
     },
     /**
+     * xxx
+     * @summary xxx
+     * @param {GenerateRequest} generateRequest
+     * @param {string} [convo] xxx
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    temp: async (generateRequest: GenerateRequest, convo?: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+      // verify required parameter 'generateRequest' is not null or undefined
+      assertParamExists('temp', 'generateRequest', generateRequest)
+      const localVarPath = `/v1-temp`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      if (convo !== undefined) {
+        localVarQueryParameter['convo'] = convo;
+      }
+
+
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+      localVarRequestOptions.data = serializeDataIfNeeded(generateRequest, localVarRequestOptions, configuration)
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
      * Updates an existing entity with the specified type and ID.
      * @summary Update an existing entity
      * @param {string} type
@@ -8644,11 +8721,12 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
      *
      * @summary Gets a customer
      * @param {string} idOrEmailOrPhone Either customers id, phone number or email
+     * @param {boolean} [resolve] If a email or phone is provided and the user doesn\&#39;t exist, it will automatically create one
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async customer(idOrEmailOrPhone: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetCustomerResponse>> {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.customer(idOrEmailOrPhone, options);
+    async customer(idOrEmailOrPhone: string, resolve?: boolean, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetCustomerResponse>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.customer(idOrEmailOrPhone, resolve, options);
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
     },
     /**
@@ -9055,6 +9133,18 @@ export const Scout9ApiFp = function(configuration?: Configuration) {
       return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
     },
     /**
+     * xxx
+     * @summary xxx
+     * @param {GenerateRequest} generateRequest
+     * @param {string} [convo] xxx
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async temp(generateRequest: GenerateRequest, convo?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GenerateResponse>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.temp(generateRequest, convo, options);
+      return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+    },
+    /**
      * Updates an existing entity with the specified type and ID.
      * @summary Update an existing entity
      * @param {string} type
@@ -9264,11 +9354,12 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
      *
      * @summary Gets a customer
      * @param {string} idOrEmailOrPhone Either customers id, phone number or email
+     * @param {boolean} [resolve] If a email or phone is provided and the user doesn\&#39;t exist, it will automatically create one
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    customer(idOrEmailOrPhone: string, options?: any): AxiosPromise<GetCustomerResponse> {
-      return localVarFp.customer(idOrEmailOrPhone, options).then((request) => request(axios, basePath));
+    customer(idOrEmailOrPhone: string, resolve?: boolean, options?: any): AxiosPromise<GetCustomerResponse> {
+      return localVarFp.customer(idOrEmailOrPhone, resolve, options).then((request) => request(axios, basePath));
     },
     /**
      *
@@ -9639,6 +9730,17 @@ export const Scout9ApiFactory = function (configuration?: Configuration, basePat
       return localVarFp.runPlatformConfig(options).then((request) => request(axios, basePath));
     },
     /**
+     * xxx
+     * @summary xxx
+     * @param {GenerateRequest} generateRequest
+     * @param {string} [convo] xxx
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    temp(generateRequest: GenerateRequest, convo?: string, options?: any): AxiosPromise<GenerateResponse> {
+      return localVarFp.temp(generateRequest, convo, options).then((request) => request(axios, basePath));
+    },
+    /**
      * Updates an existing entity with the specified type and ID.
      * @summary Update an existing entity
      * @param {string} type
@@ -9883,12 +9985,13 @@ export class Scout9ApiGenerated extends BaseAPI {
    *
    * @summary Gets a customer
    * @param {string} idOrEmailOrPhone Either customers id, phone number or email
+   * @param {boolean} [resolve] If a email or phone is provided and the user doesn\&#39;t exist, it will automatically create one
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof Scout9Api
    */
-  public customer(idOrEmailOrPhone: string, options?: AxiosRequestConfig) {
-    return Scout9ApiFp(this.configuration).customer(idOrEmailOrPhone, options).then((request) => request(this.axios, this.basePath));
+  public customer(idOrEmailOrPhone: string, resolve?: boolean, options?: AxiosRequestConfig) {
+    return Scout9ApiFp(this.configuration).customer(idOrEmailOrPhone, resolve, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**
@@ -10327,6 +10430,19 @@ export class Scout9ApiGenerated extends BaseAPI {
    */
   public runPlatformConfig(options?: AxiosRequestConfig) {
     return Scout9ApiFp(this.configuration).runPlatformConfig(options).then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   * xxx
+   * @summary xxx
+   * @param {GenerateRequest} generateRequest
+   * @param {string} [convo] xxx
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof Scout9Api
+   */
+  public temp(generateRequest: GenerateRequest, convo?: string, options?: AxiosRequestConfig) {
+    return Scout9ApiFp(this.configuration).temp(generateRequest, convo, options).then((request) => request(this.axios, this.basePath));
   }
 
   /**

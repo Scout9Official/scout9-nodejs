@@ -1,5 +1,6 @@
 import { globSync } from 'glob';
 import { WorkflowConfigurationSchema, WorkflowsConfigurationSchema } from '../../runtime/index.js';
+import { logUserValidationError } from '../../report.js';
 
 
 /**
@@ -35,13 +36,18 @@ export default async function loadWorkflowsConfig(
         entity: parents[0],
         entities: parents.reverse(),
       }
-      WorkflowConfigurationSchema.parse(workflowConfig);
-
-      return workflowConfig;
+      try {
+        return WorkflowConfigurationSchema.parse(workflowConfig);
+      } catch (e) {
+        throw logUserValidationError(e, path);
+      }
     });
 
   // Validate the config
-  WorkflowsConfigurationSchema.parse(config);
+  try {
+    return WorkflowsConfigurationSchema.parse(config);
+  } catch (e) {
+    throw logUserValidationError(e, src);
+  }
 
-  return config;
 }

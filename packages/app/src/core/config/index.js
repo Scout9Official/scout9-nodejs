@@ -6,8 +6,9 @@ import loadEntitiesConfig from './entities.js';
 import loadProjectConfig from './project.js';
 import loadWorkflowsConfig from './workflow.js';
 import { Scout9ProjectBuildConfigSchema } from '../../runtime/index.js';
-import { ProgressLogger } from '../../utils/index.js';
+import { ProgressLogger, simplifyError } from '../../utils/index.js';
 import loadCommandsConfig from './commands.js';
+import { logUserValidationError } from '../../report.js';
 
 
 export function loadEnvConfig({
@@ -65,7 +66,7 @@ export async function loadConfig({
   const result = Scout9ProjectBuildConfigSchema.safeParse(projectConfig);
   if (!result.success) {
     result.error.source = `${src}/index.js`;
-    throw result.error;
+    throw logUserValidationError(result.error, `${src}/index.js`);
   }
 
   return projectConfig;

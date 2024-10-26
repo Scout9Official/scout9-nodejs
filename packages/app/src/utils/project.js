@@ -11,6 +11,7 @@ import loadWorkflowsConfig from './configs/workflow.js';
 import { Scout9ProjectBuildConfigSchema } from '../runtime/index.js';
 import { ProgressLogger } from './logger.js';
 import { formatGlobPattern, normalizeGlobPattern } from './glob.js';
+import { logUserValidationError } from '../report.js';
 
 /**
  * Utility class to load and write project files in a targeted way
@@ -278,7 +279,8 @@ export default class ProjectFiles {
       ...(await this._loadEnv()),
       entities: [],
       agents: [],
-      workflows: []
+      workflows: [],
+      commands: []
     };
 
     // Load entities, except for special entities such as ["agents"]
@@ -298,7 +300,7 @@ export default class ProjectFiles {
     const result = Scout9ProjectBuildConfigSchema.safeParse(projectConfig);
     if (!result.success) {
       result.error.source = `${this.src}/index.js`;
-      throw result.error;
+      throw logUserValidationError(result.error, `${this.src}/index.js`);
     }
 
     // Log

@@ -62,27 +62,11 @@ import MacroGlobals from './globals.js';
  * @property {WorkflowResponseSlotBaseWithKeywords[]} withoutCondition.instruction - Array of slots with keywords.
  */
 
-// export type WorkflowResponseSlotBase = {
-//   /** Forward input information of a conversation */
-//   forward?: Forward | undefined;
-//   /** Note to provide to the agent, recommend using forward object api instead */
-//   forwardNote?: string | undefined;
-//   instructions?: Instruction[] | undefined;
-//   removeInstructions?: string[] | undefined;
-//   message?: string | undefined;
-//   secondsDelay?: number | undefined;
-//   scheduled?: number | undefined;
-//   contextUpsert?: {
-//     [x: string]: any;
-// } | undefined;
-// resetIntent?: boolean | undefined;
-// followup?: Followup | undefined;
-// };
-
 
 /**
  * Event macros to be used inside your scout9 auto reply workflows
  * @typedef {Object} EventMacros
+ * @property {function(string, [ContextExamples]): EventMacros} context
  * @property {function(Record<string, any>): EventMacros} upsert
  * @property {function(string, (Date | string | OptionsFollowup)): EventMacros} followup
  * @property {AnticipateFunction} anticipate
@@ -286,6 +270,13 @@ function EventMacrosFactory() {
       }
       return this;
     },
+
+    /**
+     * Same as the context
+     */
+    // context() {
+    //  @TODO insert context proxy
+    // },
 
     /**
      * If conversation is not stagnant, return instructions to guide next auto reply response, otherwise it will forward the conversation

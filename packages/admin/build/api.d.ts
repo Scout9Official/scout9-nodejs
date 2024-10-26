@@ -2442,57 +2442,74 @@ export interface ForwardResponse {
  * Either a conversation ID or a conversation object with messages and context metadata to generate from
  * @export
  */
-export type GenerateRequest = GenerateRequestOneOf | string;
+export type GenerateRequest = GenerateRequestOneOf | GenerateRequestOneOf1;
 /**
- *
+ * Conversation ID to generate message from
  * @export
  * @interface GenerateRequestOneOf
  */
 export interface GenerateRequestOneOf {
     /**
-     *
-     * @type {ConversationCreateRequest}
+     * The conversation ID to generate message from
+     * @type {string}
      * @memberof GenerateRequestOneOf
      */
-    'convo'?: ConversationCreateRequest;
+    'convo'?: string;
+    /**
+     * Instruction to generate from
+     * @type {string}
+     * @memberof GenerateRequestOneOf
+     */
+    'instruction'?: string;
+    /**
+     * the customer ID, phone, or email this message is targeted for transformation
+     * @type {string}
+     * @memberof GenerateRequestOneOf
+     */
+    'customerIdOrPhoneOrEmail'?: string;
+}
+/**
+ *
+ * @export
+ * @interface GenerateRequestOneOf1
+ */
+export interface GenerateRequestOneOf1 {
     /**
      * Conversation messages and context to generate message from
      * @type {Array<Message>}
-     * @memberof GenerateRequestOneOf
+     * @memberof GenerateRequestOneOf1
      */
     'messages': Array<Message>;
     /**
-     * Any key,value information about the conversation, customer, or offer goes here
-     * @type {{ [key: string]: any; }}
-     * @memberof GenerateRequestOneOf
+     * the customer ID, phone, or email this message is targeted for transformation
+     * @type {string}
+     * @memberof GenerateRequestOneOf1
      */
-    'context'?: {
-        [key: string]: any;
-    };
+    'customerIdOrPhoneOrEmail'?: string;
     /**
      *
-     * @type {GenerateRequestOneOfPersona}
-     * @memberof GenerateRequestOneOf
+     * @type {GenerateRequestOneOf1Persona}
+     * @memberof GenerateRequestOneOf1
      */
-    'persona': GenerateRequestOneOfPersona;
+    'persona': GenerateRequestOneOf1Persona;
     /**
      *
      * @type {LlmConfig}
-     * @memberof GenerateRequestOneOf
+     * @memberof GenerateRequestOneOf1
      */
     'llm'?: LlmConfig;
     /**
      *
      * @type {PmtConfig}
-     * @memberof GenerateRequestOneOf
+     * @memberof GenerateRequestOneOf1
      */
     'pmt'?: PmtConfig;
 }
 /**
- * @type GenerateRequestOneOfPersona
+ * @type GenerateRequestOneOf1Persona
  * @export
  */
-export type GenerateRequestOneOfPersona = Agent | string;
+export type GenerateRequestOneOf1Persona = Agent | string;
 /**
  *
  * @export
@@ -4091,6 +4108,25 @@ export interface MessageCreateResponse {
      * @memberof MessageCreateResponse
      */
     'id': string;
+    /**
+     * The ID of the conversation
+     * @type {string}
+     * @memberof MessageCreateResponse
+     */
+    'convo': string;
+}
+/**
+ *
+ * @export
+ * @interface MessageCreateResponseAllOf
+ */
+export interface MessageCreateResponseAllOf {
+    /**
+     * The ID of the conversation
+     * @type {string}
+     * @memberof MessageCreateResponseAllOf
+     */
+    'convo': string;
 }
 /**
  *
@@ -6324,10 +6360,11 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
      *
      * @summary Gets a customer
      * @param {string} idOrEmailOrPhone Either customers id, phone number or email
+     * @param {boolean} [resolve] If a email or phone is provided and the user doesn\&#39;t exist, it will automatically create one
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    customer: (idOrEmailOrPhone: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    customer: (idOrEmailOrPhone: string, resolve?: boolean, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      *
      * @summary Creates a new customer
@@ -6537,10 +6574,11 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
      * Generates a message in the agent\'s voice based on the state of the given conversation. This is useful for testing and debugging. The message will not be sent to the conversation, you must run .message() with the body of the generated message to send it to the conversation.
      * @summary Generate a message from conversation
      * @param {GenerateRequest} generateRequest
+     * @param {string} [convo] In relation to which conversation
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    generate: (generateRequest: GenerateRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    generate: (generateRequest: GenerateRequest, convo?: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      * Returns log data for a given range, specified by start and end Unix timestamps.
      * @summary Retrieve platform run time logs
@@ -6625,6 +6663,15 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
      * @throws {RequiredError}
      */
     runPlatformConfig: (options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     * xxx
+     * @summary xxx
+     * @param {GenerateRequest} generateRequest
+     * @param {string} [convo] xxx
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    temp: (generateRequest: GenerateRequest, convo?: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
      * Updates an existing entity with the specified type and ID.
      * @summary Update an existing entity
@@ -6794,10 +6841,11 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
      *
      * @summary Gets a customer
      * @param {string} idOrEmailOrPhone Either customers id, phone number or email
+     * @param {boolean} [resolve] If a email or phone is provided and the user doesn\&#39;t exist, it will automatically create one
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    customer(idOrEmailOrPhone: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetCustomerResponse>>;
+    customer(idOrEmailOrPhone: string, resolve?: boolean, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetCustomerResponse>>;
     /**
      *
      * @summary Creates a new customer
@@ -7007,10 +7055,11 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
      * Generates a message in the agent\'s voice based on the state of the given conversation. This is useful for testing and debugging. The message will not be sent to the conversation, you must run .message() with the body of the generated message to send it to the conversation.
      * @summary Generate a message from conversation
      * @param {GenerateRequest} generateRequest
+     * @param {string} [convo] In relation to which conversation
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    generate(generateRequest: GenerateRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GenerateResponse>>;
+    generate(generateRequest: GenerateRequest, convo?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GenerateResponse>>;
     /**
      * Returns log data for a given range, specified by start and end Unix timestamps.
      * @summary Retrieve platform run time logs
@@ -7097,6 +7146,15 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
     runPlatformConfig(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<{
         [key: string]: any;
     }>>;
+    /**
+     * xxx
+     * @summary xxx
+     * @param {GenerateRequest} generateRequest
+     * @param {string} [convo] xxx
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    temp(generateRequest: GenerateRequest, convo?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GenerateResponse>>;
     /**
      * Updates an existing entity with the specified type and ID.
      * @summary Update an existing entity
@@ -7266,10 +7324,11 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
      *
      * @summary Gets a customer
      * @param {string} idOrEmailOrPhone Either customers id, phone number or email
+     * @param {boolean} [resolve] If a email or phone is provided and the user doesn\&#39;t exist, it will automatically create one
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    customer(idOrEmailOrPhone: string, options?: any): AxiosPromise<GetCustomerResponse>;
+    customer(idOrEmailOrPhone: string, resolve?: boolean, options?: any): AxiosPromise<GetCustomerResponse>;
     /**
      *
      * @summary Creates a new customer
@@ -7479,10 +7538,11 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
      * Generates a message in the agent\'s voice based on the state of the given conversation. This is useful for testing and debugging. The message will not be sent to the conversation, you must run .message() with the body of the generated message to send it to the conversation.
      * @summary Generate a message from conversation
      * @param {GenerateRequest} generateRequest
+     * @param {string} [convo] In relation to which conversation
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    generate(generateRequest: GenerateRequest, options?: any): AxiosPromise<GenerateResponse>;
+    generate(generateRequest: GenerateRequest, convo?: string, options?: any): AxiosPromise<GenerateResponse>;
     /**
      * Returns log data for a given range, specified by start and end Unix timestamps.
      * @summary Retrieve platform run time logs
@@ -7569,6 +7629,15 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
     runPlatformConfig(options?: any): AxiosPromise<{
         [key: string]: any;
     }>;
+    /**
+     * xxx
+     * @summary xxx
+     * @param {GenerateRequest} generateRequest
+     * @param {string} [convo] xxx
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    temp(generateRequest: GenerateRequest, convo?: string, options?: any): AxiosPromise<GenerateResponse>;
     /**
      * Updates an existing entity with the specified type and ID.
      * @summary Update an existing entity
@@ -7758,11 +7827,12 @@ export declare class Scout9ApiGenerated extends BaseAPI {
      *
      * @summary Gets a customer
      * @param {string} idOrEmailOrPhone Either customers id, phone number or email
+     * @param {boolean} [resolve] If a email or phone is provided and the user doesn\&#39;t exist, it will automatically create one
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
-    customer(idOrEmailOrPhone: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<GetCustomerResponse, any>>;
+    customer(idOrEmailOrPhone: string, resolve?: boolean, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<GetCustomerResponse, any>>;
     /**
      *
      * @summary Creates a new customer
@@ -7996,11 +8066,12 @@ export declare class Scout9ApiGenerated extends BaseAPI {
      * Generates a message in the agent\'s voice based on the state of the given conversation. This is useful for testing and debugging. The message will not be sent to the conversation, you must run .message() with the body of the generated message to send it to the conversation.
      * @summary Generate a message from conversation
      * @param {GenerateRequest} generateRequest
+     * @param {string} [convo] In relation to which conversation
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof Scout9Api
      */
-    generate(generateRequest: GenerateRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<GenerateResponse, any>>;
+    generate(generateRequest: GenerateRequest, convo?: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<GenerateResponse, any>>;
     /**
      * Returns log data for a given range, specified by start and end Unix timestamps.
      * @summary Retrieve platform run time logs
@@ -8097,6 +8168,16 @@ export declare class Scout9ApiGenerated extends BaseAPI {
     runPlatformConfig(options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<{
         [key: string]: any;
     }, any>>;
+    /**
+     * xxx
+     * @summary xxx
+     * @param {GenerateRequest} generateRequest
+     * @param {string} [convo] xxx
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    temp(generateRequest: GenerateRequest, convo?: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<GenerateResponse, any>>;
     /**
      * Updates an existing entity with the specified type and ID.
      * @summary Update an existing entity

@@ -6,7 +6,7 @@ import {
     EntityConfigurationSchema,
     EntityRootProjectConfigurationSchema
 } from '../../runtime/index.js';
-import { checkVariableType, requireOptionalProjectFile, requireProjectFile } from '../../utils/index.js';
+import { checkVariableType, requireOptionalProjectFile, requireProjectFile, simplifyError } from '../../utils/index.js';
 import { logUserValidationError } from '../../report.js';
 
 async function loadEntityApiConfig(cwd, filePath) {
@@ -23,8 +23,11 @@ async function loadEntityApiConfig(cwd, filePath) {
         config[key] = true;
       }
     }
-    EntityApiConfigurationSchema.parse(config);
-    return config;
+    try {
+      return EntityApiConfigurationSchema.parse(config);
+    } catch (e) {
+      throw simplifyError(config);
+    }
   } else {
     return null;
   }
@@ -81,8 +84,7 @@ export default async function loadEntitiesConfig(
       // Validate entity configuration
       const result = EntityConfigurationSchema.safeParse(entityConfig, {path: ['entities', config.length]});
       if (!result.success) {
-        logUserValidationError(result.error, filePath);
-        throw result.error;
+        throw logUserValidationError(result.error, filePath);
       }
     } else if (isSpecial && (fileName === 'index' || fileName === 'config')) {
       // If this is a special entity file, then ignore as we will capture it another method
@@ -96,7 +98,11 @@ export default async function loadEntitiesConfig(
       entities: parents.reverse(),
       api
     };
-    EntityRootProjectConfigurationSchema.parse(entityProjectConfig);
+    try {
+      EntityRootProjectConfigurationSchema.parse(entityProjectConfig);
+    } catch (e) {
+      throw simplifyError(e);
+    }
     const existingIndex = config.findIndex(c => c.entity === entityProjectConfig.entity);
     if (existingIndex > -1) {
       if (config[existingIndex].entities.length !== entityProjectConfig.entities.length) {
@@ -134,8 +140,10 @@ export default async function loadEntitiesConfig(
   }
 
   // Validate the config
-  EntitiesRootProjectConfigurationSchema.parse(config);
-
-  return config;
+  try {
+    return EntitiesRootProjectConfigurationSchema.parse(config);
+  } catch (e) {
+    throw simplifyError(e);
+  }
 }
 

@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { AgentsSchema } from './users.js';
 import { EntitiesRootProjectConfigurationSchema } from './entity.js';
 import { WorkflowsConfigurationSchema } from './workflow.js';
+import { CommandsSchema } from './commands.js';
 
 const LlmModelOptions = z.union([
   z.literal('gpt-4-1106-preview'),
@@ -95,7 +96,8 @@ export const Scout9ProjectConfigSchema = z.object({
 export const Scout9ProjectBuildConfigSchema = Scout9ProjectConfigSchema.extend({
   agents: AgentsSchema,
   entities: EntitiesRootProjectConfigurationSchema,
-  workflows: WorkflowsConfigurationSchema
+  workflows: WorkflowsConfigurationSchema,
+  commands: CommandsSchema
 });
 
 
