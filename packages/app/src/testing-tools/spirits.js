@@ -19,7 +19,8 @@
  * @property {Array<import('@scout9/app').Message>} messages
  * @property {import('@scout9/app').Message} message - the message sent by the customer (should exist in messages)
  * @property {import('@scout9/app').Customer} customer
- * @property {any} context
+ * @property {import('@scout9/app').ConversationProgress} progress - progress checklist for manual/auto ingress workflows
+ * @property {any} context - event context
  */
 
 /**
@@ -33,6 +34,14 @@
 /**
  * @typedef {Object} WorkflowOutput
  * @property {Array<import('@scout9/app').WorkflowResponseSlot>} slots
+ * @property {Array<import('@scout9/app').Message>} messages
+ * @property {import('@scout9/app').Conversation} conversation
+ * @property {any} context
+ */
+
+/**
+ * @typedef {Object} GenerateOutput
+ * @property {import('@scout9/admin').GenerateResponse | undefined} generate
  * @property {Array<import('@scout9/app').Message>} messages
  * @property {import('@scout9/app').Conversation} conversation
  * @property {any} context
@@ -66,10 +75,17 @@
  */
 
 /**
+ * @callback TransformerFun
+ * @param {import('@scout9/admin').PmtTransformRequest} data - data to generate from
+ * @returns {Promise<import('@scout9/admin').PmtTransformResponse>}
+ */
+
+/**
  * @callback IdGeneratorFun
  * @param {import('@scout9/app').Message['role']} prefix
  * @returns {string}
  */
+
 /**
  * @callback StatusCallback
  * @param {string} message
@@ -84,6 +100,7 @@
  * @property {ParseFun} parser
  * @property {WorkflowFun} workflow
  * @property {GenerateFun} generator
+ * @property {TransformerFun} transformer
  * @property {IdGeneratorFun} idGenerator
  * @property {StatusCallback | undefined} [progress]
  */
@@ -110,6 +127,7 @@ export const Spirits = {
       parser,
       workflow,
       generator,
+      transformer,
       idGenerator,
       progress = (message, level, type, payload) => {
       },
@@ -265,6 +283,7 @@ export const Spirits = {
       message.intentScore = parsePayload.intentScore;
     }
     message.context = parsePayload.context;
+    message.entities = parsePayload.entities;
     const index = messages.findIndex(m => m.content === message.content || m.id === message.id);
     if (index === -1) {
       const _message = {
@@ -272,6 +291,7 @@ export const Spirits = {
         role: 'customer',
         content: message,
         context: parsePayload.context,
+        entities: parsePayload.entities,
         time: new Date().toISOString()
       };
       if (parsePayload.intent) {
@@ -285,6 +305,7 @@ export const Spirits = {
       progress('Added message', 'info', 'ADD_MESSAGE', _message);
     } else {
       messages[index].context = parsePayload.context;
+      messages[index].entities = parsePayload.entities;
       if (parsePayload.intent) {
         messages[index].intent = parsePayload.intent;
       }
@@ -349,6 +370,7 @@ export const Spirits = {
       }, []));
     const hasNoInstructions = slots.every(s => !s.instructions || (Array.isArray(s.instructions) && s.instructions.length === 0));
     const hasNoCustomMessage = slots.every(s => !s.message);
+    const messagesToTransform = slots.filter(s => !!s.message && typeof s.message === 'object' && !!s.message.transform);
     const previousLockAttempt = conversation.lockAttempts || 0; // Used to track
 
     if (hasNoInstructions && noNewContext) {
@@ -545,7 +567,7 @@ export const Spirits = {
       // If conversation is newly locked, don't generate, unless instructions were provided and no custom messages were provided
       if ((!conversation.locked || !hasNoInstructions) && !!hasNoCustomMessage) {
         try {
-          progress('Parsing message', 'info', 'SET_PROCESSING', 'system');
+          progress('Generating message', 'info', 'SET_PROCESSING', 'system');
           const generatorPayload = await generator({
             messages,
             persona,
@@ -573,7 +595,9 @@ export const Spirits = {
                 id: idGenerator('agent'),
                 role: 'agent',
                 content: generatorPayload.message,
-                time: new Date().toISOString()
+                time: new Date().toISOString(),
+                entities: generatorPayload.entities ?? [],
+                context: generatorPayload.context ?? {}
               });
               progress('Added agent message', 'info', 'ADD_MESSAGE', messages[messages.length - 1]);
             }
@@ -595,6 +619,43 @@ export const Spirits = {
           console.error(`Locking conversation, error generating response: ${e.message}`);
           conversation = lockConversation(conversation, 'API: ' + e.message);
         }
+      }
+
+      if (messagesToTransform.length && transformer) {
+        try {
+          for (const messageToTransform of messagesToTransform) {
+            const transformResponse = await transformer({
+              message: messagesToTransform,
+              persona,
+              customer: customer.id,
+              messages,
+              context: context
+            });
+
+            progress('Generated response', 'success', undefined, undefined);
+            // Check if already had message
+            const agentMessages = messages.filter(m => m.role === 'agent');
+            const lastAgentMessage = agentMessages[agentMessages.length - 1];
+            if (lastAgentMessage && lastAgentMessage.content === transformResponse.message) {
+              // Error should not have happened
+              conversation = lockConversation(conversation, 'Duplicate message');
+            } else {
+              messages.push({
+                id: idGenerator('agent'),
+                role: 'agent',
+                content: transformResponse.message,
+                time: new Date().toISOString()
+              });
+              progress('Added agent message', 'info', 'ADD_MESSAGE', messages[messages.length - 1]);
+            }
+
+          }
+        } catch (e) {
+          console.error(`Locking conversation, error transforming response: ${e.message}`);
+          conversation = lockConversation(conversation, 'API: ' + e.message);
+        }
+      } else if (messagesToTransform.length) {
+        console.warn(`No transformer provided`)
       }
     }
 

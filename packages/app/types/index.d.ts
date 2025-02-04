@@ -309,6 +309,12 @@ declare module '@scout9/app' {
 	  model?: ("Scout9" | "bard" | "openai");
 	  transcripts?: Message[][] | undefined;
 	  audios?: any[] | undefined;
+	  pmt?: {
+		  tag?: string;
+		  ingress: "auto" | "manual" | "app" | "webhook";
+		  llm?: string;
+		  scout9?: string;
+	  }
   };
 
   export type AgentConfiguration = Agent & {id: string};
@@ -487,6 +493,14 @@ declare module '@scout9/app' {
 	  initial: string | null;
   };
 
+  export type EntityToken = {
+	  start: number;
+	  end: number;
+	  type: string;
+	  option?: string | null;
+	  text?: string | null;
+  }
+
   export type Message = {
 	  /** Unique ID for the message */
 	  id: string;
@@ -505,6 +519,8 @@ declare module '@scout9/app' {
 	  intentScore?: (number | null) | undefined;
 	  /** How long to delay the message manually in seconds */
 	  delayInSeconds?: (number | null) | undefined;
+	  /** Entities related to the message */
+	  entities?: EntityToken[] | null;
   };
 
   export type PersonaConfiguration = AgentConfiguration;
@@ -580,7 +596,7 @@ declare module '@scout9/app' {
 	  conversation: Conversation;
 	  context?: any;
 	  message: Message;
-	  agent: Omit<AgentConfiguration, 'transcripts' | 'audios' | 'includedLocations' | 'excludedLocations' | 'model' | 'context'>;
+	  agent: Omit<AgentConfiguration, 'transcripts' | 'audios' | 'includedLocations' | 'excludedLocations' | 'model' | 'context' | 'pmt'>;
 	  customer: Customer;
 	  intent: IntentWorkflowEvent;
 	  stagnationCount: number;
@@ -607,7 +623,7 @@ declare module '@scout9/app' {
 	  forwardNote?: string | undefined;
 	  instructions?: Instruction[] | undefined;
 	  removeInstructions?: string[] | undefined;
-	  message?: string | undefined;
+	  message?: string | {content: string; transform?: boolean} | undefined;
 	  secondsDelay?: number | undefined;
 	  scheduled?: number | undefined;
 	  contextUpsert?: {
@@ -647,7 +663,6 @@ declare module '@scout9/app' {
 		  text: string;
 	  };
   };
-
 
   export type WorkflowsConfiguration = {
 	  /** Workflow id association, used to handle route params */
@@ -798,6 +813,13 @@ declare module '@scout9/app/spirits' {
 		 */
 		message: any;
 		customer: any;
+		/**
+		 * - progress checklist for manual/auto ingress workflows
+		 */
+		progress: any;
+		/**
+		 * - event context
+		 */
 		context: any;
 	};
 	export type ParseOutput = {
@@ -821,12 +843,14 @@ declare module '@scout9/app/spirits' {
 	export type ParseFun = (message: string, language: string | undefined) => Promise<import('@scout9/admin').ParseResponse>;
 	export type WorkflowFun = (event: any) => Promise<any>;
 	export type GenerateFun = (data: import('@scout9/admin').GenerateRequestOneOf) => Promise<import('@scout9/admin').GenerateResponse>;
+	export type TransformerFun = (data: import('@scout9/admin').PmtTransformRequest) => Promise<import('@scout9/admin').PmtTransformResponse>;
 	export type IdGeneratorFun = (prefix: any) => string;
 	export type StatusCallback = (message: string, level?: 'info' | 'warn' | 'error' | 'success' | undefined, type?: string | undefined, payload?: any | undefined) => void;
 	export type CustomerSpiritCallbacks = {
 		parser: ParseFun;
 		workflow: WorkflowFun;
 		generator: GenerateFun;
+		transformer: TransformerFun;
 		idGenerator: IdGeneratorFun;
 		progress?: StatusCallback | undefined;
 	};
@@ -1316,6 +1340,25 @@ declare module '@scout9/app/schemas' {
 				intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
 				intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
 				delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+				entities: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+					start: z.ZodNumber;
+					end: z.ZodNumber;
+					type: z.ZodString;
+					option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+					text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+				}, "strip", z.ZodTypeAny, {
+					type: string;
+					end: number;
+					start: number;
+					option?: string | null | undefined;
+					text?: string | null | undefined;
+				}, {
+					type: string;
+					end: number;
+					start: number;
+					option?: string | null | undefined;
+					text?: string | null | undefined;
+				}>, "many">>>;
 			}, "strip", z.ZodTypeAny, {
 				time: string;
 				id: string;
@@ -1327,6 +1370,13 @@ declare module '@scout9/app/schemas' {
 				intent?: string | null | undefined;
 				intentScore?: number | null | undefined;
 				delayInSeconds?: number | null | undefined;
+				entities?: {
+					type: string;
+					end: number;
+					start: number;
+					option?: string | null | undefined;
+					text?: string | null | undefined;
+				}[] | null | undefined;
 			}, {
 				time: string;
 				id: string;
@@ -1338,8 +1388,37 @@ declare module '@scout9/app/schemas' {
 				intent?: string | null | undefined;
 				intentScore?: number | null | undefined;
 				delayInSeconds?: number | null | undefined;
+				entities?: {
+					type: string;
+					end: number;
+					start: number;
+					option?: string | null | undefined;
+					text?: string | null | undefined;
+				}[] | null | undefined;
 			}>, "many">, "many">>;
 			audios: z.ZodOptional<z.ZodArray<z.ZodAny, "many">>;
+			pmt: z.ZodOptional<z.ZodObject<{
+				tag: z.ZodOptional<z.ZodString>;
+				ingress: z.ZodEnum<["auto", "manual", "app", "workflow"]>;
+				llm: z.ZodOptional<z.ZodString>;
+				webhookUri: z.ZodOptional<z.ZodString>;
+				watermarkEnabled: z.ZodOptional<z.ZodBoolean>;
+				watermark: z.ZodOptional<z.ZodString>;
+			}, "strip", z.ZodTypeAny, {
+				ingress: "auto" | "manual" | "app" | "workflow";
+				tag?: string | undefined;
+				llm?: string | undefined;
+				webhookUri?: string | undefined;
+				watermarkEnabled?: boolean | undefined;
+				watermark?: string | undefined;
+			}, {
+				ingress: "auto" | "manual" | "app" | "workflow";
+				tag?: string | undefined;
+				llm?: string | undefined;
+				webhookUri?: string | undefined;
+				watermarkEnabled?: boolean | undefined;
+				watermark?: string | undefined;
+			}>>;
 		}, "strip", z.ZodTypeAny, {
 			title: string;
 			context: string;
@@ -1371,8 +1450,23 @@ declare module '@scout9/app/schemas' {
 				intent?: string | null | undefined;
 				intentScore?: number | null | undefined;
 				delayInSeconds?: number | null | undefined;
+				entities?: {
+					type: string;
+					end: number;
+					start: number;
+					option?: string | null | undefined;
+					text?: string | null | undefined;
+				}[] | null | undefined;
 			}[][] | undefined;
 			audios?: any[] | undefined;
+			pmt?: {
+				ingress: "auto" | "manual" | "app" | "workflow";
+				tag?: string | undefined;
+				llm?: string | undefined;
+				webhookUri?: string | undefined;
+				watermarkEnabled?: boolean | undefined;
+				watermark?: string | undefined;
+			} | undefined;
 		}, {
 			deployed?: {
 				web?: string | undefined;
@@ -1404,8 +1498,23 @@ declare module '@scout9/app/schemas' {
 				intent?: string | null | undefined;
 				intentScore?: number | null | undefined;
 				delayInSeconds?: number | null | undefined;
+				entities?: {
+					type: string;
+					end: number;
+					start: number;
+					option?: string | null | undefined;
+					text?: string | null | undefined;
+				}[] | null | undefined;
 			}[][] | undefined;
 			audios?: any[] | undefined;
+			pmt?: {
+				ingress: "auto" | "manual" | "app" | "workflow";
+				tag?: string | undefined;
+				llm?: string | undefined;
+				webhookUri?: string | undefined;
+				watermarkEnabled?: boolean | undefined;
+				watermark?: string | undefined;
+			} | undefined;
 		}>, "many">;
 		entities: z.ZodArray<z.ZodEffects<z.ZodObject<{
 			id: z.ZodOptional<z.ZodString>;
@@ -1646,8 +1755,23 @@ declare module '@scout9/app/schemas' {
 				intent?: string | null | undefined;
 				intentScore?: number | null | undefined;
 				delayInSeconds?: number | null | undefined;
+				entities?: {
+					type: string;
+					end: number;
+					start: number;
+					option?: string | null | undefined;
+					text?: string | null | undefined;
+				}[] | null | undefined;
 			}[][] | undefined;
 			audios?: any[] | undefined;
+			pmt?: {
+				ingress: "auto" | "manual" | "app" | "workflow";
+				tag?: string | undefined;
+				llm?: string | undefined;
+				webhookUri?: string | undefined;
+				watermarkEnabled?: boolean | undefined;
+				watermark?: string | undefined;
+			} | undefined;
 		}[];
 		entities: {
 			entity: string;
@@ -1746,8 +1870,23 @@ declare module '@scout9/app/schemas' {
 				intent?: string | null | undefined;
 				intentScore?: number | null | undefined;
 				delayInSeconds?: number | null | undefined;
+				entities?: {
+					type: string;
+					end: number;
+					start: number;
+					option?: string | null | undefined;
+					text?: string | null | undefined;
+				}[] | null | undefined;
 			}[][] | undefined;
 			audios?: any[] | undefined;
+			pmt?: {
+				ingress: "auto" | "manual" | "app" | "workflow";
+				tag?: string | undefined;
+				llm?: string | undefined;
+				webhookUri?: string | undefined;
+				watermarkEnabled?: boolean | undefined;
+				watermark?: string | undefined;
+			} | undefined;
 		}[];
 		entities: {
 			entity: string;
@@ -2762,6 +2901,25 @@ declare module '@scout9/app/schemas' {
 		input: string;
 		output: Record<string, any>[];
 	}>, "many">, z.ZodArray<z.ZodRecord<z.ZodString, z.ZodAny>, "many">]>;
+	export const MessageEntitySchema: z.ZodObject<{
+		start: z.ZodNumber;
+		end: z.ZodNumber;
+		type: z.ZodString;
+		option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+		text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+	}, "strip", z.ZodTypeAny, {
+		type: string;
+		end: number;
+		start: number;
+		option?: string | null | undefined;
+		text?: string | null | undefined;
+	}, {
+		type: string;
+		end: number;
+		start: number;
+		option?: string | null | undefined;
+		text?: string | null | undefined;
+	}>;
 	export const MessageSchema: z.ZodObject<{
 		id: z.ZodString;
 		role: z.ZodEnum<["agent", "customer", "system"]>;
@@ -2773,6 +2931,25 @@ declare module '@scout9/app/schemas' {
 		intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
 		intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
 		delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+		entities: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+			start: z.ZodNumber;
+			end: z.ZodNumber;
+			type: z.ZodString;
+			option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+		}, "strip", z.ZodTypeAny, {
+			type: string;
+			end: number;
+			start: number;
+			option?: string | null | undefined;
+			text?: string | null | undefined;
+		}, {
+			type: string;
+			end: number;
+			start: number;
+			option?: string | null | undefined;
+			text?: string | null | undefined;
+		}>, "many">>>;
 	}, "strip", z.ZodTypeAny, {
 		time: string;
 		id: string;
@@ -2784,6 +2961,13 @@ declare module '@scout9/app/schemas' {
 		intent?: string | null | undefined;
 		intentScore?: number | null | undefined;
 		delayInSeconds?: number | null | undefined;
+		entities?: {
+			type: string;
+			end: number;
+			start: number;
+			option?: string | null | undefined;
+			text?: string | null | undefined;
+		}[] | null | undefined;
 	}, {
 		time: string;
 		id: string;
@@ -2795,6 +2979,13 @@ declare module '@scout9/app/schemas' {
 		intent?: string | null | undefined;
 		intentScore?: number | null | undefined;
 		delayInSeconds?: number | null | undefined;
+		entities?: {
+			type: string;
+			end: number;
+			start: number;
+			option?: string | null | undefined;
+			text?: string | null | undefined;
+		}[] | null | undefined;
 	}>;
 	export const CustomerValueSchema: z.ZodUnion<[z.ZodBoolean, z.ZodNumber, z.ZodString]>;
 	export const CustomerSchema: z.ZodObject<{
@@ -2891,6 +3082,25 @@ declare module '@scout9/app/schemas' {
 			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
 			intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
 			delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+			entities: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+				start: z.ZodNumber;
+				end: z.ZodNumber;
+				type: z.ZodString;
+				option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+				text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			}, "strip", z.ZodTypeAny, {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}, {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}>, "many">>>;
 		}, "strip", z.ZodTypeAny, {
 			time: string;
 			id: string;
@@ -2902,6 +3112,13 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}, {
 			time: string;
 			id: string;
@@ -2913,8 +3130,37 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}>, "many">, "many">>;
 		audios: z.ZodOptional<z.ZodArray<z.ZodAny, "many">>;
+		pmt: z.ZodOptional<z.ZodObject<{
+			tag: z.ZodOptional<z.ZodString>;
+			ingress: z.ZodEnum<["auto", "manual", "app", "workflow"]>;
+			llm: z.ZodOptional<z.ZodString>;
+			webhookUri: z.ZodOptional<z.ZodString>;
+			watermarkEnabled: z.ZodOptional<z.ZodBoolean>;
+			watermark: z.ZodOptional<z.ZodString>;
+		}, "strip", z.ZodTypeAny, {
+			ingress: "auto" | "manual" | "app" | "workflow";
+			tag?: string | undefined;
+			llm?: string | undefined;
+			webhookUri?: string | undefined;
+			watermarkEnabled?: boolean | undefined;
+			watermark?: string | undefined;
+		}, {
+			ingress: "auto" | "manual" | "app" | "workflow";
+			tag?: string | undefined;
+			llm?: string | undefined;
+			webhookUri?: string | undefined;
+			watermarkEnabled?: boolean | undefined;
+			watermark?: string | undefined;
+		}>>;
 	}, "strip", z.ZodTypeAny, {
 		title: string;
 		context: string;
@@ -2946,8 +3192,23 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
+		pmt?: {
+			ingress: "auto" | "manual" | "app" | "workflow";
+			tag?: string | undefined;
+			llm?: string | undefined;
+			webhookUri?: string | undefined;
+			watermarkEnabled?: boolean | undefined;
+			watermark?: string | undefined;
+		} | undefined;
 	}, {
 		deployed?: {
 			web?: string | undefined;
@@ -2979,8 +3240,23 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
+		pmt?: {
+			ingress: "auto" | "manual" | "app" | "workflow";
+			tag?: string | undefined;
+			llm?: string | undefined;
+			webhookUri?: string | undefined;
+			watermarkEnabled?: boolean | undefined;
+			watermark?: string | undefined;
+		} | undefined;
 	}>;
 	export const PersonaSchema: z.ZodObject<{
 		deployed: z.ZodOptional<z.ZodObject<{
@@ -3021,6 +3297,25 @@ declare module '@scout9/app/schemas' {
 			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
 			intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
 			delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+			entities: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+				start: z.ZodNumber;
+				end: z.ZodNumber;
+				type: z.ZodString;
+				option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+				text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			}, "strip", z.ZodTypeAny, {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}, {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}>, "many">>>;
 		}, "strip", z.ZodTypeAny, {
 			time: string;
 			id: string;
@@ -3032,6 +3327,13 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}, {
 			time: string;
 			id: string;
@@ -3043,8 +3345,37 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}>, "many">, "many">>;
 		audios: z.ZodOptional<z.ZodArray<z.ZodAny, "many">>;
+		pmt: z.ZodOptional<z.ZodObject<{
+			tag: z.ZodOptional<z.ZodString>;
+			ingress: z.ZodEnum<["auto", "manual", "app", "workflow"]>;
+			llm: z.ZodOptional<z.ZodString>;
+			webhookUri: z.ZodOptional<z.ZodString>;
+			watermarkEnabled: z.ZodOptional<z.ZodBoolean>;
+			watermark: z.ZodOptional<z.ZodString>;
+		}, "strip", z.ZodTypeAny, {
+			ingress: "auto" | "manual" | "app" | "workflow";
+			tag?: string | undefined;
+			llm?: string | undefined;
+			webhookUri?: string | undefined;
+			watermarkEnabled?: boolean | undefined;
+			watermark?: string | undefined;
+		}, {
+			ingress: "auto" | "manual" | "app" | "workflow";
+			tag?: string | undefined;
+			llm?: string | undefined;
+			webhookUri?: string | undefined;
+			watermarkEnabled?: boolean | undefined;
+			watermark?: string | undefined;
+		}>>;
 	}, "strip", z.ZodTypeAny, {
 		title: string;
 		context: string;
@@ -3076,8 +3407,23 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
+		pmt?: {
+			ingress: "auto" | "manual" | "app" | "workflow";
+			tag?: string | undefined;
+			llm?: string | undefined;
+			webhookUri?: string | undefined;
+			watermarkEnabled?: boolean | undefined;
+			watermark?: string | undefined;
+		} | undefined;
 	}, {
 		deployed?: {
 			web?: string | undefined;
@@ -3109,8 +3455,23 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
+		pmt?: {
+			ingress: "auto" | "manual" | "app" | "workflow";
+			tag?: string | undefined;
+			llm?: string | undefined;
+			webhookUri?: string | undefined;
+			watermarkEnabled?: boolean | undefined;
+			watermark?: string | undefined;
+		} | undefined;
 	}>;
 	export const AgentConfigurationSchema: z.ZodObject<{
 		inactive: z.ZodOptional<z.ZodBoolean>;
@@ -3151,6 +3512,25 @@ declare module '@scout9/app/schemas' {
 			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
 			intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
 			delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+			entities: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+				start: z.ZodNumber;
+				end: z.ZodNumber;
+				type: z.ZodString;
+				option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+				text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			}, "strip", z.ZodTypeAny, {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}, {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}>, "many">>>;
 		}, "strip", z.ZodTypeAny, {
 			time: string;
 			id: string;
@@ -3162,6 +3542,13 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}, {
 			time: string;
 			id: string;
@@ -3173,8 +3560,37 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}>, "many">, "many">>;
 		audios: z.ZodOptional<z.ZodArray<z.ZodAny, "many">>;
+		pmt: z.ZodOptional<z.ZodObject<{
+			tag: z.ZodOptional<z.ZodString>;
+			ingress: z.ZodEnum<["auto", "manual", "app", "workflow"]>;
+			llm: z.ZodOptional<z.ZodString>;
+			webhookUri: z.ZodOptional<z.ZodString>;
+			watermarkEnabled: z.ZodOptional<z.ZodBoolean>;
+			watermark: z.ZodOptional<z.ZodString>;
+		}, "strip", z.ZodTypeAny, {
+			ingress: "auto" | "manual" | "app" | "workflow";
+			tag?: string | undefined;
+			llm?: string | undefined;
+			webhookUri?: string | undefined;
+			watermarkEnabled?: boolean | undefined;
+			watermark?: string | undefined;
+		}, {
+			ingress: "auto" | "manual" | "app" | "workflow";
+			tag?: string | undefined;
+			llm?: string | undefined;
+			webhookUri?: string | undefined;
+			watermarkEnabled?: boolean | undefined;
+			watermark?: string | undefined;
+		}>>;
 		id: z.ZodString;
 	}, "strip", z.ZodTypeAny, {
 		id: string;
@@ -3208,8 +3624,23 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
+		pmt?: {
+			ingress: "auto" | "manual" | "app" | "workflow";
+			tag?: string | undefined;
+			llm?: string | undefined;
+			webhookUri?: string | undefined;
+			watermarkEnabled?: boolean | undefined;
+			watermark?: string | undefined;
+		} | undefined;
 	}, {
 		id: string;
 		inactive?: boolean | undefined;
@@ -3242,8 +3673,23 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
+		pmt?: {
+			ingress: "auto" | "manual" | "app" | "workflow";
+			tag?: string | undefined;
+			llm?: string | undefined;
+			webhookUri?: string | undefined;
+			watermarkEnabled?: boolean | undefined;
+			watermark?: string | undefined;
+		} | undefined;
 	}>;
 	export const PersonaConfigurationSchema: z.ZodObject<{
 		inactive: z.ZodOptional<z.ZodBoolean>;
@@ -3284,6 +3730,25 @@ declare module '@scout9/app/schemas' {
 			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
 			intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
 			delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+			entities: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+				start: z.ZodNumber;
+				end: z.ZodNumber;
+				type: z.ZodString;
+				option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+				text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			}, "strip", z.ZodTypeAny, {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}, {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}>, "many">>>;
 		}, "strip", z.ZodTypeAny, {
 			time: string;
 			id: string;
@@ -3295,6 +3760,13 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}, {
 			time: string;
 			id: string;
@@ -3306,8 +3778,37 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}>, "many">, "many">>;
 		audios: z.ZodOptional<z.ZodArray<z.ZodAny, "many">>;
+		pmt: z.ZodOptional<z.ZodObject<{
+			tag: z.ZodOptional<z.ZodString>;
+			ingress: z.ZodEnum<["auto", "manual", "app", "workflow"]>;
+			llm: z.ZodOptional<z.ZodString>;
+			webhookUri: z.ZodOptional<z.ZodString>;
+			watermarkEnabled: z.ZodOptional<z.ZodBoolean>;
+			watermark: z.ZodOptional<z.ZodString>;
+		}, "strip", z.ZodTypeAny, {
+			ingress: "auto" | "manual" | "app" | "workflow";
+			tag?: string | undefined;
+			llm?: string | undefined;
+			webhookUri?: string | undefined;
+			watermarkEnabled?: boolean | undefined;
+			watermark?: string | undefined;
+		}, {
+			ingress: "auto" | "manual" | "app" | "workflow";
+			tag?: string | undefined;
+			llm?: string | undefined;
+			webhookUri?: string | undefined;
+			watermarkEnabled?: boolean | undefined;
+			watermark?: string | undefined;
+		}>>;
 		id: z.ZodString;
 	}, "strip", z.ZodTypeAny, {
 		id: string;
@@ -3341,8 +3842,23 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
+		pmt?: {
+			ingress: "auto" | "manual" | "app" | "workflow";
+			tag?: string | undefined;
+			llm?: string | undefined;
+			webhookUri?: string | undefined;
+			watermarkEnabled?: boolean | undefined;
+			watermark?: string | undefined;
+		} | undefined;
 	}, {
 		id: string;
 		inactive?: boolean | undefined;
@@ -3375,8 +3891,23 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
+		pmt?: {
+			ingress: "auto" | "manual" | "app" | "workflow";
+			tag?: string | undefined;
+			llm?: string | undefined;
+			webhookUri?: string | undefined;
+			watermarkEnabled?: boolean | undefined;
+			watermark?: string | undefined;
+		} | undefined;
 	}>;
 	export const AgentsConfigurationSchema: z.ZodArray<z.ZodObject<{
 		inactive: z.ZodOptional<z.ZodBoolean>;
@@ -3417,6 +3948,25 @@ declare module '@scout9/app/schemas' {
 			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
 			intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
 			delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+			entities: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+				start: z.ZodNumber;
+				end: z.ZodNumber;
+				type: z.ZodString;
+				option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+				text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			}, "strip", z.ZodTypeAny, {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}, {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}>, "many">>>;
 		}, "strip", z.ZodTypeAny, {
 			time: string;
 			id: string;
@@ -3428,6 +3978,13 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}, {
 			time: string;
 			id: string;
@@ -3439,8 +3996,37 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}>, "many">, "many">>;
 		audios: z.ZodOptional<z.ZodArray<z.ZodAny, "many">>;
+		pmt: z.ZodOptional<z.ZodObject<{
+			tag: z.ZodOptional<z.ZodString>;
+			ingress: z.ZodEnum<["auto", "manual", "app", "workflow"]>;
+			llm: z.ZodOptional<z.ZodString>;
+			webhookUri: z.ZodOptional<z.ZodString>;
+			watermarkEnabled: z.ZodOptional<z.ZodBoolean>;
+			watermark: z.ZodOptional<z.ZodString>;
+		}, "strip", z.ZodTypeAny, {
+			ingress: "auto" | "manual" | "app" | "workflow";
+			tag?: string | undefined;
+			llm?: string | undefined;
+			webhookUri?: string | undefined;
+			watermarkEnabled?: boolean | undefined;
+			watermark?: string | undefined;
+		}, {
+			ingress: "auto" | "manual" | "app" | "workflow";
+			tag?: string | undefined;
+			llm?: string | undefined;
+			webhookUri?: string | undefined;
+			watermarkEnabled?: boolean | undefined;
+			watermark?: string | undefined;
+		}>>;
 		id: z.ZodString;
 	}, "strip", z.ZodTypeAny, {
 		id: string;
@@ -3474,8 +4060,23 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
+		pmt?: {
+			ingress: "auto" | "manual" | "app" | "workflow";
+			tag?: string | undefined;
+			llm?: string | undefined;
+			webhookUri?: string | undefined;
+			watermarkEnabled?: boolean | undefined;
+			watermark?: string | undefined;
+		} | undefined;
 	}, {
 		id: string;
 		inactive?: boolean | undefined;
@@ -3508,8 +4109,23 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
+		pmt?: {
+			ingress: "auto" | "manual" | "app" | "workflow";
+			tag?: string | undefined;
+			llm?: string | undefined;
+			webhookUri?: string | undefined;
+			watermarkEnabled?: boolean | undefined;
+			watermark?: string | undefined;
+		} | undefined;
 	}>, "many">;
 	export const PersonasConfigurationSchema: z.ZodArray<z.ZodObject<{
 		inactive: z.ZodOptional<z.ZodBoolean>;
@@ -3550,6 +4166,25 @@ declare module '@scout9/app/schemas' {
 			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
 			intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
 			delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+			entities: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+				start: z.ZodNumber;
+				end: z.ZodNumber;
+				type: z.ZodString;
+				option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+				text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			}, "strip", z.ZodTypeAny, {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}, {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}>, "many">>>;
 		}, "strip", z.ZodTypeAny, {
 			time: string;
 			id: string;
@@ -3561,6 +4196,13 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}, {
 			time: string;
 			id: string;
@@ -3572,8 +4214,37 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}>, "many">, "many">>;
 		audios: z.ZodOptional<z.ZodArray<z.ZodAny, "many">>;
+		pmt: z.ZodOptional<z.ZodObject<{
+			tag: z.ZodOptional<z.ZodString>;
+			ingress: z.ZodEnum<["auto", "manual", "app", "workflow"]>;
+			llm: z.ZodOptional<z.ZodString>;
+			webhookUri: z.ZodOptional<z.ZodString>;
+			watermarkEnabled: z.ZodOptional<z.ZodBoolean>;
+			watermark: z.ZodOptional<z.ZodString>;
+		}, "strip", z.ZodTypeAny, {
+			ingress: "auto" | "manual" | "app" | "workflow";
+			tag?: string | undefined;
+			llm?: string | undefined;
+			webhookUri?: string | undefined;
+			watermarkEnabled?: boolean | undefined;
+			watermark?: string | undefined;
+		}, {
+			ingress: "auto" | "manual" | "app" | "workflow";
+			tag?: string | undefined;
+			llm?: string | undefined;
+			webhookUri?: string | undefined;
+			watermarkEnabled?: boolean | undefined;
+			watermark?: string | undefined;
+		}>>;
 		id: z.ZodString;
 	}, "strip", z.ZodTypeAny, {
 		id: string;
@@ -3607,8 +4278,23 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
+		pmt?: {
+			ingress: "auto" | "manual" | "app" | "workflow";
+			tag?: string | undefined;
+			llm?: string | undefined;
+			webhookUri?: string | undefined;
+			watermarkEnabled?: boolean | undefined;
+			watermark?: string | undefined;
+		} | undefined;
 	}, {
 		id: string;
 		inactive?: boolean | undefined;
@@ -3641,8 +4327,23 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
+		pmt?: {
+			ingress: "auto" | "manual" | "app" | "workflow";
+			tag?: string | undefined;
+			llm?: string | undefined;
+			webhookUri?: string | undefined;
+			watermarkEnabled?: boolean | undefined;
+			watermark?: string | undefined;
+		} | undefined;
 	}>, "many">;
 	export const AgentsSchema: z.ZodArray<z.ZodObject<{
 		deployed: z.ZodOptional<z.ZodObject<{
@@ -3683,6 +4384,25 @@ declare module '@scout9/app/schemas' {
 			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
 			intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
 			delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+			entities: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+				start: z.ZodNumber;
+				end: z.ZodNumber;
+				type: z.ZodString;
+				option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+				text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			}, "strip", z.ZodTypeAny, {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}, {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}>, "many">>>;
 		}, "strip", z.ZodTypeAny, {
 			time: string;
 			id: string;
@@ -3694,6 +4414,13 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}, {
 			time: string;
 			id: string;
@@ -3705,8 +4432,37 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}>, "many">, "many">>;
 		audios: z.ZodOptional<z.ZodArray<z.ZodAny, "many">>;
+		pmt: z.ZodOptional<z.ZodObject<{
+			tag: z.ZodOptional<z.ZodString>;
+			ingress: z.ZodEnum<["auto", "manual", "app", "workflow"]>;
+			llm: z.ZodOptional<z.ZodString>;
+			webhookUri: z.ZodOptional<z.ZodString>;
+			watermarkEnabled: z.ZodOptional<z.ZodBoolean>;
+			watermark: z.ZodOptional<z.ZodString>;
+		}, "strip", z.ZodTypeAny, {
+			ingress: "auto" | "manual" | "app" | "workflow";
+			tag?: string | undefined;
+			llm?: string | undefined;
+			webhookUri?: string | undefined;
+			watermarkEnabled?: boolean | undefined;
+			watermark?: string | undefined;
+		}, {
+			ingress: "auto" | "manual" | "app" | "workflow";
+			tag?: string | undefined;
+			llm?: string | undefined;
+			webhookUri?: string | undefined;
+			watermarkEnabled?: boolean | undefined;
+			watermark?: string | undefined;
+		}>>;
 	}, "strip", z.ZodTypeAny, {
 		title: string;
 		context: string;
@@ -3738,8 +4494,23 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
+		pmt?: {
+			ingress: "auto" | "manual" | "app" | "workflow";
+			tag?: string | undefined;
+			llm?: string | undefined;
+			webhookUri?: string | undefined;
+			watermarkEnabled?: boolean | undefined;
+			watermark?: string | undefined;
+		} | undefined;
 	}, {
 		deployed?: {
 			web?: string | undefined;
@@ -3771,8 +4542,23 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
+		pmt?: {
+			ingress: "auto" | "manual" | "app" | "workflow";
+			tag?: string | undefined;
+			llm?: string | undefined;
+			webhookUri?: string | undefined;
+			watermarkEnabled?: boolean | undefined;
+			watermark?: string | undefined;
+		} | undefined;
 	}>, "many">;
 	export const PersonasSchema: z.ZodArray<z.ZodObject<{
 		deployed: z.ZodOptional<z.ZodObject<{
@@ -3813,6 +4599,25 @@ declare module '@scout9/app/schemas' {
 			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
 			intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
 			delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+			entities: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+				start: z.ZodNumber;
+				end: z.ZodNumber;
+				type: z.ZodString;
+				option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+				text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			}, "strip", z.ZodTypeAny, {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}, {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}>, "many">>>;
 		}, "strip", z.ZodTypeAny, {
 			time: string;
 			id: string;
@@ -3824,6 +4629,13 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}, {
 			time: string;
 			id: string;
@@ -3835,8 +4647,37 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}>, "many">, "many">>;
 		audios: z.ZodOptional<z.ZodArray<z.ZodAny, "many">>;
+		pmt: z.ZodOptional<z.ZodObject<{
+			tag: z.ZodOptional<z.ZodString>;
+			ingress: z.ZodEnum<["auto", "manual", "app", "workflow"]>;
+			llm: z.ZodOptional<z.ZodString>;
+			webhookUri: z.ZodOptional<z.ZodString>;
+			watermarkEnabled: z.ZodOptional<z.ZodBoolean>;
+			watermark: z.ZodOptional<z.ZodString>;
+		}, "strip", z.ZodTypeAny, {
+			ingress: "auto" | "manual" | "app" | "workflow";
+			tag?: string | undefined;
+			llm?: string | undefined;
+			webhookUri?: string | undefined;
+			watermarkEnabled?: boolean | undefined;
+			watermark?: string | undefined;
+		}, {
+			ingress: "auto" | "manual" | "app" | "workflow";
+			tag?: string | undefined;
+			llm?: string | undefined;
+			webhookUri?: string | undefined;
+			watermarkEnabled?: boolean | undefined;
+			watermark?: string | undefined;
+		}>>;
 	}, "strip", z.ZodTypeAny, {
 		title: string;
 		context: string;
@@ -3868,8 +4709,23 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
+		pmt?: {
+			ingress: "auto" | "manual" | "app" | "workflow";
+			tag?: string | undefined;
+			llm?: string | undefined;
+			webhookUri?: string | undefined;
+			watermarkEnabled?: boolean | undefined;
+			watermark?: string | undefined;
+		} | undefined;
 	}, {
 		deployed?: {
 			web?: string | undefined;
@@ -3901,8 +4757,23 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
+		pmt?: {
+			ingress: "auto" | "manual" | "app" | "workflow";
+			tag?: string | undefined;
+			llm?: string | undefined;
+			webhookUri?: string | undefined;
+			watermarkEnabled?: boolean | undefined;
+			watermark?: string | undefined;
+		} | undefined;
 	}>, "many">;
 	export const ForwardSchema: z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 		to: z.ZodOptional<z.ZodString>;
@@ -4193,6 +5064,25 @@ declare module '@scout9/app/schemas' {
 			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
 			intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
 			delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+			entities: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+				start: z.ZodNumber;
+				end: z.ZodNumber;
+				type: z.ZodString;
+				option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+				text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			}, "strip", z.ZodTypeAny, {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}, {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}>, "many">>>;
 		}, "strip", z.ZodTypeAny, {
 			time: string;
 			id: string;
@@ -4204,6 +5094,13 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}, {
 			time: string;
 			id: string;
@@ -4215,6 +5112,13 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}>, "many">;
 		conversation: z.ZodObject<{
 			$id: z.ZodString;
@@ -4358,6 +5262,25 @@ declare module '@scout9/app/schemas' {
 			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
 			intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
 			delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+			entities: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+				start: z.ZodNumber;
+				end: z.ZodNumber;
+				type: z.ZodString;
+				option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+				text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			}, "strip", z.ZodTypeAny, {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}, {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}>, "many">>>;
 		}, "strip", z.ZodTypeAny, {
 			time: string;
 			id: string;
@@ -4369,6 +5292,13 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}, {
 			time: string;
 			id: string;
@@ -4380,6 +5310,13 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}>;
 		agent: z.ZodObject<Omit<{
 			inactive: z.ZodOptional<z.ZodBoolean>;
@@ -4420,6 +5357,25 @@ declare module '@scout9/app/schemas' {
 				intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
 				intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
 				delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+				entities: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+					start: z.ZodNumber;
+					end: z.ZodNumber;
+					type: z.ZodString;
+					option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+					text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+				}, "strip", z.ZodTypeAny, {
+					type: string;
+					end: number;
+					start: number;
+					option?: string | null | undefined;
+					text?: string | null | undefined;
+				}, {
+					type: string;
+					end: number;
+					start: number;
+					option?: string | null | undefined;
+					text?: string | null | undefined;
+				}>, "many">>>;
 			}, "strip", z.ZodTypeAny, {
 				time: string;
 				id: string;
@@ -4431,6 +5387,13 @@ declare module '@scout9/app/schemas' {
 				intent?: string | null | undefined;
 				intentScore?: number | null | undefined;
 				delayInSeconds?: number | null | undefined;
+				entities?: {
+					type: string;
+					end: number;
+					start: number;
+					option?: string | null | undefined;
+					text?: string | null | undefined;
+				}[] | null | undefined;
 			}, {
 				time: string;
 				id: string;
@@ -4442,10 +5405,39 @@ declare module '@scout9/app/schemas' {
 				intent?: string | null | undefined;
 				intentScore?: number | null | undefined;
 				delayInSeconds?: number | null | undefined;
+				entities?: {
+					type: string;
+					end: number;
+					start: number;
+					option?: string | null | undefined;
+					text?: string | null | undefined;
+				}[] | null | undefined;
 			}>, "many">, "many">>;
 			audios: z.ZodOptional<z.ZodArray<z.ZodAny, "many">>;
+			pmt: z.ZodOptional<z.ZodObject<{
+				tag: z.ZodOptional<z.ZodString>;
+				ingress: z.ZodEnum<["auto", "manual", "app", "workflow"]>;
+				llm: z.ZodOptional<z.ZodString>;
+				webhookUri: z.ZodOptional<z.ZodString>;
+				watermarkEnabled: z.ZodOptional<z.ZodBoolean>;
+				watermark: z.ZodOptional<z.ZodString>;
+			}, "strip", z.ZodTypeAny, {
+				ingress: "auto" | "manual" | "app" | "workflow";
+				tag?: string | undefined;
+				llm?: string | undefined;
+				webhookUri?: string | undefined;
+				watermarkEnabled?: boolean | undefined;
+				watermark?: string | undefined;
+			}, {
+				ingress: "auto" | "manual" | "app" | "workflow";
+				tag?: string | undefined;
+				llm?: string | undefined;
+				webhookUri?: string | undefined;
+				watermarkEnabled?: boolean | undefined;
+				watermark?: string | undefined;
+			}>>;
 			id: z.ZodString;
-		}, "context" | "includedLocations" | "excludedLocations" | "model" | "transcripts" | "audios">, "strip", z.ZodTypeAny, {
+		}, "context" | "includedLocations" | "excludedLocations" | "model" | "transcripts" | "audios" | "pmt">, "strip", z.ZodTypeAny, {
 			id: string;
 			title: string;
 			inactive?: boolean | undefined;
@@ -4562,6 +5554,13 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		};
 		agent: {
 			id: string;
@@ -4618,6 +5617,13 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}[];
 		conversation: {
 			environment: "email" | "phone" | "web";
@@ -4666,6 +5672,13 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		};
 		agent: {
 			id: string;
@@ -4722,6 +5735,13 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}[];
 		conversation: {
 			environment: "email" | "phone" | "web";
@@ -4803,7 +5823,16 @@ declare module '@scout9/app/schemas' {
 			persist?: boolean | undefined;
 		}>]>, "many">]>>;
 		removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-		message: z.ZodOptional<z.ZodString>;
+		message: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+			content: z.ZodString;
+			transform: z.ZodOptional<z.ZodBoolean>;
+		}, "strip", z.ZodTypeAny, {
+			content: string;
+			transform?: boolean | undefined;
+		}, {
+			content: string;
+			transform?: boolean | undefined;
+		}>]>>;
 		secondsDelay: z.ZodOptional<z.ZodNumber>;
 		scheduled: z.ZodOptional<z.ZodNumber>;
 		contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
@@ -4912,7 +5941,10 @@ declare module '@scout9/app/schemas' {
 			persist?: boolean | undefined;
 		})[] | undefined;
 		removeInstructions?: string[] | undefined;
-		message?: string | undefined;
+		message?: string | {
+			content: string;
+			transform?: boolean | undefined;
+		} | undefined;
 		secondsDelay?: number | undefined;
 		scheduled?: number | undefined;
 		contextUpsert?: Record<string, any> | undefined;
@@ -4961,7 +5993,10 @@ declare module '@scout9/app/schemas' {
 			persist?: boolean | undefined;
 		})[] | undefined;
 		removeInstructions?: string[] | undefined;
-		message?: string | undefined;
+		message?: string | {
+			content: string;
+			transform?: boolean | undefined;
+		} | undefined;
 		secondsDelay?: number | undefined;
 		scheduled?: number | undefined;
 		contextUpsert?: Record<string, any> | undefined;
@@ -4998,7 +6033,16 @@ declare module '@scout9/app/schemas' {
 	 * The workflow response object slot
 	 */
 	export const WorkflowResponseSlotSchema: z.ZodObject<{
-		message: z.ZodOptional<z.ZodString>;
+		message: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+			content: z.ZodString;
+			transform: z.ZodOptional<z.ZodBoolean>;
+		}, "strip", z.ZodTypeAny, {
+			content: string;
+			transform?: boolean | undefined;
+		}, {
+			content: string;
+			transform?: boolean | undefined;
+		}>]>>;
 		forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 			to: z.ZodOptional<z.ZodString>;
 			mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
@@ -5173,7 +6217,16 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				}>]>, "many">]>>;
 				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-				message: z.ZodOptional<z.ZodString>;
+				message: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+					content: z.ZodString;
+					transform: z.ZodOptional<z.ZodBoolean>;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					transform?: boolean | undefined;
+				}, {
+					content: string;
+					transform?: boolean | undefined;
+				}>]>>;
 				secondsDelay: z.ZodOptional<z.ZodNumber>;
 				scheduled: z.ZodOptional<z.ZodNumber>;
 				contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
@@ -5282,7 +6335,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -5331,7 +6387,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -5405,7 +6464,16 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				}>]>, "many">]>>;
 				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-				message: z.ZodOptional<z.ZodString>;
+				message: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+					content: z.ZodString;
+					transform: z.ZodOptional<z.ZodBoolean>;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					transform?: boolean | undefined;
+				}, {
+					content: string;
+					transform?: boolean | undefined;
+				}>]>>;
 				secondsDelay: z.ZodOptional<z.ZodNumber>;
 				scheduled: z.ZodOptional<z.ZodNumber>;
 				contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
@@ -5514,7 +6582,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -5563,7 +6634,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -5615,7 +6689,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -5665,7 +6742,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -5717,7 +6797,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -5767,7 +6850,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -5801,7 +6887,16 @@ declare module '@scout9/app/schemas' {
 				} | undefined;
 			};
 		}>, z.ZodArray<z.ZodObject<{
-			message: z.ZodOptional<z.ZodString>;
+			message: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+				content: z.ZodString;
+				transform: z.ZodOptional<z.ZodBoolean>;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				transform?: boolean | undefined;
+			}, {
+				content: string;
+				transform?: boolean | undefined;
+			}>]>>;
 			forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 				to: z.ZodOptional<z.ZodString>;
 				mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
@@ -5936,7 +7031,10 @@ declare module '@scout9/app/schemas' {
 			keywords: z.ZodArray<z.ZodString, "many">;
 		}, "strip", z.ZodTypeAny, {
 			keywords: string[];
-			message?: string | undefined;
+			message?: string | {
+				content: string;
+				transform?: boolean | undefined;
+			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
 				mode?: "after-reply" | "immediately" | undefined;
@@ -5986,7 +7084,10 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 		}, {
 			keywords: string[];
-			message?: string | undefined;
+			message?: string | {
+				content: string;
+				transform?: boolean | undefined;
+			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
 				mode?: "after-reply" | "immediately" | undefined;
@@ -6036,7 +7137,10 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 		}>, "many">]>>;
 	}, "strip", z.ZodTypeAny, {
-		message?: string | undefined;
+		message?: string | {
+			content: string;
+			transform?: boolean | undefined;
+		} | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
@@ -6103,7 +7207,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -6153,7 +7260,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -6188,7 +7298,10 @@ declare module '@scout9/app/schemas' {
 			};
 		} | {
 			keywords: string[];
-			message?: string | undefined;
+			message?: string | {
+				content: string;
+				transform?: boolean | undefined;
+			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
 				mode?: "after-reply" | "immediately" | undefined;
@@ -6238,7 +7351,10 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 		}[] | undefined;
 	}, {
-		message?: string | undefined;
+		message?: string | {
+			content: string;
+			transform?: boolean | undefined;
+		} | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
@@ -6305,7 +7421,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -6355,7 +7474,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -6390,7 +7512,10 @@ declare module '@scout9/app/schemas' {
 			};
 		} | {
 			keywords: string[];
-			message?: string | undefined;
+			message?: string | {
+				content: string;
+				transform?: boolean | undefined;
+			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
 				mode?: "after-reply" | "immediately" | undefined;
@@ -6444,7 +7569,16 @@ declare module '@scout9/app/schemas' {
 	 * The workflow response to send in any given workflow
 	 */
 	export const WorkflowResponseSchema: z.ZodUnion<[z.ZodObject<{
-		message: z.ZodOptional<z.ZodString>;
+		message: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+			content: z.ZodString;
+			transform: z.ZodOptional<z.ZodBoolean>;
+		}, "strip", z.ZodTypeAny, {
+			content: string;
+			transform?: boolean | undefined;
+		}, {
+			content: string;
+			transform?: boolean | undefined;
+		}>]>>;
 		forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 			to: z.ZodOptional<z.ZodString>;
 			mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
@@ -6619,7 +7753,16 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				}>]>, "many">]>>;
 				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-				message: z.ZodOptional<z.ZodString>;
+				message: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+					content: z.ZodString;
+					transform: z.ZodOptional<z.ZodBoolean>;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					transform?: boolean | undefined;
+				}, {
+					content: string;
+					transform?: boolean | undefined;
+				}>]>>;
 				secondsDelay: z.ZodOptional<z.ZodNumber>;
 				scheduled: z.ZodOptional<z.ZodNumber>;
 				contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
@@ -6728,7 +7871,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -6777,7 +7923,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -6851,7 +8000,16 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				}>]>, "many">]>>;
 				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-				message: z.ZodOptional<z.ZodString>;
+				message: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+					content: z.ZodString;
+					transform: z.ZodOptional<z.ZodBoolean>;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					transform?: boolean | undefined;
+				}, {
+					content: string;
+					transform?: boolean | undefined;
+				}>]>>;
 				secondsDelay: z.ZodOptional<z.ZodNumber>;
 				scheduled: z.ZodOptional<z.ZodNumber>;
 				contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
@@ -6960,7 +8118,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -7009,7 +8170,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -7061,7 +8225,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -7111,7 +8278,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -7163,7 +8333,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -7213,7 +8386,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -7247,7 +8423,16 @@ declare module '@scout9/app/schemas' {
 				} | undefined;
 			};
 		}>, z.ZodArray<z.ZodObject<{
-			message: z.ZodOptional<z.ZodString>;
+			message: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+				content: z.ZodString;
+				transform: z.ZodOptional<z.ZodBoolean>;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				transform?: boolean | undefined;
+			}, {
+				content: string;
+				transform?: boolean | undefined;
+			}>]>>;
 			forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 				to: z.ZodOptional<z.ZodString>;
 				mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
@@ -7382,7 +8567,10 @@ declare module '@scout9/app/schemas' {
 			keywords: z.ZodArray<z.ZodString, "many">;
 		}, "strip", z.ZodTypeAny, {
 			keywords: string[];
-			message?: string | undefined;
+			message?: string | {
+				content: string;
+				transform?: boolean | undefined;
+			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
 				mode?: "after-reply" | "immediately" | undefined;
@@ -7432,7 +8620,10 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 		}, {
 			keywords: string[];
-			message?: string | undefined;
+			message?: string | {
+				content: string;
+				transform?: boolean | undefined;
+			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
 				mode?: "after-reply" | "immediately" | undefined;
@@ -7482,7 +8673,10 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 		}>, "many">]>>;
 	}, "strip", z.ZodTypeAny, {
-		message?: string | undefined;
+		message?: string | {
+			content: string;
+			transform?: boolean | undefined;
+		} | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
@@ -7549,7 +8743,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -7599,7 +8796,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -7634,7 +8834,10 @@ declare module '@scout9/app/schemas' {
 			};
 		} | {
 			keywords: string[];
-			message?: string | undefined;
+			message?: string | {
+				content: string;
+				transform?: boolean | undefined;
+			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
 				mode?: "after-reply" | "immediately" | undefined;
@@ -7684,7 +8887,10 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 		}[] | undefined;
 	}, {
-		message?: string | undefined;
+		message?: string | {
+			content: string;
+			transform?: boolean | undefined;
+		} | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
@@ -7751,7 +8957,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -7801,7 +9010,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -7836,7 +9048,10 @@ declare module '@scout9/app/schemas' {
 			};
 		} | {
 			keywords: string[];
-			message?: string | undefined;
+			message?: string | {
+				content: string;
+				transform?: boolean | undefined;
+			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
 				mode?: "after-reply" | "immediately" | undefined;
@@ -7886,7 +9101,16 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 		}[] | undefined;
 	}>, z.ZodArray<z.ZodObject<{
-		message: z.ZodOptional<z.ZodString>;
+		message: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+			content: z.ZodString;
+			transform: z.ZodOptional<z.ZodBoolean>;
+		}, "strip", z.ZodTypeAny, {
+			content: string;
+			transform?: boolean | undefined;
+		}, {
+			content: string;
+			transform?: boolean | undefined;
+		}>]>>;
 		forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 			to: z.ZodOptional<z.ZodString>;
 			mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
@@ -8061,7 +9285,16 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				}>]>, "many">]>>;
 				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-				message: z.ZodOptional<z.ZodString>;
+				message: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+					content: z.ZodString;
+					transform: z.ZodOptional<z.ZodBoolean>;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					transform?: boolean | undefined;
+				}, {
+					content: string;
+					transform?: boolean | undefined;
+				}>]>>;
 				secondsDelay: z.ZodOptional<z.ZodNumber>;
 				scheduled: z.ZodOptional<z.ZodNumber>;
 				contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
@@ -8170,7 +9403,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -8219,7 +9455,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -8293,7 +9532,16 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				}>]>, "many">]>>;
 				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-				message: z.ZodOptional<z.ZodString>;
+				message: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+					content: z.ZodString;
+					transform: z.ZodOptional<z.ZodBoolean>;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					transform?: boolean | undefined;
+				}, {
+					content: string;
+					transform?: boolean | undefined;
+				}>]>>;
 				secondsDelay: z.ZodOptional<z.ZodNumber>;
 				scheduled: z.ZodOptional<z.ZodNumber>;
 				contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
@@ -8402,7 +9650,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -8451,7 +9702,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -8503,7 +9757,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -8553,7 +9810,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -8605,7 +9865,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -8655,7 +9918,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -8689,7 +9955,16 @@ declare module '@scout9/app/schemas' {
 				} | undefined;
 			};
 		}>, z.ZodArray<z.ZodObject<{
-			message: z.ZodOptional<z.ZodString>;
+			message: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+				content: z.ZodString;
+				transform: z.ZodOptional<z.ZodBoolean>;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				transform?: boolean | undefined;
+			}, {
+				content: string;
+				transform?: boolean | undefined;
+			}>]>>;
 			forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 				to: z.ZodOptional<z.ZodString>;
 				mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
@@ -8824,7 +10099,10 @@ declare module '@scout9/app/schemas' {
 			keywords: z.ZodArray<z.ZodString, "many">;
 		}, "strip", z.ZodTypeAny, {
 			keywords: string[];
-			message?: string | undefined;
+			message?: string | {
+				content: string;
+				transform?: boolean | undefined;
+			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
 				mode?: "after-reply" | "immediately" | undefined;
@@ -8874,7 +10152,10 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 		}, {
 			keywords: string[];
-			message?: string | undefined;
+			message?: string | {
+				content: string;
+				transform?: boolean | undefined;
+			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
 				mode?: "after-reply" | "immediately" | undefined;
@@ -8924,7 +10205,10 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 		}>, "many">]>>;
 	}, "strip", z.ZodTypeAny, {
-		message?: string | undefined;
+		message?: string | {
+			content: string;
+			transform?: boolean | undefined;
+		} | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
@@ -8991,7 +10275,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -9041,7 +10328,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -9076,7 +10366,10 @@ declare module '@scout9/app/schemas' {
 			};
 		} | {
 			keywords: string[];
-			message?: string | undefined;
+			message?: string | {
+				content: string;
+				transform?: boolean | undefined;
+			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
 				mode?: "after-reply" | "immediately" | undefined;
@@ -9126,7 +10419,10 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 		}[] | undefined;
 	}, {
-		message?: string | undefined;
+		message?: string | {
+			content: string;
+			transform?: boolean | undefined;
+		} | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
@@ -9193,7 +10489,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -9243,7 +10542,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -9278,7 +10580,10 @@ declare module '@scout9/app/schemas' {
 			};
 		} | {
 			keywords: string[];
-			message?: string | undefined;
+			message?: string | {
+				content: string;
+				transform?: boolean | undefined;
+			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
 				mode?: "after-reply" | "immediately" | undefined;
@@ -9340,6 +10645,25 @@ declare module '@scout9/app/schemas' {
 			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
 			intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
 			delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+			entities: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+				start: z.ZodNumber;
+				end: z.ZodNumber;
+				type: z.ZodString;
+				option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+				text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			}, "strip", z.ZodTypeAny, {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}, {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}>, "many">>>;
 		}, "strip", z.ZodTypeAny, {
 			time: string;
 			id: string;
@@ -9351,6 +10675,13 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}, {
 			time: string;
 			id: string;
@@ -9362,6 +10693,13 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}>, "many">;
 		conversation: z.ZodObject<{
 			$id: z.ZodString;
@@ -9505,6 +10843,25 @@ declare module '@scout9/app/schemas' {
 			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
 			intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
 			delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+			entities: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+				start: z.ZodNumber;
+				end: z.ZodNumber;
+				type: z.ZodString;
+				option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+				text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			}, "strip", z.ZodTypeAny, {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}, {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}>, "many">>>;
 		}, "strip", z.ZodTypeAny, {
 			time: string;
 			id: string;
@@ -9516,6 +10873,13 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}, {
 			time: string;
 			id: string;
@@ -9527,6 +10891,13 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}>;
 		agent: z.ZodObject<Omit<{
 			inactive: z.ZodOptional<z.ZodBoolean>;
@@ -9567,6 +10938,25 @@ declare module '@scout9/app/schemas' {
 				intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
 				intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
 				delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+				entities: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+					start: z.ZodNumber;
+					end: z.ZodNumber;
+					type: z.ZodString;
+					option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+					text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+				}, "strip", z.ZodTypeAny, {
+					type: string;
+					end: number;
+					start: number;
+					option?: string | null | undefined;
+					text?: string | null | undefined;
+				}, {
+					type: string;
+					end: number;
+					start: number;
+					option?: string | null | undefined;
+					text?: string | null | undefined;
+				}>, "many">>>;
 			}, "strip", z.ZodTypeAny, {
 				time: string;
 				id: string;
@@ -9578,6 +10968,13 @@ declare module '@scout9/app/schemas' {
 				intent?: string | null | undefined;
 				intentScore?: number | null | undefined;
 				delayInSeconds?: number | null | undefined;
+				entities?: {
+					type: string;
+					end: number;
+					start: number;
+					option?: string | null | undefined;
+					text?: string | null | undefined;
+				}[] | null | undefined;
 			}, {
 				time: string;
 				id: string;
@@ -9589,10 +10986,39 @@ declare module '@scout9/app/schemas' {
 				intent?: string | null | undefined;
 				intentScore?: number | null | undefined;
 				delayInSeconds?: number | null | undefined;
+				entities?: {
+					type: string;
+					end: number;
+					start: number;
+					option?: string | null | undefined;
+					text?: string | null | undefined;
+				}[] | null | undefined;
 			}>, "many">, "many">>;
 			audios: z.ZodOptional<z.ZodArray<z.ZodAny, "many">>;
+			pmt: z.ZodOptional<z.ZodObject<{
+				tag: z.ZodOptional<z.ZodString>;
+				ingress: z.ZodEnum<["auto", "manual", "app", "workflow"]>;
+				llm: z.ZodOptional<z.ZodString>;
+				webhookUri: z.ZodOptional<z.ZodString>;
+				watermarkEnabled: z.ZodOptional<z.ZodBoolean>;
+				watermark: z.ZodOptional<z.ZodString>;
+			}, "strip", z.ZodTypeAny, {
+				ingress: "auto" | "manual" | "app" | "workflow";
+				tag?: string | undefined;
+				llm?: string | undefined;
+				webhookUri?: string | undefined;
+				watermarkEnabled?: boolean | undefined;
+				watermark?: string | undefined;
+			}, {
+				ingress: "auto" | "manual" | "app" | "workflow";
+				tag?: string | undefined;
+				llm?: string | undefined;
+				webhookUri?: string | undefined;
+				watermarkEnabled?: boolean | undefined;
+				watermark?: string | undefined;
+			}>>;
 			id: z.ZodString;
-		}, "context" | "includedLocations" | "excludedLocations" | "model" | "transcripts" | "audios">, "strip", z.ZodTypeAny, {
+		}, "context" | "includedLocations" | "excludedLocations" | "model" | "transcripts" | "audios" | "pmt">, "strip", z.ZodTypeAny, {
 			id: string;
 			title: string;
 			inactive?: boolean | undefined;
@@ -9709,6 +11135,13 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		};
 		agent: {
 			id: string;
@@ -9765,6 +11198,13 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}[];
 		conversation: {
 			environment: "email" | "phone" | "web";
@@ -9813,6 +11253,13 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		};
 		agent: {
 			id: string;
@@ -9869,6 +11316,13 @@ declare module '@scout9/app/schemas' {
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
 			delayInSeconds?: number | null | undefined;
+			entities?: {
+				type: string;
+				end: number;
+				start: number;
+				option?: string | null | undefined;
+				text?: string | null | undefined;
+			}[] | null | undefined;
 		}[];
 		conversation: {
 			environment: "email" | "phone" | "web";
@@ -9906,7 +11360,16 @@ declare module '@scout9/app/schemas' {
 		context?: any;
 		note?: string | undefined;
 	}>], z.ZodUnknown>, z.ZodUnion<[z.ZodPromise<z.ZodUnion<[z.ZodObject<{
-		message: z.ZodOptional<z.ZodString>;
+		message: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+			content: z.ZodString;
+			transform: z.ZodOptional<z.ZodBoolean>;
+		}, "strip", z.ZodTypeAny, {
+			content: string;
+			transform?: boolean | undefined;
+		}, {
+			content: string;
+			transform?: boolean | undefined;
+		}>]>>;
 		forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 			to: z.ZodOptional<z.ZodString>;
 			mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
@@ -10081,7 +11544,16 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				}>]>, "many">]>>;
 				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-				message: z.ZodOptional<z.ZodString>;
+				message: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+					content: z.ZodString;
+					transform: z.ZodOptional<z.ZodBoolean>;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					transform?: boolean | undefined;
+				}, {
+					content: string;
+					transform?: boolean | undefined;
+				}>]>>;
 				secondsDelay: z.ZodOptional<z.ZodNumber>;
 				scheduled: z.ZodOptional<z.ZodNumber>;
 				contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
@@ -10190,7 +11662,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -10239,7 +11714,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -10313,7 +11791,16 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				}>]>, "many">]>>;
 				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-				message: z.ZodOptional<z.ZodString>;
+				message: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+					content: z.ZodString;
+					transform: z.ZodOptional<z.ZodBoolean>;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					transform?: boolean | undefined;
+				}, {
+					content: string;
+					transform?: boolean | undefined;
+				}>]>>;
 				secondsDelay: z.ZodOptional<z.ZodNumber>;
 				scheduled: z.ZodOptional<z.ZodNumber>;
 				contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
@@ -10422,7 +11909,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -10471,7 +11961,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -10523,7 +12016,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -10573,7 +12069,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -10625,7 +12124,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -10675,7 +12177,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -10709,7 +12214,16 @@ declare module '@scout9/app/schemas' {
 				} | undefined;
 			};
 		}>, z.ZodArray<z.ZodObject<{
-			message: z.ZodOptional<z.ZodString>;
+			message: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+				content: z.ZodString;
+				transform: z.ZodOptional<z.ZodBoolean>;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				transform?: boolean | undefined;
+			}, {
+				content: string;
+				transform?: boolean | undefined;
+			}>]>>;
 			forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 				to: z.ZodOptional<z.ZodString>;
 				mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
@@ -10844,7 +12358,10 @@ declare module '@scout9/app/schemas' {
 			keywords: z.ZodArray<z.ZodString, "many">;
 		}, "strip", z.ZodTypeAny, {
 			keywords: string[];
-			message?: string | undefined;
+			message?: string | {
+				content: string;
+				transform?: boolean | undefined;
+			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
 				mode?: "after-reply" | "immediately" | undefined;
@@ -10894,7 +12411,10 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 		}, {
 			keywords: string[];
-			message?: string | undefined;
+			message?: string | {
+				content: string;
+				transform?: boolean | undefined;
+			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
 				mode?: "after-reply" | "immediately" | undefined;
@@ -10944,7 +12464,10 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 		}>, "many">]>>;
 	}, "strip", z.ZodTypeAny, {
-		message?: string | undefined;
+		message?: string | {
+			content: string;
+			transform?: boolean | undefined;
+		} | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
@@ -11011,7 +12534,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -11061,7 +12587,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -11096,7 +12625,10 @@ declare module '@scout9/app/schemas' {
 			};
 		} | {
 			keywords: string[];
-			message?: string | undefined;
+			message?: string | {
+				content: string;
+				transform?: boolean | undefined;
+			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
 				mode?: "after-reply" | "immediately" | undefined;
@@ -11146,7 +12678,10 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 		}[] | undefined;
 	}, {
-		message?: string | undefined;
+		message?: string | {
+			content: string;
+			transform?: boolean | undefined;
+		} | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
@@ -11213,7 +12748,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -11263,7 +12801,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -11298,7 +12839,10 @@ declare module '@scout9/app/schemas' {
 			};
 		} | {
 			keywords: string[];
-			message?: string | undefined;
+			message?: string | {
+				content: string;
+				transform?: boolean | undefined;
+			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
 				mode?: "after-reply" | "immediately" | undefined;
@@ -11348,7 +12892,16 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 		}[] | undefined;
 	}>, z.ZodArray<z.ZodObject<{
-		message: z.ZodOptional<z.ZodString>;
+		message: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+			content: z.ZodString;
+			transform: z.ZodOptional<z.ZodBoolean>;
+		}, "strip", z.ZodTypeAny, {
+			content: string;
+			transform?: boolean | undefined;
+		}, {
+			content: string;
+			transform?: boolean | undefined;
+		}>]>>;
 		forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 			to: z.ZodOptional<z.ZodString>;
 			mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
@@ -11523,7 +13076,16 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				}>]>, "many">]>>;
 				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-				message: z.ZodOptional<z.ZodString>;
+				message: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+					content: z.ZodString;
+					transform: z.ZodOptional<z.ZodBoolean>;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					transform?: boolean | undefined;
+				}, {
+					content: string;
+					transform?: boolean | undefined;
+				}>]>>;
 				secondsDelay: z.ZodOptional<z.ZodNumber>;
 				scheduled: z.ZodOptional<z.ZodNumber>;
 				contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
@@ -11632,7 +13194,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -11681,7 +13246,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -11755,7 +13323,16 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				}>]>, "many">]>>;
 				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-				message: z.ZodOptional<z.ZodString>;
+				message: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+					content: z.ZodString;
+					transform: z.ZodOptional<z.ZodBoolean>;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					transform?: boolean | undefined;
+				}, {
+					content: string;
+					transform?: boolean | undefined;
+				}>]>>;
 				secondsDelay: z.ZodOptional<z.ZodNumber>;
 				scheduled: z.ZodOptional<z.ZodNumber>;
 				contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
@@ -11864,7 +13441,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -11913,7 +13493,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -11965,7 +13548,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -12015,7 +13601,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -12067,7 +13656,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -12117,7 +13709,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -12151,7 +13746,16 @@ declare module '@scout9/app/schemas' {
 				} | undefined;
 			};
 		}>, z.ZodArray<z.ZodObject<{
-			message: z.ZodOptional<z.ZodString>;
+			message: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+				content: z.ZodString;
+				transform: z.ZodOptional<z.ZodBoolean>;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				transform?: boolean | undefined;
+			}, {
+				content: string;
+				transform?: boolean | undefined;
+			}>]>>;
 			forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 				to: z.ZodOptional<z.ZodString>;
 				mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
@@ -12286,7 +13890,10 @@ declare module '@scout9/app/schemas' {
 			keywords: z.ZodArray<z.ZodString, "many">;
 		}, "strip", z.ZodTypeAny, {
 			keywords: string[];
-			message?: string | undefined;
+			message?: string | {
+				content: string;
+				transform?: boolean | undefined;
+			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
 				mode?: "after-reply" | "immediately" | undefined;
@@ -12336,7 +13943,10 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 		}, {
 			keywords: string[];
-			message?: string | undefined;
+			message?: string | {
+				content: string;
+				transform?: boolean | undefined;
+			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
 				mode?: "after-reply" | "immediately" | undefined;
@@ -12386,7 +13996,10 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 		}>, "many">]>>;
 	}, "strip", z.ZodTypeAny, {
-		message?: string | undefined;
+		message?: string | {
+			content: string;
+			transform?: boolean | undefined;
+		} | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
@@ -12453,7 +14066,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -12503,7 +14119,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -12538,7 +14157,10 @@ declare module '@scout9/app/schemas' {
 			};
 		} | {
 			keywords: string[];
-			message?: string | undefined;
+			message?: string | {
+				content: string;
+				transform?: boolean | undefined;
+			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
 				mode?: "after-reply" | "immediately" | undefined;
@@ -12588,7 +14210,10 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 		}[] | undefined;
 	}, {
-		message?: string | undefined;
+		message?: string | {
+			content: string;
+			transform?: boolean | undefined;
+		} | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
@@ -12655,7 +14280,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -12705,7 +14333,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -12740,7 +14371,10 @@ declare module '@scout9/app/schemas' {
 			};
 		} | {
 			keywords: string[];
-			message?: string | undefined;
+			message?: string | {
+				content: string;
+				transform?: boolean | undefined;
+			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
 				mode?: "after-reply" | "immediately" | undefined;
@@ -12790,7 +14424,16 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 		}[] | undefined;
 	}>, "many">]>>, z.ZodUnion<[z.ZodObject<{
-		message: z.ZodOptional<z.ZodString>;
+		message: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+			content: z.ZodString;
+			transform: z.ZodOptional<z.ZodBoolean>;
+		}, "strip", z.ZodTypeAny, {
+			content: string;
+			transform?: boolean | undefined;
+		}, {
+			content: string;
+			transform?: boolean | undefined;
+		}>]>>;
 		forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 			to: z.ZodOptional<z.ZodString>;
 			mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
@@ -12965,7 +14608,16 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				}>]>, "many">]>>;
 				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-				message: z.ZodOptional<z.ZodString>;
+				message: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+					content: z.ZodString;
+					transform: z.ZodOptional<z.ZodBoolean>;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					transform?: boolean | undefined;
+				}, {
+					content: string;
+					transform?: boolean | undefined;
+				}>]>>;
 				secondsDelay: z.ZodOptional<z.ZodNumber>;
 				scheduled: z.ZodOptional<z.ZodNumber>;
 				contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
@@ -13074,7 +14726,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -13123,7 +14778,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -13197,7 +14855,16 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				}>]>, "many">]>>;
 				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-				message: z.ZodOptional<z.ZodString>;
+				message: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+					content: z.ZodString;
+					transform: z.ZodOptional<z.ZodBoolean>;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					transform?: boolean | undefined;
+				}, {
+					content: string;
+					transform?: boolean | undefined;
+				}>]>>;
 				secondsDelay: z.ZodOptional<z.ZodNumber>;
 				scheduled: z.ZodOptional<z.ZodNumber>;
 				contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
@@ -13306,7 +14973,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -13355,7 +15025,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -13407,7 +15080,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -13457,7 +15133,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -13509,7 +15188,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -13559,7 +15241,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -13593,7 +15278,16 @@ declare module '@scout9/app/schemas' {
 				} | undefined;
 			};
 		}>, z.ZodArray<z.ZodObject<{
-			message: z.ZodOptional<z.ZodString>;
+			message: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+				content: z.ZodString;
+				transform: z.ZodOptional<z.ZodBoolean>;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				transform?: boolean | undefined;
+			}, {
+				content: string;
+				transform?: boolean | undefined;
+			}>]>>;
 			forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 				to: z.ZodOptional<z.ZodString>;
 				mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
@@ -13728,7 +15422,10 @@ declare module '@scout9/app/schemas' {
 			keywords: z.ZodArray<z.ZodString, "many">;
 		}, "strip", z.ZodTypeAny, {
 			keywords: string[];
-			message?: string | undefined;
+			message?: string | {
+				content: string;
+				transform?: boolean | undefined;
+			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
 				mode?: "after-reply" | "immediately" | undefined;
@@ -13778,7 +15475,10 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 		}, {
 			keywords: string[];
-			message?: string | undefined;
+			message?: string | {
+				content: string;
+				transform?: boolean | undefined;
+			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
 				mode?: "after-reply" | "immediately" | undefined;
@@ -13828,7 +15528,10 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 		}>, "many">]>>;
 	}, "strip", z.ZodTypeAny, {
-		message?: string | undefined;
+		message?: string | {
+			content: string;
+			transform?: boolean | undefined;
+		} | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
@@ -13895,7 +15598,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -13945,7 +15651,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -13980,7 +15689,10 @@ declare module '@scout9/app/schemas' {
 			};
 		} | {
 			keywords: string[];
-			message?: string | undefined;
+			message?: string | {
+				content: string;
+				transform?: boolean | undefined;
+			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
 				mode?: "after-reply" | "immediately" | undefined;
@@ -14030,7 +15742,10 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 		}[] | undefined;
 	}, {
-		message?: string | undefined;
+		message?: string | {
+			content: string;
+			transform?: boolean | undefined;
+		} | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
@@ -14097,7 +15812,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -14147,7 +15865,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -14182,7 +15903,10 @@ declare module '@scout9/app/schemas' {
 			};
 		} | {
 			keywords: string[];
-			message?: string | undefined;
+			message?: string | {
+				content: string;
+				transform?: boolean | undefined;
+			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
 				mode?: "after-reply" | "immediately" | undefined;
@@ -14232,7 +15956,16 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 		}[] | undefined;
 	}>, z.ZodArray<z.ZodObject<{
-		message: z.ZodOptional<z.ZodString>;
+		message: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+			content: z.ZodString;
+			transform: z.ZodOptional<z.ZodBoolean>;
+		}, "strip", z.ZodTypeAny, {
+			content: string;
+			transform?: boolean | undefined;
+		}, {
+			content: string;
+			transform?: boolean | undefined;
+		}>]>>;
 		forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 			to: z.ZodOptional<z.ZodString>;
 			mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
@@ -14407,7 +16140,16 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				}>]>, "many">]>>;
 				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-				message: z.ZodOptional<z.ZodString>;
+				message: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+					content: z.ZodString;
+					transform: z.ZodOptional<z.ZodBoolean>;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					transform?: boolean | undefined;
+				}, {
+					content: string;
+					transform?: boolean | undefined;
+				}>]>>;
 				secondsDelay: z.ZodOptional<z.ZodNumber>;
 				scheduled: z.ZodOptional<z.ZodNumber>;
 				contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
@@ -14516,7 +16258,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -14565,7 +16310,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -14639,7 +16387,16 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				}>]>, "many">]>>;
 				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-				message: z.ZodOptional<z.ZodString>;
+				message: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+					content: z.ZodString;
+					transform: z.ZodOptional<z.ZodBoolean>;
+				}, "strip", z.ZodTypeAny, {
+					content: string;
+					transform?: boolean | undefined;
+				}, {
+					content: string;
+					transform?: boolean | undefined;
+				}>]>>;
 				secondsDelay: z.ZodOptional<z.ZodNumber>;
 				scheduled: z.ZodOptional<z.ZodNumber>;
 				contextUpsert: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodAny, z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull, z.ZodArray<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>, "many">]>>>;
@@ -14748,7 +16505,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -14797,7 +16557,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -14849,7 +16612,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -14899,7 +16665,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -14951,7 +16720,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -15001,7 +16773,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -15035,7 +16810,16 @@ declare module '@scout9/app/schemas' {
 				} | undefined;
 			};
 		}>, z.ZodArray<z.ZodObject<{
-			message: z.ZodOptional<z.ZodString>;
+			message: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodObject<{
+				content: z.ZodString;
+				transform: z.ZodOptional<z.ZodBoolean>;
+			}, "strip", z.ZodTypeAny, {
+				content: string;
+				transform?: boolean | undefined;
+			}, {
+				content: string;
+				transform?: boolean | undefined;
+			}>]>>;
 			forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 				to: z.ZodOptional<z.ZodString>;
 				mode: z.ZodOptional<z.ZodEnum<["after-reply", "immediately"]>>;
@@ -15170,7 +16954,10 @@ declare module '@scout9/app/schemas' {
 			keywords: z.ZodArray<z.ZodString, "many">;
 		}, "strip", z.ZodTypeAny, {
 			keywords: string[];
-			message?: string | undefined;
+			message?: string | {
+				content: string;
+				transform?: boolean | undefined;
+			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
 				mode?: "after-reply" | "immediately" | undefined;
@@ -15220,7 +17007,10 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 		}, {
 			keywords: string[];
-			message?: string | undefined;
+			message?: string | {
+				content: string;
+				transform?: boolean | undefined;
+			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
 				mode?: "after-reply" | "immediately" | undefined;
@@ -15270,7 +17060,10 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 		}>, "many">]>>;
 	}, "strip", z.ZodTypeAny, {
-		message?: string | undefined;
+		message?: string | {
+			content: string;
+			transform?: boolean | undefined;
+		} | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
@@ -15337,7 +17130,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -15387,7 +17183,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -15422,7 +17221,10 @@ declare module '@scout9/app/schemas' {
 			};
 		} | {
 			keywords: string[];
-			message?: string | undefined;
+			message?: string | {
+				content: string;
+				transform?: boolean | undefined;
+			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
 				mode?: "after-reply" | "immediately" | undefined;
@@ -15472,7 +17274,10 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 		}[] | undefined;
 	}, {
-		message?: string | undefined;
+		message?: string | {
+			content: string;
+			transform?: boolean | undefined;
+		} | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
 			mode?: "after-reply" | "immediately" | undefined;
@@ -15539,7 +17344,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -15589,7 +17397,10 @@ declare module '@scout9/app/schemas' {
 					persist?: boolean | undefined;
 				})[] | undefined;
 				removeInstructions?: string[] | undefined;
-				message?: string | undefined;
+				message?: string | {
+					content: string;
+					transform?: boolean | undefined;
+				} | undefined;
 				secondsDelay?: number | undefined;
 				scheduled?: number | undefined;
 				contextUpsert?: Record<string, any> | undefined;
@@ -15624,7 +17435,10 @@ declare module '@scout9/app/schemas' {
 			};
 		} | {
 			keywords: string[];
-			message?: string | undefined;
+			message?: string | {
+				content: string;
+				transform?: boolean | undefined;
+			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
 				mode?: "after-reply" | "immediately" | undefined;

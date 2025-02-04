@@ -359,6 +359,12 @@ export type Agent = {
     model?: ("Scout9" | "bard" | "openai");
     transcripts?: Message[][] | undefined;
     audios?: any[] | undefined;
+    pmt?: {
+        tag?: string;
+        ingress: "auto" | "manual" | "app" | "webhook";
+        llm?: string;
+        scout9?: string;
+    }
 };
 
 export type AgentConfiguration = Agent & {id: string};
@@ -537,6 +543,14 @@ export type IntentWorkflowEvent = {
     initial: string | null;
 };
 
+export type EntityToken = {
+    start: number;
+    end: number;
+    type: string;
+    option?: string | null;
+    text?: string | null;
+}
+
 export type Message = {
     /** Unique ID for the message */
     id: string;
@@ -555,6 +569,8 @@ export type Message = {
     intentScore?: (number | null) | undefined;
     /** How long to delay the message manually in seconds */
     delayInSeconds?: (number | null) | undefined;
+    /** Entities related to the message */
+    entities?: EntityToken[] | null;
 };
 
 export type PersonaConfiguration = AgentConfiguration;
@@ -630,7 +646,7 @@ export type WorkflowEvent = {
     conversation: Conversation;
     context?: any;
     message: Message;
-    agent: Omit<AgentConfiguration, 'transcripts' | 'audios' | 'includedLocations' | 'excludedLocations' | 'model' | 'context'>;
+    agent: Omit<AgentConfiguration, 'transcripts' | 'audios' | 'includedLocations' | 'excludedLocations' | 'model' | 'context' | 'pmt'>;
     customer: Customer;
     intent: IntentWorkflowEvent;
     stagnationCount: number;
@@ -657,7 +673,7 @@ export type WorkflowResponseSlotBase = {
     forwardNote?: string | undefined;
     instructions?: Instruction[] | undefined;
     removeInstructions?: string[] | undefined;
-    message?: string | undefined;
+    message?: string | {content: string; transform?: boolean} | undefined;
     secondsDelay?: number | undefined;
     scheduled?: number | undefined;
     contextUpsert?: {
@@ -697,7 +713,6 @@ export type WorkflowResponseMessageApiResponse = string | {
         text: string;
     };
 };
-
 
 export type WorkflowsConfiguration = {
     /** Workflow id association, used to handle route params */

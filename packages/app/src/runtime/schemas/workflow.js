@@ -134,7 +134,8 @@ export const WorkflowEventSchema = z.object({
     includedLocations: true,
     excludedLocations: true,
     model: true,
-    context: true
+    context: true,
+    pmt: true
   }),
   customer: CustomerSchema,
   intent: IntentWorkflowEventSchema,
@@ -151,7 +152,10 @@ export const WorkflowResponseSlotBaseSchema = z.object({
     .optional(),
   instructions: InstructionSchema.optional(),
   removeInstructions: z.array(z.string()).optional(),
-  message: z.string().optional(),
+  message: z.union([z.string(), z.object({
+    content: z.string(),
+    transform: z.boolean().optional()
+  })]).optional(),
   secondsDelay: z.number().optional(),
   scheduled: z.number().optional(),
   contextUpsert: ConversationContext.optional(),

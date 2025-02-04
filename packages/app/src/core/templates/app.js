@@ -5,16 +5,18 @@ import bodyParser from 'body-parser';
 import { config as dotenv } from 'dotenv';
 import { Configuration, Scout9Api } from '@scout9/admin';
 import { EventResponse, ProgressLogger } from '@scout9/app';
-import { WorkflowEventSchema, WorkflowResponseSchema } from '@scout9/app/schemas';
+import { WorkflowEventSchema, WorkflowResponseSchema, MessageSchema } from '@scout9/app/schemas';
 import { Spirits } from '@scout9/app/spirits';
 import path, { resolve } from 'node:path';
+import { createServer } from 'node:http';
 import fs from 'node:fs';
 import https from 'node:https';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { readdir } from 'fs/promises';
 import { ZodError } from 'zod';
 import { fromError } from 'zod-validation-error';
-import { bgBlack, blue, bold, cyan, green, grey, magenta, red, white } from 'kleur/colors';
+import { bgBlack, blue, bold, cyan, green, grey, magenta, red, white, yellow } from 'kleur/colors';
+
 import projectApp from './src/app.js';
 import config from './config.js';
 
@@ -86,10 +88,10 @@ const handleError = (e, res = undefined, tag = undefined, body = undefined) => {
   let name = e?.name || 'Runtime Error';
   let message = e?.message || 'Unknown error';
   let code = typeof e?.code === 'number'
-      ? e.code
-      : typeof e?.status === 'number'
-          ? e.status
-          : 500;
+    ? e.code
+    : typeof e?.status === 'number'
+      ? e.status
+      : 500;
   if ('response' in e) {
     const response = e.response;
     if (response?.status) {
@@ -128,18 +130,19 @@ const handleError = (e, res = undefined, tag = undefined, body = undefined) => {
       code
     }));
   }
+  return {name, error: message, code};
 };
 
 const handleZodError = ({
-                          error,
-                          res = undefined,
-                          code = 500,
-                          status,
-                          name,
-                          bodyLabel = 'Provided Input',
-                          body = undefined,
-                          action = ''
-                        }) => {
+  error,
+  res = undefined,
+  code = 500,
+  status,
+  name,
+  bodyLabel = 'Provided Input',
+  body = undefined,
+  action = ''
+}) => {
   res?.writeHead?.(code, {'Content-Type': 'application/json'});
   if (error instanceof ZodError) {
     const formattedError = simplifyZodError(error);
@@ -170,13 +173,13 @@ const handleWorkflowResponse = async ({fun, workflowEvent, tag, expressRes: res,
   let response;
   try {
     response = await fun(workflowEvent)
-        .then((slots) => {
-          if ('toJSON' in slots) {
-            return slots.toJSON();
-          } else {
-            return slots;
-          }
-        });
+      .then((slots) => {
+        if ('toJSON' in slots) {
+          return slots.toJSON();
+        } else {
+          return slots;
+        }
+      });
   } catch (error) {
     if (error instanceof ZodError) {
       handleZodError({
@@ -222,7 +225,7 @@ const handleWorkflowResponse = async ({fun, workflowEvent, tag, expressRes: res,
     }
   }
 
-}
+};
 
 const makeRequest = async (options, maxRedirects = 10) => {
   return new Promise((resolve, reject) => {
@@ -279,6 +282,12 @@ app.use(bodyParser.json());
 if (dev) {
   app.use(compression());
   app.use(sirv(path.resolve(__dirname, 'public'), {dev: true}));
+  app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*'); // Adjust origin as needed
+    res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    next();
+  });
 }
 
 function parseWorkflowEvent(req, res) {
@@ -323,9 +332,9 @@ app.post(dev ? '/dev/workflow' : '/', async (req, res) => {
   await handleWorkflowResponse({
     fun: projectApp,
     workflowEvent,
-    tag: "PMTFlow",
+    tag: 'PMTFlow',
     expressRes: res,
-    expressReq: req,
+    expressReq: req
   });
   return;
 });
@@ -361,17 +370,17 @@ async function resolveEntityApi(entity, method) {
   }
   const {api, entities} = resolveEntity(entity, method);
   const mod = await import(pathToFileURL(path.resolve(__dirname, `./src/entities/${entities.join('/')}/api.js`)).href)
-      .catch((e) => {
-        switch (e.code) {
-          case 'ERR_MODULE_NOT_FOUND':
-          case 'MODULE_NOT_FOUND':
-            console.error(e);
-            throw new Error(`Invalid entity: no API method`);
-          default:
-            console.error(e);
-            throw new Error(`Invalid entity: Internal system error`);
-        }
-      });
+    .catch((e) => {
+      switch (e.code) {
+        case 'ERR_MODULE_NOT_FOUND':
+        case 'MODULE_NOT_FOUND':
+          console.error(e);
+          throw new Error(`Invalid entity: no API method`);
+        default:
+          console.error(e);
+          throw new Error(`Invalid entity: Internal system error`);
+      }
+    });
   if (mod[method]) {
     return mod[method];
   }
@@ -383,7 +392,6 @@ async function resolveEntityApi(entity, method) {
   throw new Error(`Invalid entity: no API method`);
 
 }
-
 
 function extractParamsFromPath(path) {
   const segments = path.split('/').filter(Boolean); // Split and remove empty segments
@@ -468,7 +476,7 @@ async function runCommandApi(req, res) {
   const params = url.split('/').slice(2).filter(Boolean);
   try {
     const files = await getFilesRecursive(commandsDir).then(files => files.map(file => file.replace(commandsDir, '.'))
-        .filter(file => params.every(p => file.includes(p))));
+      .filter(file => params.every(p => file.includes(p))));
     file = files?.[0];
   } catch (e) {
     console.log('No commands found', e.message);
@@ -516,7 +524,13 @@ async function runCommandApi(req, res) {
     return;
   }
 
-  await handleWorkflowResponse({fun: mod.default, workflowEvent, tag: `${params.join('_').toUpperCase()} Command`, expressReq: req, expressRes: res});
+  await handleWorkflowResponse({
+    fun: mod.default,
+    workflowEvent,
+    tag: `${params.join('_').toUpperCase()} Command`,
+    expressReq: req,
+    expressRes: res
+  });
 }
 
 app.post('/commands/:command', runCommandApi);
@@ -533,8 +547,10 @@ app.post('/entity/:entity/*', runEntityApi);
 app.delete('/entity/:entity/*', runEntityApi);
 
 // For local development: parse a message
-let devProgram;
+let devReadlineProgram;
+let devServer;
 if (dev) {
+
 
   app.get('/dev/config', async (req, res, next) => {
 
@@ -638,7 +654,7 @@ if (dev) {
       pmt: config.pmt
     }).then((_res => _res.data));
     console.log(`\t${grey(`Response: ${green('"')}${bold(white(payload.message))}`)}${green(
-        '"')} (elapsed ${payload.ms}ms)`);
+      '"')} (elapsed ${payload.ms}ms)`);
 
     return payload;
   };
@@ -655,33 +671,35 @@ if (dev) {
     }
   });
 
-
-  // NOTE: This does not sync with localhost app, that uses its own state
-  devProgram = async () => {
-    // Start program where use can test via command console
-    const {createInterface} = await import('node:readline');
-    const rl = createInterface({
-      input: process.stdin,
-      output: process.stdout
-    });
-
-    const persona = (config.persona || config.agents)?.[0];
+  const devPersona = (config.persona || config.agents)?.[0];
+  /**
+   * @returns {Omit<WorkflowEvent, 'message'> & {command?: CommandConfiguration}}
+   */
+  const devCreateState = (persona = (config.persona || config.agents)?.[0]) => {
     if (!persona) {
       throw new Error(`A persona is required before processing`);
     }
-
-    /**
-     * @returns {Omit<WorkflowEvent, 'message'> & {command?: CommandConfiguration}}
-     */
-    const createState = () => ({
-      messages: [],
+    return {
+      messages: config.initialContext?.map((_context, index) => ({
+        id: `ctx_${index}`,
+        time: new Date().toISOString(),
+        content: _context,
+        role: 'system'
+      })),
       conversation: {
         $id: 'dev_console_input',
         $agent: persona.id,
         $customer: 'temp',
         environment: 'web'
       },
-      context: {},
+      context: {
+        agent: persona,
+        customer: {
+          firstName: 'test',
+          name: 'test'
+        },
+        organization: config.organization
+      },
       agent: persona,
       customer: {
         firstName: 'test',
@@ -689,37 +707,38 @@ if (dev) {
       },
       intent: {current: null, flow: [], initial: null},
       stagnationCount: 0
-    });
+    };
+  };
 
-    /** @type {Omit<WorkflowEvent, 'message'> & {command?: CommandConfiguration}} */
-    let state = createState();
+  /** @type {Omit<WorkflowEvent, 'message'> & {command?: CommandConfiguration}} */
+  let devState = devCreateState(devPersona);
 
-
-    async function processCustomerMessage(message, callback) {
-      const messagePayload = {
-        id: `user_test_${Date.now()}`,
-        role: 'customer',
-        content: message,
-        time: new Date().toISOString()
-      };
-      const logger = new ProgressLogger('Processing...');
-      if (state.conversation.locked) {
-        logger.error(`Conversation locked - ${state.conversation.lockedReason ?? 'Unknown reason'}`);
+  async function devProcessCustomerMessage(message, callback, roleOverride = null) {
+    const messagePayload = {
+      id: `user_test_${Date.now()}`,
+      role: roleOverride ?? 'customer',
+      content: message,
+      time: new Date().toISOString()
+    };
+    const logger = new ProgressLogger('Processing...');
+    try {
+      if (devState.conversation.locked) {
+        logger.error(`Conversation locked - ${devState.conversation.lockedReason ?? 'Unknown reason'}`);
         return;
       }
       const addMessage = (payload) => {
-        state.messages.push(payload);
+        devState.messages.push(payload);
         switch (payload.role) {
           case 'system':
             logger.write(magenta('system: ' + payload.content));
             break;
           case 'user':
           case 'customer':
-            logger.write(green(`> ${state.agent.firstName ? state.agent.firstName + ': ' : ''}` + payload.content));
+            logger.write(green(`> ${devState.agent.firstName ? devState.agent.firstName + ': ' : ''}` + payload.content));
             break;
           case 'agent':
           case 'assistant':
-            logger.write(blue(`> ${state.customer.name ? state.customer.name + ': ' : ''}` + payload.content));
+            logger.write(blue(`> ${devState.customer.name ? devState.customer.name + ': ' : ''}` + payload.content));
             break;
           default:
             logger.write(red(`UNKNOWN (${payload.role}) + ${payload.content}`));
@@ -727,35 +746,35 @@ if (dev) {
       };
 
       const updateMessage = (payload) => {
-        const index = state.messages.findIndex(m => m.id === payload.id);
+        const index = devState.messages.findIndex(m => m.id === payload.id);
         if (index < 0) {
           throw new Error(`Cannot find message ${payload.id}`);
         }
-        state.messages[index] = payload;
+        devState.messages[index] = payload;
       };
 
       const removeMessage = (payload) => {
         if (typeof payload !== 'string') {
           throw new Error(`Invalid payload`);
         }
-        const index = state.messages.findIndex(m => m.id === payload.id);
+        const index = devState.messages.findIndex(m => m.id === payload.id);
         if (index < 0) {
           throw new Error(`Cannot find message ${payload.id}`);
         }
-        state.messages.splice(index, 1);
+        devState.messages.splice(index, 1);
       };
 
       const updateConversation = (payload) => {
-        Object.assign(state.conversation, payload);
+        Object.assign(devState.conversation, payload);
       };
 
       const updateContext = (payload) => {
-        Object.assign(state.context, payload);
+        Object.assign(devState.context, payload);
       };
 
       addMessage(messagePayload);
       const result = await Spirits.customer({
-        customer: state.customer,
+        customer: devState.customer,
         config,
         parser: async (_msg, _lng) => {
           logger.log(`Parsing...`);
@@ -765,43 +784,28 @@ if (dev) {
           // Set the global variables for the workflows/commands to run Scout9 Macros
           globalThis.SCOUT9 = {
             ...workflowEvent,
-            $convo: state.conversation.$id ?? state.conversation.id
+            $convo: devState.conversation.$id ?? devState.conversation.id
           };
 
-          logger.log(`Gathering ${state.command ? 'Command ' + state.command.entity + ' ' : ''}instructions...`);
-          if (state.command) {
-            const commandFilePath = resolve(commandsDir, state.command.path);
+          logger.log(`Gathering ${devState.command ? 'Command ' + devState.command.entity + ' ' : ''}instructions...`);
+          if (devState.command) {
+            const commandFilePath = resolve(commandsDir, devState.command.path);
             let mod;
             try {
               mod = await import(commandFilePath);
             } catch (e) {
-              logger.error(`Unable to resolve command ${state.command.entity} at ${commandFilePath}`);
+              logger.error(`Unable to resolve command ${devState.command.entity} at ${commandFilePath}`);
               throw new Error('Failed to gather command instructions');
             }
 
             if (!mod || !mod.default) {
-              logger.error(`Unable to run command ${state.command.entity} at ${commandFilePath} - must return a default function that returns a WorkflowEvent payload`);
+              logger.error(`Unable to run command ${devState.command.entity} at ${commandFilePath} - must return a default function that returns a WorkflowEvent payload`);
               throw new Error('Failed to run command instructions');
             }
 
             try {
 
               return mod.default(workflowEvent)
-                  .then((response) => {
-                    if ('toJSON' in response) {
-                      return response.toJSON();
-                    } else {
-                      return response;
-                    }
-                  })
-                  .then(WorkflowResponseSchema.parse);
-            } catch (e) {
-              logger.error(`Failed to run command - ${e.message}`);
-              throw e;
-            }
-
-          } else {
-            return projectApp(workflowEvent)
                 .then((response) => {
                   if ('toJSON' in response) {
                     return response.toJSON();
@@ -810,6 +814,21 @@ if (dev) {
                   }
                 })
                 .then(WorkflowResponseSchema.parse);
+            } catch (e) {
+              logger.error(`Failed to run command - ${e.message}`);
+              throw e;
+            }
+
+          } else {
+            return projectApp(workflowEvent)
+              .then((response) => {
+                if ('toJSON' in response) {
+                  return response.toJSON();
+                } else {
+                  return response;
+                }
+              })
+              .then(WorkflowResponseSchema.parse);
           }
         },
         generator: async (request) => {
@@ -819,10 +838,10 @@ if (dev) {
         },
         idGenerator: (prefix) => `${prefix}_test_${Date.now()}`,
         progress: (
-            message,
-            level,
-            type,
-            payload
+          message,
+          level,
+          type,
+          payload
         ) => {
           callback(message, level);
           if (type) {
@@ -850,16 +869,16 @@ if (dev) {
           }
         },
         message: messagePayload,
-        context: state.context,
-        messages: state.messages,
-        conversation: state.conversation
+        context: devState.context,
+        messages: devState.messages,
+        conversation: devState.conversation
       });
 
       // If a forward happens (due to a lock or other reason)
       if (!!result.conversation.forward) {
-        if (!state.conversation.locked) {
+        if (!devState.conversation.locked) {
           // Only forward if conversation is not already locked
-          await devForward(state.conversation.$id);
+          await devForward(devState.conversation.$id);
         }
         updateConversation({locked: true});
         logger.error(`Conversation locked`);
@@ -900,68 +919,82 @@ if (dev) {
         }
       }
 
+    } catch (e) {
+      handleError(e);
+    } finally {
       logger.done();
     }
+  }
 
-    /**
-     * @param {CommandConfiguration} command
-     * @param {string} message
-     * @param callback
-     * @returns {Promise<void>}
-     */
-    async function processCommand(command, message, callback) {
-      console.log(magenta(`> command <${command.entity}>`));
-      state = createState();
-      state.command = command;
-      return processCustomerMessage(`Assist me in this ${command.entity} flow`, callback);
+  /**
+   * @param {CommandConfiguration} command
+   * @param {string} message
+   * @param callback
+   * @returns {Promise<void>}
+   */
+  async function devProcessCommand(command, message, callback) {
+    console.log(magenta(`> command <${command.entity}>`));
+    devState = devCreateState();
+    devState.command = command;
+    return devProcessCustomerMessage(`Assist me in this ${command.entity} flow`, callback);
+  }
+
+  async function devProgramProcessInput(message, callback, roleOverride = null) {
+    // Check if internal command
+    switch (message.toLowerCase().trim()) {
+      case 'context':
+        console.log(white('> Current Conversation Context:'));
+        console.log(grey(JSON.stringify(devState.context)));
+        return;
+      case 'conversation':
+      case 'convo':
+        console.log(white('> Current Conversation State:'));
+        console.log(grey(JSON.stringify(devState.conversation)));
+        return;
+      case 'messages':
+        devState.messages.forEach((msg) => {
+          switch (msg.role) {
+            case 'system':
+              console.log(magenta('\t - ' + msg.content));
+              break;
+            case 'user':
+            case 'customer':
+              console.log(green('> ' + msg.content));
+              break;
+            case 'agent':
+            case 'assistant':
+              console.log(blue('> ' + msg.content));
+              break;
+            default:
+              console.log(red(`UNKNOWN (${msg.role}) + ${msg.content}`));
+          }
+        });
+        return;
     }
 
-    async function devProgramProcessInput(message, callback) {
-      // Check if internal command
-      switch (message.toLowerCase().trim()) {
-        case 'context':
-          console.log(white('> Current Conversation Context:'));
-          console.log(grey(JSON.stringify(state.context)));
-          return;
-        case 'conversation':
-        case 'convo':
-          console.log(white('> Current Conversation State:'));
-          console.log(grey(JSON.stringify(state.conversation)));
-          return;
-        case 'messages':
-          state.messages.forEach((msg) => {
-            switch (msg.role) {
-              case 'system':
-                console.log(magenta('\t - ' + msg.content));
-                break;
-              case 'user':
-              case 'customer':
-                console.log(green('> ' + msg.content));
-                break;
-              case 'agent':
-              case 'assistant':
-                console.log(blue('> ' + msg.content));
-                break;
-              default:
-                console.log(red(`UNKNOWN (${msg.role}) + ${msg.content}`));
-            }
-          });
-          return;
-      }
-
-      // Check if it's a command
-      const target = message.toLowerCase().trim();
-      const command = config.commands.find(command => {
-        return command.entity === target;
-      });
-      // Run the command
-      if (command) {
-        return processCommand(command, message, callback);
-      }
-
-      // Otherwise default to processing customer message
-      return processCustomerMessage(message, callback);
+    // Check if it's a command
+    const target = message.toLowerCase().trim();
+    const command = config?.commands?.find(command => {
+      return command.entity === target;
+    });
+    // Run the command
+    if (command) {
+      return devProcessCommand(command, message, callback);
     }
+
+    // Otherwise default to processing customer message
+    return devProcessCustomerMessage(message, callback, roleOverride);
+  }
+
+  // This is used for handling cli dev
+  devReadlineProgram = async () => {
+    // Start program where use can test via command console
+    const {createInterface} = await import('node:readline');
+    const rl = createInterface({
+      input: process.stdin,
+      output: process.stdout
+    });
+
 
     // Function to ask for input, perform the task, and then ask again
     function promptUser() {
@@ -980,16 +1013,16 @@ if (dev) {
     }
 
 
-
     console.log(grey(`\nThe following ${bold('commands')} are available...`));
-    [['context', 'logs the state context inserted into the conversation'], ['conversation', 'logs conversation details'], ['messages', 'logs all message history']].forEach(([command, description]) => {
-      console.log(`\t - ${magenta(command)} ${grey(description)}`);
-    });
+    [['context', 'logs the state context inserted into the conversation'], ['conversation', 'logs conversation details'], ['messages', 'logs all message history']].forEach(
+      ([command, description]) => {
+        console.log(`\t - ${magenta(command)} ${grey(description)}`);
+      });
 
-    if (config.commands.length) {
+    if (config?.commands?.length) {
       console.log(grey(`\nThe following ${bold('custom commands')} are available...`));
     }
-    config.commands.forEach((command) => {
+    config?.commands?.forEach((command) => {
       console.log(magenta(`\t - ${command.entity}`));
     });
 
@@ -1007,11 +1040,77 @@ if (dev) {
 
   };
 
+  // API routes for handling and receiving the message state within websocket
+  const {WebSocketServer, WebSocket} = await import('ws');
+  devServer = createServer();
+  devServer.on('request', app.handler);
+  const wss = new WebSocketServer({server: devServer});
+  wss.on('connection', (ws) => {
+
+    const sendState = () => {
+      const payload = JSON.stringify({state: devState});
+      ws.send(payload);
+      wss.clients.forEach((client) => {
+        if (client.readyState === WebSocket.OPEN) {
+          client.send(payload);
+        }
+      });
+    };
+
+    console.log(grey('WebSocket client connected'));
+    sendState();
+
+    // Handle incoming WebSocket messages
+    ws.on('message', async (msg) => {
+      let parsedMessage;
+      if (Buffer.isBuffer(msg)) {
+        parsedMessage = JSON.parse(msg.toString());
+      } else if (typeof msg === 'string') {
+        parsedMessage = JSON.parse(msg);
+      } else {
+        console.error('Unexpected message type:', typeof msg);
+        return;
+      }
+      const message = MessageSchema.parse(parsedMessage);
+      console.log(`${grey('> ')} "${cyan(message.content)}"`);
+      try {
+        await devProgramProcessInput(message.content, () => sendState(), message.role);
+        sendState();
+        ws.send(JSON.stringify({message: {id: message.id}}));
+      } catch (e) {
+        ws.send(JSON.stringify(handleError(e)));
+      }
+    });
+
+    ws.on('close', () => {
+      console.log(yellow('WebSocket client disconnected'));
+    });
+
+
+    // CRUD REST calls to manipulate state
+    app.get('/dev', async (req, res, next) => {
+      res.writeHead(200, {'Content-Type': 'application/json'});
+      res.end(JSON.stringify(devState));
+    });
+    app.put('/dev', async (req, res, next) => {
+      Object.assign(devState, req.body ?? {});
+      sendState();
+      res.writeHead(200, {'Content-Type': 'application/json'});
+      res.end(JSON.stringify(devState));
+    });
+    app.post('/dev/reset', async (req, res, next) => {
+      devState = devCreateState(req?.body?.persona);
+      sendState();
+      res.writeHead(200, {'Content-Type': 'application/json'});
+      res.end(JSON.stringify(devState));
+    });
+
+  });
 
 }
 
 
-app.listen(process.env.PORT || 8080, async (err) => {
+(dev ? devServer : app).listen(process.env.PORT || 8080, async (err) => {
   if (err) throw err;
 
   const art_scout9 = `
@@ -1058,16 +1157,16 @@ app.listen(process.env.PORT || 8080, async (err) => {
 
   if (dev && !process.env.SCOUT9_API_KEY) {
     console.log(red(
-        'Missing SCOUT9_API_KEY environment variable, your PMT application may not work without it.'));
+      'Missing SCOUT9_API_KEY environment variable, your PMT application may not work without it.'));
   }
 
   if (process.env.SCOUT9_API_KEY === '<insert-scout9-api-key>') {
     console.log(`${red('SCOUT9_API_KEY has not been set in your .env file.')} ${grey(
-        'You can find your API key in the Scout9 dashboard.')} ${bold(cyan('https://scout9.com'))}`);
+      'You can find your API key in the Scout9 dashboard.')} ${bold(cyan('https://scout9.com'))}`);
   }
 
   if (dev) {
-    devProgram();
+    devReadlineProgram();
   }
 
 });

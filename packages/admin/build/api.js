@@ -16,7 +16,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Scout9Api = exports.Scout9ApiGenerated = exports.Scout9ApiFactory = exports.Scout9ApiFp = exports.Scout9ApiAxiosParamCreator = exports.NoopApi = exports.NoopApiFactory = exports.NoopApiFp = exports.NoopApiAxiosParamCreator = exports.WorkflowResponseSlotForwardOneOfModeEnum = exports.PurposeEnum = exports.PmtConfigModelEnum = exports.PmtConfigEngineEnum = exports.MessageGetResponseInnerRoleEnum = exports.MessageCreateRequestRoleEnum = exports.MessageBaseRoleEnum = exports.MessageRoleEnum = exports.MacroResultTypeEnum = exports.MacroDoesResultTypeEnum = exports.MacroDoesInputRoleEnum = exports.MacroDidResultTypeEnum = exports.MacroContextResultTypeEnum = exports.LlmConfigOneOf2EngineEnum = exports.LlmConfigOneOf1EngineEnum = exports.LlmConfigOneOfModelEnum = exports.LlmConfigOneOfEngineEnum = exports.ListApiOperationsResponseInnerMethodEnum = exports.GetApiOperationResponseMethodEnum = exports.ForwardRequestLatestMessageRoleEnum = exports.ForwardRequestForwardOneOfModeEnum = exports.ExistenceOperator = exports.EqualityOperator = exports.ConversationEnvironment = exports.ConversationContextFieldConditionOperatorEnum = exports.ApiOperationMethodEnum = void 0;
+exports.Scout9Api = exports.Scout9ApiGenerated = exports.Scout9ApiFactory = exports.Scout9ApiFp = exports.Scout9ApiAxiosParamCreator = exports.NoopApi = exports.NoopApiFactory = exports.NoopApiFp = exports.NoopApiAxiosParamCreator = exports.WorkflowResponseSlotForwardOneOfModeEnum = exports.PurposeEnum = exports.PmtTransformResponseTypeEnum = exports.PmtConfigModelEnum = exports.PmtConfigEngineEnum = exports.MessageGetResponseInnerRoleEnum = exports.MessageCreateRequestRoleEnum = exports.MessageBaseRoleEnum = exports.MessageRoleEnum = exports.MacroResultTypeEnum = exports.MacroDoesResultTypeEnum = exports.MacroDoesInputRoleEnum = exports.MacroDidResultTypeEnum = exports.MacroContextResultTypeEnum = exports.LlmConfigOneOf2EngineEnum = exports.LlmConfigOneOf1EngineEnum = exports.LlmConfigOneOfModelEnum = exports.LlmConfigOneOfEngineEnum = exports.ListApiOperationsResponseInnerMethodEnum = exports.GetApiOperationResponseMethodEnum = exports.ForwardRequestLatestMessageRoleEnum = exports.ForwardRequestForwardOneOfModeEnum = exports.ExistenceOperator = exports.EqualityOperator = exports.ConversationEnvironment = exports.ConversationContextFieldConditionOperatorEnum = exports.ApiOperationMethodEnum = void 0;
 const axios_1 = __importDefault(require("axios"));
 // Some imports not used depending on template conditions
 // @ts-ignore
@@ -184,6 +184,12 @@ exports.PmtConfigEngineEnum = {
 exports.PmtConfigModelEnum = {
     _10: 'orin-1.0',
     _20Preview: 'orin-2.0-preview'
+};
+exports.PmtTransformResponseTypeEnum = {
+    Question: 'question',
+    Statement: 'statement',
+    Exclamation: 'exclamation',
+    Other: 'other'
 };
 /**
  *
@@ -862,7 +868,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
          *
          * @summary Gets a customer
          * @param {string} idOrEmailOrPhone Either customers id, phone number or email
-         * @param {boolean} [resolve] If a email or phone is provided and the user doesn\&#39;t exist, it will automatically create one
+         * @param {boolean} [resolve] If a email or phone is provided and the customer doesn\&#39;t exist, it will automatically create one
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -2053,6 +2059,66 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
             };
         },
         /**
+         * Trains a PMT model based on the uploaded transcripts provided (Will include the ability to add more transcripts)
+         * @summary Trains a given or default persona\'s PMT model
+         * @param {PmtTrainRequest} pmtTrainRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        train: async (pmtTrainRequest, options = {}) => {
+            // verify required parameter 'pmtTrainRequest' is not null or undefined
+            (0, common_1.assertParamExists)('train', 'pmtTrainRequest', pmtTrainRequest);
+            const localVarPath = `/v1-pmt-train`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options };
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
+            localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(pmtTrainRequest, localVarRequestOptions, configuration);
+            return {
+                url: (0, common_1.toPathString)(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Transforms a given message and context into the owners own words. Failure to transform would be a lack of transcription data or the message detected as not applicable to the owners intended use.
+         * @summary Transforms a given message and context into the owners own words
+         * @param {PmtTransformRequest} pmtTransformRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        transform: async (pmtTransformRequest, options = {}) => {
+            // verify required parameter 'pmtTransformRequest' is not null or undefined
+            (0, common_1.assertParamExists)('transform', 'pmtTransformRequest', pmtTransformRequest);
+            const localVarPath = `/v1-pmt-transform`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options };
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
+            localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(pmtTransformRequest, localVarRequestOptions, configuration);
+            return {
+                url: (0, common_1.toPathString)(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Updates an existing entity with the specified type and ID.
          * @summary Update an existing entity
          * @param {string} type
@@ -2305,7 +2371,7 @@ const Scout9ApiFp = function (configuration) {
          *
          * @summary Gets a customer
          * @param {string} idOrEmailOrPhone Either customers id, phone number or email
-         * @param {boolean} [resolve] If a email or phone is provided and the user doesn\&#39;t exist, it will automatically create one
+         * @param {boolean} [resolve] If a email or phone is provided and the customer doesn\&#39;t exist, it will automatically create one
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -2729,6 +2795,28 @@ const Scout9ApiFp = function (configuration) {
             return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
         },
         /**
+         * Trains a PMT model based on the uploaded transcripts provided (Will include the ability to add more transcripts)
+         * @summary Trains a given or default persona\'s PMT model
+         * @param {PmtTrainRequest} pmtTrainRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async train(pmtTrainRequest, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.train(pmtTrainRequest, options);
+            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+        },
+        /**
+         * Transforms a given message and context into the owners own words. Failure to transform would be a lack of transcription data or the message detected as not applicable to the owners intended use.
+         * @summary Transforms a given message and context into the owners own words
+         * @param {PmtTransformRequest} pmtTransformRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async transform(pmtTransformRequest, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.transform(pmtTransformRequest, options);
+            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+        },
+        /**
          * Updates an existing entity with the specified type and ID.
          * @summary Update an existing entity
          * @param {string} type
@@ -2938,7 +3026,7 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
          *
          * @summary Gets a customer
          * @param {string} idOrEmailOrPhone Either customers id, phone number or email
-         * @param {boolean} [resolve] If a email or phone is provided and the user doesn\&#39;t exist, it will automatically create one
+         * @param {boolean} [resolve] If a email or phone is provided and the customer doesn\&#39;t exist, it will automatically create one
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -3325,6 +3413,26 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
             return localVarFp.temp(generateRequest, convo, options).then((request) => request(axios, basePath));
         },
         /**
+         * Trains a PMT model based on the uploaded transcripts provided (Will include the ability to add more transcripts)
+         * @summary Trains a given or default persona\'s PMT model
+         * @param {PmtTrainRequest} pmtTrainRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        train(pmtTrainRequest, options) {
+            return localVarFp.train(pmtTrainRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Transforms a given message and context into the owners own words. Failure to transform would be a lack of transcription data or the message detected as not applicable to the owners intended use.
+         * @summary Transforms a given message and context into the owners own words
+         * @param {PmtTransformRequest} pmtTransformRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        transform(pmtTransformRequest, options) {
+            return localVarFp.transform(pmtTransformRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
          * Updates an existing entity with the specified type and ID.
          * @summary Update an existing entity
          * @param {string} type
@@ -3551,7 +3659,7 @@ class Scout9ApiGenerated extends base_1.BaseAPI {
      *
      * @summary Gets a customer
      * @param {string} idOrEmailOrPhone Either customers id, phone number or email
-     * @param {boolean} [resolve] If a email or phone is provided and the user doesn\&#39;t exist, it will automatically create one
+     * @param {boolean} [resolve] If a email or phone is provided and the customer doesn\&#39;t exist, it will automatically create one
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof Scout9Api
@@ -3973,6 +4081,28 @@ class Scout9ApiGenerated extends base_1.BaseAPI {
      */
     temp(generateRequest, convo, options) {
         return (0, exports.Scout9ApiFp)(this.configuration).temp(generateRequest, convo, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     * Trains a PMT model based on the uploaded transcripts provided (Will include the ability to add more transcripts)
+     * @summary Trains a given or default persona\'s PMT model
+     * @param {PmtTrainRequest} pmtTrainRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    train(pmtTrainRequest, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).train(pmtTrainRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     * Transforms a given message and context into the owners own words. Failure to transform would be a lack of transcription data or the message detected as not applicable to the owners intended use.
+     * @summary Transforms a given message and context into the owners own words
+     * @param {PmtTransformRequest} pmtTransformRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    transform(pmtTransformRequest, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).transform(pmtTransformRequest, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      * Updates an existing entity with the specified type and ID.

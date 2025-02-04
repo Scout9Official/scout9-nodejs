@@ -2176,6 +2176,55 @@ export interface EntityData {
     };
 }
 /**
+ * Tagged entity tokens for a message
+ * @export
+ * @interface EntityToken
+ */
+export interface EntityToken {
+    /**
+     * The text that is associated with the entity token
+     * @type {string}
+     * @memberof EntityToken
+     */
+    'text'?: string;
+    /**
+     * The starting position of the entity token
+     * @type {number}
+     * @memberof EntityToken
+     */
+    'start': number;
+    /**
+     * The ending position of the entity token
+     * @type {number}
+     * @memberof EntityToken
+     */
+    'end': number;
+    /**
+     *
+     * @type {EntityTokenType}
+     * @memberof EntityToken
+     */
+    'type': EntityTokenType;
+    /**
+     * The unique id associated with the the entity token type
+     * @type {string}
+     * @memberof EntityToken
+     */
+    'option'?: string;
+}
+/**
+ * The entity token type, could be a custom or built-in entity
+ * @export
+ * @interface EntityTokenType
+ */
+export interface EntityTokenType {
+}
+/**
+ * @type EntityType
+ * @export
+ */
+export type EntityType = string;
+/**
  *
  * @export
  * @interface EqualityCondition
@@ -2417,6 +2466,12 @@ export interface ForwardRequestLatestMessage {
      * @memberof ForwardRequestLatestMessage
      */
     'time': string;
+    /**
+     *
+     * @type {Array<EntityToken>}
+     * @memberof ForwardRequestLatestMessage
+     */
+    'entities'?: Array<EntityToken>;
 }
 export declare const ForwardRequestLatestMessageRoleEnum: {
     readonly Customer: "customer";
@@ -2522,6 +2577,20 @@ export interface GenerateResponse {
      * @memberof GenerateResponse
      */
     'message': string;
+    /**
+     *
+     * @type {Array<EntityToken>}
+     * @memberof GenerateResponse
+     */
+    'entities'?: Array<EntityToken>;
+    /**
+     * Context that is derived from the message
+     * @type {{ [key: string]: any; }}
+     * @memberof GenerateResponse
+     */
+    'context'?: {
+        [key: string]: any;
+    };
     /**
      * The time it took to generate the message in milliseconds
      * @type {number}
@@ -3954,6 +4023,12 @@ export interface Message {
      * @memberof Message
      */
     'time': string;
+    /**
+     *
+     * @type {Array<EntityToken>}
+     * @memberof Message
+     */
+    'entities'?: Array<EntityToken>;
 }
 export declare const MessageRoleEnum: {
     readonly Customer: "customer";
@@ -3973,6 +4048,12 @@ export interface MessageAllOf {
      * @memberof MessageAllOf
      */
     'time': string;
+    /**
+     *
+     * @type {Array<EntityToken>}
+     * @memberof MessageAllOf
+     */
+    'entities'?: Array<EntityToken>;
 }
 /**
  *
@@ -4158,6 +4239,12 @@ export interface MessageGetResponseInner {
      * @memberof MessageGetResponseInner
      */
     'time': string;
+    /**
+     *
+     * @type {Array<EntityToken>}
+     * @memberof MessageGetResponseInner
+     */
+    'entities'?: Array<EntityToken>;
     /**
      * The ID of the message to get
      * @type {string}
@@ -4366,6 +4453,12 @@ export interface ParseResponse {
      */
     'intentScore'?: number;
     /**
+     *
+     * @type {Array<EntityToken>}
+     * @memberof ParseResponse
+     */
+    'entities'?: Array<EntityToken>;
+    /**
      * Context that is derived from the message
      * @type {{ [key: string]: any; }}
      * @memberof ParseResponse
@@ -4453,6 +4546,108 @@ export interface PmtRatings {
      */
     'transcripts'?: Rating;
 }
+/**
+ * PMT train request body
+ * @export
+ * @interface PmtTrainRequest
+ */
+export interface PmtTrainRequest {
+    /**
+     * The id of the persona, if not provided it will default to the account owner\'s persona id.
+     * @type {string}
+     * @memberof PmtTrainRequest
+     */
+    'persona'?: string;
+    /**
+     * The PMT model id to use, if not provide it will use the default model
+     * @type {string}
+     * @memberof PmtTrainRequest
+     */
+    'model'?: string;
+}
+/**
+ * PMT transformation request body
+ * @export
+ * @interface PmtTransformRequest
+ */
+export interface PmtTransformRequest {
+    /**
+     * The message to transform
+     * @type {string}
+     * @memberof PmtTransformRequest
+     */
+    'message': string;
+    /**
+     * The id of the persona, if not provided it will default to the account owner\'s persona id.
+     * @type {string}
+     * @memberof PmtTransformRequest
+     */
+    'persona'?: string;
+    /**
+     * The PMT model id to use, if not provide it will use the default model
+     * @type {string}
+     * @memberof PmtTransformRequest
+     */
+    'model'?: string;
+    /**
+     * he customer id the user is speaking to, enhances PMT result
+     * @type {string}
+     * @memberof PmtTransformRequest
+     */
+    'customer'?: string;
+    /**
+     * Messages provides conversational context to enhance PMT result
+     * @type {Array<Message>}
+     * @memberof PmtTransformRequest
+     */
+    'messages'?: Array<Message>;
+    /**
+     *
+     * @type {{ [key: string]: any; }}
+     * @memberof PmtTransformRequest
+     */
+    'context'?: {
+        [key: string]: any;
+    };
+}
+/**
+ *
+ * @export
+ * @interface PmtTransformResponse
+ */
+export interface PmtTransformResponse {
+    /**
+     * Formatted persona response
+     * @type {string}
+     * @memberof PmtTransformResponse
+     */
+    'message': string;
+    /**
+     * How confident this message meets the persona\'s own words
+     * @type {number}
+     * @memberof PmtTransformResponse
+     */
+    'confidence'?: number;
+    /**
+     * type of message transformed
+     * @type {string}
+     * @memberof PmtTransformResponse
+     */
+    'type'?: PmtTransformResponseTypeEnum;
+    /**
+     *
+     * @type {Array<string>}
+     * @memberof PmtTransformResponse
+     */
+    'errors'?: Array<string>;
+}
+export declare const PmtTransformResponseTypeEnum: {
+    readonly Question: "question";
+    readonly Statement: "statement";
+    readonly Exclamation: "exclamation";
+    readonly Other: "other";
+};
+export type PmtTransformResponseTypeEnum = typeof PmtTransformResponseTypeEnum[keyof typeof PmtTransformResponseTypeEnum];
 /**
  * Purchase a phone number subscription for an agent
  * @export
@@ -6360,7 +6555,7 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
      *
      * @summary Gets a customer
      * @param {string} idOrEmailOrPhone Either customers id, phone number or email
-     * @param {boolean} [resolve] If a email or phone is provided and the user doesn\&#39;t exist, it will automatically create one
+     * @param {boolean} [resolve] If a email or phone is provided and the customer doesn\&#39;t exist, it will automatically create one
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -6673,6 +6868,22 @@ export declare const Scout9ApiAxiosParamCreator: (configuration?: Configuration)
      */
     temp: (generateRequest: GenerateRequest, convo?: string, options?: AxiosRequestConfig) => Promise<RequestArgs>;
     /**
+     * Trains a PMT model based on the uploaded transcripts provided (Will include the ability to add more transcripts)
+     * @summary Trains a given or default persona\'s PMT model
+     * @param {PmtTrainRequest} pmtTrainRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    train: (pmtTrainRequest: PmtTrainRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
+     * Transforms a given message and context into the owners own words. Failure to transform would be a lack of transcription data or the message detected as not applicable to the owners intended use.
+     * @summary Transforms a given message and context into the owners own words
+     * @param {PmtTransformRequest} pmtTransformRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    transform: (pmtTransformRequest: PmtTransformRequest, options?: AxiosRequestConfig) => Promise<RequestArgs>;
+    /**
      * Updates an existing entity with the specified type and ID.
      * @summary Update an existing entity
      * @param {string} type
@@ -6841,7 +7052,7 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
      *
      * @summary Gets a customer
      * @param {string} idOrEmailOrPhone Either customers id, phone number or email
-     * @param {boolean} [resolve] If a email or phone is provided and the user doesn\&#39;t exist, it will automatically create one
+     * @param {boolean} [resolve] If a email or phone is provided and the customer doesn\&#39;t exist, it will automatically create one
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -7156,6 +7367,24 @@ export declare const Scout9ApiFp: (configuration?: Configuration) => {
      */
     temp(generateRequest: GenerateRequest, convo?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GenerateResponse>>;
     /**
+     * Trains a PMT model based on the uploaded transcripts provided (Will include the ability to add more transcripts)
+     * @summary Trains a given or default persona\'s PMT model
+     * @param {PmtTrainRequest} pmtTrainRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    train(pmtTrainRequest: PmtTrainRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<{
+        [key: string]: any;
+    }>>;
+    /**
+     * Transforms a given message and context into the owners own words. Failure to transform would be a lack of transcription data or the message detected as not applicable to the owners intended use.
+     * @summary Transforms a given message and context into the owners own words
+     * @param {PmtTransformRequest} pmtTransformRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    transform(pmtTransformRequest: PmtTransformRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PmtTransformResponse>>;
+    /**
      * Updates an existing entity with the specified type and ID.
      * @summary Update an existing entity
      * @param {string} type
@@ -7324,7 +7553,7 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
      *
      * @summary Gets a customer
      * @param {string} idOrEmailOrPhone Either customers id, phone number or email
-     * @param {boolean} [resolve] If a email or phone is provided and the user doesn\&#39;t exist, it will automatically create one
+     * @param {boolean} [resolve] If a email or phone is provided and the customer doesn\&#39;t exist, it will automatically create one
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -7639,6 +7868,24 @@ export declare const Scout9ApiFactory: (configuration?: Configuration, basePath?
      */
     temp(generateRequest: GenerateRequest, convo?: string, options?: any): AxiosPromise<GenerateResponse>;
     /**
+     * Trains a PMT model based on the uploaded transcripts provided (Will include the ability to add more transcripts)
+     * @summary Trains a given or default persona\'s PMT model
+     * @param {PmtTrainRequest} pmtTrainRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    train(pmtTrainRequest: PmtTrainRequest, options?: any): AxiosPromise<{
+        [key: string]: any;
+    }>;
+    /**
+     * Transforms a given message and context into the owners own words. Failure to transform would be a lack of transcription data or the message detected as not applicable to the owners intended use.
+     * @summary Transforms a given message and context into the owners own words
+     * @param {PmtTransformRequest} pmtTransformRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    transform(pmtTransformRequest: PmtTransformRequest, options?: any): AxiosPromise<PmtTransformResponse>;
+    /**
      * Updates an existing entity with the specified type and ID.
      * @summary Update an existing entity
      * @param {string} type
@@ -7827,7 +8074,7 @@ export declare class Scout9ApiGenerated extends BaseAPI {
      *
      * @summary Gets a customer
      * @param {string} idOrEmailOrPhone Either customers id, phone number or email
-     * @param {boolean} [resolve] If a email or phone is provided and the user doesn\&#39;t exist, it will automatically create one
+     * @param {boolean} [resolve] If a email or phone is provided and the customer doesn\&#39;t exist, it will automatically create one
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof Scout9Api
@@ -8178,6 +8425,26 @@ export declare class Scout9ApiGenerated extends BaseAPI {
      * @memberof Scout9Api
      */
     temp(generateRequest: GenerateRequest, convo?: string, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<GenerateResponse, any>>;
+    /**
+     * Trains a PMT model based on the uploaded transcripts provided (Will include the ability to add more transcripts)
+     * @summary Trains a given or default persona\'s PMT model
+     * @param {PmtTrainRequest} pmtTrainRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    train(pmtTrainRequest: PmtTrainRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<{
+        [key: string]: any;
+    }, any>>;
+    /**
+     * Transforms a given message and context into the owners own words. Failure to transform would be a lack of transcription data or the message detected as not applicable to the owners intended use.
+     * @summary Transforms a given message and context into the owners own words
+     * @param {PmtTransformRequest} pmtTransformRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    transform(pmtTransformRequest: PmtTransformRequest, options?: AxiosRequestConfig): Promise<import("axios").AxiosResponse<PmtTransformResponse, any>>;
     /**
      * Updates an existing entity with the specified type and ID.
      * @summary Update an existing entity
