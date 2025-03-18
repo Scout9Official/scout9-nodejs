@@ -34,6 +34,7 @@ export const AgentSchema = z.object({
   firstName: z.string({description: 'Agent first name'}).optional(),
   lastName: z.string({description: 'Agent last name'}).optional(),
   inactive: z.boolean({description: 'Agent is inactive'}).optional(),
+  isFreeProgrammablePhoneNumber: z.boolean({description: 'Whether the pmt programmable phone number they have is a free number or not'}).optional(),
   programmablePhoneNumber: z.string({description: 'Programmable phone number'}).optional(),
   programmablePhoneNumberSid: z.string({description: 'Programmable phone number SID'}).optional(),
   programmableEmail: z.string({description: 'Email address from Scout9 gmail subdomain'}).optional(),

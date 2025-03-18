@@ -2242,12 +2242,12 @@ export interface EntityToken {
   'option'?: string;
 }
 /**
+ * @type EntityTokenType
  * The entity token type, could be a custom or built-in entity
  * @export
- * @interface EntityTokenType
  */
-export interface EntityTokenType {
-}
+export type EntityTokenType = string;
+
 /**
  * @type EntityType
  * @export

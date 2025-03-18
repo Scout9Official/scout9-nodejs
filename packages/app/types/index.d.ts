@@ -1319,6 +1319,7 @@ declare module '@scout9/app/schemas' {
 			firstName: z.ZodOptional<z.ZodString>;
 			lastName: z.ZodOptional<z.ZodString>;
 			inactive: z.ZodOptional<z.ZodBoolean>;
+			isFreeProgrammablePhoneNumber: z.ZodOptional<z.ZodBoolean>;
 			programmablePhoneNumber: z.ZodOptional<z.ZodString>;
 			programmablePhoneNumberSid: z.ZodOptional<z.ZodString>;
 			programmableEmail: z.ZodOptional<z.ZodString>;
@@ -1432,6 +1433,7 @@ declare module '@scout9/app/schemas' {
 			firstName?: string | undefined;
 			lastName?: string | undefined;
 			inactive?: boolean | undefined;
+			isFreeProgrammablePhoneNumber?: boolean | undefined;
 			programmablePhoneNumber?: string | undefined;
 			programmablePhoneNumberSid?: string | undefined;
 			programmableEmail?: string | undefined;
@@ -1477,6 +1479,7 @@ declare module '@scout9/app/schemas' {
 			firstName?: string | undefined;
 			lastName?: string | undefined;
 			inactive?: boolean | undefined;
+			isFreeProgrammablePhoneNumber?: boolean | undefined;
 			programmablePhoneNumber?: string | undefined;
 			programmablePhoneNumberSid?: string | undefined;
 			programmableEmail?: string | undefined;
@@ -1737,6 +1740,7 @@ declare module '@scout9/app/schemas' {
 			firstName?: string | undefined;
 			lastName?: string | undefined;
 			inactive?: boolean | undefined;
+			isFreeProgrammablePhoneNumber?: boolean | undefined;
 			programmablePhoneNumber?: string | undefined;
 			programmablePhoneNumberSid?: string | undefined;
 			programmableEmail?: string | undefined;
@@ -1849,6 +1853,7 @@ declare module '@scout9/app/schemas' {
 			firstName?: string | undefined;
 			lastName?: string | undefined;
 			inactive?: boolean | undefined;
+			isFreeProgrammablePhoneNumber?: boolean | undefined;
 			programmablePhoneNumber?: string | undefined;
 			programmablePhoneNumberSid?: string | undefined;
 			programmableEmail?: string | undefined;
@@ -3061,6 +3066,7 @@ declare module '@scout9/app/schemas' {
 		firstName: z.ZodOptional<z.ZodString>;
 		lastName: z.ZodOptional<z.ZodString>;
 		inactive: z.ZodOptional<z.ZodBoolean>;
+		isFreeProgrammablePhoneNumber: z.ZodOptional<z.ZodBoolean>;
 		programmablePhoneNumber: z.ZodOptional<z.ZodString>;
 		programmablePhoneNumberSid: z.ZodOptional<z.ZodString>;
 		programmableEmail: z.ZodOptional<z.ZodString>;
@@ -3174,6 +3180,7 @@ declare module '@scout9/app/schemas' {
 		firstName?: string | undefined;
 		lastName?: string | undefined;
 		inactive?: boolean | undefined;
+		isFreeProgrammablePhoneNumber?: boolean | undefined;
 		programmablePhoneNumber?: string | undefined;
 		programmablePhoneNumberSid?: string | undefined;
 		programmableEmail?: string | undefined;
@@ -3219,6 +3226,7 @@ declare module '@scout9/app/schemas' {
 		firstName?: string | undefined;
 		lastName?: string | undefined;
 		inactive?: boolean | undefined;
+		isFreeProgrammablePhoneNumber?: boolean | undefined;
 		programmablePhoneNumber?: string | undefined;
 		programmablePhoneNumberSid?: string | undefined;
 		programmableEmail?: string | undefined;
@@ -3276,6 +3284,7 @@ declare module '@scout9/app/schemas' {
 		firstName: z.ZodOptional<z.ZodString>;
 		lastName: z.ZodOptional<z.ZodString>;
 		inactive: z.ZodOptional<z.ZodBoolean>;
+		isFreeProgrammablePhoneNumber: z.ZodOptional<z.ZodBoolean>;
 		programmablePhoneNumber: z.ZodOptional<z.ZodString>;
 		programmablePhoneNumberSid: z.ZodOptional<z.ZodString>;
 		programmableEmail: z.ZodOptional<z.ZodString>;
@@ -3389,6 +3398,7 @@ declare module '@scout9/app/schemas' {
 		firstName?: string | undefined;
 		lastName?: string | undefined;
 		inactive?: boolean | undefined;
+		isFreeProgrammablePhoneNumber?: boolean | undefined;
 		programmablePhoneNumber?: string | undefined;
 		programmablePhoneNumberSid?: string | undefined;
 		programmableEmail?: string | undefined;
@@ -3434,6 +3444,7 @@ declare module '@scout9/app/schemas' {
 		firstName?: string | undefined;
 		lastName?: string | undefined;
 		inactive?: boolean | undefined;
+		isFreeProgrammablePhoneNumber?: boolean | undefined;
 		programmablePhoneNumber?: string | undefined;
 		programmablePhoneNumberSid?: string | undefined;
 		programmableEmail?: string | undefined;
@@ -3493,6 +3504,7 @@ declare module '@scout9/app/schemas' {
 			phone?: string | undefined;
 			email?: string | undefined;
 		}>>;
+		isFreeProgrammablePhoneNumber: z.ZodOptional<z.ZodBoolean>;
 		programmablePhoneNumber: z.ZodOptional<z.ZodString>;
 		programmablePhoneNumberSid: z.ZodOptional<z.ZodString>;
 		programmableEmail: z.ZodOptional<z.ZodString>;
@@ -3606,6 +3618,7 @@ declare module '@scout9/app/schemas' {
 			phone?: string | undefined;
 			email?: string | undefined;
 		} | undefined;
+		isFreeProgrammablePhoneNumber?: boolean | undefined;
 		programmablePhoneNumber?: string | undefined;
 		programmablePhoneNumberSid?: string | undefined;
 		programmableEmail?: string | undefined;
@@ -3654,6 +3667,7 @@ declare module '@scout9/app/schemas' {
 			phone?: string | undefined;
 			email?: string | undefined;
 		} | undefined;
+		isFreeProgrammablePhoneNumber?: boolean | undefined;
 		programmablePhoneNumber?: string | undefined;
 		programmablePhoneNumberSid?: string | undefined;
 		programmableEmail?: string | undefined;
@@ -3711,6 +3725,7 @@ declare module '@scout9/app/schemas' {
 			phone?: string | undefined;
 			email?: string | undefined;
 		}>>;
+		isFreeProgrammablePhoneNumber: z.ZodOptional<z.ZodBoolean>;
 		programmablePhoneNumber: z.ZodOptional<z.ZodString>;
 		programmablePhoneNumberSid: z.ZodOptional<z.ZodString>;
 		programmableEmail: z.ZodOptional<z.ZodString>;
@@ -3824,6 +3839,7 @@ declare module '@scout9/app/schemas' {
 			phone?: string | undefined;
 			email?: string | undefined;
 		} | undefined;
+		isFreeProgrammablePhoneNumber?: boolean | undefined;
 		programmablePhoneNumber?: string | undefined;
 		programmablePhoneNumberSid?: string | undefined;
 		programmableEmail?: string | undefined;
@@ -3872,6 +3888,7 @@ declare module '@scout9/app/schemas' {
 			phone?: string | undefined;
 			email?: string | undefined;
 		} | undefined;
+		isFreeProgrammablePhoneNumber?: boolean | undefined;
 		programmablePhoneNumber?: string | undefined;
 		programmablePhoneNumberSid?: string | undefined;
 		programmableEmail?: string | undefined;
@@ -3929,6 +3946,7 @@ declare module '@scout9/app/schemas' {
 			phone?: string | undefined;
 			email?: string | undefined;
 		}>>;
+		isFreeProgrammablePhoneNumber: z.ZodOptional<z.ZodBoolean>;
 		programmablePhoneNumber: z.ZodOptional<z.ZodString>;
 		programmablePhoneNumberSid: z.ZodOptional<z.ZodString>;
 		programmableEmail: z.ZodOptional<z.ZodString>;
@@ -4042,6 +4060,7 @@ declare module '@scout9/app/schemas' {
 			phone?: string | undefined;
 			email?: string | undefined;
 		} | undefined;
+		isFreeProgrammablePhoneNumber?: boolean | undefined;
 		programmablePhoneNumber?: string | undefined;
 		programmablePhoneNumberSid?: string | undefined;
 		programmableEmail?: string | undefined;
@@ -4090,6 +4109,7 @@ declare module '@scout9/app/schemas' {
 			phone?: string | undefined;
 			email?: string | undefined;
 		} | undefined;
+		isFreeProgrammablePhoneNumber?: boolean | undefined;
 		programmablePhoneNumber?: string | undefined;
 		programmablePhoneNumberSid?: string | undefined;
 		programmableEmail?: string | undefined;
@@ -4147,6 +4167,7 @@ declare module '@scout9/app/schemas' {
 			phone?: string | undefined;
 			email?: string | undefined;
 		}>>;
+		isFreeProgrammablePhoneNumber: z.ZodOptional<z.ZodBoolean>;
 		programmablePhoneNumber: z.ZodOptional<z.ZodString>;
 		programmablePhoneNumberSid: z.ZodOptional<z.ZodString>;
 		programmableEmail: z.ZodOptional<z.ZodString>;
@@ -4260,6 +4281,7 @@ declare module '@scout9/app/schemas' {
 			phone?: string | undefined;
 			email?: string | undefined;
 		} | undefined;
+		isFreeProgrammablePhoneNumber?: boolean | undefined;
 		programmablePhoneNumber?: string | undefined;
 		programmablePhoneNumberSid?: string | undefined;
 		programmableEmail?: string | undefined;
@@ -4308,6 +4330,7 @@ declare module '@scout9/app/schemas' {
 			phone?: string | undefined;
 			email?: string | undefined;
 		} | undefined;
+		isFreeProgrammablePhoneNumber?: boolean | undefined;
 		programmablePhoneNumber?: string | undefined;
 		programmablePhoneNumberSid?: string | undefined;
 		programmableEmail?: string | undefined;
@@ -4363,6 +4386,7 @@ declare module '@scout9/app/schemas' {
 		firstName: z.ZodOptional<z.ZodString>;
 		lastName: z.ZodOptional<z.ZodString>;
 		inactive: z.ZodOptional<z.ZodBoolean>;
+		isFreeProgrammablePhoneNumber: z.ZodOptional<z.ZodBoolean>;
 		programmablePhoneNumber: z.ZodOptional<z.ZodString>;
 		programmablePhoneNumberSid: z.ZodOptional<z.ZodString>;
 		programmableEmail: z.ZodOptional<z.ZodString>;
@@ -4476,6 +4500,7 @@ declare module '@scout9/app/schemas' {
 		firstName?: string | undefined;
 		lastName?: string | undefined;
 		inactive?: boolean | undefined;
+		isFreeProgrammablePhoneNumber?: boolean | undefined;
 		programmablePhoneNumber?: string | undefined;
 		programmablePhoneNumberSid?: string | undefined;
 		programmableEmail?: string | undefined;
@@ -4521,6 +4546,7 @@ declare module '@scout9/app/schemas' {
 		firstName?: string | undefined;
 		lastName?: string | undefined;
 		inactive?: boolean | undefined;
+		isFreeProgrammablePhoneNumber?: boolean | undefined;
 		programmablePhoneNumber?: string | undefined;
 		programmablePhoneNumberSid?: string | undefined;
 		programmableEmail?: string | undefined;
@@ -4578,6 +4604,7 @@ declare module '@scout9/app/schemas' {
 		firstName: z.ZodOptional<z.ZodString>;
 		lastName: z.ZodOptional<z.ZodString>;
 		inactive: z.ZodOptional<z.ZodBoolean>;
+		isFreeProgrammablePhoneNumber: z.ZodOptional<z.ZodBoolean>;
 		programmablePhoneNumber: z.ZodOptional<z.ZodString>;
 		programmablePhoneNumberSid: z.ZodOptional<z.ZodString>;
 		programmableEmail: z.ZodOptional<z.ZodString>;
@@ -4691,6 +4718,7 @@ declare module '@scout9/app/schemas' {
 		firstName?: string | undefined;
 		lastName?: string | undefined;
 		inactive?: boolean | undefined;
+		isFreeProgrammablePhoneNumber?: boolean | undefined;
 		programmablePhoneNumber?: string | undefined;
 		programmablePhoneNumberSid?: string | undefined;
 		programmableEmail?: string | undefined;
@@ -4736,6 +4764,7 @@ declare module '@scout9/app/schemas' {
 		firstName?: string | undefined;
 		lastName?: string | undefined;
 		inactive?: boolean | undefined;
+		isFreeProgrammablePhoneNumber?: boolean | undefined;
 		programmablePhoneNumber?: string | undefined;
 		programmablePhoneNumberSid?: string | undefined;
 		programmableEmail?: string | undefined;
@@ -5338,6 +5367,7 @@ declare module '@scout9/app/schemas' {
 				phone?: string | undefined;
 				email?: string | undefined;
 			}>>;
+			isFreeProgrammablePhoneNumber: z.ZodOptional<z.ZodBoolean>;
 			programmablePhoneNumber: z.ZodOptional<z.ZodString>;
 			programmablePhoneNumberSid: z.ZodOptional<z.ZodString>;
 			programmableEmail: z.ZodOptional<z.ZodString>;
@@ -5449,6 +5479,7 @@ declare module '@scout9/app/schemas' {
 				phone?: string | undefined;
 				email?: string | undefined;
 			} | undefined;
+			isFreeProgrammablePhoneNumber?: boolean | undefined;
 			programmablePhoneNumber?: string | undefined;
 			programmablePhoneNumberSid?: string | undefined;
 			programmableEmail?: string | undefined;
@@ -5466,6 +5497,7 @@ declare module '@scout9/app/schemas' {
 				phone?: string | undefined;
 				email?: string | undefined;
 			} | undefined;
+			isFreeProgrammablePhoneNumber?: boolean | undefined;
 			programmablePhoneNumber?: string | undefined;
 			programmablePhoneNumberSid?: string | undefined;
 			programmableEmail?: string | undefined;
@@ -5574,6 +5606,7 @@ declare module '@scout9/app/schemas' {
 				phone?: string | undefined;
 				email?: string | undefined;
 			} | undefined;
+			isFreeProgrammablePhoneNumber?: boolean | undefined;
 			programmablePhoneNumber?: string | undefined;
 			programmablePhoneNumberSid?: string | undefined;
 			programmableEmail?: string | undefined;
@@ -5692,6 +5725,7 @@ declare module '@scout9/app/schemas' {
 				phone?: string | undefined;
 				email?: string | undefined;
 			} | undefined;
+			isFreeProgrammablePhoneNumber?: boolean | undefined;
 			programmablePhoneNumber?: string | undefined;
 			programmablePhoneNumberSid?: string | undefined;
 			programmableEmail?: string | undefined;
@@ -10919,6 +10953,7 @@ declare module '@scout9/app/schemas' {
 				phone?: string | undefined;
 				email?: string | undefined;
 			}>>;
+			isFreeProgrammablePhoneNumber: z.ZodOptional<z.ZodBoolean>;
 			programmablePhoneNumber: z.ZodOptional<z.ZodString>;
 			programmablePhoneNumberSid: z.ZodOptional<z.ZodString>;
 			programmableEmail: z.ZodOptional<z.ZodString>;
@@ -11030,6 +11065,7 @@ declare module '@scout9/app/schemas' {
 				phone?: string | undefined;
 				email?: string | undefined;
 			} | undefined;
+			isFreeProgrammablePhoneNumber?: boolean | undefined;
 			programmablePhoneNumber?: string | undefined;
 			programmablePhoneNumberSid?: string | undefined;
 			programmableEmail?: string | undefined;
@@ -11047,6 +11083,7 @@ declare module '@scout9/app/schemas' {
 				phone?: string | undefined;
 				email?: string | undefined;
 			} | undefined;
+			isFreeProgrammablePhoneNumber?: boolean | undefined;
 			programmablePhoneNumber?: string | undefined;
 			programmablePhoneNumberSid?: string | undefined;
 			programmableEmail?: string | undefined;
@@ -11155,6 +11192,7 @@ declare module '@scout9/app/schemas' {
 				phone?: string | undefined;
 				email?: string | undefined;
 			} | undefined;
+			isFreeProgrammablePhoneNumber?: boolean | undefined;
 			programmablePhoneNumber?: string | undefined;
 			programmablePhoneNumberSid?: string | undefined;
 			programmableEmail?: string | undefined;
@@ -11273,6 +11311,7 @@ declare module '@scout9/app/schemas' {
 				phone?: string | undefined;
 				email?: string | undefined;
 			} | undefined;
+			isFreeProgrammablePhoneNumber?: boolean | undefined;
 			programmablePhoneNumber?: string | undefined;
 			programmablePhoneNumberSid?: string | undefined;
 			programmableEmail?: string | undefined;
