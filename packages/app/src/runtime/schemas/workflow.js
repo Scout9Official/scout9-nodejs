@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { zId } from './utils.js';
 import { AgentConfigurationSchema, CustomerSchema } from './users.js';
 import { MessageSchema } from './message.js';
-import { ConversationSchema, ConversationContext } from './conversation.js';
+import { ConversationContext, ConversationSchema } from './conversation.js';
 
 
 export const ForwardSchema = z.union([
@@ -89,7 +89,8 @@ export const InstructionSchema = z.union([
 export const FollowupBaseSchema = z.object({
   scheduled: z.number(),
   cancelIf: ConversationContext.optional(),
-  overrideLock: z.boolean({description: 'This will still run even if the conversation is locked, defaults to false'}).optional()
+  overrideLock: z.boolean({description: 'This will still run even if the conversation is locked, defaults to false'})
+    .optional()
 });
 
 /**
@@ -97,7 +98,7 @@ export const FollowupBaseSchema = z.object({
  */
 export const FollowupSchema = z.union([
   FollowupBaseSchema.extend({
-    message: z.string({description: 'Manual message sent to client'}),
+    message: z.string({description: 'Manual message sent to client'})
   }),
   FollowupBaseSchema.extend({
     instructions: InstructionSchema
@@ -143,25 +144,52 @@ export const WorkflowEventSchema = z.object({
   note: z.string({description: 'Any developer notes to provide'}).optional()
 });
 
+export const DirectMessageSchema = MessageSchema.partial().omit({id: true, entities: true, time: true, role: true});
+
 /**
  * The workflow response object slot
  */
 export const WorkflowResponseSlotBaseSchema = z.object({
+  contextUpsert: ConversationContext.optional(),
+  followup: FollowupSchema.optional(),
   forward: ForwardSchema.optional(),
   forwardNote: z.string({description: 'Note to provide to the agent, recommend using forward object api instead'})
     .optional(),
   instructions: InstructionSchema.optional(),
+  message: z.union([z.string(), DirectMessageSchema]).optional(),
   removeInstructions: z.array(z.string()).optional(),
-  message: z.union([z.string(), z.object({
-    content: z.string(),
-    transform: z.boolean().optional()
-  })]).optional(),
-  secondsDelay: z.number().optional(),
-  scheduled: z.number().optional(),
-  contextUpsert: ConversationContext.optional(),
   resetIntent: z.boolean().optional(),
-  followup: FollowupSchema.optional()
+  secondsDelay: z.number().optional(),
+  scheduled: z.number().optional()
 });
+
+
+const deleteSchema = z.object({
+  entityType: z.string(),
+  entityRecordId: z.string(),
+  method: z.literal('delete')
+});
+
+const mutateSchema = z.object({
+  entityType: z.string(),
+  entityRecordId: z.string(),
+  method: z.literal('mutate'),
+  fields: z.record(
+    z.union([
+      z.string(),
+      z.number(),
+      z.boolean(),
+      z.null(),
+      z.literal('#remove'),
+      z.literal('#delete')
+    ])
+  )
+});
+
+export const EntityContextUpsertSchema = z.discriminatedUnion('method', [
+  deleteSchema,
+  mutateSchema
+], {description: 'Metadata to provide a atomic transaction on a entity context record\n * @ingress auto/manual only'});
 
 /**
  * The workflow response object slot
@@ -169,14 +197,19 @@ export const WorkflowResponseSlotBaseSchema = z.object({
 export const WorkflowResponseSlotSchema = WorkflowResponseSlotBaseSchema.extend({
   anticipate: z.union([
     z.object({
-      did: z.string({definition: 'The prompt to check if true or false'}),
+      did: z.string({description: 'The prompt to check if true or false'}),
       yes: WorkflowResponseSlotBaseSchema,
       no: WorkflowResponseSlotBaseSchema
     }),
     z.array(WorkflowResponseSlotBaseSchema.extend({
       keywords: z.array(z.string()).min(1).max(20)
     }))
-  ]).optional()
+  ]).optional(),
+
+  entityContextUpsert: z.array(EntityContextUpsertSchema).optional(),
+
+  tasks: z.array(z.string({description: '@ingress=auto/manual only, If provided, it will send the user\'s workflow tasks to the PMT to execute custom business logic'}))
+    .optional()
 });
 
 /**

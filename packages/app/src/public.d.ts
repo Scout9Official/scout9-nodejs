@@ -4,6 +4,8 @@
  * Application platform for managing auto reply workflows from personal communication methods
  */
 
+import { z } from 'zod';
+
 /**
  * @param {WorkflowEvent} event - every workflow receives an event object
  * @param {Object} options
@@ -530,6 +532,21 @@ export type FollowupWithInstructions = FollowupBase & { instructions: Instructio
 
 export type Followup = FollowupWithMessage | FollowupWithInstructions;
 
+/**
+ * Metadata to provide a atomic transaction on a entity context record
+ * @ingress auto/manual only
+ */
+export type EntityContextUpsert = {
+    entityType: string;
+    entityRecordId: string;
+    method: 'mutate' | 'delete'
+} & ({
+    method: 'delete'
+} | {
+    method: 'mutate';
+    fields: Record<string, string | number | boolean | null | '#remove' | '#delete'>;
+});
+
 export type Forward = boolean | string | {
     to?: string | undefined;
     mode?: ("after-reply" | "immediately") | undefined;
@@ -543,6 +560,10 @@ export type IntentWorkflowEvent = {
     initial: string | null;
 };
 
+/**
+ * metadata relationship for the <entity-context>/<entity> element in transcripts and instructions
+ * @ingress auto/manual
+ */
 export type EntityToken = {
     start: number;
     end: number;
@@ -551,9 +572,44 @@ export type EntityToken = {
     text?: string | null;
 }
 
+/**
+ * metadata relationship for the <entity-api> element in transcripts and instructions
+ * @ingress auto/manual
+ */
+export type EntityApi = {
+
+    /**
+     * REST URI to hit
+     */
+    uri: string;
+
+    /**
+     * Method to use to call the api, defaults to "POST"
+     */
+    method?: string;
+
+    /**
+     * Additional payload to include to the api
+     */
+    body?: ConversationContext;
+
+    /**
+     * Headers to apply to the call
+     */
+    headers?: Record<string, string>;
+
+    /**
+     * Separate URI to establish OAuth 2.0/JWT tokens
+     */
+    auth?: Omit<EntityApi, 'auth'>;
+}
+
 export type Message = {
     /** Unique ID for the message */
     id: string;
+    /**
+     * @TODO role:agent is inaccurate it should be "persona"
+     */
     role: "agent" | "customer" | "system";
     content: string;
     /** Datetime ISO 8601 timestamp */
@@ -569,8 +625,12 @@ export type Message = {
     intentScore?: (number | null) | undefined;
     /** How long to delay the message manually in seconds */
     delayInSeconds?: (number | null) | undefined;
-    /** Entities related to the message */
+    /** Entities related to the message (gets set after the PMT transform) */
     entities?: EntityToken[] | null;
+    /** If set to true, the PMT will not transform, message will be sent as is */
+    ignoreTransform?: boolean;
+    /** Media urls to attach to the transported message */
+    mediaUrls?: string[];
 };
 
 export type PersonaConfiguration = AgentConfiguration;
@@ -666,27 +726,74 @@ export type AnticipateKeywords = WorkflowResponseSlotBase & {
 
 export type Anticipate = AnticipateDid | AnticipateKeywords[];
 
+export type DirectMessage = Partial<Omit<Message, 'id' | 'entities' | 'time' | 'role'>>;
+
+/**
+ * Workflow Response Slot, can use for both PMT workflow event and event macro runtimes
+ */
 export type WorkflowResponseSlotBase = {
-    /** Forward input information of a conversation */
-    forward?: Forward | undefined;
-    /** Note to provide to the agent, recommend using forward object api instead */
-    forwardNote?: string | undefined;
-    instructions?: Instruction[] | undefined;
-    removeInstructions?: string[] | undefined;
-    message?: string | {content: string; transform?: boolean} | undefined;
-    secondsDelay?: number | undefined;
-    scheduled?: number | undefined;
+    /** Context to upsert to the conversation */
     contextUpsert?: {
         [x: string]: any;
     } | undefined;
-    resetIntent?: boolean | undefined;
+
+    /** Information to follow up to the client */
     followup?: Followup | undefined;
+
+    /** Forward input information of a conversation */
+    forward?: Forward | undefined;
+
+    /** Note to provide to the agent, recommend using forward object api instead */
+    forwardNote?: string | undefined;
+
+    /** Instructions to send to the PMT on how to steer the conversation */
+    instructions?: Instruction[] | undefined;
+
+    /** If provided, sends a direct message to the user */
+    message?: string | DirectMessage | undefined;
+
+    /** Remove instructions from memory (requires set instructions to have ids) */
+    removeInstructions?: string[] | undefined;
+
+    /** If true, resets the conversations intent value to undefined or to its initial value */
+    resetIntent?: boolean | undefined;
+
+    /** Delays in seconds of instructions (if provided) to PMT and direct message (if provided) to user */
+    secondsDelay?: number | undefined;
+
+    /** unix time of when to send instructions or message */
+    scheduled?: number | undefined;
+
 };
 
+/**
+ * Workflow Response Slot, only PMT workflow events
+ */
 export type WorkflowResponseSlot = WorkflowResponseSlotBase & {
+    /**
+     * The Anticipate API acts as a preflight to the users next response, for example:
+     *      - did the user agree to accept the concert tickets? Then proceed with asking for their email
+     *      - Did the user say any of these words: "cancel", "drop", or "remove"? Then cancel tickets
+     */
     anticipate?: Anticipate | undefined;
+
+    /**
+     * If provided, it will propagate entity context to your Scout9 entity context store
+     * @ingress auto/manual only
+     */
+    entityContextUpsert?: Array<EntityContextUpsert> | undefined;
+
+    /**
+     * If provided, it will send the user's workflow tasks to the PMT to execute custom business logic
+     * @ingress auto/manual only
+     */
+    tasks?: string[] | undefined;
 };
 
+/**
+ * The JSON anticipated response for a given workflow to drive the PMT runtime
+ * Can either be an EventMacro or WorkflowResponseSlot
+ */
 export type WorkflowResponse = EventMacros | WorkflowResponseSlot | (WorkflowResponseSlot | EventMacros)[];
 
 export type WorkflowFunction = (event: WorkflowEvent) => WorkflowResponse | Promise<WorkflowResponse>;

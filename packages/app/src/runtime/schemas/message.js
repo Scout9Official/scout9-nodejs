@@ -20,5 +20,7 @@ export const MessageSchema = z.object({
   intent: z.string({description: 'Detected intent'}).optional().nullable(),
   intentScore: z.number({description: 'Confidence score of the assigned intent'}).nullable().optional(),
   delayInSeconds: z.number({description: 'How long to delay the message manually in seconds'}).nullable().optional(),
-  entities: z.array(MessageEntitySchema).optional().nullable()
+  entities: z.array(MessageEntitySchema).optional().nullable(),
+  ignoreTransform: z.boolean({description: 'If set to true, the PMT will not transform, message will be sent as is'}).optional(),
+  mediaUrls: z.array(z.string(), {description: 'Media urls to attach to the transported message'}).optional().nullable()
 });

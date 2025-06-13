@@ -2508,19 +2508,25 @@ export interface GenerateRequestOneOf {
      * @type {string}
      * @memberof GenerateRequestOneOf
      */
-    'convo'?: string;
+    'convo': string;
     /**
      * Instruction to generate from
      * @type {string}
      * @memberof GenerateRequestOneOf
      */
-    'instruction'?: string;
+    'instruction': string;
     /**
      * the customer ID, phone, or email this message is targeted for transformation
      * @type {string}
      * @memberof GenerateRequestOneOf
      */
     'customerIdOrPhoneOrEmail'?: string;
+    /**
+     * Custom workflow task ids to execute for support custom business logic
+     * @type {Array<string>}
+     * @memberof GenerateRequestOneOf
+     */
+    'tasks'?: Array<string>;
 }
 /**
  *
@@ -2558,6 +2564,12 @@ export interface GenerateRequestOneOf1 {
      * @memberof GenerateRequestOneOf1
      */
     'pmt'?: PmtConfig;
+    /**
+     * Custom workflow task ids to execute for support custom business logic
+     * @type {Array<string>}
+     * @memberof GenerateRequestOneOf1
+     */
+    'tasks'?: Array<string>;
 }
 /**
  * @type GenerateRequestOneOf1Persona

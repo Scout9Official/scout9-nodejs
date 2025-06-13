@@ -2564,19 +2564,25 @@ export interface GenerateRequestOneOf {
    * @type {string}
    * @memberof GenerateRequestOneOf
    */
-  'convo'?: string;
+  'convo': string;
   /**
    * Instruction to generate from
    * @type {string}
    * @memberof GenerateRequestOneOf
    */
-  'instruction'?: string;
+  'instruction': string;
   /**
    * the customer ID, phone, or email this message is targeted for transformation
    * @type {string}
    * @memberof GenerateRequestOneOf
    */
   'customerIdOrPhoneOrEmail'?: string;
+  /**
+   * Custom workflow task ids to execute for support custom business logic
+   * @type {Array<string>}
+   * @memberof GenerateRequestOneOf
+   */
+  'tasks'?: Array<string>;
 }
 /**
  *
@@ -2614,6 +2620,12 @@ export interface GenerateRequestOneOf1 {
    * @memberof GenerateRequestOneOf1
    */
   'pmt'?: PmtConfig;
+  /**
+   * Custom workflow task ids to execute for support custom business logic
+   * @type {Array<string>}
+   * @memberof GenerateRequestOneOf1
+   */
+  'tasks'?: Array<string>;
 }
 /**
  * @type GenerateRequestOneOf1Persona
@@ -6581,8 +6593,8 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
       // verify required parameter 'entityData' is not null or undefined
       assertParamExists('addEntity', 'entityData', entityData)
       const localVarPath = `/v1-entity/{type}/{id}`
-        .replace(`{${"type"}}`, encodeURIComponent(String(type)))
-        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+          .replace(`{${"type"}}`, encodeURIComponent(String(type)))
+          .replace(`{${"id"}}`, encodeURIComponent(String(id)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -7831,8 +7843,8 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
       // verify required parameter 'id' is not null or undefined
       assertParamExists('deleteEntity', 'id', id)
       const localVarPath = `/v1-entity/{type}/{id}`
-        .replace(`{${"type"}}`, encodeURIComponent(String(type)))
-        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+          .replace(`{${"type"}}`, encodeURIComponent(String(type)))
+          .replace(`{${"id"}}`, encodeURIComponent(String(id)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -7941,8 +7953,8 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
       // verify required parameter 'id' is not null or undefined
       assertParamExists('entity', 'id', id)
       const localVarPath = `/v1-entity/{type}/{id}`
-        .replace(`{${"type"}}`, encodeURIComponent(String(type)))
-        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+          .replace(`{${"type"}}`, encodeURIComponent(String(type)))
+          .replace(`{${"id"}}`, encodeURIComponent(String(id)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -8523,8 +8535,8 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
       // verify required parameter 'entityData' is not null or undefined
       assertParamExists('replaceEntity', 'entityData', entityData)
       const localVarPath = `/v1-entity/{type}/{id}`
-        .replace(`{${"type"}}`, encodeURIComponent(String(type)))
-        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+          .replace(`{${"type"}}`, encodeURIComponent(String(type)))
+          .replace(`{${"id"}}`, encodeURIComponent(String(id)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -8746,8 +8758,8 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
       // verify required parameter 'entityData' is not null or undefined
       assertParamExists('updateEntity', 'entityData', entityData)
       const localVarPath = `/v1-entity/{type}/{id}`
-        .replace(`{${"type"}}`, encodeURIComponent(String(type)))
-        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+          .replace(`{${"type"}}`, encodeURIComponent(String(type)))
+          .replace(`{${"id"}}`, encodeURIComponent(String(id)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;

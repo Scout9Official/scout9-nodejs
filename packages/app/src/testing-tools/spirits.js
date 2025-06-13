@@ -3,7 +3,6 @@
  * @property {string} id
  */
 
-
 /**
  * Represents a change with before and after states of a given type.
  * @template Type The type of the before and after properties.
@@ -48,14 +47,6 @@
  */
 
 /**
- * @typedef {Object} GenerateOutput
- * @property {import('@scout9/admin').GenerateResponse | undefined} generate
- * @property {Array<import('@scout9/app').Message>} messages
- * @property {import('@scout9/app').Conversation} conversation
- * @property {any} context
- */
-
-/**
  * @callback ParseFun
  * @param {string} message - message to send
  * @param {string | undefined} language - language to parse in, defaults to "en" for english
@@ -70,7 +61,7 @@
 
 /**
  * @callback GenerateFun
- * @param {import('@scout9/admin').GenerateRequestOneOf} data - data to generate from
+ * @param {import('@scout9/admin').GenerateRequestOneOf1} data - data to generate from
  * @returns {Promise<import('@scout9/admin').GenerateResponse>}
  */
 
@@ -105,13 +96,18 @@
  * @property {StatusCallback | undefined} [progress]
  */
 
+
 /**
  * @typedef {Object} ConversationEvent
- * @property {Change<import('@scout9/app').Conversation> & {forwardNote?: string; forward?: import('@scout9/app').WorkflowResponseSlot['forward']}} conversation
+ * @property {(Change<import('@scout9/app').Conversation> & {
+ *   forwardNote?: string;
+ *   forward?: import('@scout9/app').WorkflowResponseSlot['forward'];
+ * })} conversation
  * @property {Change<Array<import('@scout9/app').Message>>} messages
  * @property {Change<any>} context
  * @property {Change<import('@scout9/app').Message>} message
  * @property {Array<import('@scout9/app').Followup>} followup
+ * @property {Array<import('@scout9/app').EntityContextUpsert>} entityContextUpsert
  */
 export const Spirits = {
 
@@ -137,7 +133,10 @@ export const Spirits = {
       conversation: conversationBefore
     } = input;
     let {conversation, messages, context, message} = input;
+
+    // Storing post process events here
     const followup = [];
+    const entityContextUpsert = [];
 
     // 0. Setup Helpers
     const updateConversation = (previousConversation, conversationUpdates) => {
@@ -386,6 +385,9 @@ export const Spirits = {
     let _forward;
     let _forwardNote;
 
+    /** @type {Array<string> | undefined} */
+    let _tasks;
+
     for (const {
       forward,
       forwardNote,
@@ -398,6 +400,8 @@ export const Spirits = {
       contextUpsert,
       anticipate,
       followup: slotFollowup,
+      entityContextUpsert: slotEntityContextUpsert,
+      tasks
     } of slots) {
 
       // Anticipate customer response
@@ -435,8 +439,18 @@ export const Spirits = {
         }
       }
 
+      // tasks from auto/manual ingress to execute
+      if (!!tasks && Array.isArray(tasks) && !!tasks.length) {
+        if (!_tasks) _tasks = [];
+        _tasks.push(...tasks);
+      }
+
       if (slotFollowup) {
         followup.push(slotFollowup);
+      }
+
+      if (slotEntityContextUpsert && slotEntityContextUpsert.length) {
+        entityContextUpsert.push(...slotEntityContextUpsert);
       }
 
       // Forward to agent or other agent
@@ -514,15 +528,24 @@ export const Spirits = {
       }
 
       if (manualMessage) {
+
+        /** @type {import('@scout9/app').Message} */
         let manualMessageObj = {
-          id: idGenerator('agent'),
-          role: 'agent',
-          content: manualMessage,
+          id: idGenerator('persona'),
+          role: 'agent', // @TODO switch role to persona
+          content: '',
           time: new Date().toISOString()
         };
-        if (typeof manualMessage !== 'string') {
-          throw new Error('Manual message must be of type "string"');
+        if (typeof manualMessage === 'object') {
+          Object.assign(manualMessageObj, manualMessage);
+          manualMessageObj.role = 'agent';
+          manualMessageObj.time = new Date().toISOString();
+        } else if (typeof manualMessage === 'string') {
+          manualMessageObj.content = manualMessage;
+        } else {
+          throw new Error('Manual message must be of type "string" or "DirectMessage"');
         }
+
         if (scheduled) {
           manualMessageObj.time = new Date(scheduled * 1000).toISOString();
           manualMessageObj.scheduled = manualMessageObj.time;
@@ -568,13 +591,20 @@ export const Spirits = {
       if ((!conversation.locked || !hasNoInstructions) && !!hasNoCustomMessage) {
         try {
           progress('Generating message', 'info', 'SET_PROCESSING', 'system');
-          const generatorPayload = await generator({
+
+          /** @type {import('@scout9/admin').GenerateRequestOneOf1} */
+          const generatorInput = {
             messages,
             persona,
             context,
             llm: config.llm,
             pmt: config.pmt
-          });
+          }
+
+          if (!!_tasks && Array.isArray(_tasks) && !!_tasks.length) {
+            generatorInput.tasks = _tasks;
+          }
+          const generatorPayload = await generator(generatorInput);
           if (!generatorPayload.send) {
             progress('Generated response', 'failed', undefined, {error: generatorPayload.error || 'Unknown Reason'});
             console.error(
@@ -680,7 +710,8 @@ export const Spirits = {
         before: contextBefore,
         after: context
       },
-      followup
+      followup,
+      entityContextUpsert
     };
   }
 };
