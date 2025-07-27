@@ -5,6 +5,7 @@
  */
 
 import { z } from 'zod';
+import { Message as MessageAdmin, EntityToken as EntityTokenAdmin } from '@scout9/admin'
 
 /**
  * @param {WorkflowEvent} event - every workflow receives an event object
@@ -475,13 +476,64 @@ export type EntityTest = {
     };
 };
 
-export type EntityConfiguration = {
-    /** If not provided, the id will default to the route (folder) name */
-    id?: string | undefined;
-    definitions?: EntityDefinition[] | undefined;
-    training?: EntityTrainingDocument[] | undefined;
-    tests?: EntityTest[] | undefined;
+/**
+ * The type of entity.
+ * - "entity" represents a core entity type.
+ * - "reference" represents a categorical reference to a core entity.
+ */
+export type EntityConfigurationType = 'entity' | 'reference';
+
+/** Configuration for a core entity */
+export type CoreEntityConfiguration = {
+    type: 'entity';
 };
+
+/** Configuration for a reference entity */
+export type CategoricalReferenceEntityConfiguration = {
+    type: 'reference';
+    /**
+     * The ID of the core entity this reference entity links to.
+     */
+    references: string;
+};
+
+/** Fallback when the type is unknown or optional */
+export type UnknownEntityConfigurationType = {
+    /**
+     * The type of entity.
+     * - "entity" for core types
+     * - "reference" for generated categories that reference core entities
+     */
+    type?: EntityConfigurationType;
+    /** Required if type is "reference" */
+    references?: string;
+};
+
+/** Base entity NLP configuration file used for training/tuning its corresponding NLP model(s) */
+export type EntityConfigurationBase = {
+    /**
+     * Optional ID; if not provided, defaults to the route (folder) name.
+     */
+    id?: string;
+
+    /**
+     * The corpus definitions used to compute embeddings for NLP models.
+     */
+    definitions?: EntityDefinition[];
+
+    /**
+     * The corpus documents used to train NLP models.
+     */
+    training?: EntityTrainingDocument[];
+
+    /**
+     * Tests to validate the trained NLP model.
+     */
+    tests?: EntityTest[];
+};
+
+/** Full entity NLP configuration file used for training/tuning its corresponding NLP model(s) */
+export type EntityConfiguration = EntityConfigurationBase & (CategoricalReferenceEntityConfiguration | CoreEntityConfiguration | UnknownEntityConfigurationType);
 
 export type EntityApiConfiguration = {
     GET?: boolean | undefined;
@@ -563,14 +615,9 @@ export type IntentWorkflowEvent = {
 /**
  * metadata relationship for the <entity-context>/<entity> element in transcripts and instructions
  * @ingress auto/manual
+ * @deprecated use @scout9/admin EntityTokenAdmin
  */
-export type EntityToken = {
-    start: number;
-    end: number;
-    type: string;
-    option?: string | null;
-    text?: string | null;
-}
+export type EntityToken = EntityTokenAdmin;
 
 /**
  * metadata relationship for the <entity-api> element in transcripts and instructions
@@ -604,34 +651,10 @@ export type EntityApi = {
     auth?: Omit<EntityApi, 'auth'>;
 }
 
-export type Message = {
-    /** Unique ID for the message */
-    id: string;
-    /**
-     * @TODO role:agent is inaccurate it should be "persona"
-     */
-    role: "agent" | "customer" | "system";
-    content: string;
-    /** Datetime ISO 8601 timestamp */
-    time: string;
-    name?: string | undefined;
-    /** Datetime ISO 8601 timestamp */
-    scheduled?: string | undefined;
-    /** The context generated from the message */
-    context?: any | undefined;
-    /** Detected intent */
-    intent?: (string | undefined) | null;
-    /** Confidence score of the assigned intent */
-    intentScore?: (number | null) | undefined;
-    /** How long to delay the message manually in seconds */
-    delayInSeconds?: (number | null) | undefined;
-    /** Entities related to the message (gets set after the PMT transform) */
-    entities?: EntityToken[] | null;
-    /** If set to true, the PMT will not transform, message will be sent as is */
-    ignoreTransform?: boolean;
-    /** Media urls to attach to the transported message */
-    mediaUrls?: string[];
-};
+/**
+ * @deprecated use @scout/admin Message
+ */
+export type Message = MessageAdmin;
 
 export type PersonaConfiguration = AgentConfiguration;
 

@@ -114,9 +114,11 @@ export const Spirits = {
   /**
    * Customer message
    * @param {ConversationData & CustomerSpiritCallbacks} input
+   * @param {(error: Error) => void} onError
    * @returns {Promise<ConversationEvent>}
    */
-  customer: async function (input) {
+  customer: async function (input, onError = () => {
+  }) {
     const {
       customer,
       config,
@@ -340,6 +342,16 @@ export const Spirits = {
 
     const noNewContext = Object.keys(parsePayload.context).length === 0;
 
+    // upsert parse system messages
+    if (parsePayload.contextMessages.length) {
+      messages.push(...parsePayload.contextMessages.map((text) => ({
+        id: idGenerator('sys'),
+        role: 'system',
+        content: text,
+        time: new Date().toISOString()
+      })));
+    }
+
     // 3. Run the workflow
     progress('Running workflow', 'info', 'SET_PROCESSING', 'system');
 
@@ -432,7 +444,7 @@ export const Spirits = {
               yes: anticipate.yes,
               no: anticipate.no
             },
-            did: anticipate.did,
+            did: anticipate.did
           });
         } else {
           throw new Error(`Invalid anticipate payload "${JSON.stringify(anticipate)}"`);
@@ -509,7 +521,8 @@ export const Spirits = {
         } else if (typeof instructions === 'object' && 'content' in instructions) {
           addInstruction(instructions.content, previousLockAttempt, instructions.id);
         } else {
-          throw new Error(`SpiritsError: instructions must be a string or array or {content: "<instruction>"}, got: ${JSON.stringify(instructions)}`);
+          throw new Error(`SpiritsError: instructions must be a string or array or {content: "<instruction>"}, got: ${JSON.stringify(
+            instructions)}`);
         }
       }
 
@@ -522,7 +535,8 @@ export const Spirits = {
             messages.splice(index, 1);
             progress('Remove instruction', 'info', 'REMOVE_MESSAGE', instructionId);
           } else {
-            console.log(`Instruction not found "${instructionId}", other ids: ${messages.map(m => `"${m.id}"`).join(', ')}`);
+            console.log(`Instruction not found "${instructionId}", other ids: ${messages.map(m => `"${m.id}"`)
+              .join(', ')}`);
           }
         }
       }
@@ -599,37 +613,52 @@ export const Spirits = {
             context,
             llm: config.llm,
             pmt: config.pmt
-          }
+          };
 
           if (!!_tasks && Array.isArray(_tasks) && !!_tasks.length) {
             generatorInput.tasks = _tasks;
           }
           const generatorPayload = await generator(generatorInput);
           if (!generatorPayload.send) {
-            progress('Generated response', 'failed', undefined, {error: generatorPayload.error || 'Unknown Reason'});
+            progress('Generated response', 'failed', undefined, {error: generatorPayload.errors?.join('\n\n') || 'Unknown Reason'});
             console.error(
-              `Locking conversation, api returned send false: ${generatorPayload.message}`,
-              generatorPayload.error || 'Unknown Reason'
+              `Locking conversation, api returned send false: ${generatorPayload.messages}`,
+              generatorPayload.errors?.join('\n\n') || generatorPayload.forwardNote || 'Unknown Reason'
             );
-            conversation = lockConversation(conversation, 'API: ' + generatorPayload.error || 'Unknown Reason');
+            conversation = lockConversation(
+              conversation,
+              'API: ' + generatorPayload.errors?.join('\n\n') || generatorPayload.forwardNote || 'Unknown Reason'
+            );
           } else {
             progress('Generated response', 'success', undefined, undefined);
             // Check if already had message
             const agentMessages = messages.filter(m => m.role === 'agent');
             const lastAgentMessage = agentMessages[agentMessages.length - 1];
-            if (lastAgentMessage && lastAgentMessage.content === generatorPayload.message) {
+            const addedMessages = [
+              ...(generatorPayload?.messages || [])
+                .map((message) => ({
+                  id: idGenerator(message.role),
+                  content: message.content,
+                  role: message.role,
+                  time: message.time?.toDate()?.toISOString() || new Date().toISOString(),
+                  entities: message.entities ?? {},
+                  context: message.context ?? {},
+                  mediaUrls: message.mediaUrls
+                }))
+            ]
+              .reduce((accumulator, message) => {
+                if (!accumulator.find(m => m.content === message.content)) accumulator.push(message);
+                return accumulator;
+              }, []);
+
+            if (lastAgentMessage && lastAgentMessage.content && addedMessages.some((message) => message.content === lastAgentMessage.content)) {
               // Error should not have happened
               conversation = lockConversation(conversation, 'Duplicate message');
             } else {
-              messages.push({
-                id: idGenerator('agent'),
-                role: 'agent',
-                content: generatorPayload.message,
-                time: new Date().toISOString(),
-                entities: generatorPayload.entities ?? [],
-                context: generatorPayload.context ?? {}
-              });
-              progress('Added agent message', 'info', 'ADD_MESSAGE', messages[messages.length - 1]);
+              for (const newMessage of addedMessages) {
+                messages.push(newMessage);
+                progress('Added agent message', 'info', 'ADD_MESSAGE', messages[messages.length - 1]);
+              }
             }
 
             // Check if conversation was marked for forward (generator message still allowed to be sent)
@@ -646,7 +675,8 @@ export const Spirits = {
           }
 
         } catch (e) {
-          console.error(`Locking conversation, error generating response: ${e.message}`);
+          onError(e);
+          console.error(`Spirits: Locking conversation, error generating response: ${e.message}`);
           conversation = lockConversation(conversation, 'API: ' + e.message);
         }
       }
@@ -683,9 +713,10 @@ export const Spirits = {
         } catch (e) {
           console.error(`Locking conversation, error transforming response: ${e.message}`);
           conversation = lockConversation(conversation, 'API: ' + e.message);
+          onError(e);
         }
       } else if (messagesToTransform.length) {
-        console.warn(`No transformer provided`)
+        console.warn(`No transformer provided`);
       }
     }
 

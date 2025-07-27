@@ -16,7 +16,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Scout9Api = exports.Scout9ApiGenerated = exports.Scout9ApiFactory = exports.Scout9ApiFp = exports.Scout9ApiAxiosParamCreator = exports.NoopApi = exports.NoopApiFactory = exports.NoopApiFp = exports.NoopApiAxiosParamCreator = exports.WorkflowResponseSlotForwardOneOfModeEnum = exports.PurposeEnum = exports.PmtTransformResponseTypeEnum = exports.PmtConfigModelEnum = exports.PmtConfigEngineEnum = exports.MessageGetResponseInnerRoleEnum = exports.MessageCreateRequestRoleEnum = exports.MessageBaseRoleEnum = exports.MessageRoleEnum = exports.MacroResultTypeEnum = exports.MacroDoesResultTypeEnum = exports.MacroDoesInputRoleEnum = exports.MacroDidResultTypeEnum = exports.MacroContextResultTypeEnum = exports.LlmConfigOneOf2EngineEnum = exports.LlmConfigOneOf1EngineEnum = exports.LlmConfigOneOfModelEnum = exports.LlmConfigOneOfEngineEnum = exports.ListApiOperationsResponseInnerMethodEnum = exports.GetApiOperationResponseMethodEnum = exports.ForwardRequestLatestMessageRoleEnum = exports.ForwardRequestForwardOneOfModeEnum = exports.ExistenceOperator = exports.EqualityOperator = exports.ConversationEnvironment = exports.ConversationContextFieldConditionOperatorEnum = exports.ApiOperationMethodEnum = void 0;
+exports.PmtConfigModelEnum = exports.PmtConfigEngineEnum = exports.MessageGetResponseInnerRoleEnum = exports.MessageCreateRequestRoleEnum = exports.MessageBaseRoleEnum = exports.MessageRoleEnum = exports.MacroResultTypeEnum = exports.MacroDoesResultTypeEnum = exports.MacroDoesInputRoleEnum = exports.MacroDidResultTypeEnum = exports.MacroContextResultTypeEnum = exports.LlmConfigOneOfAllOfModelEnum = exports.LlmConfigOneOfAllOfEngineEnum = exports.LlmConfigOneOf7AllOfEngineEnum = exports.LlmConfigOneOf7EngineEnum = exports.LlmConfigOneOf6AllOfModelEnum = exports.LlmConfigOneOf6AllOfEngineEnum = exports.LlmConfigOneOf6ModelEnum = exports.LlmConfigOneOf6EngineEnum = exports.LlmConfigOneOf5AllOfModelEnum = exports.LlmConfigOneOf5AllOfEngineEnum = exports.LlmConfigOneOf5ModelEnum = exports.LlmConfigOneOf5EngineEnum = exports.LlmConfigOneOf4AllOfModelEnum = exports.LlmConfigOneOf4AllOfEngineEnum = exports.LlmConfigOneOf4ModelEnum = exports.LlmConfigOneOf4EngineEnum = exports.LlmConfigOneOf3AllOfModelEnum = exports.LlmConfigOneOf3AllOfEngineEnum = exports.LlmConfigOneOf3ModelEnum = exports.LlmConfigOneOf3EngineEnum = exports.LlmConfigOneOf2AllOfModelEnum = exports.LlmConfigOneOf2AllOfEngineEnum = exports.LlmConfigOneOf2ModelEnum = exports.LlmConfigOneOf2EngineEnum = exports.LlmConfigOneOf1AllOfModelEnum = exports.LlmConfigOneOf1AllOfEngineEnum = exports.LlmConfigOneOf1ModelEnum = exports.LlmConfigOneOf1EngineEnum = exports.LlmConfigOneOfModelEnum = exports.LlmConfigOneOfEngineEnum = exports.ListApiOperationsResponseInnerMethodEnum = exports.GetApiOperationResponseMethodEnum = exports.ForwardRequestLatestMessageRoleEnum = exports.ForwardRequestForwardOneOfModeEnum = exports.ExistenceOperator = exports.EqualityOperator = exports.ConversationEnvironment = exports.ConversationContextFieldConditionOperatorEnum = exports.ApiOperationMethodEnum = void 0;
+exports.Scout9Api = exports.Scout9ApiGenerated = exports.Scout9ApiFactory = exports.Scout9ApiFp = exports.Scout9ApiAxiosParamCreator = exports.NoopApi = exports.NoopApiFactory = exports.NoopApiFp = exports.NoopApiAxiosParamCreator = exports.WorkflowResponseSlotForwardOneOfModeEnum = exports.PurposeEnum = exports.PmtTransformResponseTypeEnum = void 0;
 const axios_1 = __importDefault(require("axios"));
 // Some imports not used depending on template conditions
 // @ts-ignore
@@ -101,7 +102,8 @@ exports.ForwardRequestForwardOneOfModeEnum = {
 exports.ForwardRequestLatestMessageRoleEnum = {
     Customer: 'customer',
     Agent: 'agent',
-    Context: 'context'
+    System: 'system',
+    Tool: 'tool'
 };
 exports.GetApiOperationResponseMethodEnum = {
     Get: 'get',
@@ -124,22 +126,110 @@ exports.LlmConfigOneOfModelEnum = {
     _41106Preview: 'gpt-4-1106-preview',
     _4VisionPreview: 'gpt-4-vision-preview',
     _4: 'gpt-4',
-    _40314: 'gpt-4-0314',
-    _40613: 'gpt-4-0613',
-    _432k: 'gpt-4-32k',
-    _432k0314: 'gpt-4-32k-0314',
-    _432k0613: 'gpt-4-32k-0613',
     _35Turbo: 'gpt-3.5-turbo',
-    _35Turbo16k: 'gpt-3.5-turbo-16k',
-    _35Turbo0301: 'gpt-3.5-turbo-0301',
-    _35Turbo0613: 'gpt-3.5-turbo-0613',
-    _35Turbo16k0613: 'gpt-3.5-turbo-16k-0613'
+    _35Turbo16k: 'gpt-3.5-turbo-16k'
 };
 exports.LlmConfigOneOf1EngineEnum = {
-    Llama: 'llama'
+    Anthropic: 'anthropic'
+};
+exports.LlmConfigOneOf1ModelEnum = {
+    _3Opus20240229: 'claude-3-opus-20240229',
+    _3Sonnet20240229: 'claude-3-sonnet-20240229',
+    _21: 'claude-2.1',
+    Instant12: 'claude-instant-1.2'
+};
+exports.LlmConfigOneOf1AllOfEngineEnum = {
+    Anthropic: 'anthropic'
+};
+exports.LlmConfigOneOf1AllOfModelEnum = {
+    _3Opus20240229: 'claude-3-opus-20240229',
+    _3Sonnet20240229: 'claude-3-sonnet-20240229',
+    _21: 'claude-2.1',
+    Instant12: 'claude-instant-1.2'
 };
 exports.LlmConfigOneOf2EngineEnum = {
+    Meta: 'meta'
+};
+exports.LlmConfigOneOf2ModelEnum = {
+    _270bChat: 'llama-2-70b-chat',
+    _370bInstruct: 'llama-3-70b-instruct',
+    _38bInstruct: 'llama-3-8b-instruct'
+};
+exports.LlmConfigOneOf2AllOfEngineEnum = {
+    Meta: 'meta'
+};
+exports.LlmConfigOneOf2AllOfModelEnum = {
+    _270bChat: 'llama-2-70b-chat',
+    _370bInstruct: 'llama-3-70b-instruct',
+    _38bInstruct: 'llama-3-8b-instruct'
+};
+exports.LlmConfigOneOf3EngineEnum = {
+    Deepseek: 'deepseek'
+};
+exports.LlmConfigOneOf3ModelEnum = {
+    Chat: 'deepseek-chat',
+    Coder: 'deepseek-coder'
+};
+exports.LlmConfigOneOf3AllOfEngineEnum = {
+    Deepseek: 'deepseek'
+};
+exports.LlmConfigOneOf3AllOfModelEnum = {
+    Chat: 'deepseek-chat',
+    Coder: 'deepseek-coder'
+};
+exports.LlmConfigOneOf4EngineEnum = {
+    Grok: 'grok'
+};
+exports.LlmConfigOneOf4ModelEnum = {
+    Grok1: 'grok-1'
+};
+exports.LlmConfigOneOf4AllOfEngineEnum = {
+    Grok: 'grok'
+};
+exports.LlmConfigOneOf4AllOfModelEnum = {
+    Grok1: 'grok-1'
+};
+exports.LlmConfigOneOf5EngineEnum = {
+    Mistral: 'mistral'
+};
+exports.LlmConfigOneOf5ModelEnum = {
+    Mistral7bInstruct: 'mistral-7b-instruct',
+    Mixtral8x7bInstruct: 'mixtral-8x7b-instruct'
+};
+exports.LlmConfigOneOf5AllOfEngineEnum = {
+    Mistral: 'mistral'
+};
+exports.LlmConfigOneOf5AllOfModelEnum = {
+    Mistral7bInstruct: 'mistral-7b-instruct',
+    Mixtral8x7bInstruct: 'mixtral-8x7b-instruct'
+};
+exports.LlmConfigOneOf6EngineEnum = {
+    Cohere: 'cohere'
+};
+exports.LlmConfigOneOf6ModelEnum = {
+    CommandRPlus: 'command-r-plus'
+};
+exports.LlmConfigOneOf6AllOfEngineEnum = {
+    Cohere: 'cohere'
+};
+exports.LlmConfigOneOf6AllOfModelEnum = {
+    CommandRPlus: 'command-r-plus'
+};
+exports.LlmConfigOneOf7EngineEnum = {
     Bard: 'bard'
+};
+exports.LlmConfigOneOf7AllOfEngineEnum = {
+    Bard: 'bard'
+};
+exports.LlmConfigOneOfAllOfEngineEnum = {
+    Openai: 'openai'
+};
+exports.LlmConfigOneOfAllOfModelEnum = {
+    _41106Preview: 'gpt-4-1106-preview',
+    _4VisionPreview: 'gpt-4-vision-preview',
+    _4: 'gpt-4',
+    _35Turbo: 'gpt-3.5-turbo',
+    _35Turbo16k: 'gpt-3.5-turbo-16k'
 };
 exports.MacroContextResultTypeEnum = {
     Context: 'context'
@@ -161,12 +251,14 @@ exports.MacroResultTypeEnum = {
 exports.MessageRoleEnum = {
     Customer: 'customer',
     Agent: 'agent',
-    Context: 'context'
+    System: 'system',
+    Tool: 'tool'
 };
 exports.MessageBaseRoleEnum = {
     Customer: 'customer',
     Agent: 'agent',
-    Context: 'context'
+    System: 'system',
+    Tool: 'tool'
 };
 exports.MessageCreateRequestRoleEnum = {
     Agent: 'agent',
@@ -176,13 +268,17 @@ exports.MessageCreateRequestRoleEnum = {
 exports.MessageGetResponseInnerRoleEnum = {
     Customer: 'customer',
     Agent: 'agent',
-    Context: 'context'
+    System: 'system',
+    Tool: 'tool'
 };
 exports.PmtConfigEngineEnum = {
-    Scout9: 'scout9'
+    Scout9: 'scout9',
+    Opp: 'opp'
 };
 exports.PmtConfigModelEnum = {
-    _10: 'orin-1.0',
+    _10Alpha: 'orin-1.0-alpha',
+    _11Alpha: 'orin-1.1-alpha',
+    Latest: 'orin-latest',
     _20Preview: 'orin-2.0-preview'
 };
 exports.PmtTransformResponseTypeEnum = {

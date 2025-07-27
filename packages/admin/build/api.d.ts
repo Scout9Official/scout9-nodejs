@@ -2219,11 +2219,6 @@ export interface EntityToken {
  */
 export type EntityTokenType = string;
 /**
- * @type EntityType
- * @export
- */
-export type EntityType = string;
-/**
  *
  * @export
  * @interface EqualityCondition
@@ -2442,7 +2437,7 @@ export type ForwardRequestForwardOneOfModeEnum = typeof ForwardRequestForwardOne
  */
 export interface ForwardRequestLatestMessage {
     /**
-     * The role of the message (customer, agent, or business)
+     * The role of the message (customer, agent, or system, tool)
      * @type {string}
      * @memberof ForwardRequestLatestMessage
      */
@@ -2460,22 +2455,85 @@ export interface ForwardRequestLatestMessage {
      */
     'name'?: string;
     /**
-     * The time the message was sent
+     * Context that is derived from the message
+     * @type {{ [key: string]: any; }}
+     * @memberof ForwardRequestLatestMessage
+     */
+    'context'?: {
+        [key: string]: any;
+    };
+    /**
+     * How long to delay the message manually in seconds
+     * @type {number}
+     * @memberof ForwardRequestLatestMessage
+     */
+    'delayInSeconds'?: number;
+    /**
+     * Entities related to the message (gets set after the PMT transform)
+     * @type {Array<EntityToken>}
+     * @memberof ForwardRequestLatestMessage
+     */
+    'entities'?: Array<EntityToken>;
+    /**
+     * Unique ID for the message
+     * @type {string}
+     * @memberof ForwardRequestLatestMessage
+     */
+    'id': string;
+    /**
+     * If set to true, the PMT will not transform, message will be sent as is
+     * @type {boolean}
+     * @memberof ForwardRequestLatestMessage
+     */
+    'ignoreTransform'?: boolean;
+    /**
+     * detected intent of message
+     * @type {string}
+     * @memberof ForwardRequestLatestMessage
+     */
+    'intent'?: string;
+    /**
+     * Confidence score of the assigned intent
+     * @type {number}
+     * @memberof ForwardRequestLatestMessage
+     */
+    'intentScore'?: number;
+    /**
+     * Media urls to attach to the transported message (seperated from content)
+     * @type {Array<string>}
+     * @memberof ForwardRequestLatestMessage
+     */
+    'mediaUrls'?: Array<string>;
+    /**
+     * When the message is scheduled for delivery, Datetime ISO 8601 timestamp
+     * @type {string}
+     * @memberof ForwardRequestLatestMessage
+     */
+    'scheduled'?: string;
+    /**
+     * The time the message was sent, Datetime ISO 8601 timestamp
      * @type {string}
      * @memberof ForwardRequestLatestMessage
      */
     'time': string;
     /**
-     *
-     * @type {Array<EntityToken>}
+     * for auto/manual ingress only, used by LLMs to register when tool calls are invoked, for role=\'assistant\' messages
+     * @type {Array<LlmMessageToolCall>}
      * @memberof ForwardRequestLatestMessage
      */
-    'entities'?: Array<EntityToken>;
+    'tool_calls'?: Array<LlmMessageToolCall>;
+    /**
+     * for auto/manual ingress only, used by LLMs to identity what tool was called
+     * @type {string}
+     * @memberof ForwardRequestLatestMessage
+     */
+    'tool_call_id'?: string;
 }
 export declare const ForwardRequestLatestMessageRoleEnum: {
     readonly Customer: "customer";
     readonly Agent: "agent";
-    readonly Context: "context";
+    readonly System: "system";
+    readonly Tool: "tool";
 };
 export type ForwardRequestLatestMessageRoleEnum = typeof ForwardRequestLatestMessageRoleEnum[keyof typeof ForwardRequestLatestMessageRoleEnum];
 /**
@@ -2583,17 +2641,11 @@ export type GenerateRequestOneOf1Persona = Agent | string;
  */
 export interface GenerateResponse {
     /**
-     * The generated message
-     * @type {string}
-     * @memberof GenerateResponse
-     */
-    'message': string;
-    /**
      *
-     * @type {Array<EntityToken>}
+     * @type {Array<Message>}
      * @memberof GenerateResponse
      */
-    'entities'?: Array<EntityToken>;
+    'messages': Array<Message>;
     /**
      * Context that is derived from the message
      * @type {{ [key: string]: any; }}
@@ -2616,10 +2668,10 @@ export interface GenerateResponse {
     'send'?: boolean;
     /**
      * Any errors that occurred during generation
-     * @type {string}
+     * @type {Array<string>}
      * @memberof GenerateResponse
      */
-    'error'?: string;
+    'errors'?: Array<string>;
     /**
      * Whether the conversation should be forwarded to the agent after sending message
      * @type {boolean}
@@ -2632,6 +2684,18 @@ export interface GenerateResponse {
      * @memberof GenerateResponse
      */
     'forwardNote'?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof GenerateResponse
+     */
+    'type'?: string;
+    /**
+     *
+     * @type {number}
+     * @memberof GenerateResponse
+     */
+    'confidence'?: number;
 }
 /**
  *
@@ -3513,10 +3577,59 @@ export interface ListQueryOperationsInner {
     'value': AnyValue;
 }
 /**
+ *
+ * @export
+ * @interface LlmBaseConfig
+ */
+export interface LlmBaseConfig {
+    /**
+     * Sampling temperature.
+     * @type {number}
+     * @memberof LlmBaseConfig
+     */
+    'temperature'?: number;
+    /**
+     * Maximum tokens to generate.
+     * @type {number}
+     * @memberof LlmBaseConfig
+     */
+    'max_tokens'?: number;
+    /**
+     * Nucleus sampling.
+     * @type {number}
+     * @memberof LlmBaseConfig
+     */
+    'top_p'?: number;
+    /**
+     *
+     * @type {number}
+     * @memberof LlmBaseConfig
+     */
+    'frequency_penalty'?: number;
+    /**
+     *
+     * @type {number}
+     * @memberof LlmBaseConfig
+     */
+    'presence_penalty'?: number;
+    /**
+     *
+     * @type {LlmBaseConfigStop}
+     * @memberof LlmBaseConfig
+     */
+    'stop'?: LlmBaseConfigStop;
+}
+/**
+ * @type LlmBaseConfigStop
+ * Stop sequences.
+ * @export
+ */
+export type LlmBaseConfigStop = Array<string> | string;
+/**
  * @type LlmConfig
  * @export
  */
-export type LlmConfig = LlmConfigOneOf | LlmConfigOneOf1 | LlmConfigOneOf2;
+export type LlmConfig = LlmConfigOneOf | LlmConfigOneOf1 | LlmConfigOneOf2 | LlmConfigOneOf3 | LlmConfigOneOf4 | LlmConfigOneOf5 | LlmConfigOneOf6 | LlmConfigOneOf7 | LlmConfigOneOf8;
 /**
  *
  * @export
@@ -3524,7 +3637,43 @@ export type LlmConfig = LlmConfigOneOf | LlmConfigOneOf1 | LlmConfigOneOf2;
  */
 export interface LlmConfigOneOf {
     /**
+     * Sampling temperature.
+     * @type {number}
+     * @memberof LlmConfigOneOf
+     */
+    'temperature'?: number;
+    /**
+     * Maximum tokens to generate.
+     * @type {number}
+     * @memberof LlmConfigOneOf
+     */
+    'max_tokens'?: number;
+    /**
+     * Nucleus sampling.
+     * @type {number}
+     * @memberof LlmConfigOneOf
+     */
+    'top_p'?: number;
+    /**
      *
+     * @type {number}
+     * @memberof LlmConfigOneOf
+     */
+    'frequency_penalty'?: number;
+    /**
+     *
+     * @type {number}
+     * @memberof LlmConfigOneOf
+     */
+    'presence_penalty'?: number;
+    /**
+     *
+     * @type {LlmBaseConfigStop}
+     * @memberof LlmConfigOneOf
+     */
+    'stop'?: LlmBaseConfigStop;
+    /**
+     * OpenAI engine.
      * @type {string}
      * @memberof LlmConfigOneOf
      */
@@ -3544,16 +3693,8 @@ export declare const LlmConfigOneOfModelEnum: {
     readonly _41106Preview: "gpt-4-1106-preview";
     readonly _4VisionPreview: "gpt-4-vision-preview";
     readonly _4: "gpt-4";
-    readonly _40314: "gpt-4-0314";
-    readonly _40613: "gpt-4-0613";
-    readonly _432k: "gpt-4-32k";
-    readonly _432k0314: "gpt-4-32k-0314";
-    readonly _432k0613: "gpt-4-32k-0613";
     readonly _35Turbo: "gpt-3.5-turbo";
     readonly _35Turbo16k: "gpt-3.5-turbo-16k";
-    readonly _35Turbo0301: "gpt-3.5-turbo-0301";
-    readonly _35Turbo0613: "gpt-3.5-turbo-0613";
-    readonly _35Turbo16k0613: "gpt-3.5-turbo-16k-0613";
 };
 export type LlmConfigOneOfModelEnum = typeof LlmConfigOneOfModelEnum[keyof typeof LlmConfigOneOfModelEnum];
 /**
@@ -3563,7 +3704,43 @@ export type LlmConfigOneOfModelEnum = typeof LlmConfigOneOfModelEnum[keyof typeo
  */
 export interface LlmConfigOneOf1 {
     /**
+     * Sampling temperature.
+     * @type {number}
+     * @memberof LlmConfigOneOf1
+     */
+    'temperature'?: number;
+    /**
+     * Maximum tokens to generate.
+     * @type {number}
+     * @memberof LlmConfigOneOf1
+     */
+    'max_tokens'?: number;
+    /**
+     * Nucleus sampling.
+     * @type {number}
+     * @memberof LlmConfigOneOf1
+     */
+    'top_p'?: number;
+    /**
      *
+     * @type {number}
+     * @memberof LlmConfigOneOf1
+     */
+    'frequency_penalty'?: number;
+    /**
+     *
+     * @type {number}
+     * @memberof LlmConfigOneOf1
+     */
+    'presence_penalty'?: number;
+    /**
+     *
+     * @type {LlmBaseConfigStop}
+     * @memberof LlmConfigOneOf1
+     */
+    'stop'?: LlmBaseConfigStop;
+    /**
+     * Anthropic engine.
      * @type {string}
      * @memberof LlmConfigOneOf1
      */
@@ -3573,12 +3750,49 @@ export interface LlmConfigOneOf1 {
      * @type {string}
      * @memberof LlmConfigOneOf1
      */
-    'model'?: string;
+    'model'?: LlmConfigOneOf1ModelEnum;
 }
 export declare const LlmConfigOneOf1EngineEnum: {
-    readonly Llama: "llama";
+    readonly Anthropic: "anthropic";
 };
 export type LlmConfigOneOf1EngineEnum = typeof LlmConfigOneOf1EngineEnum[keyof typeof LlmConfigOneOf1EngineEnum];
+export declare const LlmConfigOneOf1ModelEnum: {
+    readonly _3Opus20240229: "claude-3-opus-20240229";
+    readonly _3Sonnet20240229: "claude-3-sonnet-20240229";
+    readonly _21: "claude-2.1";
+    readonly Instant12: "claude-instant-1.2";
+};
+export type LlmConfigOneOf1ModelEnum = typeof LlmConfigOneOf1ModelEnum[keyof typeof LlmConfigOneOf1ModelEnum];
+/**
+ *
+ * @export
+ * @interface LlmConfigOneOf1AllOf
+ */
+export interface LlmConfigOneOf1AllOf {
+    /**
+     * Anthropic engine.
+     * @type {string}
+     * @memberof LlmConfigOneOf1AllOf
+     */
+    'engine'?: LlmConfigOneOf1AllOfEngineEnum;
+    /**
+     *
+     * @type {string}
+     * @memberof LlmConfigOneOf1AllOf
+     */
+    'model'?: LlmConfigOneOf1AllOfModelEnum;
+}
+export declare const LlmConfigOneOf1AllOfEngineEnum: {
+    readonly Anthropic: "anthropic";
+};
+export type LlmConfigOneOf1AllOfEngineEnum = typeof LlmConfigOneOf1AllOfEngineEnum[keyof typeof LlmConfigOneOf1AllOfEngineEnum];
+export declare const LlmConfigOneOf1AllOfModelEnum: {
+    readonly _3Opus20240229: "claude-3-opus-20240229";
+    readonly _3Sonnet20240229: "claude-3-sonnet-20240229";
+    readonly _21: "claude-2.1";
+    readonly Instant12: "claude-instant-1.2";
+};
+export type LlmConfigOneOf1AllOfModelEnum = typeof LlmConfigOneOf1AllOfModelEnum[keyof typeof LlmConfigOneOf1AllOfModelEnum];
 /**
  *
  * @export
@@ -3586,7 +3800,43 @@ export type LlmConfigOneOf1EngineEnum = typeof LlmConfigOneOf1EngineEnum[keyof t
  */
 export interface LlmConfigOneOf2 {
     /**
+     * Sampling temperature.
+     * @type {number}
+     * @memberof LlmConfigOneOf2
+     */
+    'temperature'?: number;
+    /**
+     * Maximum tokens to generate.
+     * @type {number}
+     * @memberof LlmConfigOneOf2
+     */
+    'max_tokens'?: number;
+    /**
+     * Nucleus sampling.
+     * @type {number}
+     * @memberof LlmConfigOneOf2
+     */
+    'top_p'?: number;
+    /**
      *
+     * @type {number}
+     * @memberof LlmConfigOneOf2
+     */
+    'frequency_penalty'?: number;
+    /**
+     *
+     * @type {number}
+     * @memberof LlmConfigOneOf2
+     */
+    'presence_penalty'?: number;
+    /**
+     *
+     * @type {LlmBaseConfigStop}
+     * @memberof LlmConfigOneOf2
+     */
+    'stop'?: LlmBaseConfigStop;
+    /**
+     * Meta (LLaMA) engine.
      * @type {string}
      * @memberof LlmConfigOneOf2
      */
@@ -3596,12 +3846,642 @@ export interface LlmConfigOneOf2 {
      * @type {string}
      * @memberof LlmConfigOneOf2
      */
-    'model'?: string;
+    'model'?: LlmConfigOneOf2ModelEnum;
 }
 export declare const LlmConfigOneOf2EngineEnum: {
-    readonly Bard: "bard";
+    readonly Meta: "meta";
 };
 export type LlmConfigOneOf2EngineEnum = typeof LlmConfigOneOf2EngineEnum[keyof typeof LlmConfigOneOf2EngineEnum];
+export declare const LlmConfigOneOf2ModelEnum: {
+    readonly _270bChat: "llama-2-70b-chat";
+    readonly _370bInstruct: "llama-3-70b-instruct";
+    readonly _38bInstruct: "llama-3-8b-instruct";
+};
+export type LlmConfigOneOf2ModelEnum = typeof LlmConfigOneOf2ModelEnum[keyof typeof LlmConfigOneOf2ModelEnum];
+/**
+ *
+ * @export
+ * @interface LlmConfigOneOf2AllOf
+ */
+export interface LlmConfigOneOf2AllOf {
+    /**
+     * Meta (LLaMA) engine.
+     * @type {string}
+     * @memberof LlmConfigOneOf2AllOf
+     */
+    'engine'?: LlmConfigOneOf2AllOfEngineEnum;
+    /**
+     *
+     * @type {string}
+     * @memberof LlmConfigOneOf2AllOf
+     */
+    'model'?: LlmConfigOneOf2AllOfModelEnum;
+}
+export declare const LlmConfigOneOf2AllOfEngineEnum: {
+    readonly Meta: "meta";
+};
+export type LlmConfigOneOf2AllOfEngineEnum = typeof LlmConfigOneOf2AllOfEngineEnum[keyof typeof LlmConfigOneOf2AllOfEngineEnum];
+export declare const LlmConfigOneOf2AllOfModelEnum: {
+    readonly _270bChat: "llama-2-70b-chat";
+    readonly _370bInstruct: "llama-3-70b-instruct";
+    readonly _38bInstruct: "llama-3-8b-instruct";
+};
+export type LlmConfigOneOf2AllOfModelEnum = typeof LlmConfigOneOf2AllOfModelEnum[keyof typeof LlmConfigOneOf2AllOfModelEnum];
+/**
+ *
+ * @export
+ * @interface LlmConfigOneOf3
+ */
+export interface LlmConfigOneOf3 {
+    /**
+     * Sampling temperature.
+     * @type {number}
+     * @memberof LlmConfigOneOf3
+     */
+    'temperature'?: number;
+    /**
+     * Maximum tokens to generate.
+     * @type {number}
+     * @memberof LlmConfigOneOf3
+     */
+    'max_tokens'?: number;
+    /**
+     * Nucleus sampling.
+     * @type {number}
+     * @memberof LlmConfigOneOf3
+     */
+    'top_p'?: number;
+    /**
+     *
+     * @type {number}
+     * @memberof LlmConfigOneOf3
+     */
+    'frequency_penalty'?: number;
+    /**
+     *
+     * @type {number}
+     * @memberof LlmConfigOneOf3
+     */
+    'presence_penalty'?: number;
+    /**
+     *
+     * @type {LlmBaseConfigStop}
+     * @memberof LlmConfigOneOf3
+     */
+    'stop'?: LlmBaseConfigStop;
+    /**
+     * DeepSeek engine.
+     * @type {string}
+     * @memberof LlmConfigOneOf3
+     */
+    'engine'?: LlmConfigOneOf3EngineEnum;
+    /**
+     *
+     * @type {string}
+     * @memberof LlmConfigOneOf3
+     */
+    'model'?: LlmConfigOneOf3ModelEnum;
+}
+export declare const LlmConfigOneOf3EngineEnum: {
+    readonly Deepseek: "deepseek";
+};
+export type LlmConfigOneOf3EngineEnum = typeof LlmConfigOneOf3EngineEnum[keyof typeof LlmConfigOneOf3EngineEnum];
+export declare const LlmConfigOneOf3ModelEnum: {
+    readonly Chat: "deepseek-chat";
+    readonly Coder: "deepseek-coder";
+};
+export type LlmConfigOneOf3ModelEnum = typeof LlmConfigOneOf3ModelEnum[keyof typeof LlmConfigOneOf3ModelEnum];
+/**
+ *
+ * @export
+ * @interface LlmConfigOneOf3AllOf
+ */
+export interface LlmConfigOneOf3AllOf {
+    /**
+     * DeepSeek engine.
+     * @type {string}
+     * @memberof LlmConfigOneOf3AllOf
+     */
+    'engine'?: LlmConfigOneOf3AllOfEngineEnum;
+    /**
+     *
+     * @type {string}
+     * @memberof LlmConfigOneOf3AllOf
+     */
+    'model'?: LlmConfigOneOf3AllOfModelEnum;
+}
+export declare const LlmConfigOneOf3AllOfEngineEnum: {
+    readonly Deepseek: "deepseek";
+};
+export type LlmConfigOneOf3AllOfEngineEnum = typeof LlmConfigOneOf3AllOfEngineEnum[keyof typeof LlmConfigOneOf3AllOfEngineEnum];
+export declare const LlmConfigOneOf3AllOfModelEnum: {
+    readonly Chat: "deepseek-chat";
+    readonly Coder: "deepseek-coder";
+};
+export type LlmConfigOneOf3AllOfModelEnum = typeof LlmConfigOneOf3AllOfModelEnum[keyof typeof LlmConfigOneOf3AllOfModelEnum];
+/**
+ *
+ * @export
+ * @interface LlmConfigOneOf4
+ */
+export interface LlmConfigOneOf4 {
+    /**
+     * Sampling temperature.
+     * @type {number}
+     * @memberof LlmConfigOneOf4
+     */
+    'temperature'?: number;
+    /**
+     * Maximum tokens to generate.
+     * @type {number}
+     * @memberof LlmConfigOneOf4
+     */
+    'max_tokens'?: number;
+    /**
+     * Nucleus sampling.
+     * @type {number}
+     * @memberof LlmConfigOneOf4
+     */
+    'top_p'?: number;
+    /**
+     *
+     * @type {number}
+     * @memberof LlmConfigOneOf4
+     */
+    'frequency_penalty'?: number;
+    /**
+     *
+     * @type {number}
+     * @memberof LlmConfigOneOf4
+     */
+    'presence_penalty'?: number;
+    /**
+     *
+     * @type {LlmBaseConfigStop}
+     * @memberof LlmConfigOneOf4
+     */
+    'stop'?: LlmBaseConfigStop;
+    /**
+     * X.ai (Grok) engine.
+     * @type {string}
+     * @memberof LlmConfigOneOf4
+     */
+    'engine'?: LlmConfigOneOf4EngineEnum;
+    /**
+     *
+     * @type {string}
+     * @memberof LlmConfigOneOf4
+     */
+    'model'?: LlmConfigOneOf4ModelEnum;
+}
+export declare const LlmConfigOneOf4EngineEnum: {
+    readonly Grok: "grok";
+};
+export type LlmConfigOneOf4EngineEnum = typeof LlmConfigOneOf4EngineEnum[keyof typeof LlmConfigOneOf4EngineEnum];
+export declare const LlmConfigOneOf4ModelEnum: {
+    readonly Grok1: "grok-1";
+};
+export type LlmConfigOneOf4ModelEnum = typeof LlmConfigOneOf4ModelEnum[keyof typeof LlmConfigOneOf4ModelEnum];
+/**
+ *
+ * @export
+ * @interface LlmConfigOneOf4AllOf
+ */
+export interface LlmConfigOneOf4AllOf {
+    /**
+     * X.ai (Grok) engine.
+     * @type {string}
+     * @memberof LlmConfigOneOf4AllOf
+     */
+    'engine'?: LlmConfigOneOf4AllOfEngineEnum;
+    /**
+     *
+     * @type {string}
+     * @memberof LlmConfigOneOf4AllOf
+     */
+    'model'?: LlmConfigOneOf4AllOfModelEnum;
+}
+export declare const LlmConfigOneOf4AllOfEngineEnum: {
+    readonly Grok: "grok";
+};
+export type LlmConfigOneOf4AllOfEngineEnum = typeof LlmConfigOneOf4AllOfEngineEnum[keyof typeof LlmConfigOneOf4AllOfEngineEnum];
+export declare const LlmConfigOneOf4AllOfModelEnum: {
+    readonly Grok1: "grok-1";
+};
+export type LlmConfigOneOf4AllOfModelEnum = typeof LlmConfigOneOf4AllOfModelEnum[keyof typeof LlmConfigOneOf4AllOfModelEnum];
+/**
+ *
+ * @export
+ * @interface LlmConfigOneOf5
+ */
+export interface LlmConfigOneOf5 {
+    /**
+     * Sampling temperature.
+     * @type {number}
+     * @memberof LlmConfigOneOf5
+     */
+    'temperature'?: number;
+    /**
+     * Maximum tokens to generate.
+     * @type {number}
+     * @memberof LlmConfigOneOf5
+     */
+    'max_tokens'?: number;
+    /**
+     * Nucleus sampling.
+     * @type {number}
+     * @memberof LlmConfigOneOf5
+     */
+    'top_p'?: number;
+    /**
+     *
+     * @type {number}
+     * @memberof LlmConfigOneOf5
+     */
+    'frequency_penalty'?: number;
+    /**
+     *
+     * @type {number}
+     * @memberof LlmConfigOneOf5
+     */
+    'presence_penalty'?: number;
+    /**
+     *
+     * @type {LlmBaseConfigStop}
+     * @memberof LlmConfigOneOf5
+     */
+    'stop'?: LlmBaseConfigStop;
+    /**
+     * Mistral engine.
+     * @type {string}
+     * @memberof LlmConfigOneOf5
+     */
+    'engine'?: LlmConfigOneOf5EngineEnum;
+    /**
+     *
+     * @type {string}
+     * @memberof LlmConfigOneOf5
+     */
+    'model'?: LlmConfigOneOf5ModelEnum;
+}
+export declare const LlmConfigOneOf5EngineEnum: {
+    readonly Mistral: "mistral";
+};
+export type LlmConfigOneOf5EngineEnum = typeof LlmConfigOneOf5EngineEnum[keyof typeof LlmConfigOneOf5EngineEnum];
+export declare const LlmConfigOneOf5ModelEnum: {
+    readonly Mistral7bInstruct: "mistral-7b-instruct";
+    readonly Mixtral8x7bInstruct: "mixtral-8x7b-instruct";
+};
+export type LlmConfigOneOf5ModelEnum = typeof LlmConfigOneOf5ModelEnum[keyof typeof LlmConfigOneOf5ModelEnum];
+/**
+ *
+ * @export
+ * @interface LlmConfigOneOf5AllOf
+ */
+export interface LlmConfigOneOf5AllOf {
+    /**
+     * Mistral engine.
+     * @type {string}
+     * @memberof LlmConfigOneOf5AllOf
+     */
+    'engine'?: LlmConfigOneOf5AllOfEngineEnum;
+    /**
+     *
+     * @type {string}
+     * @memberof LlmConfigOneOf5AllOf
+     */
+    'model'?: LlmConfigOneOf5AllOfModelEnum;
+}
+export declare const LlmConfigOneOf5AllOfEngineEnum: {
+    readonly Mistral: "mistral";
+};
+export type LlmConfigOneOf5AllOfEngineEnum = typeof LlmConfigOneOf5AllOfEngineEnum[keyof typeof LlmConfigOneOf5AllOfEngineEnum];
+export declare const LlmConfigOneOf5AllOfModelEnum: {
+    readonly Mistral7bInstruct: "mistral-7b-instruct";
+    readonly Mixtral8x7bInstruct: "mixtral-8x7b-instruct";
+};
+export type LlmConfigOneOf5AllOfModelEnum = typeof LlmConfigOneOf5AllOfModelEnum[keyof typeof LlmConfigOneOf5AllOfModelEnum];
+/**
+ *
+ * @export
+ * @interface LlmConfigOneOf6
+ */
+export interface LlmConfigOneOf6 {
+    /**
+     * Sampling temperature.
+     * @type {number}
+     * @memberof LlmConfigOneOf6
+     */
+    'temperature'?: number;
+    /**
+     * Maximum tokens to generate.
+     * @type {number}
+     * @memberof LlmConfigOneOf6
+     */
+    'max_tokens'?: number;
+    /**
+     * Nucleus sampling.
+     * @type {number}
+     * @memberof LlmConfigOneOf6
+     */
+    'top_p'?: number;
+    /**
+     *
+     * @type {number}
+     * @memberof LlmConfigOneOf6
+     */
+    'frequency_penalty'?: number;
+    /**
+     *
+     * @type {number}
+     * @memberof LlmConfigOneOf6
+     */
+    'presence_penalty'?: number;
+    /**
+     *
+     * @type {LlmBaseConfigStop}
+     * @memberof LlmConfigOneOf6
+     */
+    'stop'?: LlmBaseConfigStop;
+    /**
+     * Cohere engine.
+     * @type {string}
+     * @memberof LlmConfigOneOf6
+     */
+    'engine'?: LlmConfigOneOf6EngineEnum;
+    /**
+     *
+     * @type {string}
+     * @memberof LlmConfigOneOf6
+     */
+    'model'?: LlmConfigOneOf6ModelEnum;
+}
+export declare const LlmConfigOneOf6EngineEnum: {
+    readonly Cohere: "cohere";
+};
+export type LlmConfigOneOf6EngineEnum = typeof LlmConfigOneOf6EngineEnum[keyof typeof LlmConfigOneOf6EngineEnum];
+export declare const LlmConfigOneOf6ModelEnum: {
+    readonly CommandRPlus: "command-r-plus";
+};
+export type LlmConfigOneOf6ModelEnum = typeof LlmConfigOneOf6ModelEnum[keyof typeof LlmConfigOneOf6ModelEnum];
+/**
+ *
+ * @export
+ * @interface LlmConfigOneOf6AllOf
+ */
+export interface LlmConfigOneOf6AllOf {
+    /**
+     * Cohere engine.
+     * @type {string}
+     * @memberof LlmConfigOneOf6AllOf
+     */
+    'engine'?: LlmConfigOneOf6AllOfEngineEnum;
+    /**
+     *
+     * @type {string}
+     * @memberof LlmConfigOneOf6AllOf
+     */
+    'model'?: LlmConfigOneOf6AllOfModelEnum;
+}
+export declare const LlmConfigOneOf6AllOfEngineEnum: {
+    readonly Cohere: "cohere";
+};
+export type LlmConfigOneOf6AllOfEngineEnum = typeof LlmConfigOneOf6AllOfEngineEnum[keyof typeof LlmConfigOneOf6AllOfEngineEnum];
+export declare const LlmConfigOneOf6AllOfModelEnum: {
+    readonly CommandRPlus: "command-r-plus";
+};
+export type LlmConfigOneOf6AllOfModelEnum = typeof LlmConfigOneOf6AllOfModelEnum[keyof typeof LlmConfigOneOf6AllOfModelEnum];
+/**
+ *
+ * @export
+ * @interface LlmConfigOneOf7
+ */
+export interface LlmConfigOneOf7 {
+    /**
+     * Sampling temperature.
+     * @type {number}
+     * @memberof LlmConfigOneOf7
+     */
+    'temperature'?: number;
+    /**
+     * Maximum tokens to generate.
+     * @type {number}
+     * @memberof LlmConfigOneOf7
+     */
+    'max_tokens'?: number;
+    /**
+     * Nucleus sampling.
+     * @type {number}
+     * @memberof LlmConfigOneOf7
+     */
+    'top_p'?: number;
+    /**
+     *
+     * @type {number}
+     * @memberof LlmConfigOneOf7
+     */
+    'frequency_penalty'?: number;
+    /**
+     *
+     * @type {number}
+     * @memberof LlmConfigOneOf7
+     */
+    'presence_penalty'?: number;
+    /**
+     *
+     * @type {LlmBaseConfigStop}
+     * @memberof LlmConfigOneOf7
+     */
+    'stop'?: LlmBaseConfigStop;
+    /**
+     * Google Bard engine.
+     * @type {string}
+     * @memberof LlmConfigOneOf7
+     */
+    'engine'?: LlmConfigOneOf7EngineEnum;
+    /**
+     *
+     * @type {string}
+     * @memberof LlmConfigOneOf7
+     */
+    'model'?: string;
+}
+export declare const LlmConfigOneOf7EngineEnum: {
+    readonly Bard: "bard";
+};
+export type LlmConfigOneOf7EngineEnum = typeof LlmConfigOneOf7EngineEnum[keyof typeof LlmConfigOneOf7EngineEnum];
+/**
+ *
+ * @export
+ * @interface LlmConfigOneOf7AllOf
+ */
+export interface LlmConfigOneOf7AllOf {
+    /**
+     * Google Bard engine.
+     * @type {string}
+     * @memberof LlmConfigOneOf7AllOf
+     */
+    'engine'?: LlmConfigOneOf7AllOfEngineEnum;
+    /**
+     *
+     * @type {string}
+     * @memberof LlmConfigOneOf7AllOf
+     */
+    'model'?: string;
+}
+export declare const LlmConfigOneOf7AllOfEngineEnum: {
+    readonly Bard: "bard";
+};
+export type LlmConfigOneOf7AllOfEngineEnum = typeof LlmConfigOneOf7AllOfEngineEnum[keyof typeof LlmConfigOneOf7AllOfEngineEnum];
+/**
+ *
+ * @export
+ * @interface LlmConfigOneOf8
+ */
+export interface LlmConfigOneOf8 {
+    /**
+     * Sampling temperature.
+     * @type {number}
+     * @memberof LlmConfigOneOf8
+     */
+    'temperature'?: number;
+    /**
+     * Maximum tokens to generate.
+     * @type {number}
+     * @memberof LlmConfigOneOf8
+     */
+    'max_tokens'?: number;
+    /**
+     * Nucleus sampling.
+     * @type {number}
+     * @memberof LlmConfigOneOf8
+     */
+    'top_p'?: number;
+    /**
+     *
+     * @type {number}
+     * @memberof LlmConfigOneOf8
+     */
+    'frequency_penalty'?: number;
+    /**
+     *
+     * @type {number}
+     * @memberof LlmConfigOneOf8
+     */
+    'presence_penalty'?: number;
+    /**
+     *
+     * @type {LlmBaseConfigStop}
+     * @memberof LlmConfigOneOf8
+     */
+    'stop'?: LlmBaseConfigStop;
+    /**
+     * Custom or inline engine (fallback).
+     * @type {string}
+     * @memberof LlmConfigOneOf8
+     */
+    'engine'?: string;
+    /**
+     * Custom or inline model.
+     * @type {string}
+     * @memberof LlmConfigOneOf8
+     */
+    'model'?: string;
+}
+/**
+ *
+ * @export
+ * @interface LlmConfigOneOf8AllOf
+ */
+export interface LlmConfigOneOf8AllOf {
+    /**
+     * Custom or inline engine (fallback).
+     * @type {string}
+     * @memberof LlmConfigOneOf8AllOf
+     */
+    'engine'?: string;
+    /**
+     * Custom or inline model.
+     * @type {string}
+     * @memberof LlmConfigOneOf8AllOf
+     */
+    'model'?: string;
+}
+/**
+ *
+ * @export
+ * @interface LlmConfigOneOfAllOf
+ */
+export interface LlmConfigOneOfAllOf {
+    /**
+     * OpenAI engine.
+     * @type {string}
+     * @memberof LlmConfigOneOfAllOf
+     */
+    'engine'?: LlmConfigOneOfAllOfEngineEnum;
+    /**
+     *
+     * @type {string}
+     * @memberof LlmConfigOneOfAllOf
+     */
+    'model'?: LlmConfigOneOfAllOfModelEnum;
+}
+export declare const LlmConfigOneOfAllOfEngineEnum: {
+    readonly Openai: "openai";
+};
+export type LlmConfigOneOfAllOfEngineEnum = typeof LlmConfigOneOfAllOfEngineEnum[keyof typeof LlmConfigOneOfAllOfEngineEnum];
+export declare const LlmConfigOneOfAllOfModelEnum: {
+    readonly _41106Preview: "gpt-4-1106-preview";
+    readonly _4VisionPreview: "gpt-4-vision-preview";
+    readonly _4: "gpt-4";
+    readonly _35Turbo: "gpt-3.5-turbo";
+    readonly _35Turbo16k: "gpt-3.5-turbo-16k";
+};
+export type LlmConfigOneOfAllOfModelEnum = typeof LlmConfigOneOfAllOfModelEnum[keyof typeof LlmConfigOneOfAllOfModelEnum];
+/**
+ * For tool calls completed by LLMs (auto ingress and manual ingress only)
+ * @export
+ * @interface LlmMessageToolCall
+ */
+export interface LlmMessageToolCall {
+    /**
+     * The ID of the tool call
+     * @type {string}
+     * @memberof LlmMessageToolCall
+     */
+    'id': string;
+    /**
+     * The type of the tool. Currently, only function is supported.
+     * @type {string}
+     * @memberof LlmMessageToolCall
+     */
+    'type': string;
+    /**
+     *
+     * @type {LlmMessageToolCallFunction}
+     * @memberof LlmMessageToolCall
+     */
+    'function': LlmMessageToolCallFunction;
+}
+/**
+ *
+ * @export
+ * @interface LlmMessageToolCallFunction
+ */
+export interface LlmMessageToolCallFunction {
+    /**
+     * The arguments to call the function with, as generated by the model in JSON format. Note that the model does not always generate valid JSON, and may hallucinate parameters not defined by your function schema. Validate the arguments in your code before calling your function.
+     * @type {string}
+     * @memberof LlmMessageToolCallFunction
+     */
+    'arguments': string;
+    /**
+     * name of the function to call
+     * @type {string}
+     * @memberof LlmMessageToolCallFunction
+     */
+    'name': string;
+}
 /**
  *
  * @export
@@ -4011,7 +4891,7 @@ export type MacroResultValue = MacroContextValue | boolean;
  */
 export interface Message {
     /**
-     * The role of the message (customer, agent, or business)
+     * The role of the message (customer, agent, or system, tool)
      * @type {string}
      * @memberof Message
      */
@@ -4029,22 +4909,85 @@ export interface Message {
      */
     'name'?: string;
     /**
-     * The time the message was sent
+     * Context that is derived from the message
+     * @type {{ [key: string]: any; }}
+     * @memberof Message
+     */
+    'context'?: {
+        [key: string]: any;
+    };
+    /**
+     * How long to delay the message manually in seconds
+     * @type {number}
+     * @memberof Message
+     */
+    'delayInSeconds'?: number;
+    /**
+     * Entities related to the message (gets set after the PMT transform)
+     * @type {Array<EntityToken>}
+     * @memberof Message
+     */
+    'entities'?: Array<EntityToken>;
+    /**
+     * Unique ID for the message
+     * @type {string}
+     * @memberof Message
+     */
+    'id': string;
+    /**
+     * If set to true, the PMT will not transform, message will be sent as is
+     * @type {boolean}
+     * @memberof Message
+     */
+    'ignoreTransform'?: boolean;
+    /**
+     * detected intent of message
+     * @type {string}
+     * @memberof Message
+     */
+    'intent'?: string;
+    /**
+     * Confidence score of the assigned intent
+     * @type {number}
+     * @memberof Message
+     */
+    'intentScore'?: number;
+    /**
+     * Media urls to attach to the transported message (seperated from content)
+     * @type {Array<string>}
+     * @memberof Message
+     */
+    'mediaUrls'?: Array<string>;
+    /**
+     * When the message is scheduled for delivery, Datetime ISO 8601 timestamp
+     * @type {string}
+     * @memberof Message
+     */
+    'scheduled'?: string;
+    /**
+     * The time the message was sent, Datetime ISO 8601 timestamp
      * @type {string}
      * @memberof Message
      */
     'time': string;
     /**
-     *
-     * @type {Array<EntityToken>}
+     * for auto/manual ingress only, used by LLMs to register when tool calls are invoked, for role=\'assistant\' messages
+     * @type {Array<LlmMessageToolCall>}
      * @memberof Message
      */
-    'entities'?: Array<EntityToken>;
+    'tool_calls'?: Array<LlmMessageToolCall>;
+    /**
+     * for auto/manual ingress only, used by LLMs to identity what tool was called
+     * @type {string}
+     * @memberof Message
+     */
+    'tool_call_id'?: string;
 }
 export declare const MessageRoleEnum: {
     readonly Customer: "customer";
     readonly Agent: "agent";
-    readonly Context: "context";
+    readonly System: "system";
+    readonly Tool: "tool";
 };
 export type MessageRoleEnum = typeof MessageRoleEnum[keyof typeof MessageRoleEnum];
 /**
@@ -4054,17 +4997,79 @@ export type MessageRoleEnum = typeof MessageRoleEnum[keyof typeof MessageRoleEnu
  */
 export interface MessageAllOf {
     /**
-     * The time the message was sent
+     * Context that is derived from the message
+     * @type {{ [key: string]: any; }}
+     * @memberof MessageAllOf
+     */
+    'context'?: {
+        [key: string]: any;
+    };
+    /**
+     * How long to delay the message manually in seconds
+     * @type {number}
+     * @memberof MessageAllOf
+     */
+    'delayInSeconds'?: number;
+    /**
+     * Entities related to the message (gets set after the PMT transform)
+     * @type {Array<EntityToken>}
+     * @memberof MessageAllOf
+     */
+    'entities'?: Array<EntityToken>;
+    /**
+     * Unique ID for the message
+     * @type {string}
+     * @memberof MessageAllOf
+     */
+    'id': string;
+    /**
+     * If set to true, the PMT will not transform, message will be sent as is
+     * @type {boolean}
+     * @memberof MessageAllOf
+     */
+    'ignoreTransform'?: boolean;
+    /**
+     * detected intent of message
+     * @type {string}
+     * @memberof MessageAllOf
+     */
+    'intent'?: string;
+    /**
+     * Confidence score of the assigned intent
+     * @type {number}
+     * @memberof MessageAllOf
+     */
+    'intentScore'?: number;
+    /**
+     * Media urls to attach to the transported message (seperated from content)
+     * @type {Array<string>}
+     * @memberof MessageAllOf
+     */
+    'mediaUrls'?: Array<string>;
+    /**
+     * When the message is scheduled for delivery, Datetime ISO 8601 timestamp
+     * @type {string}
+     * @memberof MessageAllOf
+     */
+    'scheduled'?: string;
+    /**
+     * The time the message was sent, Datetime ISO 8601 timestamp
      * @type {string}
      * @memberof MessageAllOf
      */
     'time': string;
     /**
-     *
-     * @type {Array<EntityToken>}
+     * for auto/manual ingress only, used by LLMs to register when tool calls are invoked, for role=\'assistant\' messages
+     * @type {Array<LlmMessageToolCall>}
      * @memberof MessageAllOf
      */
-    'entities'?: Array<EntityToken>;
+    'tool_calls'?: Array<LlmMessageToolCall>;
+    /**
+     * for auto/manual ingress only, used by LLMs to identity what tool was called
+     * @type {string}
+     * @memberof MessageAllOf
+     */
+    'tool_call_id'?: string;
 }
 /**
  *
@@ -4073,7 +5078,7 @@ export interface MessageAllOf {
  */
 export interface MessageBase {
     /**
-     * The role of the message (customer, agent, or business)
+     * The role of the message (customer, agent, or system, tool)
      * @type {string}
      * @memberof MessageBase
      */
@@ -4094,7 +5099,8 @@ export interface MessageBase {
 export declare const MessageBaseRoleEnum: {
     readonly Customer: "customer";
     readonly Agent: "agent";
-    readonly Context: "context";
+    readonly System: "system";
+    readonly Tool: "tool";
 };
 export type MessageBaseRoleEnum = typeof MessageBaseRoleEnum[keyof typeof MessageBaseRoleEnum];
 /**
@@ -4121,6 +5127,24 @@ export interface MessageCreateRequest {
      * @memberof MessageCreateRequest
      */
     'messageHtml'?: string;
+    /**
+     * Custom workflow task ids to execute for support custom business logic
+     * @type {Array<string>}
+     * @memberof MessageCreateRequest
+     */
+    'tasks'?: Array<string>;
+    /**
+     *
+     * @type {LlmConfig}
+     * @memberof MessageCreateRequest
+     */
+    'llm'?: LlmConfig;
+    /**
+     *
+     * @type {PmtConfig}
+     * @memberof MessageCreateRequest
+     */
+    'pmt'?: PmtConfig;
     /**
      * Overrides the role of the user sending the message
      * @type {string}
@@ -4227,7 +5251,7 @@ export interface MessageCreateResponseAllOf {
  */
 export interface MessageGetResponseInner {
     /**
-     * The role of the message (customer, agent, or business)
+     * The role of the message (customer, agent, or system, tool)
      * @type {string}
      * @memberof MessageGetResponseInner
      */
@@ -4245,17 +5269,79 @@ export interface MessageGetResponseInner {
      */
     'name'?: string;
     /**
-     * The time the message was sent
+     * Context that is derived from the message
+     * @type {{ [key: string]: any; }}
+     * @memberof MessageGetResponseInner
+     */
+    'context'?: {
+        [key: string]: any;
+    };
+    /**
+     * How long to delay the message manually in seconds
+     * @type {number}
+     * @memberof MessageGetResponseInner
+     */
+    'delayInSeconds'?: number;
+    /**
+     * Entities related to the message (gets set after the PMT transform)
+     * @type {Array<EntityToken>}
+     * @memberof MessageGetResponseInner
+     */
+    'entities'?: Array<EntityToken>;
+    /**
+     * Unique ID for the message
+     * @type {string}
+     * @memberof MessageGetResponseInner
+     */
+    'id': string;
+    /**
+     * If set to true, the PMT will not transform, message will be sent as is
+     * @type {boolean}
+     * @memberof MessageGetResponseInner
+     */
+    'ignoreTransform'?: boolean;
+    /**
+     * detected intent of message
+     * @type {string}
+     * @memberof MessageGetResponseInner
+     */
+    'intent'?: string;
+    /**
+     * Confidence score of the assigned intent
+     * @type {number}
+     * @memberof MessageGetResponseInner
+     */
+    'intentScore'?: number;
+    /**
+     * Media urls to attach to the transported message (seperated from content)
+     * @type {Array<string>}
+     * @memberof MessageGetResponseInner
+     */
+    'mediaUrls'?: Array<string>;
+    /**
+     * When the message is scheduled for delivery, Datetime ISO 8601 timestamp
+     * @type {string}
+     * @memberof MessageGetResponseInner
+     */
+    'scheduled'?: string;
+    /**
+     * The time the message was sent, Datetime ISO 8601 timestamp
      * @type {string}
      * @memberof MessageGetResponseInner
      */
     'time': string;
     /**
-     *
-     * @type {Array<EntityToken>}
+     * for auto/manual ingress only, used by LLMs to register when tool calls are invoked, for role=\'assistant\' messages
+     * @type {Array<LlmMessageToolCall>}
      * @memberof MessageGetResponseInner
      */
-    'entities'?: Array<EntityToken>;
+    'tool_calls'?: Array<LlmMessageToolCall>;
+    /**
+     * for auto/manual ingress only, used by LLMs to identity what tool was called
+     * @type {string}
+     * @memberof MessageGetResponseInner
+     */
+    'tool_call_id'?: string;
     /**
      * The ID of the message to get
      * @type {string}
@@ -4266,7 +5352,8 @@ export interface MessageGetResponseInner {
 export declare const MessageGetResponseInnerRoleEnum: {
     readonly Customer: "customer";
     readonly Agent: "agent";
-    readonly Context: "context";
+    readonly System: "system";
+    readonly Tool: "tool";
 };
 export type MessageGetResponseInnerRoleEnum = typeof MessageGetResponseInnerRoleEnum[keyof typeof MessageGetResponseInnerRoleEnum];
 /**
@@ -4478,6 +5565,12 @@ export interface ParseResponse {
         [key: string]: any;
     };
     /**
+     *
+     * @type {Array<string>}
+     * @memberof ParseResponse
+     */
+    'contextMessages'?: Array<string>;
+    /**
      * The time it took to parse the message in milliseconds
      * @type {number}
      * @memberof ParseResponse
@@ -4517,13 +5610,13 @@ export interface PingRequest {
  */
 export interface PmtConfig {
     /**
-     *
+     * The PMT provider engine to use.
      * @type {string}
      * @memberof PmtConfig
      */
     'engine'?: PmtConfigEngineEnum;
     /**
-     *
+     * The PMT model to use.
      * @type {string}
      * @memberof PmtConfig
      */
@@ -4531,10 +5624,13 @@ export interface PmtConfig {
 }
 export declare const PmtConfigEngineEnum: {
     readonly Scout9: "scout9";
+    readonly Opp: "opp";
 };
 export type PmtConfigEngineEnum = typeof PmtConfigEngineEnum[keyof typeof PmtConfigEngineEnum];
 export declare const PmtConfigModelEnum: {
-    readonly _10: "orin-1.0";
+    readonly _10Alpha: "orin-1.0-alpha";
+    readonly _11Alpha: "orin-1.1-alpha";
+    readonly Latest: "orin-latest";
     readonly _20Preview: "orin-2.0-preview";
 };
 export type PmtConfigModelEnum = typeof PmtConfigModelEnum[keyof typeof PmtConfigModelEnum];

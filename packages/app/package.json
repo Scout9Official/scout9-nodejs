@@ -1,6 +1,6 @@
 {
   "name": "@scout9/app",
-  "version": "1.0.0-alpha.0.7.0",
+  "version": "1.0.0-alpha.0.8.0",
   "description": "Build and deploy your Scout9 app for SMS auto replies",
   "publishConfig": {
     "access": "public"
@@ -105,7 +105,7 @@
     "zod-validation-error": "^3.4.0"
   },
   "peerDependencies": {
-    "@scout9/admin": ">= 1.0.0-alpha.0.0.59"
+    "@scout9/admin": ">= 1.0.0-alpha.0.0.60"
   },
   "engines": {
     "node": ">=18.13"

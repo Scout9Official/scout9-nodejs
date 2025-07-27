@@ -2235,7 +2235,7 @@ export interface EntityToken {
    */
   'type': EntityTokenType;
   /**
-   * The unique id associated with the the entity token type
+   * The unique id associated with the entity token type
    * @type {string}
    * @memberof EntityToken
    */
@@ -2247,12 +2247,6 @@ export interface EntityToken {
  * @export
  */
 export type EntityTokenType = string;
-
-/**
- * @type EntityType
- * @export
- */
-export type EntityType = string;
 
 /**
  *
@@ -2494,7 +2488,7 @@ export type ForwardRequestForwardOneOfModeEnum = typeof ForwardRequestForwardOne
  */
 export interface ForwardRequestLatestMessage {
   /**
-   * The role of the message (customer, agent, or business)
+   * The role of the message (customer, agent, or system, tool)
    * @type {string}
    * @memberof ForwardRequestLatestMessage
    */
@@ -2512,23 +2506,84 @@ export interface ForwardRequestLatestMessage {
    */
   'name'?: string;
   /**
-   * The time the message was sent
+   * Context that is derived from the message
+   * @type {{ [key: string]: any; }}
+   * @memberof ForwardRequestLatestMessage
+   */
+  'context'?: { [key: string]: any; };
+  /**
+   * How long to delay the message manually in seconds
+   * @type {number}
+   * @memberof ForwardRequestLatestMessage
+   */
+  'delayInSeconds'?: number;
+  /**
+   * Entities related to the message (gets set after the PMT transform)
+   * @type {Array<EntityToken>}
+   * @memberof ForwardRequestLatestMessage
+   */
+  'entities'?: Array<EntityToken>;
+  /**
+   * Unique ID for the message
+   * @type {string}
+   * @memberof ForwardRequestLatestMessage
+   */
+  'id': string;
+  /**
+   * If set to true, the PMT will not transform, message will be sent as is
+   * @type {boolean}
+   * @memberof ForwardRequestLatestMessage
+   */
+  'ignoreTransform'?: boolean;
+  /**
+   * detected intent of message
+   * @type {string}
+   * @memberof ForwardRequestLatestMessage
+   */
+  'intent'?: string;
+  /**
+   * Confidence score of the assigned intent
+   * @type {number}
+   * @memberof ForwardRequestLatestMessage
+   */
+  'intentScore'?: number;
+  /**
+   * Media urls to attach to the transported message (seperated from content)
+   * @type {Array<string>}
+   * @memberof ForwardRequestLatestMessage
+   */
+  'mediaUrls'?: Array<string>;
+  /**
+   * When the message is scheduled for delivery, Datetime ISO 8601 timestamp
+   * @type {string}
+   * @memberof ForwardRequestLatestMessage
+   */
+  'scheduled'?: string;
+  /**
+   * The time the message was sent, Datetime ISO 8601 timestamp
    * @type {string}
    * @memberof ForwardRequestLatestMessage
    */
   'time': string;
   /**
-   *
-   * @type {Array<EntityToken>}
+   * for auto/manual ingress only, used by LLMs to register when tool calls are invoked, for role=\'assistant\' messages
+   * @type {Array<LlmMessageToolCall>}
    * @memberof ForwardRequestLatestMessage
    */
-  'entities'?: Array<EntityToken>;
+  'tool_calls'?: Array<LlmMessageToolCall>;
+  /**
+   * for auto/manual ingress only, used by LLMs to identity what tool was called
+   * @type {string}
+   * @memberof ForwardRequestLatestMessage
+   */
+  'tool_call_id'?: string;
 }
 
 export const ForwardRequestLatestMessageRoleEnum = {
   Customer: 'customer',
   Agent: 'agent',
-  Context: 'context'
+  System: 'system',
+  Tool: 'tool'
 } as const;
 
 export type ForwardRequestLatestMessageRoleEnum = typeof ForwardRequestLatestMessageRoleEnum[keyof typeof ForwardRequestLatestMessageRoleEnum];
@@ -2640,17 +2695,11 @@ export type GenerateRequestOneOf1Persona = Agent | string;
  */
 export interface GenerateResponse {
   /**
-   * The generated message
-   * @type {string}
-   * @memberof GenerateResponse
-   */
-  'message': string;
-  /**
    *
-   * @type {Array<EntityToken>}
+   * @type {Array<Message>}
    * @memberof GenerateResponse
    */
-  'entities'?: Array<EntityToken>;
+  'messages': Array<Message>;
   /**
    * Context that is derived from the message
    * @type {{ [key: string]: any; }}
@@ -2671,10 +2720,10 @@ export interface GenerateResponse {
   'send'?: boolean;
   /**
    * Any errors that occurred during generation
-   * @type {string}
+   * @type {Array<string>}
    * @memberof GenerateResponse
    */
-  'error'?: string;
+  'errors'?: Array<string>;
   /**
    * Whether the conversation should be forwarded to the agent after sending message
    * @type {boolean}
@@ -2687,6 +2736,18 @@ export interface GenerateResponse {
    * @memberof GenerateResponse
    */
   'forwardNote'?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof GenerateResponse
+   */
+  'type'?: string;
+  /**
+   *
+   * @type {number}
+   * @memberof GenerateResponse
+   */
+  'confidence'?: number;
 }
 /**
  *
@@ -3569,10 +3630,60 @@ export interface ListQueryOperationsInner {
   'value': AnyValue;
 }
 /**
+ *
+ * @export
+ * @interface LlmBaseConfig
+ */
+export interface LlmBaseConfig {
+  /**
+   * Sampling temperature.
+   * @type {number}
+   * @memberof LlmBaseConfig
+   */
+  'temperature'?: number;
+  /**
+   * Maximum tokens to generate.
+   * @type {number}
+   * @memberof LlmBaseConfig
+   */
+  'max_tokens'?: number;
+  /**
+   * Nucleus sampling.
+   * @type {number}
+   * @memberof LlmBaseConfig
+   */
+  'top_p'?: number;
+  /**
+   *
+   * @type {number}
+   * @memberof LlmBaseConfig
+   */
+  'frequency_penalty'?: number;
+  /**
+   *
+   * @type {number}
+   * @memberof LlmBaseConfig
+   */
+  'presence_penalty'?: number;
+  /**
+   *
+   * @type {LlmBaseConfigStop}
+   * @memberof LlmBaseConfig
+   */
+  'stop'?: LlmBaseConfigStop;
+}
+/**
+ * @type LlmBaseConfigStop
+ * Stop sequences.
+ * @export
+ */
+export type LlmBaseConfigStop = Array<string> | string;
+
+/**
  * @type LlmConfig
  * @export
  */
-export type LlmConfig = LlmConfigOneOf | LlmConfigOneOf1 | LlmConfigOneOf2;
+export type LlmConfig = LlmConfigOneOf | LlmConfigOneOf1 | LlmConfigOneOf2 | LlmConfigOneOf3 | LlmConfigOneOf4 | LlmConfigOneOf5 | LlmConfigOneOf6 | LlmConfigOneOf7 | LlmConfigOneOf8;
 
 /**
  *
@@ -3581,7 +3692,43 @@ export type LlmConfig = LlmConfigOneOf | LlmConfigOneOf1 | LlmConfigOneOf2;
  */
 export interface LlmConfigOneOf {
   /**
+   * Sampling temperature.
+   * @type {number}
+   * @memberof LlmConfigOneOf
+   */
+  'temperature'?: number;
+  /**
+   * Maximum tokens to generate.
+   * @type {number}
+   * @memberof LlmConfigOneOf
+   */
+  'max_tokens'?: number;
+  /**
+   * Nucleus sampling.
+   * @type {number}
+   * @memberof LlmConfigOneOf
+   */
+  'top_p'?: number;
+  /**
    *
+   * @type {number}
+   * @memberof LlmConfigOneOf
+   */
+  'frequency_penalty'?: number;
+  /**
+   *
+   * @type {number}
+   * @memberof LlmConfigOneOf
+   */
+  'presence_penalty'?: number;
+  /**
+   *
+   * @type {LlmBaseConfigStop}
+   * @memberof LlmConfigOneOf
+   */
+  'stop'?: LlmBaseConfigStop;
+  /**
+   * OpenAI engine.
    * @type {string}
    * @memberof LlmConfigOneOf
    */
@@ -3603,16 +3750,8 @@ export const LlmConfigOneOfModelEnum = {
   _41106Preview: 'gpt-4-1106-preview',
   _4VisionPreview: 'gpt-4-vision-preview',
   _4: 'gpt-4',
-  _40314: 'gpt-4-0314',
-  _40613: 'gpt-4-0613',
-  _432k: 'gpt-4-32k',
-  _432k0314: 'gpt-4-32k-0314',
-  _432k0613: 'gpt-4-32k-0613',
   _35Turbo: 'gpt-3.5-turbo',
-  _35Turbo16k: 'gpt-3.5-turbo-16k',
-  _35Turbo0301: 'gpt-3.5-turbo-0301',
-  _35Turbo0613: 'gpt-3.5-turbo-0613',
-  _35Turbo16k0613: 'gpt-3.5-turbo-16k-0613'
+  _35Turbo16k: 'gpt-3.5-turbo-16k'
 } as const;
 
 export type LlmConfigOneOfModelEnum = typeof LlmConfigOneOfModelEnum[keyof typeof LlmConfigOneOfModelEnum];
@@ -3624,7 +3763,43 @@ export type LlmConfigOneOfModelEnum = typeof LlmConfigOneOfModelEnum[keyof typeo
  */
 export interface LlmConfigOneOf1 {
   /**
+   * Sampling temperature.
+   * @type {number}
+   * @memberof LlmConfigOneOf1
+   */
+  'temperature'?: number;
+  /**
+   * Maximum tokens to generate.
+   * @type {number}
+   * @memberof LlmConfigOneOf1
+   */
+  'max_tokens'?: number;
+  /**
+   * Nucleus sampling.
+   * @type {number}
+   * @memberof LlmConfigOneOf1
+   */
+  'top_p'?: number;
+  /**
    *
+   * @type {number}
+   * @memberof LlmConfigOneOf1
+   */
+  'frequency_penalty'?: number;
+  /**
+   *
+   * @type {number}
+   * @memberof LlmConfigOneOf1
+   */
+  'presence_penalty'?: number;
+  /**
+   *
+   * @type {LlmBaseConfigStop}
+   * @memberof LlmConfigOneOf1
+   */
+  'stop'?: LlmBaseConfigStop;
+  /**
+   * Anthropic engine.
    * @type {string}
    * @memberof LlmConfigOneOf1
    */
@@ -3634,14 +3809,56 @@ export interface LlmConfigOneOf1 {
    * @type {string}
    * @memberof LlmConfigOneOf1
    */
-  'model'?: string;
+  'model'?: LlmConfigOneOf1ModelEnum;
 }
 
 export const LlmConfigOneOf1EngineEnum = {
-  Llama: 'llama'
+  Anthropic: 'anthropic'
 } as const;
 
 export type LlmConfigOneOf1EngineEnum = typeof LlmConfigOneOf1EngineEnum[keyof typeof LlmConfigOneOf1EngineEnum];
+export const LlmConfigOneOf1ModelEnum = {
+  _3Opus20240229: 'claude-3-opus-20240229',
+  _3Sonnet20240229: 'claude-3-sonnet-20240229',
+  _21: 'claude-2.1',
+  Instant12: 'claude-instant-1.2'
+} as const;
+
+export type LlmConfigOneOf1ModelEnum = typeof LlmConfigOneOf1ModelEnum[keyof typeof LlmConfigOneOf1ModelEnum];
+
+/**
+ *
+ * @export
+ * @interface LlmConfigOneOf1AllOf
+ */
+export interface LlmConfigOneOf1AllOf {
+  /**
+   * Anthropic engine.
+   * @type {string}
+   * @memberof LlmConfigOneOf1AllOf
+   */
+  'engine'?: LlmConfigOneOf1AllOfEngineEnum;
+  /**
+   *
+   * @type {string}
+   * @memberof LlmConfigOneOf1AllOf
+   */
+  'model'?: LlmConfigOneOf1AllOfModelEnum;
+}
+
+export const LlmConfigOneOf1AllOfEngineEnum = {
+  Anthropic: 'anthropic'
+} as const;
+
+export type LlmConfigOneOf1AllOfEngineEnum = typeof LlmConfigOneOf1AllOfEngineEnum[keyof typeof LlmConfigOneOf1AllOfEngineEnum];
+export const LlmConfigOneOf1AllOfModelEnum = {
+  _3Opus20240229: 'claude-3-opus-20240229',
+  _3Sonnet20240229: 'claude-3-sonnet-20240229',
+  _21: 'claude-2.1',
+  Instant12: 'claude-instant-1.2'
+} as const;
+
+export type LlmConfigOneOf1AllOfModelEnum = typeof LlmConfigOneOf1AllOfModelEnum[keyof typeof LlmConfigOneOf1AllOfModelEnum];
 
 /**
  *
@@ -3650,7 +3867,43 @@ export type LlmConfigOneOf1EngineEnum = typeof LlmConfigOneOf1EngineEnum[keyof t
  */
 export interface LlmConfigOneOf2 {
   /**
+   * Sampling temperature.
+   * @type {number}
+   * @memberof LlmConfigOneOf2
+   */
+  'temperature'?: number;
+  /**
+   * Maximum tokens to generate.
+   * @type {number}
+   * @memberof LlmConfigOneOf2
+   */
+  'max_tokens'?: number;
+  /**
+   * Nucleus sampling.
+   * @type {number}
+   * @memberof LlmConfigOneOf2
+   */
+  'top_p'?: number;
+  /**
    *
+   * @type {number}
+   * @memberof LlmConfigOneOf2
+   */
+  'frequency_penalty'?: number;
+  /**
+   *
+   * @type {number}
+   * @memberof LlmConfigOneOf2
+   */
+  'presence_penalty'?: number;
+  /**
+   *
+   * @type {LlmBaseConfigStop}
+   * @memberof LlmConfigOneOf2
+   */
+  'stop'?: LlmBaseConfigStop;
+  /**
+   * Meta (LLaMA) engine.
    * @type {string}
    * @memberof LlmConfigOneOf2
    */
@@ -3660,15 +3913,692 @@ export interface LlmConfigOneOf2 {
    * @type {string}
    * @memberof LlmConfigOneOf2
    */
-  'model'?: string;
+  'model'?: LlmConfigOneOf2ModelEnum;
 }
 
 export const LlmConfigOneOf2EngineEnum = {
-  Bard: 'bard'
+  Meta: 'meta'
 } as const;
 
 export type LlmConfigOneOf2EngineEnum = typeof LlmConfigOneOf2EngineEnum[keyof typeof LlmConfigOneOf2EngineEnum];
+export const LlmConfigOneOf2ModelEnum = {
+  _270bChat: 'llama-2-70b-chat',
+  _370bInstruct: 'llama-3-70b-instruct',
+  _38bInstruct: 'llama-3-8b-instruct'
+} as const;
 
+export type LlmConfigOneOf2ModelEnum = typeof LlmConfigOneOf2ModelEnum[keyof typeof LlmConfigOneOf2ModelEnum];
+
+/**
+ *
+ * @export
+ * @interface LlmConfigOneOf2AllOf
+ */
+export interface LlmConfigOneOf2AllOf {
+  /**
+   * Meta (LLaMA) engine.
+   * @type {string}
+   * @memberof LlmConfigOneOf2AllOf
+   */
+  'engine'?: LlmConfigOneOf2AllOfEngineEnum;
+  /**
+   *
+   * @type {string}
+   * @memberof LlmConfigOneOf2AllOf
+   */
+  'model'?: LlmConfigOneOf2AllOfModelEnum;
+}
+
+export const LlmConfigOneOf2AllOfEngineEnum = {
+  Meta: 'meta'
+} as const;
+
+export type LlmConfigOneOf2AllOfEngineEnum = typeof LlmConfigOneOf2AllOfEngineEnum[keyof typeof LlmConfigOneOf2AllOfEngineEnum];
+export const LlmConfigOneOf2AllOfModelEnum = {
+  _270bChat: 'llama-2-70b-chat',
+  _370bInstruct: 'llama-3-70b-instruct',
+  _38bInstruct: 'llama-3-8b-instruct'
+} as const;
+
+export type LlmConfigOneOf2AllOfModelEnum = typeof LlmConfigOneOf2AllOfModelEnum[keyof typeof LlmConfigOneOf2AllOfModelEnum];
+
+/**
+ *
+ * @export
+ * @interface LlmConfigOneOf3
+ */
+export interface LlmConfigOneOf3 {
+  /**
+   * Sampling temperature.
+   * @type {number}
+   * @memberof LlmConfigOneOf3
+   */
+  'temperature'?: number;
+  /**
+   * Maximum tokens to generate.
+   * @type {number}
+   * @memberof LlmConfigOneOf3
+   */
+  'max_tokens'?: number;
+  /**
+   * Nucleus sampling.
+   * @type {number}
+   * @memberof LlmConfigOneOf3
+   */
+  'top_p'?: number;
+  /**
+   *
+   * @type {number}
+   * @memberof LlmConfigOneOf3
+   */
+  'frequency_penalty'?: number;
+  /**
+   *
+   * @type {number}
+   * @memberof LlmConfigOneOf3
+   */
+  'presence_penalty'?: number;
+  /**
+   *
+   * @type {LlmBaseConfigStop}
+   * @memberof LlmConfigOneOf3
+   */
+  'stop'?: LlmBaseConfigStop;
+  /**
+   * DeepSeek engine.
+   * @type {string}
+   * @memberof LlmConfigOneOf3
+   */
+  'engine'?: LlmConfigOneOf3EngineEnum;
+  /**
+   *
+   * @type {string}
+   * @memberof LlmConfigOneOf3
+   */
+  'model'?: LlmConfigOneOf3ModelEnum;
+}
+
+export const LlmConfigOneOf3EngineEnum = {
+  Deepseek: 'deepseek'
+} as const;
+
+export type LlmConfigOneOf3EngineEnum = typeof LlmConfigOneOf3EngineEnum[keyof typeof LlmConfigOneOf3EngineEnum];
+export const LlmConfigOneOf3ModelEnum = {
+  Chat: 'deepseek-chat',
+  Coder: 'deepseek-coder'
+} as const;
+
+export type LlmConfigOneOf3ModelEnum = typeof LlmConfigOneOf3ModelEnum[keyof typeof LlmConfigOneOf3ModelEnum];
+
+/**
+ *
+ * @export
+ * @interface LlmConfigOneOf3AllOf
+ */
+export interface LlmConfigOneOf3AllOf {
+  /**
+   * DeepSeek engine.
+   * @type {string}
+   * @memberof LlmConfigOneOf3AllOf
+   */
+  'engine'?: LlmConfigOneOf3AllOfEngineEnum;
+  /**
+   *
+   * @type {string}
+   * @memberof LlmConfigOneOf3AllOf
+   */
+  'model'?: LlmConfigOneOf3AllOfModelEnum;
+}
+
+export const LlmConfigOneOf3AllOfEngineEnum = {
+  Deepseek: 'deepseek'
+} as const;
+
+export type LlmConfigOneOf3AllOfEngineEnum = typeof LlmConfigOneOf3AllOfEngineEnum[keyof typeof LlmConfigOneOf3AllOfEngineEnum];
+export const LlmConfigOneOf3AllOfModelEnum = {
+  Chat: 'deepseek-chat',
+  Coder: 'deepseek-coder'
+} as const;
+
+export type LlmConfigOneOf3AllOfModelEnum = typeof LlmConfigOneOf3AllOfModelEnum[keyof typeof LlmConfigOneOf3AllOfModelEnum];
+
+/**
+ *
+ * @export
+ * @interface LlmConfigOneOf4
+ */
+export interface LlmConfigOneOf4 {
+  /**
+   * Sampling temperature.
+   * @type {number}
+   * @memberof LlmConfigOneOf4
+   */
+  'temperature'?: number;
+  /**
+   * Maximum tokens to generate.
+   * @type {number}
+   * @memberof LlmConfigOneOf4
+   */
+  'max_tokens'?: number;
+  /**
+   * Nucleus sampling.
+   * @type {number}
+   * @memberof LlmConfigOneOf4
+   */
+  'top_p'?: number;
+  /**
+   *
+   * @type {number}
+   * @memberof LlmConfigOneOf4
+   */
+  'frequency_penalty'?: number;
+  /**
+   *
+   * @type {number}
+   * @memberof LlmConfigOneOf4
+   */
+  'presence_penalty'?: number;
+  /**
+   *
+   * @type {LlmBaseConfigStop}
+   * @memberof LlmConfigOneOf4
+   */
+  'stop'?: LlmBaseConfigStop;
+  /**
+   * X.ai (Grok) engine.
+   * @type {string}
+   * @memberof LlmConfigOneOf4
+   */
+  'engine'?: LlmConfigOneOf4EngineEnum;
+  /**
+   *
+   * @type {string}
+   * @memberof LlmConfigOneOf4
+   */
+  'model'?: LlmConfigOneOf4ModelEnum;
+}
+
+export const LlmConfigOneOf4EngineEnum = {
+  Grok: 'grok'
+} as const;
+
+export type LlmConfigOneOf4EngineEnum = typeof LlmConfigOneOf4EngineEnum[keyof typeof LlmConfigOneOf4EngineEnum];
+export const LlmConfigOneOf4ModelEnum = {
+  Grok1: 'grok-1'
+} as const;
+
+export type LlmConfigOneOf4ModelEnum = typeof LlmConfigOneOf4ModelEnum[keyof typeof LlmConfigOneOf4ModelEnum];
+
+/**
+ *
+ * @export
+ * @interface LlmConfigOneOf4AllOf
+ */
+export interface LlmConfigOneOf4AllOf {
+  /**
+   * X.ai (Grok) engine.
+   * @type {string}
+   * @memberof LlmConfigOneOf4AllOf
+   */
+  'engine'?: LlmConfigOneOf4AllOfEngineEnum;
+  /**
+   *
+   * @type {string}
+   * @memberof LlmConfigOneOf4AllOf
+   */
+  'model'?: LlmConfigOneOf4AllOfModelEnum;
+}
+
+export const LlmConfigOneOf4AllOfEngineEnum = {
+  Grok: 'grok'
+} as const;
+
+export type LlmConfigOneOf4AllOfEngineEnum = typeof LlmConfigOneOf4AllOfEngineEnum[keyof typeof LlmConfigOneOf4AllOfEngineEnum];
+export const LlmConfigOneOf4AllOfModelEnum = {
+  Grok1: 'grok-1'
+} as const;
+
+export type LlmConfigOneOf4AllOfModelEnum = typeof LlmConfigOneOf4AllOfModelEnum[keyof typeof LlmConfigOneOf4AllOfModelEnum];
+
+/**
+ *
+ * @export
+ * @interface LlmConfigOneOf5
+ */
+export interface LlmConfigOneOf5 {
+  /**
+   * Sampling temperature.
+   * @type {number}
+   * @memberof LlmConfigOneOf5
+   */
+  'temperature'?: number;
+  /**
+   * Maximum tokens to generate.
+   * @type {number}
+   * @memberof LlmConfigOneOf5
+   */
+  'max_tokens'?: number;
+  /**
+   * Nucleus sampling.
+   * @type {number}
+   * @memberof LlmConfigOneOf5
+   */
+  'top_p'?: number;
+  /**
+   *
+   * @type {number}
+   * @memberof LlmConfigOneOf5
+   */
+  'frequency_penalty'?: number;
+  /**
+   *
+   * @type {number}
+   * @memberof LlmConfigOneOf5
+   */
+  'presence_penalty'?: number;
+  /**
+   *
+   * @type {LlmBaseConfigStop}
+   * @memberof LlmConfigOneOf5
+   */
+  'stop'?: LlmBaseConfigStop;
+  /**
+   * Mistral engine.
+   * @type {string}
+   * @memberof LlmConfigOneOf5
+   */
+  'engine'?: LlmConfigOneOf5EngineEnum;
+  /**
+   *
+   * @type {string}
+   * @memberof LlmConfigOneOf5
+   */
+  'model'?: LlmConfigOneOf5ModelEnum;
+}
+
+export const LlmConfigOneOf5EngineEnum = {
+  Mistral: 'mistral'
+} as const;
+
+export type LlmConfigOneOf5EngineEnum = typeof LlmConfigOneOf5EngineEnum[keyof typeof LlmConfigOneOf5EngineEnum];
+export const LlmConfigOneOf5ModelEnum = {
+  Mistral7bInstruct: 'mistral-7b-instruct',
+  Mixtral8x7bInstruct: 'mixtral-8x7b-instruct'
+} as const;
+
+export type LlmConfigOneOf5ModelEnum = typeof LlmConfigOneOf5ModelEnum[keyof typeof LlmConfigOneOf5ModelEnum];
+
+/**
+ *
+ * @export
+ * @interface LlmConfigOneOf5AllOf
+ */
+export interface LlmConfigOneOf5AllOf {
+  /**
+   * Mistral engine.
+   * @type {string}
+   * @memberof LlmConfigOneOf5AllOf
+   */
+  'engine'?: LlmConfigOneOf5AllOfEngineEnum;
+  /**
+   *
+   * @type {string}
+   * @memberof LlmConfigOneOf5AllOf
+   */
+  'model'?: LlmConfigOneOf5AllOfModelEnum;
+}
+
+export const LlmConfigOneOf5AllOfEngineEnum = {
+  Mistral: 'mistral'
+} as const;
+
+export type LlmConfigOneOf5AllOfEngineEnum = typeof LlmConfigOneOf5AllOfEngineEnum[keyof typeof LlmConfigOneOf5AllOfEngineEnum];
+export const LlmConfigOneOf5AllOfModelEnum = {
+  Mistral7bInstruct: 'mistral-7b-instruct',
+  Mixtral8x7bInstruct: 'mixtral-8x7b-instruct'
+} as const;
+
+export type LlmConfigOneOf5AllOfModelEnum = typeof LlmConfigOneOf5AllOfModelEnum[keyof typeof LlmConfigOneOf5AllOfModelEnum];
+
+/**
+ *
+ * @export
+ * @interface LlmConfigOneOf6
+ */
+export interface LlmConfigOneOf6 {
+  /**
+   * Sampling temperature.
+   * @type {number}
+   * @memberof LlmConfigOneOf6
+   */
+  'temperature'?: number;
+  /**
+   * Maximum tokens to generate.
+   * @type {number}
+   * @memberof LlmConfigOneOf6
+   */
+  'max_tokens'?: number;
+  /**
+   * Nucleus sampling.
+   * @type {number}
+   * @memberof LlmConfigOneOf6
+   */
+  'top_p'?: number;
+  /**
+   *
+   * @type {number}
+   * @memberof LlmConfigOneOf6
+   */
+  'frequency_penalty'?: number;
+  /**
+   *
+   * @type {number}
+   * @memberof LlmConfigOneOf6
+   */
+  'presence_penalty'?: number;
+  /**
+   *
+   * @type {LlmBaseConfigStop}
+   * @memberof LlmConfigOneOf6
+   */
+  'stop'?: LlmBaseConfigStop;
+  /**
+   * Cohere engine.
+   * @type {string}
+   * @memberof LlmConfigOneOf6
+   */
+  'engine'?: LlmConfigOneOf6EngineEnum;
+  /**
+   *
+   * @type {string}
+   * @memberof LlmConfigOneOf6
+   */
+  'model'?: LlmConfigOneOf6ModelEnum;
+}
+
+export const LlmConfigOneOf6EngineEnum = {
+  Cohere: 'cohere'
+} as const;
+
+export type LlmConfigOneOf6EngineEnum = typeof LlmConfigOneOf6EngineEnum[keyof typeof LlmConfigOneOf6EngineEnum];
+export const LlmConfigOneOf6ModelEnum = {
+  CommandRPlus: 'command-r-plus'
+} as const;
+
+export type LlmConfigOneOf6ModelEnum = typeof LlmConfigOneOf6ModelEnum[keyof typeof LlmConfigOneOf6ModelEnum];
+
+/**
+ *
+ * @export
+ * @interface LlmConfigOneOf6AllOf
+ */
+export interface LlmConfigOneOf6AllOf {
+  /**
+   * Cohere engine.
+   * @type {string}
+   * @memberof LlmConfigOneOf6AllOf
+   */
+  'engine'?: LlmConfigOneOf6AllOfEngineEnum;
+  /**
+   *
+   * @type {string}
+   * @memberof LlmConfigOneOf6AllOf
+   */
+  'model'?: LlmConfigOneOf6AllOfModelEnum;
+}
+
+export const LlmConfigOneOf6AllOfEngineEnum = {
+  Cohere: 'cohere'
+} as const;
+
+export type LlmConfigOneOf6AllOfEngineEnum = typeof LlmConfigOneOf6AllOfEngineEnum[keyof typeof LlmConfigOneOf6AllOfEngineEnum];
+export const LlmConfigOneOf6AllOfModelEnum = {
+  CommandRPlus: 'command-r-plus'
+} as const;
+
+export type LlmConfigOneOf6AllOfModelEnum = typeof LlmConfigOneOf6AllOfModelEnum[keyof typeof LlmConfigOneOf6AllOfModelEnum];
+
+/**
+ *
+ * @export
+ * @interface LlmConfigOneOf7
+ */
+export interface LlmConfigOneOf7 {
+  /**
+   * Sampling temperature.
+   * @type {number}
+   * @memberof LlmConfigOneOf7
+   */
+  'temperature'?: number;
+  /**
+   * Maximum tokens to generate.
+   * @type {number}
+   * @memberof LlmConfigOneOf7
+   */
+  'max_tokens'?: number;
+  /**
+   * Nucleus sampling.
+   * @type {number}
+   * @memberof LlmConfigOneOf7
+   */
+  'top_p'?: number;
+  /**
+   *
+   * @type {number}
+   * @memberof LlmConfigOneOf7
+   */
+  'frequency_penalty'?: number;
+  /**
+   *
+   * @type {number}
+   * @memberof LlmConfigOneOf7
+   */
+  'presence_penalty'?: number;
+  /**
+   *
+   * @type {LlmBaseConfigStop}
+   * @memberof LlmConfigOneOf7
+   */
+  'stop'?: LlmBaseConfigStop;
+  /**
+   * Google Bard engine.
+   * @type {string}
+   * @memberof LlmConfigOneOf7
+   */
+  'engine'?: LlmConfigOneOf7EngineEnum;
+  /**
+   *
+   * @type {string}
+   * @memberof LlmConfigOneOf7
+   */
+  'model'?: string;
+}
+
+export const LlmConfigOneOf7EngineEnum = {
+  Bard: 'bard'
+} as const;
+
+export type LlmConfigOneOf7EngineEnum = typeof LlmConfigOneOf7EngineEnum[keyof typeof LlmConfigOneOf7EngineEnum];
+
+/**
+ *
+ * @export
+ * @interface LlmConfigOneOf7AllOf
+ */
+export interface LlmConfigOneOf7AllOf {
+  /**
+   * Google Bard engine.
+   * @type {string}
+   * @memberof LlmConfigOneOf7AllOf
+   */
+  'engine'?: LlmConfigOneOf7AllOfEngineEnum;
+  /**
+   *
+   * @type {string}
+   * @memberof LlmConfigOneOf7AllOf
+   */
+  'model'?: string;
+}
+
+export const LlmConfigOneOf7AllOfEngineEnum = {
+  Bard: 'bard'
+} as const;
+
+export type LlmConfigOneOf7AllOfEngineEnum = typeof LlmConfigOneOf7AllOfEngineEnum[keyof typeof LlmConfigOneOf7AllOfEngineEnum];
+
+/**
+ *
+ * @export
+ * @interface LlmConfigOneOf8
+ */
+export interface LlmConfigOneOf8 {
+  /**
+   * Sampling temperature.
+   * @type {number}
+   * @memberof LlmConfigOneOf8
+   */
+  'temperature'?: number;
+  /**
+   * Maximum tokens to generate.
+   * @type {number}
+   * @memberof LlmConfigOneOf8
+   */
+  'max_tokens'?: number;
+  /**
+   * Nucleus sampling.
+   * @type {number}
+   * @memberof LlmConfigOneOf8
+   */
+  'top_p'?: number;
+  /**
+   *
+   * @type {number}
+   * @memberof LlmConfigOneOf8
+   */
+  'frequency_penalty'?: number;
+  /**
+   *
+   * @type {number}
+   * @memberof LlmConfigOneOf8
+   */
+  'presence_penalty'?: number;
+  /**
+   *
+   * @type {LlmBaseConfigStop}
+   * @memberof LlmConfigOneOf8
+   */
+  'stop'?: LlmBaseConfigStop;
+  /**
+   * Custom or inline engine (fallback).
+   * @type {string}
+   * @memberof LlmConfigOneOf8
+   */
+  'engine'?: string;
+  /**
+   * Custom or inline model.
+   * @type {string}
+   * @memberof LlmConfigOneOf8
+   */
+  'model'?: string;
+}
+/**
+ *
+ * @export
+ * @interface LlmConfigOneOf8AllOf
+ */
+export interface LlmConfigOneOf8AllOf {
+  /**
+   * Custom or inline engine (fallback).
+   * @type {string}
+   * @memberof LlmConfigOneOf8AllOf
+   */
+  'engine'?: string;
+  /**
+   * Custom or inline model.
+   * @type {string}
+   * @memberof LlmConfigOneOf8AllOf
+   */
+  'model'?: string;
+}
+/**
+ *
+ * @export
+ * @interface LlmConfigOneOfAllOf
+ */
+export interface LlmConfigOneOfAllOf {
+  /**
+   * OpenAI engine.
+   * @type {string}
+   * @memberof LlmConfigOneOfAllOf
+   */
+  'engine'?: LlmConfigOneOfAllOfEngineEnum;
+  /**
+   *
+   * @type {string}
+   * @memberof LlmConfigOneOfAllOf
+   */
+  'model'?: LlmConfigOneOfAllOfModelEnum;
+}
+
+export const LlmConfigOneOfAllOfEngineEnum = {
+  Openai: 'openai'
+} as const;
+
+export type LlmConfigOneOfAllOfEngineEnum = typeof LlmConfigOneOfAllOfEngineEnum[keyof typeof LlmConfigOneOfAllOfEngineEnum];
+export const LlmConfigOneOfAllOfModelEnum = {
+  _41106Preview: 'gpt-4-1106-preview',
+  _4VisionPreview: 'gpt-4-vision-preview',
+  _4: 'gpt-4',
+  _35Turbo: 'gpt-3.5-turbo',
+  _35Turbo16k: 'gpt-3.5-turbo-16k'
+} as const;
+
+export type LlmConfigOneOfAllOfModelEnum = typeof LlmConfigOneOfAllOfModelEnum[keyof typeof LlmConfigOneOfAllOfModelEnum];
+
+/**
+ * For tool calls completed by LLMs (auto ingress and manual ingress only)
+ * @export
+ * @interface LlmMessageToolCall
+ */
+export interface LlmMessageToolCall {
+  /**
+   * The ID of the tool call
+   * @type {string}
+   * @memberof LlmMessageToolCall
+   */
+  'id': string;
+  /**
+   * The type of the tool. Currently, only function is supported.
+   * @type {string}
+   * @memberof LlmMessageToolCall
+   */
+  'type': string;
+  /**
+   *
+   * @type {LlmMessageToolCallFunction}
+   * @memberof LlmMessageToolCall
+   */
+  'function': LlmMessageToolCallFunction;
+}
+/**
+ *
+ * @export
+ * @interface LlmMessageToolCallFunction
+ */
+export interface LlmMessageToolCallFunction {
+  /**
+   * The arguments to call the function with, as generated by the model in JSON format. Note that the model does not always generate valid JSON, and may hallucinate parameters not defined by your function schema. Validate the arguments in your code before calling your function.
+   * @type {string}
+   * @memberof LlmMessageToolCallFunction
+   */
+  'arguments': string;
+  /**
+   * name of the function to call
+   * @type {string}
+   * @memberof LlmMessageToolCallFunction
+   */
+  'name': string;
+}
 /**
  *
  * @export
@@ -4086,7 +5016,7 @@ export type MacroResultValue = MacroContextValue | boolean;
  */
 export interface Message {
   /**
-   * The role of the message (customer, agent, or business)
+   * The role of the message (customer, agent, or system, tool)
    * @type {string}
    * @memberof Message
    */
@@ -4104,23 +5034,84 @@ export interface Message {
    */
   'name'?: string;
   /**
-   * The time the message was sent
+   * Context that is derived from the message
+   * @type {{ [key: string]: any; }}
+   * @memberof Message
+   */
+  'context'?: { [key: string]: any; };
+  /**
+   * How long to delay the message manually in seconds
+   * @type {number}
+   * @memberof Message
+   */
+  'delayInSeconds'?: number;
+  /**
+   * Entities related to the message (gets set after the PMT transform)
+   * @type {Array<EntityToken>}
+   * @memberof Message
+   */
+  'entities'?: Array<EntityToken>;
+  /**
+   * Unique ID for the message
+   * @type {string}
+   * @memberof Message
+   */
+  'id': string;
+  /**
+   * If set to true, the PMT will not transform, message will be sent as is
+   * @type {boolean}
+   * @memberof Message
+   */
+  'ignoreTransform'?: boolean;
+  /**
+   * detected intent of message
+   * @type {string}
+   * @memberof Message
+   */
+  'intent'?: string;
+  /**
+   * Confidence score of the assigned intent
+   * @type {number}
+   * @memberof Message
+   */
+  'intentScore'?: number;
+  /**
+   * Media urls to attach to the transported message (seperated from content)
+   * @type {Array<string>}
+   * @memberof Message
+   */
+  'mediaUrls'?: Array<string>;
+  /**
+   * When the message is scheduled for delivery, Datetime ISO 8601 timestamp
+   * @type {string}
+   * @memberof Message
+   */
+  'scheduled'?: string;
+  /**
+   * The time the message was sent, Datetime ISO 8601 timestamp
    * @type {string}
    * @memberof Message
    */
   'time': string;
   /**
-   *
-   * @type {Array<EntityToken>}
+   * for auto/manual ingress only, used by LLMs to register when tool calls are invoked, for role=\'assistant\' messages
+   * @type {Array<LlmMessageToolCall>}
    * @memberof Message
    */
-  'entities'?: Array<EntityToken>;
+  'tool_calls'?: Array<LlmMessageToolCall>;
+  /**
+   * for auto/manual ingress only, used by LLMs to identity what tool was called
+   * @type {string}
+   * @memberof Message
+   */
+  'tool_call_id'?: string;
 }
 
 export const MessageRoleEnum = {
   Customer: 'customer',
   Agent: 'agent',
-  Context: 'context'
+  System: 'system',
+  Tool: 'tool'
 } as const;
 
 export type MessageRoleEnum = typeof MessageRoleEnum[keyof typeof MessageRoleEnum];
@@ -4132,17 +5123,77 @@ export type MessageRoleEnum = typeof MessageRoleEnum[keyof typeof MessageRoleEnu
  */
 export interface MessageAllOf {
   /**
-   * The time the message was sent
+   * Context that is derived from the message
+   * @type {{ [key: string]: any; }}
+   * @memberof MessageAllOf
+   */
+  'context'?: { [key: string]: any; };
+  /**
+   * How long to delay the message manually in seconds
+   * @type {number}
+   * @memberof MessageAllOf
+   */
+  'delayInSeconds'?: number;
+  /**
+   * Entities related to the message (gets set after the PMT transform)
+   * @type {Array<EntityToken>}
+   * @memberof MessageAllOf
+   */
+  'entities'?: Array<EntityToken>;
+  /**
+   * Unique ID for the message
+   * @type {string}
+   * @memberof MessageAllOf
+   */
+  'id': string;
+  /**
+   * If set to true, the PMT will not transform, message will be sent as is
+   * @type {boolean}
+   * @memberof MessageAllOf
+   */
+  'ignoreTransform'?: boolean;
+  /**
+   * detected intent of message
+   * @type {string}
+   * @memberof MessageAllOf
+   */
+  'intent'?: string;
+  /**
+   * Confidence score of the assigned intent
+   * @type {number}
+   * @memberof MessageAllOf
+   */
+  'intentScore'?: number;
+  /**
+   * Media urls to attach to the transported message (seperated from content)
+   * @type {Array<string>}
+   * @memberof MessageAllOf
+   */
+  'mediaUrls'?: Array<string>;
+  /**
+   * When the message is scheduled for delivery, Datetime ISO 8601 timestamp
+   * @type {string}
+   * @memberof MessageAllOf
+   */
+  'scheduled'?: string;
+  /**
+   * The time the message was sent, Datetime ISO 8601 timestamp
    * @type {string}
    * @memberof MessageAllOf
    */
   'time': string;
   /**
-   *
-   * @type {Array<EntityToken>}
+   * for auto/manual ingress only, used by LLMs to register when tool calls are invoked, for role=\'assistant\' messages
+   * @type {Array<LlmMessageToolCall>}
    * @memberof MessageAllOf
    */
-  'entities'?: Array<EntityToken>;
+  'tool_calls'?: Array<LlmMessageToolCall>;
+  /**
+   * for auto/manual ingress only, used by LLMs to identity what tool was called
+   * @type {string}
+   * @memberof MessageAllOf
+   */
+  'tool_call_id'?: string;
 }
 /**
  *
@@ -4151,7 +5202,7 @@ export interface MessageAllOf {
  */
 export interface MessageBase {
   /**
-   * The role of the message (customer, agent, or business)
+   * The role of the message (customer, agent, or system, tool)
    * @type {string}
    * @memberof MessageBase
    */
@@ -4173,7 +5224,8 @@ export interface MessageBase {
 export const MessageBaseRoleEnum = {
   Customer: 'customer',
   Agent: 'agent',
-  Context: 'context'
+  System: 'system',
+  Tool: 'tool'
 } as const;
 
 export type MessageBaseRoleEnum = typeof MessageBaseRoleEnum[keyof typeof MessageBaseRoleEnum];
@@ -4202,6 +5254,24 @@ export interface MessageCreateRequest {
    * @memberof MessageCreateRequest
    */
   'messageHtml'?: string;
+  /**
+   * Custom workflow task ids to execute for support custom business logic
+   * @type {Array<string>}
+   * @memberof MessageCreateRequest
+   */
+  'tasks'?: Array<string>;
+  /**
+   *
+   * @type {LlmConfig}
+   * @memberof MessageCreateRequest
+   */
+  'llm'?: LlmConfig;
+  /**
+   *
+   * @type {PmtConfig}
+   * @memberof MessageCreateRequest
+   */
+  'pmt'?: PmtConfig;
   /**
    * Overrides the role of the user sending the message
    * @type {string}
@@ -4314,7 +5384,7 @@ export interface MessageCreateResponseAllOf {
  */
 export interface MessageGetResponseInner {
   /**
-   * The role of the message (customer, agent, or business)
+   * The role of the message (customer, agent, or system, tool)
    * @type {string}
    * @memberof MessageGetResponseInner
    */
@@ -4332,17 +5402,77 @@ export interface MessageGetResponseInner {
    */
   'name'?: string;
   /**
-   * The time the message was sent
+   * Context that is derived from the message
+   * @type {{ [key: string]: any; }}
+   * @memberof MessageGetResponseInner
+   */
+  'context'?: { [key: string]: any; };
+  /**
+   * How long to delay the message manually in seconds
+   * @type {number}
+   * @memberof MessageGetResponseInner
+   */
+  'delayInSeconds'?: number;
+  /**
+   * Entities related to the message (gets set after the PMT transform)
+   * @type {Array<EntityToken>}
+   * @memberof MessageGetResponseInner
+   */
+  'entities'?: Array<EntityToken>;
+  /**
+   * Unique ID for the message
+   * @type {string}
+   * @memberof MessageGetResponseInner
+   */
+  'id': string;
+  /**
+   * If set to true, the PMT will not transform, message will be sent as is
+   * @type {boolean}
+   * @memberof MessageGetResponseInner
+   */
+  'ignoreTransform'?: boolean;
+  /**
+   * detected intent of message
+   * @type {string}
+   * @memberof MessageGetResponseInner
+   */
+  'intent'?: string;
+  /**
+   * Confidence score of the assigned intent
+   * @type {number}
+   * @memberof MessageGetResponseInner
+   */
+  'intentScore'?: number;
+  /**
+   * Media urls to attach to the transported message (seperated from content)
+   * @type {Array<string>}
+   * @memberof MessageGetResponseInner
+   */
+  'mediaUrls'?: Array<string>;
+  /**
+   * When the message is scheduled for delivery, Datetime ISO 8601 timestamp
+   * @type {string}
+   * @memberof MessageGetResponseInner
+   */
+  'scheduled'?: string;
+  /**
+   * The time the message was sent, Datetime ISO 8601 timestamp
    * @type {string}
    * @memberof MessageGetResponseInner
    */
   'time': string;
   /**
-   *
-   * @type {Array<EntityToken>}
+   * for auto/manual ingress only, used by LLMs to register when tool calls are invoked, for role=\'assistant\' messages
+   * @type {Array<LlmMessageToolCall>}
    * @memberof MessageGetResponseInner
    */
-  'entities'?: Array<EntityToken>;
+  'tool_calls'?: Array<LlmMessageToolCall>;
+  /**
+   * for auto/manual ingress only, used by LLMs to identity what tool was called
+   * @type {string}
+   * @memberof MessageGetResponseInner
+   */
+  'tool_call_id'?: string;
   /**
    * The ID of the message to get
    * @type {string}
@@ -4354,7 +5484,8 @@ export interface MessageGetResponseInner {
 export const MessageGetResponseInnerRoleEnum = {
   Customer: 'customer',
   Agent: 'agent',
-  Context: 'context'
+  System: 'system',
+  Tool: 'tool'
 } as const;
 
 export type MessageGetResponseInnerRoleEnum = typeof MessageGetResponseInnerRoleEnum[keyof typeof MessageGetResponseInnerRoleEnum];
@@ -4567,6 +5698,12 @@ export interface ParseResponse {
    */
   'context': { [key: string]: any; };
   /**
+   *
+   * @type {Array<string>}
+   * @memberof ParseResponse
+   */
+  'contextMessages'?: Array<string>;
+  /**
    * The time it took to parse the message in milliseconds
    * @type {number}
    * @memberof ParseResponse
@@ -4607,13 +5744,13 @@ export interface PingRequest {
  */
 export interface PmtConfig {
   /**
-   *
+   * The PMT provider engine to use.
    * @type {string}
    * @memberof PmtConfig
    */
   'engine'?: PmtConfigEngineEnum;
   /**
-   *
+   * The PMT model to use.
    * @type {string}
    * @memberof PmtConfig
    */
@@ -4621,12 +5758,15 @@ export interface PmtConfig {
 }
 
 export const PmtConfigEngineEnum = {
-  Scout9: 'scout9'
+  Scout9: 'scout9',
+  Opp: 'opp'
 } as const;
 
 export type PmtConfigEngineEnum = typeof PmtConfigEngineEnum[keyof typeof PmtConfigEngineEnum];
 export const PmtConfigModelEnum = {
-  _10: 'orin-1.0',
+  _10Alpha: 'orin-1.0-alpha',
+  _11Alpha: 'orin-1.1-alpha',
+  Latest: 'orin-latest',
   _20Preview: 'orin-2.0-preview'
 } as const;
 
@@ -6593,8 +7733,8 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
       // verify required parameter 'entityData' is not null or undefined
       assertParamExists('addEntity', 'entityData', entityData)
       const localVarPath = `/v1-entity/{type}/{id}`
-          .replace(`{${"type"}}`, encodeURIComponent(String(type)))
-          .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+        .replace(`{${"type"}}`, encodeURIComponent(String(type)))
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -7843,8 +8983,8 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
       // verify required parameter 'id' is not null or undefined
       assertParamExists('deleteEntity', 'id', id)
       const localVarPath = `/v1-entity/{type}/{id}`
-          .replace(`{${"type"}}`, encodeURIComponent(String(type)))
-          .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+        .replace(`{${"type"}}`, encodeURIComponent(String(type)))
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -7953,8 +9093,8 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
       // verify required parameter 'id' is not null or undefined
       assertParamExists('entity', 'id', id)
       const localVarPath = `/v1-entity/{type}/{id}`
-          .replace(`{${"type"}}`, encodeURIComponent(String(type)))
-          .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+        .replace(`{${"type"}}`, encodeURIComponent(String(type)))
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -8535,8 +9675,8 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
       // verify required parameter 'entityData' is not null or undefined
       assertParamExists('replaceEntity', 'entityData', entityData)
       const localVarPath = `/v1-entity/{type}/{id}`
-          .replace(`{${"type"}}`, encodeURIComponent(String(type)))
-          .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+        .replace(`{${"type"}}`, encodeURIComponent(String(type)))
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -8758,8 +9898,8 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
       // verify required parameter 'entityData' is not null or undefined
       assertParamExists('updateEntity', 'entityData', entityData)
       const localVarPath = `/v1-entity/{type}/{id}`
-          .replace(`{${"type"}}`, encodeURIComponent(String(type)))
-          .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+        .replace(`{${"type"}}`, encodeURIComponent(String(type)))
+        .replace(`{${"id"}}`, encodeURIComponent(String(id)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
