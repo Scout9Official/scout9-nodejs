@@ -15,8 +15,8 @@
  * @typedef {Object} ConversationData
  * @property {import('@scout9/app').Scout9ProjectBuildConfig} config - used to define generation and extract persona metadata
  * @property {import('@scout9/app').Conversation} conversation
- * @property {Array<import('@scout9/app').Message>} messages
- * @property {import('@scout9/app').Message} message - the message sent by the customer (should exist in messages)
+ * @property {Array<import('@scout9/admin').Message>} messages
+ * @property {import('@scout9/admin').Message} message - the message sent by the customer (should exist in messages)
  * @property {import('@scout9/app').Customer} customer
  * @property {import('@scout9/app').ConversationProgress} progress - progress checklist for manual/auto ingress workflows
  * @property {any} context - event context
@@ -24,16 +24,16 @@
 
 /**
  * @typedef {Object} ParseOutput
- * @property {Array<import('@scout9/app').Message>} messages
+ * @property {Array<import('@scout9/admin').Message>} messages
  * @property {import('@scout9/app').Conversation} conversation
- * @property {import('@scout9/app').Message} message
+ * @property {import('@scout9/admin').Message} message
  * @property {any} context
  */
 
 /**
  * @typedef {Object} WorkflowOutput
  * @property {Array<import('@scout9/app').WorkflowResponseSlot>} slots
- * @property {Array<import('@scout9/app').Message>} messages
+ * @property {Array<import('@scout9/admin').Message>} messages
  * @property {import('@scout9/app').Conversation} conversation
  * @property {any} context
  */
@@ -41,7 +41,7 @@
 /**
  * @typedef {Object} GenerateOutput
  * @property {import('@scout9/admin').GenerateResponse | undefined} generate
- * @property {Array<import('@scout9/app').Message>} messages
+ * @property {Array<import('@scout9/admin').Message>} messages
  * @property {import('@scout9/app').Conversation} conversation
  * @property {any} context
  */
@@ -51,6 +51,12 @@
  * @param {string} message - message to send
  * @param {string | undefined} language - language to parse in, defaults to "en" for english
  * @returns {Promise<import('@scout9/admin').ParseResponse>}
+ */
+
+/**
+ * @callback ContextualizerFun
+ * @param {Pick<import('@scout9/app').WorkflowEvent, 'messages' | 'conversation'>} args - message to send
+ * @returns {Promise<import('@scout9/app').WorkflowEvent['messages']>}
  */
 
 /**
@@ -73,7 +79,7 @@
 
 /**
  * @callback IdGeneratorFun
- * @param {import('@scout9/app').Message['role']} prefix
+ * @param {import('@scout9/admin').Message['role']} prefix
  * @returns {string}
  */
 
@@ -89,6 +95,7 @@
 /**
  * @typedef {Object} CustomerSpiritCallbacks
  * @property {ParseFun} parser
+ * @property {ContextualizerFun} contextualizer
  * @property {WorkflowFun} workflow
  * @property {GenerateFun} generator
  * @property {TransformerFun} transformer
@@ -103,9 +110,9 @@
  *   forwardNote?: string;
  *   forward?: import('@scout9/app').WorkflowResponseSlot['forward'];
  * })} conversation
- * @property {Change<Array<import('@scout9/app').Message>>} messages
+ * @property {Change<Array<import('@scout9/admin').Message>>} messages
  * @property {Change<any>} context
- * @property {Change<import('@scout9/app').Message>} message
+ * @property {Change<import('@scout9/admin').Message>} message
  * @property {Array<import('@scout9/app').Followup>} followup
  * @property {Array<import('@scout9/app').EntityContextUpsert>} entityContextUpsert
  */
@@ -123,6 +130,7 @@ export const Spirits = {
       customer,
       config,
       parser,
+      contextualizer,
       workflow,
       generator,
       transformer,
@@ -264,8 +272,8 @@ export const Spirits = {
     if (!messages.every(m => !!m.id)) {
       throw new Error(`SpiritsError: Every message must have an ".id", ensure all messages have an id assigned before running`);
     }
-    if (!messages.every(m => m.role === 'customer' || m.role === 'agent' || m.role === 'system')) {
-      const invalidRoles = messages.filter(m => m.role !== 'customer' && m.role !== 'agent' && m.role !== 'system');
+    if (!messages.every(m => m.role === 'customer' || m.role === 'agent' || m.role === 'system' || m.role === 'tool')) {
+      const invalidRoles = messages.filter(m => m.role !== 'customer' && m.role !== 'agent' && m.role !== 'system' && m.role !== 'tool');
       throw new Error(`SpiritsError: Every message must have a role of "customer", "agent", or "system". Got invalid roles: ${invalidRoles.map(
         m => m.role).join(', ')}`);
     }
@@ -352,7 +360,17 @@ export const Spirits = {
       })));
     }
 
-    // 3. Run the workflow
+    // 3. Run the contextualizer
+    progress('Running contextualizer', 'info', 'SET_PROCESSING', 'system')
+    const newContextMessages = await contextualizer({conversation, messages});
+    for (const contextMessage of newContextMessages) {
+      if (contextMessage.entities.length) {
+        messages.push(contextMessage);
+        progress(`Added context`, 'info', 'ADD_MESSAGE', messages[messages.length - 1]);
+      }
+    }
+
+    // 4. Run the workflow
     progress('Running workflow', 'info', 'SET_PROCESSING', 'system');
 
     const slots = await workflow({
@@ -543,7 +561,7 @@ export const Spirits = {
 
       if (manualMessage) {
 
-        /** @type {import('@scout9/app').Message} */
+        /** @type {import('@scout9/admin').Message} */
         let manualMessageObj = {
           id: idGenerator('persona'),
           role: 'agent', // @TODO switch role to persona
@@ -598,7 +616,7 @@ export const Spirits = {
       );
     }
 
-    // 4. Generate response
+    // 5. Generate response
     // If conversation previously locked, don't generate
     if (!input.conversation.locked) {
       // If conversation is newly locked, don't generate, unless instructions were provided and no custom messages were provided
@@ -636,15 +654,32 @@ export const Spirits = {
             const lastAgentMessage = agentMessages[agentMessages.length - 1];
             const addedMessages = [
               ...(generatorPayload?.messages || [])
-                .map((message) => ({
+                .map((message) => {
+
+                  let time = message.time;
+
+                  if (typeof time !== 'string') {
+                    // Convert the time string
+                    if (!time) {
+                      progress(`Message "${message.content}" wasn't given a timestamp, defaulting to now`);
+                      time = new Date().toISOString();
+                    } else if (!'toDate' in time) {
+                      progress(`Message "${message.content}" wasn't given a timestamp (${JSON.stringify(time)}) without a toDate method, defaulting to now`);
+                      time = new Date().toISOString();
+                    } else {
+                      time = message.time.toDate().toISOString();
+                    }
+                  }
+
+                  return ({
                   id: idGenerator(message.role),
                   content: message.content,
                   role: message.role,
-                  time: message.time?.toDate()?.toISOString() || new Date().toISOString(),
+                  time,
                   entities: message.entities ?? {},
                   context: message.context ?? {},
                   mediaUrls: message.mediaUrls
-                }))
+                })})
             ]
               .reduce((accumulator, message) => {
                 if (!accumulator.find(m => m.content === message.content)) accumulator.push(message);

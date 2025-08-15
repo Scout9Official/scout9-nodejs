@@ -2229,6 +2229,12 @@ export interface EntityToken {
    */
   'end': number;
   /**
+   * The entity token subtype, usually used a category tag to entity registry
+   * @type {string}
+   * @memberof EntityToken
+   */
+  'subType'?: string;
+  /**
    *
    * @type {EntityTokenType}
    * @memberof EntityToken

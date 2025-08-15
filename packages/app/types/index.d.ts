@@ -930,11 +930,11 @@ declare module '@scout9/app/spirits' {
 		 */
 		config: any;
 		conversation: any;
-		messages: Array<any>;
+		messages: Array<import('@scout9/admin').Message>;
 		/**
 		 * - the message sent by the customer (should exist in messages)
 		 */
-		message: any;
+		message: import('@scout9/admin').Message;
 		customer: any;
 		/**
 		 * - progress checklist for manual/auto ingress workflows
@@ -946,31 +946,33 @@ declare module '@scout9/app/spirits' {
 		context: any;
 	};
 	export type ParseOutput = {
-		messages: Array<any>;
+		messages: Array<import('@scout9/admin').Message>;
 		conversation: any;
-		message: any;
+		message: import('@scout9/admin').Message;
 		context: any;
 	};
 	export type WorkflowOutput = {
 		slots: Array<any>;
-		messages: Array<any>;
+		messages: Array<import('@scout9/admin').Message>;
 		conversation: any;
 		context: any;
 	};
 	export type GenerateOutput = {
 		generate: import('@scout9/admin').GenerateResponse | undefined;
-		messages: Array<any>;
+		messages: Array<import('@scout9/admin').Message>;
 		conversation: any;
 		context: any;
 	};
 	export type ParseFun = (message: string, language: string | undefined) => Promise<import('@scout9/admin').ParseResponse>;
+	export type ContextualizerFun = (args: Pick<any, 'messages' | 'conversation'>) => Promise<any['messages']>;
 	export type WorkflowFun = (event: any) => Promise<any>;
 	export type GenerateFun = (data: import('@scout9/admin').GenerateRequestOneOf1) => Promise<import('@scout9/admin').GenerateResponse>;
 	export type TransformerFun = (data: import('@scout9/admin').PmtTransformRequest) => Promise<import('@scout9/admin').PmtTransformResponse>;
-	export type IdGeneratorFun = (prefix: any) => string;
+	export type IdGeneratorFun = (prefix: import('@scout9/admin').Message['role']) => string;
 	export type StatusCallback = (message: string, level?: 'info' | 'warn' | 'error' | 'success' | undefined, type?: string | undefined, payload?: any | undefined) => void;
 	export type CustomerSpiritCallbacks = {
 		parser: ParseFun;
+		contextualizer: ContextualizerFun;
 		workflow: WorkflowFun;
 		generator: GenerateFun;
 		transformer: TransformerFun;
@@ -982,9 +984,9 @@ declare module '@scout9/app/spirits' {
 			forwardNote?: string;
 			forward?: any['forward'];
 		});
-		messages: Change<Array<any>>;
+		messages: Change<Array<import('@scout9/admin').Message>>;
 		context: Change<any>;
-		message: Change<any>;
+		message: Change<import('@scout9/admin').Message>;
 		followup: Array<any>;
 		entityContextUpsert: Array<any>;
 	};
