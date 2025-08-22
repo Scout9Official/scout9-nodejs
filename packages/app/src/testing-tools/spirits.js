@@ -352,21 +352,31 @@ export const Spirits = {
 
     // upsert parse system messages
     if (parsePayload.contextMessages.length) {
-      messages.push(...parsePayload.contextMessages.map((text) => ({
-        id: idGenerator('sys'),
-        role: 'system',
-        content: text,
-        time: new Date().toISOString()
-      })));
+      messages.push(
+        ...parsePayload.contextMessages.reduce((accumulator, text) => {
+          if (!messages.find(mes => mes.content === text)) {
+            accumulator.push({
+              id: idGenerator('sys'),
+              role: 'system',
+              content: text,
+              time: new Date().toISOString()
+            });
+          } else {
+            progress(`Already have system context, skipping`, 'info');
+          }
+          return accumulator;
+        }, []));
     }
 
     // 3. Run the contextualizer
-    progress('Running contextualizer', 'info', 'SET_PROCESSING', 'system')
+    progress('Running contextualizer', 'info', 'SET_PROCESSING', 'system');
     const newContextMessages = await contextualizer({conversation, messages});
     for (const contextMessage of newContextMessages) {
-      if (contextMessage.entities.length) {
+      if (!messages.find(mes => mes.content === contextMessage.content)) {
         messages.push(contextMessage);
         progress(`Added context`, 'info', 'ADD_MESSAGE', messages[messages.length - 1]);
+      } else {
+        progress(`Already have system context, skipping`, 'info');
       }
     }
 
@@ -638,7 +648,12 @@ export const Spirits = {
           }
           const generatorPayload = await generator(generatorInput);
           if (!generatorPayload.send) {
-            progress('Generated response', 'failed', undefined, {error: generatorPayload.errors?.join('\n\n') || 'Unknown Reason'});
+            progress(
+              'Generated response',
+              'failed',
+              undefined,
+              {error: generatorPayload.errors?.join('\n\n') || 'Unknown Reason'}
+            );
             console.error(
               `Locking conversation, api returned send false: ${generatorPayload.messages}`,
               generatorPayload.errors?.join('\n\n') || generatorPayload.forwardNote || 'Unknown Reason'
@@ -672,14 +687,15 @@ export const Spirits = {
                   }
 
                   return ({
-                  id: idGenerator(message.role),
-                  content: message.content,
-                  role: message.role,
-                  time,
-                  entities: message.entities ?? {},
-                  context: message.context ?? {},
-                  mediaUrls: message.mediaUrls
-                })})
+                    id: idGenerator(message.role),
+                    content: message.content,
+                    role: message.role,
+                    time,
+                    entities: message.entities ?? {},
+                    context: message.context ?? {},
+                    mediaUrls: message.mediaUrls
+                  });
+                })
             ]
               .reduce((accumulator, message) => {
                 if (!accumulator.find(m => m.content === message.content)) accumulator.push(message);
