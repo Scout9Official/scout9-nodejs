@@ -517,6 +517,11 @@ export type EntityConfigurationBase = {
     id?: string;
 
     /**
+     * What type of entity this represents
+     */
+    type: 'reference' | 'entity';
+
+    /**
      * The corpus definitions used to compute embeddings for NLP models.
      */
     definitions?: EntityDefinition[];
@@ -770,7 +775,7 @@ export type WorkflowResponseSlotBase = {
     forwardNote?: string | undefined;
 
     /** Instructions to send to the PMT on how to steer the conversation */
-    instructions?: Instruction[] | undefined;
+    instructions?: Instruction | Instruction[] | undefined;
 
     /** If provided, sends a direct message to the user */
     message?: string | DirectMessage | undefined;

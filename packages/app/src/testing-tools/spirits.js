@@ -142,7 +142,7 @@ export const Spirits = {
       messages: messagesBefore,
       conversation: conversationBefore
     } = input;
-    let {conversation, messages, context, message} = input;
+    let { conversation, messages, context, message } = input;
 
     // Storing post process events here
     const followup = [];
@@ -177,7 +177,7 @@ export const Spirits = {
     const lockConversation = (_conversation, reason) => {
       return updateConversation(
         _conversation,
-        {locked: true, lockedReason: conversation.lockedReason || reason || 'Unknown'}
+        { locked: true, lockedReason: conversation.lockedReason || reason || 'Unknown' }
       );
     };
 
@@ -333,7 +333,7 @@ export const Spirits = {
         'Updated conversation intent',
         'info',
         'UPDATE_CONVERSATION',
-        {intent: parsePayload.intent, intentScore: parsePayload?.intentScore || 0}
+        { intent: parsePayload.intent, intentScore: parsePayload?.intentScore || 0 }
       );
     }
     const oldKeyCount = Object.keys(context).length;
@@ -345,7 +345,7 @@ export const Spirits = {
       conversation.locked = false;
       conversation.lockAttempts = 0;
       conversation.lockedReason = '';
-      progress('Reset lock', 'info', 'UPDATE_CONVERSATION', {locked: false, lockAttempts: 0, lockedReason: ''});
+      progress('Reset lock', 'info', 'UPDATE_CONVERSATION', { locked: false, lockAttempts: 0, lockedReason: '' });
     }
 
     const noNewContext = Object.keys(parsePayload.context).length === 0;
@@ -370,7 +370,7 @@ export const Spirits = {
 
     // 3. Run the contextualizer
     progress('Running contextualizer', 'info', 'SET_PROCESSING', 'system');
-    const newContextMessages = await contextualizer({conversation, messages});
+    const newContextMessages = await contextualizer({ conversation, messages });
     for (const contextMessage of newContextMessages) {
       if (!messages.find(mes => mes.content === contextMessage.content)) {
         messages.push(contextMessage);
@@ -418,7 +418,7 @@ export const Spirits = {
       conversation.lockAttempts = 0;
       conversation.locked = false;
       conversation.lockedReason = '';
-      progress('Reset lock', 'info', 'UPDATE_CONVERSATION', {lockAttempts: 0, locked: false, lockedReason: ''});
+      progress('Reset lock', 'info', 'UPDATE_CONVERSATION', { lockAttempts: 0, locked: false, lockedReason: '' });
     }
 
     let resettedIntent = false;
@@ -451,7 +451,7 @@ export const Spirits = {
           const slots = {};
           const map = [];
           for (let i = 0; i < anticipate.length; i++) {
-            const {keywords, ..._slot} = anticipate[i];
+            const { keywords, ..._slot } = anticipate[i];
             const slotId = `${i}`;
             slots[slotId] = _slot;
             map.push({
@@ -499,7 +499,7 @@ export const Spirits = {
         _forward = forward;
         _forwardNote = forwardNote;
         if (typeof forward === 'string') {
-          updateConversation(conversation, {forwarded: forward});
+          updateConversation(conversation, { forwarded: forward });
           messages.push({
             id: idGenerator('sys'),
             role: 'system',
@@ -508,7 +508,7 @@ export const Spirits = {
           });
           progress(`Forwarded to "${forward}"`, 'info', 'ADD_MESSAGE', messages[messages.length - 1]);
         } else if (typeof forward === 'boolean') {
-          updateConversation(conversation, {forwarded: conversation.$agent});
+          updateConversation(conversation, { forwarded: conversation.$agent });
           messages.push({
             id: idGenerator('sys'),
             role: 'system',
@@ -530,7 +530,7 @@ export const Spirits = {
             'ADD_MESSAGE',
             messages[messages.length - 1]
           );
-          updateConversation(conversation, {forwarded: forward.to});
+          updateConversation(conversation, { forwarded: forward.to });
         }
       }
 
@@ -622,7 +622,7 @@ export const Spirits = {
         'Reset conversation intent',
         'info',
         'UPDATE_CONVERSATION',
-        {intent: null, intentScore: null, locked: false, lockAttempts: 0, lockedReason: ''}
+        { intent: null, intentScore: null, locked: false, lockAttempts: 0, lockedReason: '' }
       );
     }
 
@@ -652,7 +652,7 @@ export const Spirits = {
               'Generated response',
               'failed',
               undefined,
-              {error: generatorPayload.errors?.join('\n\n') || 'Unknown Reason'}
+              { error: generatorPayload.errors?.join('\n\n') || 'Unknown Reason' }
             );
             console.error(
               `Locking conversation, api returned send false: ${generatorPayload.messages}`,
@@ -667,40 +667,59 @@ export const Spirits = {
             // Check if already had message
             const agentMessages = messages.filter(m => m.role === 'agent');
             const lastAgentMessage = agentMessages[agentMessages.length - 1];
-            const addedMessages = [
-              ...(generatorPayload?.messages || [])
-                .map((message) => {
 
-                  let time = message.time;
+            // Build addedMessages from generatorPayload.messages
+            const addedMessages = (generatorPayload?.messages ?? [])
+              .map((message) => {
+                // Normalize time → ISO string
+                const t = message.time;
+                let isoTime;
 
-                  if (typeof time !== 'string') {
-                    // Convert the time string
-                    if (!time) {
-                      progress(`Message "${message.content}" wasn't given a timestamp, defaulting to now`);
-                      time = new Date().toISOString();
-                    } else if (!'toDate' in time) {
-                      progress(`Message "${message.content}" wasn't given a timestamp (${JSON.stringify(time)}) without a toDate method, defaulting to now`);
-                      time = new Date().toISOString();
-                    } else {
-                      time = message.time.toDate().toISOString();
-                    }
+                if (typeof t === "string") {
+                  isoTime = t;
+                } else if (t instanceof Date) {
+                  isoTime = t.toISOString();
+                } else if (t && typeof t.toDate === "function") {
+                  // Firestore Timestamp
+                  isoTime = t.toDate().toISOString();
+                } else {
+                  progress(
+                    `Message "${message.content}" wasn't given a usable timestamp (${JSON.stringify(
+                      t
+                    )}), defaulting to now`
+                  );
+                  isoTime = new Date().toISOString();
+                }
+
+                // Base fields we guarantee
+                const base = {
+                  role: message.role,
+                  content: message.content,
+                  id: idGenerator(message.role),
+                  time: isoTime,
+                };
+
+                // Copy any other non-nullish fields without overwriting base
+                return Object.entries(message).reduce((acc, [key, value]) => {
+                  if (!Object.prototype.hasOwnProperty.call(acc, key) && value != null) {
+                    acc[key] = value;
                   }
+                  return acc;
+                }, base);
+              })
+              // De-dupe by content (change the key if you want stricter uniqueness)
+              .reduce(
+                (acc, msg) => {
+                  const key = String(msg.content); // e.g. `${msg.role}::${msg.content}` for stronger uniqueness
+                  if (!acc.seen.has(key)) {
+                    acc.seen.add(key);
+                    acc.items.push(msg);
+                  }
+                  return acc;
+                },
+                { seen: new Set(), items: [] }
+              ).items;
 
-                  return ({
-                    id: idGenerator(message.role),
-                    content: message.content,
-                    role: message.role,
-                    time,
-                    entities: message.entities ?? {},
-                    context: message.context ?? {},
-                    mediaUrls: message.mediaUrls
-                  });
-                })
-            ]
-              .reduce((accumulator, message) => {
-                if (!accumulator.find(m => m.content === message.content)) accumulator.push(message);
-                return accumulator;
-              }, []);
 
             if (lastAgentMessage && lastAgentMessage.content && addedMessages.some((message) => message.content === lastAgentMessage.content)) {
               // Error should not have happened

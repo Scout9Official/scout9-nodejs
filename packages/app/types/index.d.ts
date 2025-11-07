@@ -460,6 +460,11 @@ declare module '@scout9/app' {
 	  id?: string;
 
 	  /**
+	   * What type of entity this represents
+	   */
+	  type: 'reference' | 'entity';
+
+	  /**
 	   * The corpus definitions used to compute embeddings for NLP models.
 	   */
 	  definitions?: EntityDefinition[];
@@ -713,7 +718,7 @@ declare module '@scout9/app' {
 	  forwardNote?: string | undefined;
 
 	  /** Instructions to send to the PMT on how to steer the conversation */
-	  instructions?: Instruction[] | undefined;
+	  instructions?: Instruction | Instruction[] | undefined;
 
 	  /** If provided, sends a direct message to the user */
 	  message?: string | DirectMessage | undefined;
@@ -1721,7 +1726,7 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 		}>, "many">;
 		entities: z.ZodArray<z.ZodEffects<z.ZodObject<{
-			type: z.ZodOptional<z.ZodEnum<["entity", "reference"]>>;
+			type: z.ZodEnum<["entity", "reference"]>;
 			id: z.ZodOptional<z.ZodString>;
 			model: z.ZodOptional<z.ZodAny>;
 			references: z.ZodOptional<z.ZodString>;
@@ -1798,6 +1803,7 @@ declare module '@scout9/app/schemas' {
 				DELETE?: boolean | undefined;
 			}>>;
 		}, "strict", z.ZodTypeAny, {
+			type: "entity" | "reference";
 			entity: string;
 			entities: string[];
 			api: {
@@ -1808,7 +1814,6 @@ declare module '@scout9/app/schemas' {
 				PATCH?: boolean | undefined;
 				DELETE?: boolean | undefined;
 			} | null;
-			type?: "entity" | "reference" | undefined;
 			id?: string | undefined;
 			model?: any;
 			references?: string | undefined;
@@ -1829,6 +1834,7 @@ declare module '@scout9/app/schemas' {
 				};
 			}[] | undefined;
 		}, {
+			type: "entity" | "reference";
 			entity: string;
 			entities: string[];
 			api: {
@@ -1839,7 +1845,6 @@ declare module '@scout9/app/schemas' {
 				PATCH?: boolean | undefined;
 				DELETE?: boolean | undefined;
 			} | null;
-			type?: "entity" | "reference" | undefined;
 			id?: string | undefined;
 			model?: any;
 			references?: string | undefined;
@@ -1860,6 +1865,7 @@ declare module '@scout9/app/schemas' {
 				};
 			}[] | undefined;
 		}>, {
+			type: "entity" | "reference";
 			entity: string;
 			entities: string[];
 			api: {
@@ -1870,7 +1876,6 @@ declare module '@scout9/app/schemas' {
 				PATCH?: boolean | undefined;
 				DELETE?: boolean | undefined;
 			} | null;
-			type?: "entity" | "reference" | undefined;
 			id?: string | undefined;
 			model?: any;
 			references?: string | undefined;
@@ -1891,6 +1896,7 @@ declare module '@scout9/app/schemas' {
 				};
 			}[] | undefined;
 		}, {
+			type: "entity" | "reference";
 			entity: string;
 			entities: string[];
 			api: {
@@ -1901,7 +1907,6 @@ declare module '@scout9/app/schemas' {
 				PATCH?: boolean | undefined;
 				DELETE?: boolean | undefined;
 			} | null;
-			type?: "entity" | "reference" | undefined;
 			id?: string | undefined;
 			model?: any;
 			references?: string | undefined;
@@ -2005,6 +2010,7 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 		}[];
 		entities: {
+			type: "entity" | "reference";
 			entity: string;
 			entities: string[];
 			api: {
@@ -2015,7 +2021,6 @@ declare module '@scout9/app/schemas' {
 				PATCH?: boolean | undefined;
 				DELETE?: boolean | undefined;
 			} | null;
-			type?: "entity" | "reference" | undefined;
 			id?: string | undefined;
 			model?: any;
 			references?: string | undefined;
@@ -2135,6 +2140,7 @@ declare module '@scout9/app/schemas' {
 			} | undefined;
 		}[];
 		entities: {
+			type: "entity" | "reference";
 			entity: string;
 			entities: string[];
 			api: {
@@ -2145,7 +2151,6 @@ declare module '@scout9/app/schemas' {
 				PATCH?: boolean | undefined;
 				DELETE?: boolean | undefined;
 			} | null;
-			type?: "entity" | "reference" | undefined;
 			id?: string | undefined;
 			model?: any;
 			references?: string | undefined;
@@ -2228,7 +2233,7 @@ declare module '@scout9/app/schemas' {
 	export const EntityConfigurationSchema: z.ZodEffects<z.ZodObject<{
 		id: z.ZodOptional<z.ZodString>;
 		model: z.ZodOptional<z.ZodAny>;
-		type: z.ZodOptional<z.ZodEnum<["entity", "reference"]>>;
+		type: z.ZodEnum<["entity", "reference"]>;
 		references: z.ZodOptional<z.ZodString>;
 		definitions: z.ZodOptional<z.ZodArray<z.ZodObject<{
 			utterance: z.ZodOptional<z.ZodString>;
@@ -2279,9 +2284,9 @@ declare module '@scout9/app/schemas' {
 			};
 		}>, "many">>;
 	}, "strict", z.ZodTypeAny, {
+		type: "entity" | "reference";
 		id?: string | undefined;
 		model?: any;
-		type?: "entity" | "reference" | undefined;
 		references?: string | undefined;
 		definitions?: {
 			value: string;
@@ -2300,9 +2305,9 @@ declare module '@scout9/app/schemas' {
 			};
 		}[] | undefined;
 	}, {
+		type: "entity" | "reference";
 		id?: string | undefined;
 		model?: any;
-		type?: "entity" | "reference" | undefined;
 		references?: string | undefined;
 		definitions?: {
 			value: string;
@@ -2321,9 +2326,9 @@ declare module '@scout9/app/schemas' {
 			};
 		}[] | undefined;
 	}>, {
+		type: "entity" | "reference";
 		id?: string | undefined;
 		model?: any;
-		type?: "entity" | "reference" | undefined;
 		references?: string | undefined;
 		definitions?: {
 			value: string;
@@ -2342,9 +2347,9 @@ declare module '@scout9/app/schemas' {
 			};
 		}[] | undefined;
 	}, {
+		type: "entity" | "reference";
 		id?: string | undefined;
 		model?: any;
-		type?: "entity" | "reference" | undefined;
 		references?: string | undefined;
 		definitions?: {
 			value: string;
@@ -2366,7 +2371,7 @@ declare module '@scout9/app/schemas' {
 	export const EntitiesRootConfigurationSchema: z.ZodArray<z.ZodEffects<z.ZodObject<{
 		id: z.ZodOptional<z.ZodString>;
 		model: z.ZodOptional<z.ZodAny>;
-		type: z.ZodOptional<z.ZodEnum<["entity", "reference"]>>;
+		type: z.ZodEnum<["entity", "reference"]>;
 		references: z.ZodOptional<z.ZodString>;
 		definitions: z.ZodOptional<z.ZodArray<z.ZodObject<{
 			utterance: z.ZodOptional<z.ZodString>;
@@ -2417,9 +2422,9 @@ declare module '@scout9/app/schemas' {
 			};
 		}>, "many">>;
 	}, "strict", z.ZodTypeAny, {
+		type: "entity" | "reference";
 		id?: string | undefined;
 		model?: any;
-		type?: "entity" | "reference" | undefined;
 		references?: string | undefined;
 		definitions?: {
 			value: string;
@@ -2438,9 +2443,9 @@ declare module '@scout9/app/schemas' {
 			};
 		}[] | undefined;
 	}, {
+		type: "entity" | "reference";
 		id?: string | undefined;
 		model?: any;
-		type?: "entity" | "reference" | undefined;
 		references?: string | undefined;
 		definitions?: {
 			value: string;
@@ -2459,9 +2464,9 @@ declare module '@scout9/app/schemas' {
 			};
 		}[] | undefined;
 	}>, {
+		type: "entity" | "reference";
 		id?: string | undefined;
 		model?: any;
-		type?: "entity" | "reference" | undefined;
 		references?: string | undefined;
 		definitions?: {
 			value: string;
@@ -2480,9 +2485,9 @@ declare module '@scout9/app/schemas' {
 			};
 		}[] | undefined;
 	}, {
+		type: "entity" | "reference";
 		id?: string | undefined;
 		model?: any;
-		type?: "entity" | "reference" | undefined;
 		references?: string | undefined;
 		definitions?: {
 			value: string;
@@ -2505,7 +2510,7 @@ declare module '@scout9/app/schemas' {
 	 * @TODO why type extend not valid?
 	 */
 	export const EntityRootProjectConfigurationSchema: z.ZodEffects<z.ZodObject<{
-		type: z.ZodOptional<z.ZodEnum<["entity", "reference"]>>;
+		type: z.ZodEnum<["entity", "reference"]>;
 		id: z.ZodOptional<z.ZodString>;
 		model: z.ZodOptional<z.ZodAny>;
 		references: z.ZodOptional<z.ZodString>;
@@ -2582,6 +2587,7 @@ declare module '@scout9/app/schemas' {
 			DELETE?: boolean | undefined;
 		}>>;
 	}, "strict", z.ZodTypeAny, {
+		type: "entity" | "reference";
 		entity: string;
 		entities: string[];
 		api: {
@@ -2592,7 +2598,6 @@ declare module '@scout9/app/schemas' {
 			PATCH?: boolean | undefined;
 			DELETE?: boolean | undefined;
 		} | null;
-		type?: "entity" | "reference" | undefined;
 		id?: string | undefined;
 		model?: any;
 		references?: string | undefined;
@@ -2613,6 +2618,7 @@ declare module '@scout9/app/schemas' {
 			};
 		}[] | undefined;
 	}, {
+		type: "entity" | "reference";
 		entity: string;
 		entities: string[];
 		api: {
@@ -2623,7 +2629,6 @@ declare module '@scout9/app/schemas' {
 			PATCH?: boolean | undefined;
 			DELETE?: boolean | undefined;
 		} | null;
-		type?: "entity" | "reference" | undefined;
 		id?: string | undefined;
 		model?: any;
 		references?: string | undefined;
@@ -2644,6 +2649,7 @@ declare module '@scout9/app/schemas' {
 			};
 		}[] | undefined;
 	}>, {
+		type: "entity" | "reference";
 		entity: string;
 		entities: string[];
 		api: {
@@ -2654,7 +2660,6 @@ declare module '@scout9/app/schemas' {
 			PATCH?: boolean | undefined;
 			DELETE?: boolean | undefined;
 		} | null;
-		type?: "entity" | "reference" | undefined;
 		id?: string | undefined;
 		model?: any;
 		references?: string | undefined;
@@ -2675,6 +2680,7 @@ declare module '@scout9/app/schemas' {
 			};
 		}[] | undefined;
 	}, {
+		type: "entity" | "reference";
 		entity: string;
 		entities: string[];
 		api: {
@@ -2685,7 +2691,6 @@ declare module '@scout9/app/schemas' {
 			PATCH?: boolean | undefined;
 			DELETE?: boolean | undefined;
 		} | null;
-		type?: "entity" | "reference" | undefined;
 		id?: string | undefined;
 		model?: any;
 		references?: string | undefined;
@@ -2707,7 +2712,7 @@ declare module '@scout9/app/schemas' {
 		}[] | undefined;
 	}>;
 	export const EntitiesRootProjectConfigurationSchema: z.ZodArray<z.ZodEffects<z.ZodObject<{
-		type: z.ZodOptional<z.ZodEnum<["entity", "reference"]>>;
+		type: z.ZodEnum<["entity", "reference"]>;
 		id: z.ZodOptional<z.ZodString>;
 		model: z.ZodOptional<z.ZodAny>;
 		references: z.ZodOptional<z.ZodString>;
@@ -2784,6 +2789,7 @@ declare module '@scout9/app/schemas' {
 			DELETE?: boolean | undefined;
 		}>>;
 	}, "strict", z.ZodTypeAny, {
+		type: "entity" | "reference";
 		entity: string;
 		entities: string[];
 		api: {
@@ -2794,7 +2800,6 @@ declare module '@scout9/app/schemas' {
 			PATCH?: boolean | undefined;
 			DELETE?: boolean | undefined;
 		} | null;
-		type?: "entity" | "reference" | undefined;
 		id?: string | undefined;
 		model?: any;
 		references?: string | undefined;
@@ -2815,6 +2820,7 @@ declare module '@scout9/app/schemas' {
 			};
 		}[] | undefined;
 	}, {
+		type: "entity" | "reference";
 		entity: string;
 		entities: string[];
 		api: {
@@ -2825,7 +2831,6 @@ declare module '@scout9/app/schemas' {
 			PATCH?: boolean | undefined;
 			DELETE?: boolean | undefined;
 		} | null;
-		type?: "entity" | "reference" | undefined;
 		id?: string | undefined;
 		model?: any;
 		references?: string | undefined;
@@ -2846,6 +2851,7 @@ declare module '@scout9/app/schemas' {
 			};
 		}[] | undefined;
 	}>, {
+		type: "entity" | "reference";
 		entity: string;
 		entities: string[];
 		api: {
@@ -2856,7 +2862,6 @@ declare module '@scout9/app/schemas' {
 			PATCH?: boolean | undefined;
 			DELETE?: boolean | undefined;
 		} | null;
-		type?: "entity" | "reference" | undefined;
 		id?: string | undefined;
 		model?: any;
 		references?: string | undefined;
@@ -2877,6 +2882,7 @@ declare module '@scout9/app/schemas' {
 			};
 		}[] | undefined;
 	}, {
+		type: "entity" | "reference";
 		entity: string;
 		entities: string[];
 		api: {
@@ -2887,7 +2893,6 @@ declare module '@scout9/app/schemas' {
 			PATCH?: boolean | undefined;
 			DELETE?: boolean | undefined;
 		} | null;
-		type?: "entity" | "reference" | undefined;
 		id?: string | undefined;
 		model?: any;
 		references?: string | undefined;

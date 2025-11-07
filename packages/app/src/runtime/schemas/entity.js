@@ -41,6 +41,7 @@ const _EntityConfigurationSchema = z.object({
   definitions: z.array(EntityConfigurationDefinitionSchema).optional(),
   training: z.array(EntityConfigurationTrainingSchema).optional(),
   tests: z.array(EntityConfigurationTestSchema).optional(),
+  type: z.enum(['entity', 'reference']).describe('What type of entity this represents')
 }, {description: 'full entity NLP configuration file used for training/tuning its corresponding NLP model(s)'}).strict();
 
 export const EntityConfigurationSchema = _EntityConfigurationSchema.superRefine((data, ctx) => {
