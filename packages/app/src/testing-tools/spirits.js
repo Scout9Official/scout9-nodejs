@@ -104,6 +104,40 @@
  */
 
 
+class SpiritError extends Error {
+  /**
+   * @param {string} message - Description of the error.
+   * @param {string} step - The step or phase in which the error occurred.
+   */
+  constructor(message, step) {
+    super(message);
+    this.name = this.constructor.name;
+    this.step = step;
+
+    // Ensures the stack trace starts from where this error was created
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, this.constructor);
+    }
+  }
+
+  /**
+   * 
+   * @param {unknown} err 
+   * @param {string} step 
+   * @returns {SpiritError}
+   */
+  static fromError(err, step) {
+    if (err instanceof SpiritError) return err;
+    if (err instanceof Error) {
+      const wrapped = new SpiritError(err.message, step, { cause: err });
+      wrapped.stack = err.stack;
+      return wrapped;
+    }
+    // fallback for non-Error values
+    return new SpiritError(String(err), step);
+  }
+}
+
 /**
  * @typedef {Object} ConversationEvent
  * @property {(Change<import('@scout9/app').Conversation> & {
@@ -258,6 +292,25 @@ export const Spirits = {
       }
     };
 
+    const onStatus = (statusType, completeOrError = true) => {
+      progress(`${statusType}: ${completeOrError}`, 'info', 'STATUS', {[statusType]: completeOrError});
+    }
+
+    /**
+     * @param {Promise<any>} prom 
+     * @param {string} step
+     */
+    const wrapStep = async (prom, step) => {
+      try {
+        const result = await prom;
+        onStatus(step);
+        return result;
+      } catch (error) {
+        onStatus(step, error.message || 'UNHANDLED ERROR');
+        throw SpiritError.fromError(error, step);
+      }
+    }
+
     // 1. Check inputs
     if (!conversation.$agent) {
       throw new Error(`SpiritsError: No agent found in conversation, must define ".$agent" in the conversation`);
@@ -284,7 +337,8 @@ export const Spirits = {
 
     // 2. Parse the message
     progress('Parsing message', 'info', 'SET_PROCESSING', 'user');
-    const parsePayload = await parser(message.content, 'en');
+    const parsePayload = await wrapStep(parser(message.content, 'en'), 'parse');
+
     if (parsePayload.intent) {
       message.intent = parsePayload.intent;
     }
@@ -370,7 +424,7 @@ export const Spirits = {
 
     // 3. Run the contextualizer
     progress('Running contextualizer', 'info', 'SET_PROCESSING', 'system');
-    const newContextMessages = await contextualizer({ conversation, messages });
+    const newContextMessages = await wrapStep(contextualizer({ conversation, messages }), 'contextualize');
     for (const contextMessage of newContextMessages) {
       if (!messages.find(mes => mes.content === contextMessage.content)) {
         messages.push(contextMessage);
@@ -383,7 +437,7 @@ export const Spirits = {
     // 4. Run the workflow
     progress('Running workflow', 'info', 'SET_PROCESSING', 'system');
 
-    const slots = await workflow({
+    const slots = await wrapStep(workflow({
       messages,
       conversation,
       context,
@@ -396,7 +450,7 @@ export const Spirits = {
         initial: conversation.intent || null
       },
       stagnationCount: conversation.lockAttempts || 0
-    })
+    }), 'workflow')
       .then((res) => Array.isArray(res) ? res : [res])
       .then((slots) => slots.reduce((accumulator, slot) => {
         if ('toJSON' in slot) {
@@ -646,7 +700,7 @@ export const Spirits = {
           if (!!_tasks && Array.isArray(_tasks) && !!_tasks.length) {
             generatorInput.tasks = _tasks;
           }
-          const generatorPayload = await generator(generatorInput);
+          const generatorPayload = await wrapStep(generator(generatorInput), 'generate');
           if (!generatorPayload.send) {
             progress(
               'Generated response',
@@ -710,10 +764,12 @@ export const Spirits = {
               // De-dupe by content (change the key if you want stricter uniqueness)
               .reduce(
                 (acc, msg) => {
-                  const key = String(msg.content); // e.g. `${msg.role}::${msg.content}` for stronger uniqueness
+                  const key = String(msg.content || msg.tool_calls ? JSON.stringify(msg.tool_calls) : ''); // e.g. `${msg.role}::${msg.content}` for stronger uniqueness
                   if (!acc.seen.has(key)) {
                     acc.seen.add(key);
                     acc.items.push(msg);
+                  } else {
+                    console.warn(`Duplicate message removed: ${JSON.stringify(msg)}`);
                   }
                   return acc;
                 },
@@ -749,18 +805,20 @@ export const Spirits = {
           console.error(`Spirits: Locking conversation, error generating response: ${e.message}`);
           conversation = lockConversation(conversation, 'API: ' + e.message);
         }
+      } else {
+        onStatus('generate', 'ignored');
       }
 
       if (messagesToTransform.length && transformer) {
         try {
-          for (const messageToTransform of messagesToTransform) {
-            const transformResponse = await transformer({
+          // for (const messageToTransform of messagesToTransform) {
+            const transformResponse = await wrapStep(transformer({
               message: messagesToTransform,
               persona,
               customer: customer.id,
               messages,
               context: context
-            });
+            }), 'transform');
 
             progress('Generated response', 'success', undefined, undefined);
             // Check if already had message
@@ -779,7 +837,7 @@ export const Spirits = {
               progress('Added agent message', 'info', 'ADD_MESSAGE', messages[messages.length - 1]);
             }
 
-          }
+          // }
         } catch (e) {
           console.error(`Locking conversation, error transforming response: ${e.message}`);
           conversation = lockConversation(conversation, 'API: ' + e.message);
@@ -787,7 +845,11 @@ export const Spirits = {
         }
       } else if (messagesToTransform.length) {
         console.warn(`No transformer provided`);
+        onStatus('transform', 'ignored');
       }
+    } else {
+        onStatus('generate', 'ignored');
+        onStatus('transform', 'ignored');
     }
 
     progress('Parsing message', 'info', 'SET_PROCESSING', null);
