@@ -764,7 +764,7 @@ export const Spirits = {
               // De-dupe by content (change the key if you want stricter uniqueness)
               .reduce(
                 (acc, msg) => {
-                  const key = String(msg.content || msg.tool_calls ? JSON.stringify(msg.tool_calls) : ''); // e.g. `${msg.role}::${msg.content}` for stronger uniqueness
+                  const key = String(msg.content || (msg.tool_calls ? JSON.stringify(msg.tool_calls) : '')); // e.g. `${msg.role}::${msg.content}` for stronger uniqueness
                   if (!acc.seen.has(key)) {
                     acc.seen.add(key);
                     acc.items.push(msg);
