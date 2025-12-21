@@ -103,6 +103,15 @@
  * @property {StatusCallback | undefined} [progress]
  */
 
+/**
+ * Message key helper for doing comparisons to fund duplicates
+ * @param {any} message
+ * @returns {string}
+ */
+export function messageKey (message) {
+  // @TODO consider `${msg.role}::${msg.content}` for stronger uniqueness
+  return String(message.content || (message.tool_calls ? JSON.stringify(message.tool_calls) : '')); 
+}
 
 class SpiritError extends Error {
   /**
@@ -347,7 +356,7 @@ export const Spirits = {
     }
     message.context = parsePayload.context;
     message.entities = parsePayload.entities;
-    const index = messages.findIndex(m => m.content === message.content || m.id === message.id);
+    const index = messages.findIndex(m => messageKey(m) === messageKey(message) || m.id === message.id);
     if (index === -1) {
       const _message = {
         id: idGenerator('customer'),
@@ -426,7 +435,7 @@ export const Spirits = {
     progress('Running contextualizer', 'info', 'SET_PROCESSING', 'system');
     const newContextMessages = await wrapStep(contextualizer({ conversation, messages }), 'contextualize');
     for (const contextMessage of newContextMessages) {
-      if (!messages.find(mes => mes.content === contextMessage.content)) {
+      if (!messages.find(mes => messageKey(mes) === messageKey(contextMessage))) {
         messages.push(contextMessage);
         progress(`Added context`, 'info', 'ADD_MESSAGE', messages[messages.length - 1]);
       } else {
@@ -764,7 +773,7 @@ export const Spirits = {
               // De-dupe by content (change the key if you want stricter uniqueness)
               .reduce(
                 (acc, msg) => {
-                  const key = String(msg.content || (msg.tool_calls ? JSON.stringify(msg.tool_calls) : '')); // e.g. `${msg.role}::${msg.content}` for stronger uniqueness
+                  const key = messageKey(msg);
                   if (!acc.seen.has(key)) {
                     acc.seen.add(key);
                     acc.items.push(msg);
@@ -777,7 +786,7 @@ export const Spirits = {
               ).items;
 
 
-            if (lastAgentMessage && lastAgentMessage.content && addedMessages.some((message) => message.content === lastAgentMessage.content)) {
+            if (lastAgentMessage && lastAgentMessage.content && addedMessages.some((message) => message.content  === lastAgentMessage.content)) {
               // Error should not have happened
               conversation = lockConversation(conversation, 'Duplicate message');
             } else {
@@ -824,7 +833,7 @@ export const Spirits = {
             // Check if already had message
             const agentMessages = messages.filter(m => m.role === 'agent');
             const lastAgentMessage = agentMessages[agentMessages.length - 1];
-            if (lastAgentMessage && lastAgentMessage.content === transformResponse.message) {
+            if (lastAgentMessage && lastAgentMessage.content && lastAgentMessage.content === transformResponse.message) {
               // Error should not have happened
               conversation = lockConversation(conversation, 'Duplicate message');
             } else {
