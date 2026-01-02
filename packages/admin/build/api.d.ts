@@ -2201,10 +2201,10 @@ export interface EntityToken {
     'end': number;
     /**
      * The entity token subtype, usually used a category tag to entity registry
-     * @type {any}
+     * @type {string}
      * @memberof EntityToken
      */
-    'subType'?: any;
+    'subType'?: string;
     /**
      *
      * @type {EntityTokenType}
@@ -2486,6 +2486,18 @@ export interface ForwardRequestLatestMessage {
      * @memberof ForwardRequestLatestMessage
      */
     'id': string;
+    /**
+     * The recorded content of the message created before the PMT transform (usually by a LLM, Application, or Agent)
+     * @type {string}
+     * @memberof ForwardRequestLatestMessage
+     */
+    'contentGenerated'?: string;
+    /**
+     * The recorded content of the message after the PMT transform
+     * @type {string}
+     * @memberof ForwardRequestLatestMessage
+     */
+    'contentTransformed'?: string;
     /**
      * If set to true, the PMT will not transform, message will be sent as is
      * @type {boolean}
@@ -4941,6 +4953,18 @@ export interface Message {
      */
     'id': string;
     /**
+     * The recorded content of the message created before the PMT transform (usually by a LLM, Application, or Agent)
+     * @type {string}
+     * @memberof Message
+     */
+    'contentGenerated'?: string;
+    /**
+     * The recorded content of the message after the PMT transform
+     * @type {string}
+     * @memberof Message
+     */
+    'contentTransformed'?: string;
+    /**
      * If set to true, the PMT will not transform, message will be sent as is
      * @type {boolean}
      * @memberof Message
@@ -5028,6 +5052,18 @@ export interface MessageAllOf {
      * @memberof MessageAllOf
      */
     'id': string;
+    /**
+     * The recorded content of the message created before the PMT transform (usually by a LLM, Application, or Agent)
+     * @type {string}
+     * @memberof MessageAllOf
+     */
+    'contentGenerated'?: string;
+    /**
+     * The recorded content of the message after the PMT transform
+     * @type {string}
+     * @memberof MessageAllOf
+     */
+    'contentTransformed'?: string;
     /**
      * If set to true, the PMT will not transform, message will be sent as is
      * @type {boolean}
@@ -5300,6 +5336,18 @@ export interface MessageGetResponseInner {
      * @memberof MessageGetResponseInner
      */
     'id': string;
+    /**
+     * The recorded content of the message created before the PMT transform (usually by a LLM, Application, or Agent)
+     * @type {string}
+     * @memberof MessageGetResponseInner
+     */
+    'contentGenerated'?: string;
+    /**
+     * The recorded content of the message after the PMT transform
+     * @type {string}
+     * @memberof MessageGetResponseInner
+     */
+    'contentTransformed'?: string;
     /**
      * If set to true, the PMT will not transform, message will be sent as is
      * @type {boolean}

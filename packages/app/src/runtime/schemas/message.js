@@ -26,6 +26,8 @@ export const MessageSchema = z.object({
   entities: z.array(MessageEntitySchema).optional().nullable(),
   ignoreTransform: z.boolean({description: 'If set to true, the PMT will not transform, message will be sent as is'}).optional(),
   mediaUrls: z.array(z.string(), {description: 'Media urls to attach to the transported message'}).optional().nullable(),
+  contentGenerated: z.string({description: 'The recorded content of the message created before the PMT transform (usually by a LLM, Application, or Agent)'}).optional().nullable(),
+  contentTransformed: z.string({description: 'The recorded content of the message after the PMT transform'}).optional().nullable(),
   tool_calls: z.array(z.object({
     id: z.string(),
     type: z.string(),
