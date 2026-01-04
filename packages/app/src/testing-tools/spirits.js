@@ -758,6 +758,7 @@ export const Spirits = {
                 const base = {
                   role: message.role,
                   content: message.content,
+                  contentGenerated: message.content,
                   id: idGenerator(message.role),
                   time: isoTime,
                 };
@@ -841,6 +842,8 @@ export const Spirits = {
                 id: idGenerator('agent'),
                 role: 'agent',
                 content: transformResponse.message,
+                contentTransformed: transformResponse.message,
+                contentGenerated: messagesToTransform,
                 time: new Date().toISOString()
               });
               progress('Added agent message', 'info', 'ADD_MESSAGE', messages[messages.length - 1]);
