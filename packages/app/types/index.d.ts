@@ -1487,38 +1487,38 @@ declare module '@scout9/app/schemas' {
 				content: z.ZodString;
 				time: z.ZodString;
 				name: z.ZodOptional<z.ZodString>;
-				scheduled: z.ZodOptional<z.ZodString>;
-				context: z.ZodOptional<z.ZodAny>;
-				intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
-				delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
-				entities: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+				context: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>;
+				delayInSeconds: z.ZodOptional<z.ZodNumber>;
+				entities: z.ZodOptional<z.ZodArray<z.ZodObject<{
+					text: z.ZodOptional<z.ZodString>;
 					start: z.ZodNumber;
 					end: z.ZodNumber;
-					type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-					option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-					text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+					option: z.ZodOptional<z.ZodString>;
+					subType: z.ZodOptional<z.ZodString>;
+					type: z.ZodString;
 				}, "strip", z.ZodTypeAny, {
+					type: string;
 					end: number;
 					start: number;
-					type?: string | null | undefined;
-					option?: string | null | undefined;
-					text?: string | null | undefined;
+					text?: string | undefined;
+					option?: string | undefined;
+					subType?: string | undefined;
 				}, {
+					type: string;
 					end: number;
 					start: number;
-					type?: string | null | undefined;
-					option?: string | null | undefined;
-					text?: string | null | undefined;
-				}>, "many">>>;
+					text?: string | undefined;
+					option?: string | undefined;
+					subType?: string | undefined;
+				}>, "many">>;
+				contentGenerated: z.ZodOptional<z.ZodString>;
+				contentTransformed: z.ZodOptional<z.ZodString>;
 				ignoreTransform: z.ZodOptional<z.ZodBoolean>;
-				mediaUrls: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
-				contentGenerated: z.ZodNullable<z.ZodOptional<z.ZodString>>; /**
-				 * Tag to reference this application
-				 * @defaut your local package.json name + version, or scout9-app-v1.0.0
-				 */
-				contentTransformed: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				tool_calls: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+				intent: z.ZodOptional<z.ZodString>;
+				intentScore: z.ZodOptional<z.ZodNumber>;
+				mediaUrls: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+				scheduled: z.ZodOptional<z.ZodString>;
+				tool_calls: z.ZodOptional<z.ZodArray<z.ZodObject<{
 					id: z.ZodString;
 					type: z.ZodString;
 					function: z.ZodObject<{
@@ -1545,34 +1545,31 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}>, "many">>>;
-				tool_call_id: z.ZodNullable<z.ZodOptional<z.ZodString>>; /**
-				 * Determines the max auto replies without further conversation progression (defined by new context data gathered)
-				 * before the conversation is locked and requires manual intervention
-				 * @default 3
-				 */
+				}>, "many">>;
+				tool_call_id: z.ZodOptional<z.ZodString>;
 			}, "strip", z.ZodTypeAny, {
 				time: string;
 				id: string;
 				content: string;
 				role: "agent" | "customer" | "system" | "tool";
 				name?: string | undefined;
-				scheduled?: string | undefined;
-				context?: any;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
 				entities?: {
+					type: string;
 					end: number;
 					start: number;
-					type?: string | null | undefined;
-					option?: string | null | undefined;
-					text?: string | null | undefined;
-				}[] | null | undefined;
+					text?: string | undefined;
+					option?: string | undefined;
+					subType?: string | undefined;
+				}[] | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -1580,30 +1577,31 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			}, {
 				time: string;
 				id: string;
 				content: string;
 				role: "agent" | "customer" | "system" | "tool";
 				name?: string | undefined;
-				scheduled?: string | undefined;
-				context?: any;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
 				entities?: {
+					type: string;
 					end: number;
 					start: number;
-					type?: string | null | undefined;
-					option?: string | null | undefined;
-					text?: string | null | undefined;
-				}[] | null | undefined;
+					text?: string | undefined;
+					option?: string | undefined;
+					subType?: string | undefined;
+				}[] | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -1611,8 +1609,8 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			}>, "many">, "many">>;
 			audios: z.ZodOptional<z.ZodArray<z.ZodAny, "many">>;
 			pmt: z.ZodOptional<z.ZodObject<{
@@ -1664,22 +1662,23 @@ declare module '@scout9/app/schemas' {
 				content: string;
 				role: "agent" | "customer" | "system" | "tool";
 				name?: string | undefined;
-				scheduled?: string | undefined;
-				context?: any;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
 				entities?: {
+					type: string;
 					end: number;
 					start: number;
-					type?: string | null | undefined;
-					option?: string | null | undefined;
-					text?: string | null | undefined;
-				}[] | null | undefined;
+					text?: string | undefined;
+					option?: string | undefined;
+					subType?: string | undefined;
+				}[] | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -1687,8 +1686,8 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			}[][] | undefined;
 			audios?: any[] | undefined;
 			pmt?: {
@@ -1726,22 +1725,23 @@ declare module '@scout9/app/schemas' {
 				content: string;
 				role: "agent" | "customer" | "system" | "tool";
 				name?: string | undefined;
-				scheduled?: string | undefined;
-				context?: any;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
 				entities?: {
+					type: string;
 					end: number;
 					start: number;
-					type?: string | null | undefined;
-					option?: string | null | undefined;
-					text?: string | null | undefined;
-				}[] | null | undefined;
+					text?: string | undefined;
+					option?: string | undefined;
+					subType?: string | undefined;
+				}[] | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -1749,8 +1749,8 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			}[][] | undefined;
 			audios?: any[] | undefined;
 			pmt?: {
@@ -2012,22 +2012,23 @@ declare module '@scout9/app/schemas' {
 				content: string;
 				role: "agent" | "customer" | "system" | "tool";
 				name?: string | undefined;
-				scheduled?: string | undefined;
-				context?: any;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
 				entities?: {
+					type: string;
 					end: number;
 					start: number;
-					type?: string | null | undefined;
-					option?: string | null | undefined;
-					text?: string | null | undefined;
-				}[] | null | undefined;
+					text?: string | undefined;
+					option?: string | undefined;
+					subType?: string | undefined;
+				}[] | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -2035,8 +2036,8 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			}[][] | undefined;
 			audios?: any[] | undefined;
 			pmt?: {
@@ -2144,22 +2145,23 @@ declare module '@scout9/app/schemas' {
 				content: string;
 				role: "agent" | "customer" | "system" | "tool";
 				name?: string | undefined;
-				scheduled?: string | undefined;
-				context?: any;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
 				entities?: {
+					type: string;
 					end: number;
 					start: number;
-					type?: string | null | undefined;
-					option?: string | null | undefined;
-					text?: string | null | undefined;
-				}[] | null | undefined;
+					text?: string | undefined;
+					option?: string | undefined;
+					subType?: string | undefined;
+				}[] | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -2167,8 +2169,8 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			}[][] | undefined;
 			audios?: any[] | undefined;
 			pmt?: {
@@ -3257,23 +3259,54 @@ declare module '@scout9/app/schemas' {
 		output: Record<string, any>[];
 	}>, "many">, z.ZodArray<z.ZodRecord<z.ZodString, z.ZodAny>, "many">]>;
 	export const MessageEntitySchema: z.ZodObject<{
+		text: z.ZodOptional<z.ZodString>;
 		start: z.ZodNumber;
 		end: z.ZodNumber;
-		type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-		option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-		text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+		option: z.ZodOptional<z.ZodString>;
+		subType: z.ZodOptional<z.ZodString>;
+		type: z.ZodString;
 	}, "strip", z.ZodTypeAny, {
+		type: string;
 		end: number;
 		start: number;
-		type?: string | null | undefined;
-		option?: string | null | undefined;
-		text?: string | null | undefined;
+		text?: string | undefined;
+		option?: string | undefined;
+		subType?: string | undefined;
 	}, {
+		type: string;
 		end: number;
 		start: number;
-		type?: string | null | undefined;
-		option?: string | null | undefined;
-		text?: string | null | undefined;
+		text?: string | undefined;
+		option?: string | undefined;
+		subType?: string | undefined;
+	}>;
+	export const LlmMessageToolCallSchema: z.ZodObject<{
+		id: z.ZodString;
+		type: z.ZodString;
+		function: z.ZodObject<{
+			arguments: z.ZodString;
+			name: z.ZodString;
+		}, "strip", z.ZodTypeAny, {
+			name: string;
+			arguments: string;
+		}, {
+			name: string;
+			arguments: string;
+		}>;
+	}, "strip", z.ZodTypeAny, {
+		function: {
+			name: string;
+			arguments: string;
+		};
+		type: string;
+		id: string;
+	}, {
+		function: {
+			name: string;
+			arguments: string;
+		};
+		type: string;
+		id: string;
 	}>;
 	/**
 	 * Follows @scout9/admin Message
@@ -3284,35 +3317,38 @@ declare module '@scout9/app/schemas' {
 		content: z.ZodString;
 		time: z.ZodString;
 		name: z.ZodOptional<z.ZodString>;
-		scheduled: z.ZodOptional<z.ZodString>;
-		context: z.ZodOptional<z.ZodAny>;
-		intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-		intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
-		delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
-		entities: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+		context: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>;
+		delayInSeconds: z.ZodOptional<z.ZodNumber>;
+		entities: z.ZodOptional<z.ZodArray<z.ZodObject<{
+			text: z.ZodOptional<z.ZodString>;
 			start: z.ZodNumber;
 			end: z.ZodNumber;
-			type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-			option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-			text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			option: z.ZodOptional<z.ZodString>;
+			subType: z.ZodOptional<z.ZodString>;
+			type: z.ZodString;
 		}, "strip", z.ZodTypeAny, {
+			type: string;
 			end: number;
 			start: number;
-			type?: string | null | undefined;
-			option?: string | null | undefined;
-			text?: string | null | undefined;
+			text?: string | undefined;
+			option?: string | undefined;
+			subType?: string | undefined;
 		}, {
+			type: string;
 			end: number;
 			start: number;
-			type?: string | null | undefined;
-			option?: string | null | undefined;
-			text?: string | null | undefined;
-		}>, "many">>>;
+			text?: string | undefined;
+			option?: string | undefined;
+			subType?: string | undefined;
+		}>, "many">>;
+		contentGenerated: z.ZodOptional<z.ZodString>;
+		contentTransformed: z.ZodOptional<z.ZodString>;
 		ignoreTransform: z.ZodOptional<z.ZodBoolean>;
-		mediaUrls: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
-		contentGenerated: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-		contentTransformed: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-		tool_calls: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+		intent: z.ZodOptional<z.ZodString>;
+		intentScore: z.ZodOptional<z.ZodNumber>;
+		mediaUrls: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+		scheduled: z.ZodOptional<z.ZodString>;
+		tool_calls: z.ZodOptional<z.ZodArray<z.ZodObject<{
 			id: z.ZodString;
 			type: z.ZodString;
 			function: z.ZodObject<{
@@ -3339,30 +3375,31 @@ declare module '@scout9/app/schemas' {
 			};
 			type: string;
 			id: string;
-		}>, "many">>>;
-		tool_call_id: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+		}>, "many">>;
+		tool_call_id: z.ZodOptional<z.ZodString>;
 	}, "strip", z.ZodTypeAny, {
 		time: string;
 		id: string;
 		content: string;
 		role: "agent" | "customer" | "system" | "tool";
 		name?: string | undefined;
-		scheduled?: string | undefined;
-		context?: any;
-		intent?: string | null | undefined;
-		intentScore?: number | null | undefined;
-		delayInSeconds?: number | null | undefined;
+		context?: Record<string, any> | undefined;
+		delayInSeconds?: number | undefined;
 		entities?: {
+			type: string;
 			end: number;
 			start: number;
-			type?: string | null | undefined;
-			option?: string | null | undefined;
-			text?: string | null | undefined;
-		}[] | null | undefined;
+			text?: string | undefined;
+			option?: string | undefined;
+			subType?: string | undefined;
+		}[] | undefined;
+		contentGenerated?: string | undefined;
+		contentTransformed?: string | undefined;
 		ignoreTransform?: boolean | undefined;
-		mediaUrls?: string[] | null | undefined;
-		contentGenerated?: string | null | undefined;
-		contentTransformed?: string | null | undefined;
+		intent?: string | undefined;
+		intentScore?: number | undefined;
+		mediaUrls?: string[] | undefined;
+		scheduled?: string | undefined;
 		tool_calls?: {
 			function: {
 				name: string;
@@ -3370,30 +3407,31 @@ declare module '@scout9/app/schemas' {
 			};
 			type: string;
 			id: string;
-		}[] | null | undefined;
-		tool_call_id?: string | null | undefined;
+		}[] | undefined;
+		tool_call_id?: string | undefined;
 	}, {
 		time: string;
 		id: string;
 		content: string;
 		role: "agent" | "customer" | "system" | "tool";
 		name?: string | undefined;
-		scheduled?: string | undefined;
-		context?: any;
-		intent?: string | null | undefined;
-		intentScore?: number | null | undefined;
-		delayInSeconds?: number | null | undefined;
+		context?: Record<string, any> | undefined;
+		delayInSeconds?: number | undefined;
 		entities?: {
+			type: string;
 			end: number;
 			start: number;
-			type?: string | null | undefined;
-			option?: string | null | undefined;
-			text?: string | null | undefined;
-		}[] | null | undefined;
+			text?: string | undefined;
+			option?: string | undefined;
+			subType?: string | undefined;
+		}[] | undefined;
+		contentGenerated?: string | undefined;
+		contentTransformed?: string | undefined;
 		ignoreTransform?: boolean | undefined;
-		mediaUrls?: string[] | null | undefined;
-		contentGenerated?: string | null | undefined;
-		contentTransformed?: string | null | undefined;
+		intent?: string | undefined;
+		intentScore?: number | undefined;
+		mediaUrls?: string[] | undefined;
+		scheduled?: string | undefined;
 		tool_calls?: {
 			function: {
 				name: string;
@@ -3401,8 +3439,8 @@ declare module '@scout9/app/schemas' {
 			};
 			type: string;
 			id: string;
-		}[] | null | undefined;
-		tool_call_id?: string | null | undefined;
+		}[] | undefined;
+		tool_call_id?: string | undefined;
 	}>;
 	export const CustomerValueSchema: z.ZodUnion<[z.ZodBoolean, z.ZodNumber, z.ZodString]>;
 	export const CustomerSchema: z.ZodObject<{
@@ -3495,35 +3533,38 @@ declare module '@scout9/app/schemas' {
 			content: z.ZodString;
 			time: z.ZodString;
 			name: z.ZodOptional<z.ZodString>;
-			scheduled: z.ZodOptional<z.ZodString>;
-			context: z.ZodOptional<z.ZodAny>;
-			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-			intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
-			delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
-			entities: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+			context: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>;
+			delayInSeconds: z.ZodOptional<z.ZodNumber>;
+			entities: z.ZodOptional<z.ZodArray<z.ZodObject<{
+				text: z.ZodOptional<z.ZodString>;
 				start: z.ZodNumber;
 				end: z.ZodNumber;
-				type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+				option: z.ZodOptional<z.ZodString>;
+				subType: z.ZodOptional<z.ZodString>;
+				type: z.ZodString;
 			}, "strip", z.ZodTypeAny, {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
 			}, {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}>, "many">>>;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}>, "many">>;
+			contentGenerated: z.ZodOptional<z.ZodString>;
+			contentTransformed: z.ZodOptional<z.ZodString>;
 			ignoreTransform: z.ZodOptional<z.ZodBoolean>;
-			mediaUrls: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
-			contentGenerated: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-			contentTransformed: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-			tool_calls: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+			intent: z.ZodOptional<z.ZodString>;
+			intentScore: z.ZodOptional<z.ZodNumber>;
+			mediaUrls: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+			scheduled: z.ZodOptional<z.ZodString>;
+			tool_calls: z.ZodOptional<z.ZodArray<z.ZodObject<{
 				id: z.ZodString;
 				type: z.ZodString;
 				function: z.ZodObject<{
@@ -3550,30 +3591,31 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}>, "many">>>;
-			tool_call_id: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			}>, "many">>;
+			tool_call_id: z.ZodOptional<z.ZodString>;
 		}, "strip", z.ZodTypeAny, {
 			time: string;
 			id: string;
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -3581,30 +3623,31 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}, {
 			time: string;
 			id: string;
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -3612,8 +3655,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}>, "many">, "many">>;
 		audios: z.ZodOptional<z.ZodArray<z.ZodAny, "many">>;
 		pmt: z.ZodOptional<z.ZodObject<{
@@ -3665,22 +3708,23 @@ declare module '@scout9/app/schemas' {
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -3688,8 +3732,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
 		pmt?: {
@@ -3727,22 +3771,23 @@ declare module '@scout9/app/schemas' {
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -3750,8 +3795,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
 		pmt?: {
@@ -3798,35 +3843,38 @@ declare module '@scout9/app/schemas' {
 			content: z.ZodString;
 			time: z.ZodString;
 			name: z.ZodOptional<z.ZodString>;
-			scheduled: z.ZodOptional<z.ZodString>;
-			context: z.ZodOptional<z.ZodAny>;
-			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-			intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
-			delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
-			entities: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+			context: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>;
+			delayInSeconds: z.ZodOptional<z.ZodNumber>;
+			entities: z.ZodOptional<z.ZodArray<z.ZodObject<{
+				text: z.ZodOptional<z.ZodString>;
 				start: z.ZodNumber;
 				end: z.ZodNumber;
-				type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+				option: z.ZodOptional<z.ZodString>;
+				subType: z.ZodOptional<z.ZodString>;
+				type: z.ZodString;
 			}, "strip", z.ZodTypeAny, {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
 			}, {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}>, "many">>>;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}>, "many">>;
+			contentGenerated: z.ZodOptional<z.ZodString>;
+			contentTransformed: z.ZodOptional<z.ZodString>;
 			ignoreTransform: z.ZodOptional<z.ZodBoolean>;
-			mediaUrls: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
-			contentGenerated: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-			contentTransformed: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-			tool_calls: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+			intent: z.ZodOptional<z.ZodString>;
+			intentScore: z.ZodOptional<z.ZodNumber>;
+			mediaUrls: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+			scheduled: z.ZodOptional<z.ZodString>;
+			tool_calls: z.ZodOptional<z.ZodArray<z.ZodObject<{
 				id: z.ZodString;
 				type: z.ZodString;
 				function: z.ZodObject<{
@@ -3853,30 +3901,31 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}>, "many">>>;
-			tool_call_id: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			}>, "many">>;
+			tool_call_id: z.ZodOptional<z.ZodString>;
 		}, "strip", z.ZodTypeAny, {
 			time: string;
 			id: string;
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -3884,30 +3933,31 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}, {
 			time: string;
 			id: string;
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -3915,8 +3965,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}>, "many">, "many">>;
 		audios: z.ZodOptional<z.ZodArray<z.ZodAny, "many">>;
 		pmt: z.ZodOptional<z.ZodObject<{
@@ -3968,22 +4018,23 @@ declare module '@scout9/app/schemas' {
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -3991,8 +4042,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
 		pmt?: {
@@ -4030,22 +4081,23 @@ declare module '@scout9/app/schemas' {
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -4053,8 +4105,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
 		pmt?: {
@@ -4101,35 +4153,38 @@ declare module '@scout9/app/schemas' {
 			content: z.ZodString;
 			time: z.ZodString;
 			name: z.ZodOptional<z.ZodString>;
-			scheduled: z.ZodOptional<z.ZodString>;
-			context: z.ZodOptional<z.ZodAny>;
-			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-			intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
-			delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
-			entities: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+			context: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>;
+			delayInSeconds: z.ZodOptional<z.ZodNumber>;
+			entities: z.ZodOptional<z.ZodArray<z.ZodObject<{
+				text: z.ZodOptional<z.ZodString>;
 				start: z.ZodNumber;
 				end: z.ZodNumber;
-				type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+				option: z.ZodOptional<z.ZodString>;
+				subType: z.ZodOptional<z.ZodString>;
+				type: z.ZodString;
 			}, "strip", z.ZodTypeAny, {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
 			}, {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}>, "many">>>;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}>, "many">>;
+			contentGenerated: z.ZodOptional<z.ZodString>;
+			contentTransformed: z.ZodOptional<z.ZodString>;
 			ignoreTransform: z.ZodOptional<z.ZodBoolean>;
-			mediaUrls: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
-			contentGenerated: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-			contentTransformed: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-			tool_calls: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+			intent: z.ZodOptional<z.ZodString>;
+			intentScore: z.ZodOptional<z.ZodNumber>;
+			mediaUrls: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+			scheduled: z.ZodOptional<z.ZodString>;
+			tool_calls: z.ZodOptional<z.ZodArray<z.ZodObject<{
 				id: z.ZodString;
 				type: z.ZodString;
 				function: z.ZodObject<{
@@ -4156,30 +4211,31 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}>, "many">>>;
-			tool_call_id: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			}>, "many">>;
+			tool_call_id: z.ZodOptional<z.ZodString>;
 		}, "strip", z.ZodTypeAny, {
 			time: string;
 			id: string;
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -4187,30 +4243,31 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}, {
 			time: string;
 			id: string;
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -4218,8 +4275,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}>, "many">, "many">>;
 		audios: z.ZodOptional<z.ZodArray<z.ZodAny, "many">>;
 		pmt: z.ZodOptional<z.ZodObject<{
@@ -4273,22 +4330,23 @@ declare module '@scout9/app/schemas' {
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -4296,8 +4354,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
 		pmt?: {
@@ -4336,22 +4394,23 @@ declare module '@scout9/app/schemas' {
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -4359,8 +4418,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
 		pmt?: {
@@ -4407,35 +4466,38 @@ declare module '@scout9/app/schemas' {
 			content: z.ZodString;
 			time: z.ZodString;
 			name: z.ZodOptional<z.ZodString>;
-			scheduled: z.ZodOptional<z.ZodString>;
-			context: z.ZodOptional<z.ZodAny>;
-			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-			intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
-			delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
-			entities: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+			context: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>;
+			delayInSeconds: z.ZodOptional<z.ZodNumber>;
+			entities: z.ZodOptional<z.ZodArray<z.ZodObject<{
+				text: z.ZodOptional<z.ZodString>;
 				start: z.ZodNumber;
 				end: z.ZodNumber;
-				type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+				option: z.ZodOptional<z.ZodString>;
+				subType: z.ZodOptional<z.ZodString>;
+				type: z.ZodString;
 			}, "strip", z.ZodTypeAny, {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
 			}, {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}>, "many">>>;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}>, "many">>;
+			contentGenerated: z.ZodOptional<z.ZodString>;
+			contentTransformed: z.ZodOptional<z.ZodString>;
 			ignoreTransform: z.ZodOptional<z.ZodBoolean>;
-			mediaUrls: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
-			contentGenerated: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-			contentTransformed: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-			tool_calls: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+			intent: z.ZodOptional<z.ZodString>;
+			intentScore: z.ZodOptional<z.ZodNumber>;
+			mediaUrls: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+			scheduled: z.ZodOptional<z.ZodString>;
+			tool_calls: z.ZodOptional<z.ZodArray<z.ZodObject<{
 				id: z.ZodString;
 				type: z.ZodString;
 				function: z.ZodObject<{
@@ -4462,30 +4524,31 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}>, "many">>>;
-			tool_call_id: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			}>, "many">>;
+			tool_call_id: z.ZodOptional<z.ZodString>;
 		}, "strip", z.ZodTypeAny, {
 			time: string;
 			id: string;
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -4493,30 +4556,31 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}, {
 			time: string;
 			id: string;
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -4524,8 +4588,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}>, "many">, "many">>;
 		audios: z.ZodOptional<z.ZodArray<z.ZodAny, "many">>;
 		pmt: z.ZodOptional<z.ZodObject<{
@@ -4579,22 +4643,23 @@ declare module '@scout9/app/schemas' {
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -4602,8 +4667,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
 		pmt?: {
@@ -4642,22 +4707,23 @@ declare module '@scout9/app/schemas' {
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -4665,8 +4731,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
 		pmt?: {
@@ -4713,35 +4779,38 @@ declare module '@scout9/app/schemas' {
 			content: z.ZodString;
 			time: z.ZodString;
 			name: z.ZodOptional<z.ZodString>;
-			scheduled: z.ZodOptional<z.ZodString>;
-			context: z.ZodOptional<z.ZodAny>;
-			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-			intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
-			delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
-			entities: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+			context: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>;
+			delayInSeconds: z.ZodOptional<z.ZodNumber>;
+			entities: z.ZodOptional<z.ZodArray<z.ZodObject<{
+				text: z.ZodOptional<z.ZodString>;
 				start: z.ZodNumber;
 				end: z.ZodNumber;
-				type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+				option: z.ZodOptional<z.ZodString>;
+				subType: z.ZodOptional<z.ZodString>;
+				type: z.ZodString;
 			}, "strip", z.ZodTypeAny, {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
 			}, {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}>, "many">>>;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}>, "many">>;
+			contentGenerated: z.ZodOptional<z.ZodString>;
+			contentTransformed: z.ZodOptional<z.ZodString>;
 			ignoreTransform: z.ZodOptional<z.ZodBoolean>;
-			mediaUrls: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
-			contentGenerated: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-			contentTransformed: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-			tool_calls: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+			intent: z.ZodOptional<z.ZodString>;
+			intentScore: z.ZodOptional<z.ZodNumber>;
+			mediaUrls: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+			scheduled: z.ZodOptional<z.ZodString>;
+			tool_calls: z.ZodOptional<z.ZodArray<z.ZodObject<{
 				id: z.ZodString;
 				type: z.ZodString;
 				function: z.ZodObject<{
@@ -4768,30 +4837,31 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}>, "many">>>;
-			tool_call_id: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			}>, "many">>;
+			tool_call_id: z.ZodOptional<z.ZodString>;
 		}, "strip", z.ZodTypeAny, {
 			time: string;
 			id: string;
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -4799,30 +4869,31 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}, {
 			time: string;
 			id: string;
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -4830,8 +4901,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}>, "many">, "many">>;
 		audios: z.ZodOptional<z.ZodArray<z.ZodAny, "many">>;
 		pmt: z.ZodOptional<z.ZodObject<{
@@ -4885,22 +4956,23 @@ declare module '@scout9/app/schemas' {
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -4908,8 +4980,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
 		pmt?: {
@@ -4948,22 +5020,23 @@ declare module '@scout9/app/schemas' {
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -4971,8 +5044,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
 		pmt?: {
@@ -5019,35 +5092,38 @@ declare module '@scout9/app/schemas' {
 			content: z.ZodString;
 			time: z.ZodString;
 			name: z.ZodOptional<z.ZodString>;
-			scheduled: z.ZodOptional<z.ZodString>;
-			context: z.ZodOptional<z.ZodAny>;
-			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-			intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
-			delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
-			entities: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+			context: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>;
+			delayInSeconds: z.ZodOptional<z.ZodNumber>;
+			entities: z.ZodOptional<z.ZodArray<z.ZodObject<{
+				text: z.ZodOptional<z.ZodString>;
 				start: z.ZodNumber;
 				end: z.ZodNumber;
-				type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+				option: z.ZodOptional<z.ZodString>;
+				subType: z.ZodOptional<z.ZodString>;
+				type: z.ZodString;
 			}, "strip", z.ZodTypeAny, {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
 			}, {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}>, "many">>>;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}>, "many">>;
+			contentGenerated: z.ZodOptional<z.ZodString>;
+			contentTransformed: z.ZodOptional<z.ZodString>;
 			ignoreTransform: z.ZodOptional<z.ZodBoolean>;
-			mediaUrls: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
-			contentGenerated: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-			contentTransformed: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-			tool_calls: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+			intent: z.ZodOptional<z.ZodString>;
+			intentScore: z.ZodOptional<z.ZodNumber>;
+			mediaUrls: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+			scheduled: z.ZodOptional<z.ZodString>;
+			tool_calls: z.ZodOptional<z.ZodArray<z.ZodObject<{
 				id: z.ZodString;
 				type: z.ZodString;
 				function: z.ZodObject<{
@@ -5074,30 +5150,31 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}>, "many">>>;
-			tool_call_id: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			}>, "many">>;
+			tool_call_id: z.ZodOptional<z.ZodString>;
 		}, "strip", z.ZodTypeAny, {
 			time: string;
 			id: string;
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -5105,30 +5182,31 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}, {
 			time: string;
 			id: string;
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -5136,8 +5214,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}>, "many">, "many">>;
 		audios: z.ZodOptional<z.ZodArray<z.ZodAny, "many">>;
 		pmt: z.ZodOptional<z.ZodObject<{
@@ -5191,22 +5269,23 @@ declare module '@scout9/app/schemas' {
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -5214,8 +5293,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
 		pmt?: {
@@ -5254,22 +5333,23 @@ declare module '@scout9/app/schemas' {
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -5277,8 +5357,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
 		pmt?: {
@@ -5325,35 +5405,38 @@ declare module '@scout9/app/schemas' {
 			content: z.ZodString;
 			time: z.ZodString;
 			name: z.ZodOptional<z.ZodString>;
-			scheduled: z.ZodOptional<z.ZodString>;
-			context: z.ZodOptional<z.ZodAny>;
-			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-			intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
-			delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
-			entities: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+			context: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>;
+			delayInSeconds: z.ZodOptional<z.ZodNumber>;
+			entities: z.ZodOptional<z.ZodArray<z.ZodObject<{
+				text: z.ZodOptional<z.ZodString>;
 				start: z.ZodNumber;
 				end: z.ZodNumber;
-				type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+				option: z.ZodOptional<z.ZodString>;
+				subType: z.ZodOptional<z.ZodString>;
+				type: z.ZodString;
 			}, "strip", z.ZodTypeAny, {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
 			}, {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}>, "many">>>;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}>, "many">>;
+			contentGenerated: z.ZodOptional<z.ZodString>;
+			contentTransformed: z.ZodOptional<z.ZodString>;
 			ignoreTransform: z.ZodOptional<z.ZodBoolean>;
-			mediaUrls: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
-			contentGenerated: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-			contentTransformed: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-			tool_calls: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+			intent: z.ZodOptional<z.ZodString>;
+			intentScore: z.ZodOptional<z.ZodNumber>;
+			mediaUrls: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+			scheduled: z.ZodOptional<z.ZodString>;
+			tool_calls: z.ZodOptional<z.ZodArray<z.ZodObject<{
 				id: z.ZodString;
 				type: z.ZodString;
 				function: z.ZodObject<{
@@ -5380,30 +5463,31 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}>, "many">>>;
-			tool_call_id: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			}>, "many">>;
+			tool_call_id: z.ZodOptional<z.ZodString>;
 		}, "strip", z.ZodTypeAny, {
 			time: string;
 			id: string;
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -5411,30 +5495,31 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}, {
 			time: string;
 			id: string;
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -5442,8 +5527,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}>, "many">, "many">>;
 		audios: z.ZodOptional<z.ZodArray<z.ZodAny, "many">>;
 		pmt: z.ZodOptional<z.ZodObject<{
@@ -5495,22 +5580,23 @@ declare module '@scout9/app/schemas' {
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -5518,8 +5604,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
 		pmt?: {
@@ -5557,22 +5643,23 @@ declare module '@scout9/app/schemas' {
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -5580,8 +5667,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
 		pmt?: {
@@ -5628,35 +5715,38 @@ declare module '@scout9/app/schemas' {
 			content: z.ZodString;
 			time: z.ZodString;
 			name: z.ZodOptional<z.ZodString>;
-			scheduled: z.ZodOptional<z.ZodString>;
-			context: z.ZodOptional<z.ZodAny>;
-			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-			intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
-			delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
-			entities: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+			context: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>;
+			delayInSeconds: z.ZodOptional<z.ZodNumber>;
+			entities: z.ZodOptional<z.ZodArray<z.ZodObject<{
+				text: z.ZodOptional<z.ZodString>;
 				start: z.ZodNumber;
 				end: z.ZodNumber;
-				type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+				option: z.ZodOptional<z.ZodString>;
+				subType: z.ZodOptional<z.ZodString>;
+				type: z.ZodString;
 			}, "strip", z.ZodTypeAny, {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
 			}, {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}>, "many">>>;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}>, "many">>;
+			contentGenerated: z.ZodOptional<z.ZodString>;
+			contentTransformed: z.ZodOptional<z.ZodString>;
 			ignoreTransform: z.ZodOptional<z.ZodBoolean>;
-			mediaUrls: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
-			contentGenerated: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-			contentTransformed: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-			tool_calls: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+			intent: z.ZodOptional<z.ZodString>;
+			intentScore: z.ZodOptional<z.ZodNumber>;
+			mediaUrls: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+			scheduled: z.ZodOptional<z.ZodString>;
+			tool_calls: z.ZodOptional<z.ZodArray<z.ZodObject<{
 				id: z.ZodString;
 				type: z.ZodString;
 				function: z.ZodObject<{
@@ -5683,30 +5773,31 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}>, "many">>>;
-			tool_call_id: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			}>, "many">>;
+			tool_call_id: z.ZodOptional<z.ZodString>;
 		}, "strip", z.ZodTypeAny, {
 			time: string;
 			id: string;
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -5714,30 +5805,31 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}, {
 			time: string;
 			id: string;
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -5745,8 +5837,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}>, "many">, "many">>;
 		audios: z.ZodOptional<z.ZodArray<z.ZodAny, "many">>;
 		pmt: z.ZodOptional<z.ZodObject<{
@@ -5798,22 +5890,23 @@ declare module '@scout9/app/schemas' {
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -5821,8 +5914,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
 		pmt?: {
@@ -5860,22 +5953,23 @@ declare module '@scout9/app/schemas' {
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -5883,8 +5977,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}[][] | undefined;
 		audios?: any[] | undefined;
 		pmt?: {
@@ -6180,35 +6274,38 @@ declare module '@scout9/app/schemas' {
 			content: z.ZodString;
 			time: z.ZodString;
 			name: z.ZodOptional<z.ZodString>;
-			scheduled: z.ZodOptional<z.ZodString>;
-			context: z.ZodOptional<z.ZodAny>;
-			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-			intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
-			delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
-			entities: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+			context: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>;
+			delayInSeconds: z.ZodOptional<z.ZodNumber>;
+			entities: z.ZodOptional<z.ZodArray<z.ZodObject<{
+				text: z.ZodOptional<z.ZodString>;
 				start: z.ZodNumber;
 				end: z.ZodNumber;
-				type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+				option: z.ZodOptional<z.ZodString>;
+				subType: z.ZodOptional<z.ZodString>;
+				type: z.ZodString;
 			}, "strip", z.ZodTypeAny, {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
 			}, {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}>, "many">>>;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}>, "many">>;
+			contentGenerated: z.ZodOptional<z.ZodString>;
+			contentTransformed: z.ZodOptional<z.ZodString>;
 			ignoreTransform: z.ZodOptional<z.ZodBoolean>;
-			mediaUrls: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
-			contentGenerated: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-			contentTransformed: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-			tool_calls: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+			intent: z.ZodOptional<z.ZodString>;
+			intentScore: z.ZodOptional<z.ZodNumber>;
+			mediaUrls: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+			scheduled: z.ZodOptional<z.ZodString>;
+			tool_calls: z.ZodOptional<z.ZodArray<z.ZodObject<{
 				id: z.ZodString;
 				type: z.ZodString;
 				function: z.ZodObject<{
@@ -6235,30 +6332,31 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}>, "many">>>;
-			tool_call_id: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			}>, "many">>;
+			tool_call_id: z.ZodOptional<z.ZodString>;
 		}, "strip", z.ZodTypeAny, {
 			time: string;
 			id: string;
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -6266,30 +6364,31 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}, {
 			time: string;
 			id: string;
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -6297,8 +6396,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}>, "many">;
 		conversation: z.ZodObject<{
 			$id: z.ZodString;
@@ -6437,35 +6536,38 @@ declare module '@scout9/app/schemas' {
 			content: z.ZodString;
 			time: z.ZodString;
 			name: z.ZodOptional<z.ZodString>;
-			scheduled: z.ZodOptional<z.ZodString>;
-			context: z.ZodOptional<z.ZodAny>;
-			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-			intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
-			delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
-			entities: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+			context: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>;
+			delayInSeconds: z.ZodOptional<z.ZodNumber>;
+			entities: z.ZodOptional<z.ZodArray<z.ZodObject<{
+				text: z.ZodOptional<z.ZodString>;
 				start: z.ZodNumber;
 				end: z.ZodNumber;
-				type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+				option: z.ZodOptional<z.ZodString>;
+				subType: z.ZodOptional<z.ZodString>;
+				type: z.ZodString;
 			}, "strip", z.ZodTypeAny, {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
 			}, {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}>, "many">>>;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}>, "many">>;
+			contentGenerated: z.ZodOptional<z.ZodString>;
+			contentTransformed: z.ZodOptional<z.ZodString>;
 			ignoreTransform: z.ZodOptional<z.ZodBoolean>;
-			mediaUrls: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
-			contentGenerated: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-			contentTransformed: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-			tool_calls: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+			intent: z.ZodOptional<z.ZodString>;
+			intentScore: z.ZodOptional<z.ZodNumber>;
+			mediaUrls: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+			scheduled: z.ZodOptional<z.ZodString>;
+			tool_calls: z.ZodOptional<z.ZodArray<z.ZodObject<{
 				id: z.ZodString;
 				type: z.ZodString;
 				function: z.ZodObject<{
@@ -6492,30 +6594,31 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}>, "many">>>;
-			tool_call_id: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			}>, "many">>;
+			tool_call_id: z.ZodOptional<z.ZodString>;
 		}, "strip", z.ZodTypeAny, {
 			time: string;
 			id: string;
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -6523,30 +6626,31 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}, {
 			time: string;
 			id: string;
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -6554,8 +6658,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}>;
 		agent: z.ZodObject<Omit<{
 			inactive: z.ZodOptional<z.ZodBoolean>;
@@ -6592,35 +6696,38 @@ declare module '@scout9/app/schemas' {
 				content: z.ZodString;
 				time: z.ZodString;
 				name: z.ZodOptional<z.ZodString>;
-				scheduled: z.ZodOptional<z.ZodString>;
-				context: z.ZodOptional<z.ZodAny>;
-				intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
-				delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
-				entities: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+				context: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>;
+				delayInSeconds: z.ZodOptional<z.ZodNumber>;
+				entities: z.ZodOptional<z.ZodArray<z.ZodObject<{
+					text: z.ZodOptional<z.ZodString>;
 					start: z.ZodNumber;
 					end: z.ZodNumber;
-					type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-					option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-					text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+					option: z.ZodOptional<z.ZodString>;
+					subType: z.ZodOptional<z.ZodString>;
+					type: z.ZodString;
 				}, "strip", z.ZodTypeAny, {
+					type: string;
 					end: number;
 					start: number;
-					type?: string | null | undefined;
-					option?: string | null | undefined;
-					text?: string | null | undefined;
+					text?: string | undefined;
+					option?: string | undefined;
+					subType?: string | undefined;
 				}, {
+					type: string;
 					end: number;
 					start: number;
-					type?: string | null | undefined;
-					option?: string | null | undefined;
-					text?: string | null | undefined;
-				}>, "many">>>;
+					text?: string | undefined;
+					option?: string | undefined;
+					subType?: string | undefined;
+				}>, "many">>;
+				contentGenerated: z.ZodOptional<z.ZodString>;
+				contentTransformed: z.ZodOptional<z.ZodString>;
 				ignoreTransform: z.ZodOptional<z.ZodBoolean>;
-				mediaUrls: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
-				contentGenerated: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				contentTransformed: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				tool_calls: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+				intent: z.ZodOptional<z.ZodString>;
+				intentScore: z.ZodOptional<z.ZodNumber>;
+				mediaUrls: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+				scheduled: z.ZodOptional<z.ZodString>;
+				tool_calls: z.ZodOptional<z.ZodArray<z.ZodObject<{
 					id: z.ZodString;
 					type: z.ZodString;
 					function: z.ZodObject<{
@@ -6647,30 +6754,31 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}>, "many">>>;
-				tool_call_id: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+				}>, "many">>;
+				tool_call_id: z.ZodOptional<z.ZodString>;
 			}, "strip", z.ZodTypeAny, {
 				time: string;
 				id: string;
 				content: string;
 				role: "agent" | "customer" | "system" | "tool";
 				name?: string | undefined;
-				scheduled?: string | undefined;
-				context?: any;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
 				entities?: {
+					type: string;
 					end: number;
 					start: number;
-					type?: string | null | undefined;
-					option?: string | null | undefined;
-					text?: string | null | undefined;
-				}[] | null | undefined;
+					text?: string | undefined;
+					option?: string | undefined;
+					subType?: string | undefined;
+				}[] | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -6678,30 +6786,31 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			}, {
 				time: string;
 				id: string;
 				content: string;
 				role: "agent" | "customer" | "system" | "tool";
 				name?: string | undefined;
-				scheduled?: string | undefined;
-				context?: any;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
 				entities?: {
+					type: string;
 					end: number;
 					start: number;
-					type?: string | null | undefined;
-					option?: string | null | undefined;
-					text?: string | null | undefined;
-				}[] | null | undefined;
+					text?: string | undefined;
+					option?: string | undefined;
+					subType?: string | undefined;
+				}[] | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -6709,8 +6818,8 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			}>, "many">, "many">>;
 			audios: z.ZodOptional<z.ZodArray<z.ZodAny, "many">>;
 			pmt: z.ZodOptional<z.ZodObject<{
@@ -6850,22 +6959,23 @@ declare module '@scout9/app/schemas' {
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -6873,8 +6983,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		};
 		agent: {
 			id: string;
@@ -6927,22 +7037,23 @@ declare module '@scout9/app/schemas' {
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -6950,8 +7061,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}[];
 		conversation: {
 			environment: "email" | "phone" | "web";
@@ -6995,22 +7106,23 @@ declare module '@scout9/app/schemas' {
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -7018,8 +7130,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		};
 		agent: {
 			id: string;
@@ -7072,22 +7184,23 @@ declare module '@scout9/app/schemas' {
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -7095,8 +7208,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}[];
 		conversation: {
 			environment: "email" | "phone" | "web";
@@ -7140,35 +7253,38 @@ declare module '@scout9/app/schemas' {
 		content: z.ZodOptional<z.ZodString>;
 		time: z.ZodOptional<z.ZodString>;
 		name: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-		scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-		context: z.ZodOptional<z.ZodOptional<z.ZodAny>>;
-		intent: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-		intentScore: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-		delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-		entities: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+		context: z.ZodOptional<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>>;
+		delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+		entities: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
+			text: z.ZodOptional<z.ZodString>;
 			start: z.ZodNumber;
 			end: z.ZodNumber;
-			type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-			option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-			text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			option: z.ZodOptional<z.ZodString>;
+			subType: z.ZodOptional<z.ZodString>;
+			type: z.ZodString;
 		}, "strip", z.ZodTypeAny, {
+			type: string;
 			end: number;
 			start: number;
-			type?: string | null | undefined;
-			option?: string | null | undefined;
-			text?: string | null | undefined;
+			text?: string | undefined;
+			option?: string | undefined;
+			subType?: string | undefined;
 		}, {
+			type: string;
 			end: number;
 			start: number;
-			type?: string | null | undefined;
-			option?: string | null | undefined;
-			text?: string | null | undefined;
-		}>, "many">>>>;
+			text?: string | undefined;
+			option?: string | undefined;
+			subType?: string | undefined;
+		}>, "many">>>;
+		contentGenerated: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+		contentTransformed: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 		ignoreTransform: z.ZodOptional<z.ZodOptional<z.ZodBoolean>>;
-		mediaUrls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>>;
-		contentGenerated: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-		contentTransformed: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-		tool_calls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+		intent: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+		intentScore: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+		mediaUrls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
+		scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+		tool_calls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
 			id: z.ZodString;
 			type: z.ZodString;
 			function: z.ZodObject<{
@@ -7195,20 +7311,20 @@ declare module '@scout9/app/schemas' {
 			};
 			type: string;
 			id: string;
-		}>, "many">>>>;
-		tool_call_id: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
+		}>, "many">>>;
+		tool_call_id: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 	}, "time" | "id" | "role" | "entities">, "strip", z.ZodTypeAny, {
 		name?: string | undefined;
 		content?: string | undefined;
-		context?: any;
-		scheduled?: string | undefined;
-		intent?: string | null | undefined;
-		intentScore?: number | null | undefined;
-		delayInSeconds?: number | null | undefined;
+		context?: Record<string, any> | undefined;
+		delayInSeconds?: number | undefined;
+		contentGenerated?: string | undefined;
+		contentTransformed?: string | undefined;
 		ignoreTransform?: boolean | undefined;
-		mediaUrls?: string[] | null | undefined;
-		contentGenerated?: string | null | undefined;
-		contentTransformed?: string | null | undefined;
+		intent?: string | undefined;
+		intentScore?: number | undefined;
+		mediaUrls?: string[] | undefined;
+		scheduled?: string | undefined;
 		tool_calls?: {
 			function: {
 				name: string;
@@ -7216,20 +7332,20 @@ declare module '@scout9/app/schemas' {
 			};
 			type: string;
 			id: string;
-		}[] | null | undefined;
-		tool_call_id?: string | null | undefined;
+		}[] | undefined;
+		tool_call_id?: string | undefined;
 	}, {
 		name?: string | undefined;
 		content?: string | undefined;
-		context?: any;
-		scheduled?: string | undefined;
-		intent?: string | null | undefined;
-		intentScore?: number | null | undefined;
-		delayInSeconds?: number | null | undefined;
+		context?: Record<string, any> | undefined;
+		delayInSeconds?: number | undefined;
+		contentGenerated?: string | undefined;
+		contentTransformed?: string | undefined;
 		ignoreTransform?: boolean | undefined;
-		mediaUrls?: string[] | null | undefined;
-		contentGenerated?: string | null | undefined;
-		contentTransformed?: string | null | undefined;
+		intent?: string | undefined;
+		intentScore?: number | undefined;
+		mediaUrls?: string[] | undefined;
+		scheduled?: string | undefined;
 		tool_calls?: {
 			function: {
 				name: string;
@@ -7237,8 +7353,8 @@ declare module '@scout9/app/schemas' {
 			};
 			type: string;
 			id: string;
-		}[] | null | undefined;
-		tool_call_id?: string | null | undefined;
+		}[] | undefined;
+		tool_call_id?: string | undefined;
 	}>;
 	/**
 	 * The workflow response object slot
@@ -7377,35 +7493,38 @@ declare module '@scout9/app/schemas' {
 			content: z.ZodOptional<z.ZodString>;
 			time: z.ZodOptional<z.ZodString>;
 			name: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-			scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-			context: z.ZodOptional<z.ZodOptional<z.ZodAny>>;
-			intent: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-			intentScore: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-			delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-			entities: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+			context: z.ZodOptional<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>>;
+			delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+			entities: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
+				text: z.ZodOptional<z.ZodString>;
 				start: z.ZodNumber;
 				end: z.ZodNumber;
-				type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+				option: z.ZodOptional<z.ZodString>;
+				subType: z.ZodOptional<z.ZodString>;
+				type: z.ZodString;
 			}, "strip", z.ZodTypeAny, {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
 			}, {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}>, "many">>>>;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}>, "many">>>;
+			contentGenerated: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+			contentTransformed: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 			ignoreTransform: z.ZodOptional<z.ZodOptional<z.ZodBoolean>>;
-			mediaUrls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>>;
-			contentGenerated: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-			contentTransformed: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-			tool_calls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+			intent: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+			intentScore: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+			mediaUrls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
+			scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+			tool_calls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
 				id: z.ZodString;
 				type: z.ZodString;
 				function: z.ZodObject<{
@@ -7432,20 +7551,20 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}>, "many">>>>;
-			tool_call_id: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
+			}>, "many">>>;
+			tool_call_id: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 		}, "time" | "id" | "role" | "entities">, "strip", z.ZodTypeAny, {
 			name?: string | undefined;
 			content?: string | undefined;
-			context?: any;
-			scheduled?: string | undefined;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -7453,20 +7572,20 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}, {
 			name?: string | undefined;
 			content?: string | undefined;
-			context?: any;
-			scheduled?: string | undefined;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -7474,8 +7593,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}>]>>;
 		removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 		resetIntent: z.ZodOptional<z.ZodBoolean>;
@@ -7528,15 +7647,15 @@ declare module '@scout9/app/schemas' {
 		message?: string | {
 			name?: string | undefined;
 			content?: string | undefined;
-			context?: any;
-			scheduled?: string | undefined;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -7544,8 +7663,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		} | undefined;
 		removeInstructions?: string[] | undefined;
 		resetIntent?: boolean | undefined;
@@ -7598,15 +7717,15 @@ declare module '@scout9/app/schemas' {
 		message?: string | {
 			name?: string | undefined;
 			content?: string | undefined;
-			context?: any;
-			scheduled?: string | undefined;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -7614,8 +7733,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		} | undefined;
 		removeInstructions?: string[] | undefined;
 		resetIntent?: boolean | undefined;
@@ -7660,35 +7779,38 @@ declare module '@scout9/app/schemas' {
 			content: z.ZodOptional<z.ZodString>;
 			time: z.ZodOptional<z.ZodString>;
 			name: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-			scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-			context: z.ZodOptional<z.ZodOptional<z.ZodAny>>;
-			intent: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-			intentScore: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-			delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-			entities: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+			context: z.ZodOptional<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>>;
+			delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+			entities: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
+				text: z.ZodOptional<z.ZodString>;
 				start: z.ZodNumber;
 				end: z.ZodNumber;
-				type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+				option: z.ZodOptional<z.ZodString>;
+				subType: z.ZodOptional<z.ZodString>;
+				type: z.ZodString;
 			}, "strip", z.ZodTypeAny, {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
 			}, {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}>, "many">>>>;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}>, "many">>>;
+			contentGenerated: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+			contentTransformed: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 			ignoreTransform: z.ZodOptional<z.ZodOptional<z.ZodBoolean>>;
-			mediaUrls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>>;
-			contentGenerated: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-			contentTransformed: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-			tool_calls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+			intent: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+			intentScore: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+			mediaUrls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
+			scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+			tool_calls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
 				id: z.ZodString;
 				type: z.ZodString;
 				function: z.ZodObject<{
@@ -7715,20 +7837,20 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}>, "many">>>>;
-			tool_call_id: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
+			}>, "many">>>;
+			tool_call_id: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 		}, "time" | "id" | "role" | "entities">, "strip", z.ZodTypeAny, {
 			name?: string | undefined;
 			content?: string | undefined;
-			context?: any;
-			scheduled?: string | undefined;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -7736,20 +7858,20 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}, {
 			name?: string | undefined;
 			content?: string | undefined;
-			context?: any;
-			scheduled?: string | undefined;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -7757,8 +7879,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}>]>>;
 		forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 			to: z.ZodOptional<z.ZodString>;
@@ -8027,35 +8149,38 @@ declare module '@scout9/app/schemas' {
 					content: z.ZodOptional<z.ZodString>;
 					time: z.ZodOptional<z.ZodString>;
 					name: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-					scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-					context: z.ZodOptional<z.ZodOptional<z.ZodAny>>;
-					intent: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-					intentScore: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-					delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-					entities: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+					context: z.ZodOptional<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>>;
+					delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+					entities: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
+						text: z.ZodOptional<z.ZodString>;
 						start: z.ZodNumber;
 						end: z.ZodNumber;
-						type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-						option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-						text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+						option: z.ZodOptional<z.ZodString>;
+						subType: z.ZodOptional<z.ZodString>;
+						type: z.ZodString;
 					}, "strip", z.ZodTypeAny, {
+						type: string;
 						end: number;
 						start: number;
-						type?: string | null | undefined;
-						option?: string | null | undefined;
-						text?: string | null | undefined;
+						text?: string | undefined;
+						option?: string | undefined;
+						subType?: string | undefined;
 					}, {
+						type: string;
 						end: number;
 						start: number;
-						type?: string | null | undefined;
-						option?: string | null | undefined;
-						text?: string | null | undefined;
-					}>, "many">>>>;
+						text?: string | undefined;
+						option?: string | undefined;
+						subType?: string | undefined;
+					}>, "many">>>;
+					contentGenerated: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+					contentTransformed: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 					ignoreTransform: z.ZodOptional<z.ZodOptional<z.ZodBoolean>>;
-					mediaUrls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>>;
-					contentGenerated: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-					contentTransformed: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-					tool_calls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+					intent: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+					intentScore: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+					mediaUrls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
+					scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+					tool_calls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
 						id: z.ZodString;
 						type: z.ZodString;
 						function: z.ZodObject<{
@@ -8082,20 +8207,20 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}>, "many">>>>;
-					tool_call_id: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
+					}>, "many">>>;
+					tool_call_id: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 				}, "time" | "id" | "role" | "entities">, "strip", z.ZodTypeAny, {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -8103,20 +8228,20 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				}, {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -8124,8 +8249,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				}>]>>;
 				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 				resetIntent: z.ZodOptional<z.ZodBoolean>;
@@ -8178,15 +8303,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -8194,8 +8319,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -8248,15 +8373,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -8264,8 +8389,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -8406,35 +8531,38 @@ declare module '@scout9/app/schemas' {
 					content: z.ZodOptional<z.ZodString>;
 					time: z.ZodOptional<z.ZodString>;
 					name: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-					scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-					context: z.ZodOptional<z.ZodOptional<z.ZodAny>>;
-					intent: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-					intentScore: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-					delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-					entities: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+					context: z.ZodOptional<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>>;
+					delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+					entities: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
+						text: z.ZodOptional<z.ZodString>;
 						start: z.ZodNumber;
 						end: z.ZodNumber;
-						type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-						option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-						text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+						option: z.ZodOptional<z.ZodString>;
+						subType: z.ZodOptional<z.ZodString>;
+						type: z.ZodString;
 					}, "strip", z.ZodTypeAny, {
+						type: string;
 						end: number;
 						start: number;
-						type?: string | null | undefined;
-						option?: string | null | undefined;
-						text?: string | null | undefined;
+						text?: string | undefined;
+						option?: string | undefined;
+						subType?: string | undefined;
 					}, {
+						type: string;
 						end: number;
 						start: number;
-						type?: string | null | undefined;
-						option?: string | null | undefined;
-						text?: string | null | undefined;
-					}>, "many">>>>;
+						text?: string | undefined;
+						option?: string | undefined;
+						subType?: string | undefined;
+					}>, "many">>>;
+					contentGenerated: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+					contentTransformed: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 					ignoreTransform: z.ZodOptional<z.ZodOptional<z.ZodBoolean>>;
-					mediaUrls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>>;
-					contentGenerated: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-					contentTransformed: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-					tool_calls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+					intent: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+					intentScore: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+					mediaUrls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
+					scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+					tool_calls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
 						id: z.ZodString;
 						type: z.ZodString;
 						function: z.ZodObject<{
@@ -8461,20 +8589,20 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}>, "many">>>>;
-					tool_call_id: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
+					}>, "many">>>;
+					tool_call_id: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 				}, "time" | "id" | "role" | "entities">, "strip", z.ZodTypeAny, {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -8482,20 +8610,20 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				}, {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -8503,8 +8631,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				}>]>>;
 				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 				resetIntent: z.ZodOptional<z.ZodBoolean>;
@@ -8557,15 +8685,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -8573,8 +8701,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -8627,15 +8755,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -8643,8 +8771,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -8700,15 +8828,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -8716,8 +8844,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -8771,15 +8899,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -8787,8 +8915,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -8844,15 +8972,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -8860,8 +8988,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -8915,15 +9043,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -8931,8 +9059,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -8946,35 +9074,38 @@ declare module '@scout9/app/schemas' {
 				content: z.ZodOptional<z.ZodString>;
 				time: z.ZodOptional<z.ZodString>;
 				name: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-				scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-				context: z.ZodOptional<z.ZodOptional<z.ZodAny>>;
-				intent: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-				intentScore: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-				delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-				entities: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+				context: z.ZodOptional<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>>;
+				delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+				entities: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
+					text: z.ZodOptional<z.ZodString>;
 					start: z.ZodNumber;
 					end: z.ZodNumber;
-					type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-					option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-					text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+					option: z.ZodOptional<z.ZodString>;
+					subType: z.ZodOptional<z.ZodString>;
+					type: z.ZodString;
 				}, "strip", z.ZodTypeAny, {
+					type: string;
 					end: number;
 					start: number;
-					type?: string | null | undefined;
-					option?: string | null | undefined;
-					text?: string | null | undefined;
+					text?: string | undefined;
+					option?: string | undefined;
+					subType?: string | undefined;
 				}, {
+					type: string;
 					end: number;
 					start: number;
-					type?: string | null | undefined;
-					option?: string | null | undefined;
-					text?: string | null | undefined;
-				}>, "many">>>>;
+					text?: string | undefined;
+					option?: string | undefined;
+					subType?: string | undefined;
+				}>, "many">>>;
+				contentGenerated: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+				contentTransformed: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 				ignoreTransform: z.ZodOptional<z.ZodOptional<z.ZodBoolean>>;
-				mediaUrls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>>;
-				contentGenerated: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-				contentTransformed: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-				tool_calls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+				intent: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+				intentScore: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+				mediaUrls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
+				scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+				tool_calls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
 					id: z.ZodString;
 					type: z.ZodString;
 					function: z.ZodObject<{
@@ -9001,20 +9132,20 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}>, "many">>>>;
-				tool_call_id: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
+				}>, "many">>>;
+				tool_call_id: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 			}, "time" | "id" | "role" | "entities">, "strip", z.ZodTypeAny, {
 				name?: string | undefined;
 				content?: string | undefined;
-				context?: any;
-				scheduled?: string | undefined;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -9022,20 +9153,20 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			}, {
 				name?: string | undefined;
 				content?: string | undefined;
-				context?: any;
-				scheduled?: string | undefined;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -9043,8 +9174,8 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			}>]>>;
 			forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 				to: z.ZodOptional<z.ZodString>;
@@ -9183,15 +9314,15 @@ declare module '@scout9/app/schemas' {
 			message?: string | {
 				name?: string | undefined;
 				content?: string | undefined;
-				context?: any;
-				scheduled?: string | undefined;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -9199,8 +9330,8 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
@@ -9254,15 +9385,15 @@ declare module '@scout9/app/schemas' {
 			message?: string | {
 				name?: string | undefined;
 				content?: string | undefined;
-				context?: any;
-				scheduled?: string | undefined;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -9270,8 +9401,8 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
@@ -9354,15 +9485,15 @@ declare module '@scout9/app/schemas' {
 		message?: string | {
 			name?: string | undefined;
 			content?: string | undefined;
-			context?: any;
-			scheduled?: string | undefined;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -9370,8 +9501,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		} | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
@@ -9469,15 +9600,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -9485,8 +9616,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -9540,15 +9671,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -9556,8 +9687,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -9569,15 +9700,15 @@ declare module '@scout9/app/schemas' {
 			message?: string | {
 				name?: string | undefined;
 				content?: string | undefined;
-				context?: any;
-				scheduled?: string | undefined;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -9585,8 +9716,8 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
@@ -9651,15 +9782,15 @@ declare module '@scout9/app/schemas' {
 		message?: string | {
 			name?: string | undefined;
 			content?: string | undefined;
-			context?: any;
-			scheduled?: string | undefined;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -9667,8 +9798,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		} | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
@@ -9766,15 +9897,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -9782,8 +9913,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -9837,15 +9968,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -9853,8 +9984,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -9866,15 +9997,15 @@ declare module '@scout9/app/schemas' {
 			message?: string | {
 				name?: string | undefined;
 				content?: string | undefined;
-				context?: any;
-				scheduled?: string | undefined;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -9882,8 +10013,8 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
@@ -9955,35 +10086,38 @@ declare module '@scout9/app/schemas' {
 			content: z.ZodOptional<z.ZodString>;
 			time: z.ZodOptional<z.ZodString>;
 			name: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-			scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-			context: z.ZodOptional<z.ZodOptional<z.ZodAny>>;
-			intent: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-			intentScore: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-			delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-			entities: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+			context: z.ZodOptional<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>>;
+			delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+			entities: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
+				text: z.ZodOptional<z.ZodString>;
 				start: z.ZodNumber;
 				end: z.ZodNumber;
-				type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+				option: z.ZodOptional<z.ZodString>;
+				subType: z.ZodOptional<z.ZodString>;
+				type: z.ZodString;
 			}, "strip", z.ZodTypeAny, {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
 			}, {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}>, "many">>>>;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}>, "many">>>;
+			contentGenerated: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+			contentTransformed: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 			ignoreTransform: z.ZodOptional<z.ZodOptional<z.ZodBoolean>>;
-			mediaUrls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>>;
-			contentGenerated: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-			contentTransformed: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-			tool_calls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+			intent: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+			intentScore: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+			mediaUrls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
+			scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+			tool_calls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
 				id: z.ZodString;
 				type: z.ZodString;
 				function: z.ZodObject<{
@@ -10010,20 +10144,20 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}>, "many">>>>;
-			tool_call_id: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
+			}>, "many">>>;
+			tool_call_id: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 		}, "time" | "id" | "role" | "entities">, "strip", z.ZodTypeAny, {
 			name?: string | undefined;
 			content?: string | undefined;
-			context?: any;
-			scheduled?: string | undefined;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -10031,20 +10165,20 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}, {
 			name?: string | undefined;
 			content?: string | undefined;
-			context?: any;
-			scheduled?: string | undefined;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -10052,8 +10186,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}>]>>;
 		forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 			to: z.ZodOptional<z.ZodString>;
@@ -10322,35 +10456,38 @@ declare module '@scout9/app/schemas' {
 					content: z.ZodOptional<z.ZodString>;
 					time: z.ZodOptional<z.ZodString>;
 					name: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-					scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-					context: z.ZodOptional<z.ZodOptional<z.ZodAny>>;
-					intent: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-					intentScore: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-					delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-					entities: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+					context: z.ZodOptional<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>>;
+					delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+					entities: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
+						text: z.ZodOptional<z.ZodString>;
 						start: z.ZodNumber;
 						end: z.ZodNumber;
-						type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-						option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-						text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+						option: z.ZodOptional<z.ZodString>;
+						subType: z.ZodOptional<z.ZodString>;
+						type: z.ZodString;
 					}, "strip", z.ZodTypeAny, {
+						type: string;
 						end: number;
 						start: number;
-						type?: string | null | undefined;
-						option?: string | null | undefined;
-						text?: string | null | undefined;
+						text?: string | undefined;
+						option?: string | undefined;
+						subType?: string | undefined;
 					}, {
+						type: string;
 						end: number;
 						start: number;
-						type?: string | null | undefined;
-						option?: string | null | undefined;
-						text?: string | null | undefined;
-					}>, "many">>>>;
+						text?: string | undefined;
+						option?: string | undefined;
+						subType?: string | undefined;
+					}>, "many">>>;
+					contentGenerated: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+					contentTransformed: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 					ignoreTransform: z.ZodOptional<z.ZodOptional<z.ZodBoolean>>;
-					mediaUrls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>>;
-					contentGenerated: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-					contentTransformed: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-					tool_calls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+					intent: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+					intentScore: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+					mediaUrls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
+					scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+					tool_calls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
 						id: z.ZodString;
 						type: z.ZodString;
 						function: z.ZodObject<{
@@ -10377,20 +10514,20 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}>, "many">>>>;
-					tool_call_id: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
+					}>, "many">>>;
+					tool_call_id: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 				}, "time" | "id" | "role" | "entities">, "strip", z.ZodTypeAny, {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -10398,20 +10535,20 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				}, {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -10419,8 +10556,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				}>]>>;
 				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 				resetIntent: z.ZodOptional<z.ZodBoolean>;
@@ -10473,15 +10610,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -10489,8 +10626,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -10543,15 +10680,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -10559,8 +10696,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -10701,35 +10838,38 @@ declare module '@scout9/app/schemas' {
 					content: z.ZodOptional<z.ZodString>;
 					time: z.ZodOptional<z.ZodString>;
 					name: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-					scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-					context: z.ZodOptional<z.ZodOptional<z.ZodAny>>;
-					intent: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-					intentScore: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-					delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-					entities: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+					context: z.ZodOptional<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>>;
+					delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+					entities: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
+						text: z.ZodOptional<z.ZodString>;
 						start: z.ZodNumber;
 						end: z.ZodNumber;
-						type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-						option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-						text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+						option: z.ZodOptional<z.ZodString>;
+						subType: z.ZodOptional<z.ZodString>;
+						type: z.ZodString;
 					}, "strip", z.ZodTypeAny, {
+						type: string;
 						end: number;
 						start: number;
-						type?: string | null | undefined;
-						option?: string | null | undefined;
-						text?: string | null | undefined;
+						text?: string | undefined;
+						option?: string | undefined;
+						subType?: string | undefined;
 					}, {
+						type: string;
 						end: number;
 						start: number;
-						type?: string | null | undefined;
-						option?: string | null | undefined;
-						text?: string | null | undefined;
-					}>, "many">>>>;
+						text?: string | undefined;
+						option?: string | undefined;
+						subType?: string | undefined;
+					}>, "many">>>;
+					contentGenerated: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+					contentTransformed: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 					ignoreTransform: z.ZodOptional<z.ZodOptional<z.ZodBoolean>>;
-					mediaUrls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>>;
-					contentGenerated: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-					contentTransformed: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-					tool_calls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+					intent: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+					intentScore: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+					mediaUrls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
+					scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+					tool_calls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
 						id: z.ZodString;
 						type: z.ZodString;
 						function: z.ZodObject<{
@@ -10756,20 +10896,20 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}>, "many">>>>;
-					tool_call_id: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
+					}>, "many">>>;
+					tool_call_id: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 				}, "time" | "id" | "role" | "entities">, "strip", z.ZodTypeAny, {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -10777,20 +10917,20 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				}, {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -10798,8 +10938,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				}>]>>;
 				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 				resetIntent: z.ZodOptional<z.ZodBoolean>;
@@ -10852,15 +10992,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -10868,8 +11008,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -10922,15 +11062,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -10938,8 +11078,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -10995,15 +11135,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -11011,8 +11151,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -11066,15 +11206,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -11082,8 +11222,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -11139,15 +11279,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -11155,8 +11295,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -11210,15 +11350,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -11226,8 +11366,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -11241,35 +11381,38 @@ declare module '@scout9/app/schemas' {
 				content: z.ZodOptional<z.ZodString>;
 				time: z.ZodOptional<z.ZodString>;
 				name: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-				scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-				context: z.ZodOptional<z.ZodOptional<z.ZodAny>>;
-				intent: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-				intentScore: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-				delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-				entities: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+				context: z.ZodOptional<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>>;
+				delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+				entities: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
+					text: z.ZodOptional<z.ZodString>;
 					start: z.ZodNumber;
 					end: z.ZodNumber;
-					type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-					option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-					text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+					option: z.ZodOptional<z.ZodString>;
+					subType: z.ZodOptional<z.ZodString>;
+					type: z.ZodString;
 				}, "strip", z.ZodTypeAny, {
+					type: string;
 					end: number;
 					start: number;
-					type?: string | null | undefined;
-					option?: string | null | undefined;
-					text?: string | null | undefined;
+					text?: string | undefined;
+					option?: string | undefined;
+					subType?: string | undefined;
 				}, {
+					type: string;
 					end: number;
 					start: number;
-					type?: string | null | undefined;
-					option?: string | null | undefined;
-					text?: string | null | undefined;
-				}>, "many">>>>;
+					text?: string | undefined;
+					option?: string | undefined;
+					subType?: string | undefined;
+				}>, "many">>>;
+				contentGenerated: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+				contentTransformed: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 				ignoreTransform: z.ZodOptional<z.ZodOptional<z.ZodBoolean>>;
-				mediaUrls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>>;
-				contentGenerated: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-				contentTransformed: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-				tool_calls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+				intent: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+				intentScore: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+				mediaUrls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
+				scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+				tool_calls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
 					id: z.ZodString;
 					type: z.ZodString;
 					function: z.ZodObject<{
@@ -11296,20 +11439,20 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}>, "many">>>>;
-				tool_call_id: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
+				}>, "many">>>;
+				tool_call_id: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 			}, "time" | "id" | "role" | "entities">, "strip", z.ZodTypeAny, {
 				name?: string | undefined;
 				content?: string | undefined;
-				context?: any;
-				scheduled?: string | undefined;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -11317,20 +11460,20 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			}, {
 				name?: string | undefined;
 				content?: string | undefined;
-				context?: any;
-				scheduled?: string | undefined;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -11338,8 +11481,8 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			}>]>>;
 			forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 				to: z.ZodOptional<z.ZodString>;
@@ -11478,15 +11621,15 @@ declare module '@scout9/app/schemas' {
 			message?: string | {
 				name?: string | undefined;
 				content?: string | undefined;
-				context?: any;
-				scheduled?: string | undefined;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -11494,8 +11637,8 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
@@ -11549,15 +11692,15 @@ declare module '@scout9/app/schemas' {
 			message?: string | {
 				name?: string | undefined;
 				content?: string | undefined;
-				context?: any;
-				scheduled?: string | undefined;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -11565,8 +11708,8 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
@@ -11649,15 +11792,15 @@ declare module '@scout9/app/schemas' {
 		message?: string | {
 			name?: string | undefined;
 			content?: string | undefined;
-			context?: any;
-			scheduled?: string | undefined;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -11665,8 +11808,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		} | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
@@ -11764,15 +11907,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -11780,8 +11923,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -11835,15 +11978,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -11851,8 +11994,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -11864,15 +12007,15 @@ declare module '@scout9/app/schemas' {
 			message?: string | {
 				name?: string | undefined;
 				content?: string | undefined;
-				context?: any;
-				scheduled?: string | undefined;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -11880,8 +12023,8 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
@@ -11946,15 +12089,15 @@ declare module '@scout9/app/schemas' {
 		message?: string | {
 			name?: string | undefined;
 			content?: string | undefined;
-			context?: any;
-			scheduled?: string | undefined;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -11962,8 +12105,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		} | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
@@ -12061,15 +12204,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -12077,8 +12220,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -12132,15 +12275,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -12148,8 +12291,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -12161,15 +12304,15 @@ declare module '@scout9/app/schemas' {
 			message?: string | {
 				name?: string | undefined;
 				content?: string | undefined;
-				context?: any;
-				scheduled?: string | undefined;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -12177,8 +12320,8 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
@@ -12246,35 +12389,38 @@ declare module '@scout9/app/schemas' {
 			content: z.ZodOptional<z.ZodString>;
 			time: z.ZodOptional<z.ZodString>;
 			name: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-			scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-			context: z.ZodOptional<z.ZodOptional<z.ZodAny>>;
-			intent: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-			intentScore: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-			delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-			entities: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+			context: z.ZodOptional<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>>;
+			delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+			entities: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
+				text: z.ZodOptional<z.ZodString>;
 				start: z.ZodNumber;
 				end: z.ZodNumber;
-				type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+				option: z.ZodOptional<z.ZodString>;
+				subType: z.ZodOptional<z.ZodString>;
+				type: z.ZodString;
 			}, "strip", z.ZodTypeAny, {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
 			}, {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}>, "many">>>>;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}>, "many">>>;
+			contentGenerated: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+			contentTransformed: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 			ignoreTransform: z.ZodOptional<z.ZodOptional<z.ZodBoolean>>;
-			mediaUrls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>>;
-			contentGenerated: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-			contentTransformed: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-			tool_calls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+			intent: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+			intentScore: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+			mediaUrls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
+			scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+			tool_calls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
 				id: z.ZodString;
 				type: z.ZodString;
 				function: z.ZodObject<{
@@ -12301,20 +12447,20 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}>, "many">>>>;
-			tool_call_id: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
+			}>, "many">>>;
+			tool_call_id: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 		}, "time" | "id" | "role" | "entities">, "strip", z.ZodTypeAny, {
 			name?: string | undefined;
 			content?: string | undefined;
-			context?: any;
-			scheduled?: string | undefined;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -12322,20 +12468,20 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}, {
 			name?: string | undefined;
 			content?: string | undefined;
-			context?: any;
-			scheduled?: string | undefined;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -12343,8 +12489,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}>]>>;
 		forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 			to: z.ZodOptional<z.ZodString>;
@@ -12613,35 +12759,38 @@ declare module '@scout9/app/schemas' {
 					content: z.ZodOptional<z.ZodString>;
 					time: z.ZodOptional<z.ZodString>;
 					name: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-					scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-					context: z.ZodOptional<z.ZodOptional<z.ZodAny>>;
-					intent: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-					intentScore: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-					delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-					entities: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+					context: z.ZodOptional<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>>;
+					delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+					entities: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
+						text: z.ZodOptional<z.ZodString>;
 						start: z.ZodNumber;
 						end: z.ZodNumber;
-						type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-						option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-						text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+						option: z.ZodOptional<z.ZodString>;
+						subType: z.ZodOptional<z.ZodString>;
+						type: z.ZodString;
 					}, "strip", z.ZodTypeAny, {
+						type: string;
 						end: number;
 						start: number;
-						type?: string | null | undefined;
-						option?: string | null | undefined;
-						text?: string | null | undefined;
+						text?: string | undefined;
+						option?: string | undefined;
+						subType?: string | undefined;
 					}, {
+						type: string;
 						end: number;
 						start: number;
-						type?: string | null | undefined;
-						option?: string | null | undefined;
-						text?: string | null | undefined;
-					}>, "many">>>>;
+						text?: string | undefined;
+						option?: string | undefined;
+						subType?: string | undefined;
+					}>, "many">>>;
+					contentGenerated: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+					contentTransformed: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 					ignoreTransform: z.ZodOptional<z.ZodOptional<z.ZodBoolean>>;
-					mediaUrls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>>;
-					contentGenerated: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-					contentTransformed: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-					tool_calls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+					intent: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+					intentScore: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+					mediaUrls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
+					scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+					tool_calls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
 						id: z.ZodString;
 						type: z.ZodString;
 						function: z.ZodObject<{
@@ -12668,20 +12817,20 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}>, "many">>>>;
-					tool_call_id: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
+					}>, "many">>>;
+					tool_call_id: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 				}, "time" | "id" | "role" | "entities">, "strip", z.ZodTypeAny, {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -12689,20 +12838,20 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				}, {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -12710,8 +12859,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				}>]>>;
 				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 				resetIntent: z.ZodOptional<z.ZodBoolean>;
@@ -12764,15 +12913,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -12780,8 +12929,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -12834,15 +12983,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -12850,8 +12999,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -12992,35 +13141,38 @@ declare module '@scout9/app/schemas' {
 					content: z.ZodOptional<z.ZodString>;
 					time: z.ZodOptional<z.ZodString>;
 					name: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-					scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-					context: z.ZodOptional<z.ZodOptional<z.ZodAny>>;
-					intent: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-					intentScore: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-					delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-					entities: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+					context: z.ZodOptional<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>>;
+					delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+					entities: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
+						text: z.ZodOptional<z.ZodString>;
 						start: z.ZodNumber;
 						end: z.ZodNumber;
-						type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-						option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-						text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+						option: z.ZodOptional<z.ZodString>;
+						subType: z.ZodOptional<z.ZodString>;
+						type: z.ZodString;
 					}, "strip", z.ZodTypeAny, {
+						type: string;
 						end: number;
 						start: number;
-						type?: string | null | undefined;
-						option?: string | null | undefined;
-						text?: string | null | undefined;
+						text?: string | undefined;
+						option?: string | undefined;
+						subType?: string | undefined;
 					}, {
+						type: string;
 						end: number;
 						start: number;
-						type?: string | null | undefined;
-						option?: string | null | undefined;
-						text?: string | null | undefined;
-					}>, "many">>>>;
+						text?: string | undefined;
+						option?: string | undefined;
+						subType?: string | undefined;
+					}>, "many">>>;
+					contentGenerated: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+					contentTransformed: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 					ignoreTransform: z.ZodOptional<z.ZodOptional<z.ZodBoolean>>;
-					mediaUrls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>>;
-					contentGenerated: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-					contentTransformed: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-					tool_calls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+					intent: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+					intentScore: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+					mediaUrls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
+					scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+					tool_calls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
 						id: z.ZodString;
 						type: z.ZodString;
 						function: z.ZodObject<{
@@ -13047,20 +13199,20 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}>, "many">>>>;
-					tool_call_id: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
+					}>, "many">>>;
+					tool_call_id: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 				}, "time" | "id" | "role" | "entities">, "strip", z.ZodTypeAny, {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -13068,20 +13220,20 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				}, {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -13089,8 +13241,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				}>]>>;
 				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 				resetIntent: z.ZodOptional<z.ZodBoolean>;
@@ -13143,15 +13295,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -13159,8 +13311,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -13213,15 +13365,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -13229,8 +13381,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -13286,15 +13438,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -13302,8 +13454,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -13357,15 +13509,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -13373,8 +13525,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -13430,15 +13582,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -13446,8 +13598,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -13501,15 +13653,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -13517,8 +13669,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -13532,35 +13684,38 @@ declare module '@scout9/app/schemas' {
 				content: z.ZodOptional<z.ZodString>;
 				time: z.ZodOptional<z.ZodString>;
 				name: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-				scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-				context: z.ZodOptional<z.ZodOptional<z.ZodAny>>;
-				intent: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-				intentScore: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-				delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-				entities: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+				context: z.ZodOptional<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>>;
+				delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+				entities: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
+					text: z.ZodOptional<z.ZodString>;
 					start: z.ZodNumber;
 					end: z.ZodNumber;
-					type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-					option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-					text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+					option: z.ZodOptional<z.ZodString>;
+					subType: z.ZodOptional<z.ZodString>;
+					type: z.ZodString;
 				}, "strip", z.ZodTypeAny, {
+					type: string;
 					end: number;
 					start: number;
-					type?: string | null | undefined;
-					option?: string | null | undefined;
-					text?: string | null | undefined;
+					text?: string | undefined;
+					option?: string | undefined;
+					subType?: string | undefined;
 				}, {
+					type: string;
 					end: number;
 					start: number;
-					type?: string | null | undefined;
-					option?: string | null | undefined;
-					text?: string | null | undefined;
-				}>, "many">>>>;
+					text?: string | undefined;
+					option?: string | undefined;
+					subType?: string | undefined;
+				}>, "many">>>;
+				contentGenerated: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+				contentTransformed: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 				ignoreTransform: z.ZodOptional<z.ZodOptional<z.ZodBoolean>>;
-				mediaUrls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>>;
-				contentGenerated: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-				contentTransformed: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-				tool_calls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+				intent: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+				intentScore: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+				mediaUrls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
+				scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+				tool_calls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
 					id: z.ZodString;
 					type: z.ZodString;
 					function: z.ZodObject<{
@@ -13587,20 +13742,20 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}>, "many">>>>;
-				tool_call_id: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
+				}>, "many">>>;
+				tool_call_id: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 			}, "time" | "id" | "role" | "entities">, "strip", z.ZodTypeAny, {
 				name?: string | undefined;
 				content?: string | undefined;
-				context?: any;
-				scheduled?: string | undefined;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -13608,20 +13763,20 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			}, {
 				name?: string | undefined;
 				content?: string | undefined;
-				context?: any;
-				scheduled?: string | undefined;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -13629,8 +13784,8 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			}>]>>;
 			forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 				to: z.ZodOptional<z.ZodString>;
@@ -13769,15 +13924,15 @@ declare module '@scout9/app/schemas' {
 			message?: string | {
 				name?: string | undefined;
 				content?: string | undefined;
-				context?: any;
-				scheduled?: string | undefined;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -13785,8 +13940,8 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
@@ -13840,15 +13995,15 @@ declare module '@scout9/app/schemas' {
 			message?: string | {
 				name?: string | undefined;
 				content?: string | undefined;
-				context?: any;
-				scheduled?: string | undefined;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -13856,8 +14011,8 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
@@ -13940,15 +14095,15 @@ declare module '@scout9/app/schemas' {
 		message?: string | {
 			name?: string | undefined;
 			content?: string | undefined;
-			context?: any;
-			scheduled?: string | undefined;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -13956,8 +14111,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		} | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
@@ -14055,15 +14210,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -14071,8 +14226,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -14126,15 +14281,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -14142,8 +14297,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -14155,15 +14310,15 @@ declare module '@scout9/app/schemas' {
 			message?: string | {
 				name?: string | undefined;
 				content?: string | undefined;
-				context?: any;
-				scheduled?: string | undefined;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -14171,8 +14326,8 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
@@ -14237,15 +14392,15 @@ declare module '@scout9/app/schemas' {
 		message?: string | {
 			name?: string | undefined;
 			content?: string | undefined;
-			context?: any;
-			scheduled?: string | undefined;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -14253,8 +14408,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		} | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
@@ -14352,15 +14507,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -14368,8 +14523,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -14423,15 +14578,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -14439,8 +14594,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -14452,15 +14607,15 @@ declare module '@scout9/app/schemas' {
 			message?: string | {
 				name?: string | undefined;
 				content?: string | undefined;
-				context?: any;
-				scheduled?: string | undefined;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -14468,8 +14623,8 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
@@ -14538,35 +14693,38 @@ declare module '@scout9/app/schemas' {
 			content: z.ZodString;
 			time: z.ZodString;
 			name: z.ZodOptional<z.ZodString>;
-			scheduled: z.ZodOptional<z.ZodString>;
-			context: z.ZodOptional<z.ZodAny>;
-			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-			intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
-			delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
-			entities: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+			context: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>;
+			delayInSeconds: z.ZodOptional<z.ZodNumber>;
+			entities: z.ZodOptional<z.ZodArray<z.ZodObject<{
+				text: z.ZodOptional<z.ZodString>;
 				start: z.ZodNumber;
 				end: z.ZodNumber;
-				type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+				option: z.ZodOptional<z.ZodString>;
+				subType: z.ZodOptional<z.ZodString>;
+				type: z.ZodString;
 			}, "strip", z.ZodTypeAny, {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
 			}, {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}>, "many">>>;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}>, "many">>;
+			contentGenerated: z.ZodOptional<z.ZodString>;
+			contentTransformed: z.ZodOptional<z.ZodString>;
 			ignoreTransform: z.ZodOptional<z.ZodBoolean>;
-			mediaUrls: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
-			contentGenerated: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-			contentTransformed: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-			tool_calls: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+			intent: z.ZodOptional<z.ZodString>;
+			intentScore: z.ZodOptional<z.ZodNumber>;
+			mediaUrls: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+			scheduled: z.ZodOptional<z.ZodString>;
+			tool_calls: z.ZodOptional<z.ZodArray<z.ZodObject<{
 				id: z.ZodString;
 				type: z.ZodString;
 				function: z.ZodObject<{
@@ -14593,30 +14751,31 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}>, "many">>>;
-			tool_call_id: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			}>, "many">>;
+			tool_call_id: z.ZodOptional<z.ZodString>;
 		}, "strip", z.ZodTypeAny, {
 			time: string;
 			id: string;
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -14624,30 +14783,31 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}, {
 			time: string;
 			id: string;
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -14655,8 +14815,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}>, "many">;
 		conversation: z.ZodObject<{
 			$id: z.ZodString;
@@ -14795,35 +14955,38 @@ declare module '@scout9/app/schemas' {
 			content: z.ZodString;
 			time: z.ZodString;
 			name: z.ZodOptional<z.ZodString>;
-			scheduled: z.ZodOptional<z.ZodString>;
-			context: z.ZodOptional<z.ZodAny>;
-			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-			intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
-			delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
-			entities: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+			context: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>;
+			delayInSeconds: z.ZodOptional<z.ZodNumber>;
+			entities: z.ZodOptional<z.ZodArray<z.ZodObject<{
+				text: z.ZodOptional<z.ZodString>;
 				start: z.ZodNumber;
 				end: z.ZodNumber;
-				type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+				option: z.ZodOptional<z.ZodString>;
+				subType: z.ZodOptional<z.ZodString>;
+				type: z.ZodString;
 			}, "strip", z.ZodTypeAny, {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
 			}, {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}>, "many">>>;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}>, "many">>;
+			contentGenerated: z.ZodOptional<z.ZodString>;
+			contentTransformed: z.ZodOptional<z.ZodString>;
 			ignoreTransform: z.ZodOptional<z.ZodBoolean>;
-			mediaUrls: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
-			contentGenerated: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-			contentTransformed: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-			tool_calls: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+			intent: z.ZodOptional<z.ZodString>;
+			intentScore: z.ZodOptional<z.ZodNumber>;
+			mediaUrls: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+			scheduled: z.ZodOptional<z.ZodString>;
+			tool_calls: z.ZodOptional<z.ZodArray<z.ZodObject<{
 				id: z.ZodString;
 				type: z.ZodString;
 				function: z.ZodObject<{
@@ -14850,30 +15013,31 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}>, "many">>>;
-			tool_call_id: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			}>, "many">>;
+			tool_call_id: z.ZodOptional<z.ZodString>;
 		}, "strip", z.ZodTypeAny, {
 			time: string;
 			id: string;
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -14881,30 +15045,31 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}, {
 			time: string;
 			id: string;
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -14912,8 +15077,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}>;
 		agent: z.ZodObject<Omit<{
 			inactive: z.ZodOptional<z.ZodBoolean>;
@@ -14950,35 +15115,38 @@ declare module '@scout9/app/schemas' {
 				content: z.ZodString;
 				time: z.ZodString;
 				name: z.ZodOptional<z.ZodString>;
-				scheduled: z.ZodOptional<z.ZodString>;
-				context: z.ZodOptional<z.ZodAny>;
-				intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				intentScore: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
-				delayInSeconds: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
-				entities: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+				context: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>;
+				delayInSeconds: z.ZodOptional<z.ZodNumber>;
+				entities: z.ZodOptional<z.ZodArray<z.ZodObject<{
+					text: z.ZodOptional<z.ZodString>;
 					start: z.ZodNumber;
 					end: z.ZodNumber;
-					type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-					option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-					text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+					option: z.ZodOptional<z.ZodString>;
+					subType: z.ZodOptional<z.ZodString>;
+					type: z.ZodString;
 				}, "strip", z.ZodTypeAny, {
+					type: string;
 					end: number;
 					start: number;
-					type?: string | null | undefined;
-					option?: string | null | undefined;
-					text?: string | null | undefined;
+					text?: string | undefined;
+					option?: string | undefined;
+					subType?: string | undefined;
 				}, {
+					type: string;
 					end: number;
 					start: number;
-					type?: string | null | undefined;
-					option?: string | null | undefined;
-					text?: string | null | undefined;
-				}>, "many">>>;
+					text?: string | undefined;
+					option?: string | undefined;
+					subType?: string | undefined;
+				}>, "many">>;
+				contentGenerated: z.ZodOptional<z.ZodString>;
+				contentTransformed: z.ZodOptional<z.ZodString>;
 				ignoreTransform: z.ZodOptional<z.ZodBoolean>;
-				mediaUrls: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
-				contentGenerated: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				contentTransformed: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				tool_calls: z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+				intent: z.ZodOptional<z.ZodString>;
+				intentScore: z.ZodOptional<z.ZodNumber>;
+				mediaUrls: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+				scheduled: z.ZodOptional<z.ZodString>;
+				tool_calls: z.ZodOptional<z.ZodArray<z.ZodObject<{
 					id: z.ZodString;
 					type: z.ZodString;
 					function: z.ZodObject<{
@@ -15005,30 +15173,31 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}>, "many">>>;
-				tool_call_id: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+				}>, "many">>;
+				tool_call_id: z.ZodOptional<z.ZodString>;
 			}, "strip", z.ZodTypeAny, {
 				time: string;
 				id: string;
 				content: string;
 				role: "agent" | "customer" | "system" | "tool";
 				name?: string | undefined;
-				scheduled?: string | undefined;
-				context?: any;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
 				entities?: {
+					type: string;
 					end: number;
 					start: number;
-					type?: string | null | undefined;
-					option?: string | null | undefined;
-					text?: string | null | undefined;
-				}[] | null | undefined;
+					text?: string | undefined;
+					option?: string | undefined;
+					subType?: string | undefined;
+				}[] | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -15036,30 +15205,31 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			}, {
 				time: string;
 				id: string;
 				content: string;
 				role: "agent" | "customer" | "system" | "tool";
 				name?: string | undefined;
-				scheduled?: string | undefined;
-				context?: any;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
 				entities?: {
+					type: string;
 					end: number;
 					start: number;
-					type?: string | null | undefined;
-					option?: string | null | undefined;
-					text?: string | null | undefined;
-				}[] | null | undefined;
+					text?: string | undefined;
+					option?: string | undefined;
+					subType?: string | undefined;
+				}[] | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -15067,8 +15237,8 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			}>, "many">, "many">>;
 			audios: z.ZodOptional<z.ZodArray<z.ZodAny, "many">>;
 			pmt: z.ZodOptional<z.ZodObject<{
@@ -15208,22 +15378,23 @@ declare module '@scout9/app/schemas' {
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -15231,8 +15402,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		};
 		agent: {
 			id: string;
@@ -15285,22 +15456,23 @@ declare module '@scout9/app/schemas' {
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -15308,8 +15480,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}[];
 		conversation: {
 			environment: "email" | "phone" | "web";
@@ -15353,22 +15525,23 @@ declare module '@scout9/app/schemas' {
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -15376,8 +15549,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		};
 		agent: {
 			id: string;
@@ -15430,22 +15603,23 @@ declare module '@scout9/app/schemas' {
 			content: string;
 			role: "agent" | "customer" | "system" | "tool";
 			name?: string | undefined;
-			scheduled?: string | undefined;
-			context?: any;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
 			entities?: {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}[] | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}[] | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -15453,8 +15627,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}[];
 		conversation: {
 			environment: "email" | "phone" | "web";
@@ -15498,35 +15672,38 @@ declare module '@scout9/app/schemas' {
 			content: z.ZodOptional<z.ZodString>;
 			time: z.ZodOptional<z.ZodString>;
 			name: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-			scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-			context: z.ZodOptional<z.ZodOptional<z.ZodAny>>;
-			intent: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-			intentScore: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-			delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-			entities: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+			context: z.ZodOptional<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>>;
+			delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+			entities: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
+				text: z.ZodOptional<z.ZodString>;
 				start: z.ZodNumber;
 				end: z.ZodNumber;
-				type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+				option: z.ZodOptional<z.ZodString>;
+				subType: z.ZodOptional<z.ZodString>;
+				type: z.ZodString;
 			}, "strip", z.ZodTypeAny, {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
 			}, {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}>, "many">>>>;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}>, "many">>>;
+			contentGenerated: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+			contentTransformed: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 			ignoreTransform: z.ZodOptional<z.ZodOptional<z.ZodBoolean>>;
-			mediaUrls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>>;
-			contentGenerated: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-			contentTransformed: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-			tool_calls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+			intent: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+			intentScore: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+			mediaUrls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
+			scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+			tool_calls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
 				id: z.ZodString;
 				type: z.ZodString;
 				function: z.ZodObject<{
@@ -15553,20 +15730,20 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}>, "many">>>>;
-			tool_call_id: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
+			}>, "many">>>;
+			tool_call_id: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 		}, "time" | "id" | "role" | "entities">, "strip", z.ZodTypeAny, {
 			name?: string | undefined;
 			content?: string | undefined;
-			context?: any;
-			scheduled?: string | undefined;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -15574,20 +15751,20 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}, {
 			name?: string | undefined;
 			content?: string | undefined;
-			context?: any;
-			scheduled?: string | undefined;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -15595,8 +15772,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}>]>>;
 		forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 			to: z.ZodOptional<z.ZodString>;
@@ -15865,35 +16042,38 @@ declare module '@scout9/app/schemas' {
 					content: z.ZodOptional<z.ZodString>;
 					time: z.ZodOptional<z.ZodString>;
 					name: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-					scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-					context: z.ZodOptional<z.ZodOptional<z.ZodAny>>;
-					intent: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-					intentScore: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-					delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-					entities: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+					context: z.ZodOptional<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>>;
+					delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+					entities: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
+						text: z.ZodOptional<z.ZodString>;
 						start: z.ZodNumber;
 						end: z.ZodNumber;
-						type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-						option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-						text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+						option: z.ZodOptional<z.ZodString>;
+						subType: z.ZodOptional<z.ZodString>;
+						type: z.ZodString;
 					}, "strip", z.ZodTypeAny, {
+						type: string;
 						end: number;
 						start: number;
-						type?: string | null | undefined;
-						option?: string | null | undefined;
-						text?: string | null | undefined;
+						text?: string | undefined;
+						option?: string | undefined;
+						subType?: string | undefined;
 					}, {
+						type: string;
 						end: number;
 						start: number;
-						type?: string | null | undefined;
-						option?: string | null | undefined;
-						text?: string | null | undefined;
-					}>, "many">>>>;
+						text?: string | undefined;
+						option?: string | undefined;
+						subType?: string | undefined;
+					}>, "many">>>;
+					contentGenerated: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+					contentTransformed: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 					ignoreTransform: z.ZodOptional<z.ZodOptional<z.ZodBoolean>>;
-					mediaUrls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>>;
-					contentGenerated: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-					contentTransformed: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-					tool_calls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+					intent: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+					intentScore: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+					mediaUrls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
+					scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+					tool_calls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
 						id: z.ZodString;
 						type: z.ZodString;
 						function: z.ZodObject<{
@@ -15920,20 +16100,20 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}>, "many">>>>;
-					tool_call_id: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
+					}>, "many">>>;
+					tool_call_id: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 				}, "time" | "id" | "role" | "entities">, "strip", z.ZodTypeAny, {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -15941,20 +16121,20 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				}, {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -15962,8 +16142,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				}>]>>;
 				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 				resetIntent: z.ZodOptional<z.ZodBoolean>;
@@ -16016,15 +16196,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -16032,8 +16212,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -16086,15 +16266,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -16102,8 +16282,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -16244,35 +16424,38 @@ declare module '@scout9/app/schemas' {
 					content: z.ZodOptional<z.ZodString>;
 					time: z.ZodOptional<z.ZodString>;
 					name: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-					scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-					context: z.ZodOptional<z.ZodOptional<z.ZodAny>>;
-					intent: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-					intentScore: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-					delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-					entities: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+					context: z.ZodOptional<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>>;
+					delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+					entities: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
+						text: z.ZodOptional<z.ZodString>;
 						start: z.ZodNumber;
 						end: z.ZodNumber;
-						type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-						option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-						text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+						option: z.ZodOptional<z.ZodString>;
+						subType: z.ZodOptional<z.ZodString>;
+						type: z.ZodString;
 					}, "strip", z.ZodTypeAny, {
+						type: string;
 						end: number;
 						start: number;
-						type?: string | null | undefined;
-						option?: string | null | undefined;
-						text?: string | null | undefined;
+						text?: string | undefined;
+						option?: string | undefined;
+						subType?: string | undefined;
 					}, {
+						type: string;
 						end: number;
 						start: number;
-						type?: string | null | undefined;
-						option?: string | null | undefined;
-						text?: string | null | undefined;
-					}>, "many">>>>;
+						text?: string | undefined;
+						option?: string | undefined;
+						subType?: string | undefined;
+					}>, "many">>>;
+					contentGenerated: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+					contentTransformed: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 					ignoreTransform: z.ZodOptional<z.ZodOptional<z.ZodBoolean>>;
-					mediaUrls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>>;
-					contentGenerated: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-					contentTransformed: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-					tool_calls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+					intent: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+					intentScore: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+					mediaUrls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
+					scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+					tool_calls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
 						id: z.ZodString;
 						type: z.ZodString;
 						function: z.ZodObject<{
@@ -16299,20 +16482,20 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}>, "many">>>>;
-					tool_call_id: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
+					}>, "many">>>;
+					tool_call_id: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 				}, "time" | "id" | "role" | "entities">, "strip", z.ZodTypeAny, {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -16320,20 +16503,20 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				}, {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -16341,8 +16524,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				}>]>>;
 				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 				resetIntent: z.ZodOptional<z.ZodBoolean>;
@@ -16395,15 +16578,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -16411,8 +16594,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -16465,15 +16648,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -16481,8 +16664,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -16538,15 +16721,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -16554,8 +16737,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -16609,15 +16792,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -16625,8 +16808,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -16682,15 +16865,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -16698,8 +16881,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -16753,15 +16936,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -16769,8 +16952,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -16784,35 +16967,38 @@ declare module '@scout9/app/schemas' {
 				content: z.ZodOptional<z.ZodString>;
 				time: z.ZodOptional<z.ZodString>;
 				name: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-				scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-				context: z.ZodOptional<z.ZodOptional<z.ZodAny>>;
-				intent: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-				intentScore: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-				delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-				entities: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+				context: z.ZodOptional<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>>;
+				delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+				entities: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
+					text: z.ZodOptional<z.ZodString>;
 					start: z.ZodNumber;
 					end: z.ZodNumber;
-					type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-					option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-					text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+					option: z.ZodOptional<z.ZodString>;
+					subType: z.ZodOptional<z.ZodString>;
+					type: z.ZodString;
 				}, "strip", z.ZodTypeAny, {
+					type: string;
 					end: number;
 					start: number;
-					type?: string | null | undefined;
-					option?: string | null | undefined;
-					text?: string | null | undefined;
+					text?: string | undefined;
+					option?: string | undefined;
+					subType?: string | undefined;
 				}, {
+					type: string;
 					end: number;
 					start: number;
-					type?: string | null | undefined;
-					option?: string | null | undefined;
-					text?: string | null | undefined;
-				}>, "many">>>>;
+					text?: string | undefined;
+					option?: string | undefined;
+					subType?: string | undefined;
+				}>, "many">>>;
+				contentGenerated: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+				contentTransformed: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 				ignoreTransform: z.ZodOptional<z.ZodOptional<z.ZodBoolean>>;
-				mediaUrls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>>;
-				contentGenerated: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-				contentTransformed: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-				tool_calls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+				intent: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+				intentScore: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+				mediaUrls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
+				scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+				tool_calls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
 					id: z.ZodString;
 					type: z.ZodString;
 					function: z.ZodObject<{
@@ -16839,20 +17025,20 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}>, "many">>>>;
-				tool_call_id: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
+				}>, "many">>>;
+				tool_call_id: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 			}, "time" | "id" | "role" | "entities">, "strip", z.ZodTypeAny, {
 				name?: string | undefined;
 				content?: string | undefined;
-				context?: any;
-				scheduled?: string | undefined;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -16860,20 +17046,20 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			}, {
 				name?: string | undefined;
 				content?: string | undefined;
-				context?: any;
-				scheduled?: string | undefined;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -16881,8 +17067,8 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			}>]>>;
 			forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 				to: z.ZodOptional<z.ZodString>;
@@ -17021,15 +17207,15 @@ declare module '@scout9/app/schemas' {
 			message?: string | {
 				name?: string | undefined;
 				content?: string | undefined;
-				context?: any;
-				scheduled?: string | undefined;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -17037,8 +17223,8 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
@@ -17092,15 +17278,15 @@ declare module '@scout9/app/schemas' {
 			message?: string | {
 				name?: string | undefined;
 				content?: string | undefined;
-				context?: any;
-				scheduled?: string | undefined;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -17108,8 +17294,8 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
@@ -17192,15 +17378,15 @@ declare module '@scout9/app/schemas' {
 		message?: string | {
 			name?: string | undefined;
 			content?: string | undefined;
-			context?: any;
-			scheduled?: string | undefined;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -17208,8 +17394,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		} | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
@@ -17307,15 +17493,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -17323,8 +17509,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -17378,15 +17564,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -17394,8 +17580,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -17407,15 +17593,15 @@ declare module '@scout9/app/schemas' {
 			message?: string | {
 				name?: string | undefined;
 				content?: string | undefined;
-				context?: any;
-				scheduled?: string | undefined;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -17423,8 +17609,8 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
@@ -17489,15 +17675,15 @@ declare module '@scout9/app/schemas' {
 		message?: string | {
 			name?: string | undefined;
 			content?: string | undefined;
-			context?: any;
-			scheduled?: string | undefined;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -17505,8 +17691,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		} | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
@@ -17604,15 +17790,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -17620,8 +17806,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -17675,15 +17861,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -17691,8 +17877,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -17704,15 +17890,15 @@ declare module '@scout9/app/schemas' {
 			message?: string | {
 				name?: string | undefined;
 				content?: string | undefined;
-				context?: any;
-				scheduled?: string | undefined;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -17720,8 +17906,8 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
@@ -17789,35 +17975,38 @@ declare module '@scout9/app/schemas' {
 			content: z.ZodOptional<z.ZodString>;
 			time: z.ZodOptional<z.ZodString>;
 			name: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-			scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-			context: z.ZodOptional<z.ZodOptional<z.ZodAny>>;
-			intent: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-			intentScore: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-			delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-			entities: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+			context: z.ZodOptional<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>>;
+			delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+			entities: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
+				text: z.ZodOptional<z.ZodString>;
 				start: z.ZodNumber;
 				end: z.ZodNumber;
-				type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+				option: z.ZodOptional<z.ZodString>;
+				subType: z.ZodOptional<z.ZodString>;
+				type: z.ZodString;
 			}, "strip", z.ZodTypeAny, {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
 			}, {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}>, "many">>>>;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}>, "many">>>;
+			contentGenerated: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+			contentTransformed: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 			ignoreTransform: z.ZodOptional<z.ZodOptional<z.ZodBoolean>>;
-			mediaUrls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>>;
-			contentGenerated: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-			contentTransformed: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-			tool_calls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+			intent: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+			intentScore: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+			mediaUrls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
+			scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+			tool_calls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
 				id: z.ZodString;
 				type: z.ZodString;
 				function: z.ZodObject<{
@@ -17844,20 +18033,20 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}>, "many">>>>;
-			tool_call_id: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
+			}>, "many">>>;
+			tool_call_id: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 		}, "time" | "id" | "role" | "entities">, "strip", z.ZodTypeAny, {
 			name?: string | undefined;
 			content?: string | undefined;
-			context?: any;
-			scheduled?: string | undefined;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -17865,20 +18054,20 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}, {
 			name?: string | undefined;
 			content?: string | undefined;
-			context?: any;
-			scheduled?: string | undefined;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -17886,8 +18075,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}>]>>;
 		forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 			to: z.ZodOptional<z.ZodString>;
@@ -18156,35 +18345,38 @@ declare module '@scout9/app/schemas' {
 					content: z.ZodOptional<z.ZodString>;
 					time: z.ZodOptional<z.ZodString>;
 					name: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-					scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-					context: z.ZodOptional<z.ZodOptional<z.ZodAny>>;
-					intent: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-					intentScore: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-					delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-					entities: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+					context: z.ZodOptional<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>>;
+					delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+					entities: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
+						text: z.ZodOptional<z.ZodString>;
 						start: z.ZodNumber;
 						end: z.ZodNumber;
-						type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-						option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-						text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+						option: z.ZodOptional<z.ZodString>;
+						subType: z.ZodOptional<z.ZodString>;
+						type: z.ZodString;
 					}, "strip", z.ZodTypeAny, {
+						type: string;
 						end: number;
 						start: number;
-						type?: string | null | undefined;
-						option?: string | null | undefined;
-						text?: string | null | undefined;
+						text?: string | undefined;
+						option?: string | undefined;
+						subType?: string | undefined;
 					}, {
+						type: string;
 						end: number;
 						start: number;
-						type?: string | null | undefined;
-						option?: string | null | undefined;
-						text?: string | null | undefined;
-					}>, "many">>>>;
+						text?: string | undefined;
+						option?: string | undefined;
+						subType?: string | undefined;
+					}>, "many">>>;
+					contentGenerated: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+					contentTransformed: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 					ignoreTransform: z.ZodOptional<z.ZodOptional<z.ZodBoolean>>;
-					mediaUrls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>>;
-					contentGenerated: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-					contentTransformed: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-					tool_calls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+					intent: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+					intentScore: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+					mediaUrls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
+					scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+					tool_calls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
 						id: z.ZodString;
 						type: z.ZodString;
 						function: z.ZodObject<{
@@ -18211,20 +18403,20 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}>, "many">>>>;
-					tool_call_id: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
+					}>, "many">>>;
+					tool_call_id: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 				}, "time" | "id" | "role" | "entities">, "strip", z.ZodTypeAny, {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -18232,20 +18424,20 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				}, {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -18253,8 +18445,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				}>]>>;
 				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 				resetIntent: z.ZodOptional<z.ZodBoolean>;
@@ -18307,15 +18499,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -18323,8 +18515,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -18377,15 +18569,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -18393,8 +18585,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -18535,35 +18727,38 @@ declare module '@scout9/app/schemas' {
 					content: z.ZodOptional<z.ZodString>;
 					time: z.ZodOptional<z.ZodString>;
 					name: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-					scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-					context: z.ZodOptional<z.ZodOptional<z.ZodAny>>;
-					intent: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-					intentScore: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-					delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-					entities: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+					context: z.ZodOptional<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>>;
+					delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+					entities: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
+						text: z.ZodOptional<z.ZodString>;
 						start: z.ZodNumber;
 						end: z.ZodNumber;
-						type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-						option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-						text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+						option: z.ZodOptional<z.ZodString>;
+						subType: z.ZodOptional<z.ZodString>;
+						type: z.ZodString;
 					}, "strip", z.ZodTypeAny, {
+						type: string;
 						end: number;
 						start: number;
-						type?: string | null | undefined;
-						option?: string | null | undefined;
-						text?: string | null | undefined;
+						text?: string | undefined;
+						option?: string | undefined;
+						subType?: string | undefined;
 					}, {
+						type: string;
 						end: number;
 						start: number;
-						type?: string | null | undefined;
-						option?: string | null | undefined;
-						text?: string | null | undefined;
-					}>, "many">>>>;
+						text?: string | undefined;
+						option?: string | undefined;
+						subType?: string | undefined;
+					}>, "many">>>;
+					contentGenerated: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+					contentTransformed: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 					ignoreTransform: z.ZodOptional<z.ZodOptional<z.ZodBoolean>>;
-					mediaUrls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>>;
-					contentGenerated: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-					contentTransformed: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-					tool_calls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+					intent: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+					intentScore: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+					mediaUrls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
+					scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+					tool_calls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
 						id: z.ZodString;
 						type: z.ZodString;
 						function: z.ZodObject<{
@@ -18590,20 +18785,20 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}>, "many">>>>;
-					tool_call_id: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
+					}>, "many">>>;
+					tool_call_id: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 				}, "time" | "id" | "role" | "entities">, "strip", z.ZodTypeAny, {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -18611,20 +18806,20 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				}, {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -18632,8 +18827,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				}>]>>;
 				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 				resetIntent: z.ZodOptional<z.ZodBoolean>;
@@ -18686,15 +18881,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -18702,8 +18897,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -18756,15 +18951,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -18772,8 +18967,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -18829,15 +19024,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -18845,8 +19040,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -18900,15 +19095,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -18916,8 +19111,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -18973,15 +19168,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -18989,8 +19184,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -19044,15 +19239,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -19060,8 +19255,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -19075,35 +19270,38 @@ declare module '@scout9/app/schemas' {
 				content: z.ZodOptional<z.ZodString>;
 				time: z.ZodOptional<z.ZodString>;
 				name: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-				scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-				context: z.ZodOptional<z.ZodOptional<z.ZodAny>>;
-				intent: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-				intentScore: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-				delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-				entities: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+				context: z.ZodOptional<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>>;
+				delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+				entities: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
+					text: z.ZodOptional<z.ZodString>;
 					start: z.ZodNumber;
 					end: z.ZodNumber;
-					type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-					option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-					text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+					option: z.ZodOptional<z.ZodString>;
+					subType: z.ZodOptional<z.ZodString>;
+					type: z.ZodString;
 				}, "strip", z.ZodTypeAny, {
+					type: string;
 					end: number;
 					start: number;
-					type?: string | null | undefined;
-					option?: string | null | undefined;
-					text?: string | null | undefined;
+					text?: string | undefined;
+					option?: string | undefined;
+					subType?: string | undefined;
 				}, {
+					type: string;
 					end: number;
 					start: number;
-					type?: string | null | undefined;
-					option?: string | null | undefined;
-					text?: string | null | undefined;
-				}>, "many">>>>;
+					text?: string | undefined;
+					option?: string | undefined;
+					subType?: string | undefined;
+				}>, "many">>>;
+				contentGenerated: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+				contentTransformed: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 				ignoreTransform: z.ZodOptional<z.ZodOptional<z.ZodBoolean>>;
-				mediaUrls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>>;
-				contentGenerated: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-				contentTransformed: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-				tool_calls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+				intent: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+				intentScore: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+				mediaUrls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
+				scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+				tool_calls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
 					id: z.ZodString;
 					type: z.ZodString;
 					function: z.ZodObject<{
@@ -19130,20 +19328,20 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}>, "many">>>>;
-				tool_call_id: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
+				}>, "many">>>;
+				tool_call_id: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 			}, "time" | "id" | "role" | "entities">, "strip", z.ZodTypeAny, {
 				name?: string | undefined;
 				content?: string | undefined;
-				context?: any;
-				scheduled?: string | undefined;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -19151,20 +19349,20 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			}, {
 				name?: string | undefined;
 				content?: string | undefined;
-				context?: any;
-				scheduled?: string | undefined;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -19172,8 +19370,8 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			}>]>>;
 			forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 				to: z.ZodOptional<z.ZodString>;
@@ -19312,15 +19510,15 @@ declare module '@scout9/app/schemas' {
 			message?: string | {
 				name?: string | undefined;
 				content?: string | undefined;
-				context?: any;
-				scheduled?: string | undefined;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -19328,8 +19526,8 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
@@ -19383,15 +19581,15 @@ declare module '@scout9/app/schemas' {
 			message?: string | {
 				name?: string | undefined;
 				content?: string | undefined;
-				context?: any;
-				scheduled?: string | undefined;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -19399,8 +19597,8 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
@@ -19483,15 +19681,15 @@ declare module '@scout9/app/schemas' {
 		message?: string | {
 			name?: string | undefined;
 			content?: string | undefined;
-			context?: any;
-			scheduled?: string | undefined;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -19499,8 +19697,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		} | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
@@ -19598,15 +19796,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -19614,8 +19812,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -19669,15 +19867,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -19685,8 +19883,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -19698,15 +19896,15 @@ declare module '@scout9/app/schemas' {
 			message?: string | {
 				name?: string | undefined;
 				content?: string | undefined;
-				context?: any;
-				scheduled?: string | undefined;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -19714,8 +19912,8 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
@@ -19780,15 +19978,15 @@ declare module '@scout9/app/schemas' {
 		message?: string | {
 			name?: string | undefined;
 			content?: string | undefined;
-			context?: any;
-			scheduled?: string | undefined;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -19796,8 +19994,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		} | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
@@ -19895,15 +20093,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -19911,8 +20109,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -19966,15 +20164,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -19982,8 +20180,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -19995,15 +20193,15 @@ declare module '@scout9/app/schemas' {
 			message?: string | {
 				name?: string | undefined;
 				content?: string | undefined;
-				context?: any;
-				scheduled?: string | undefined;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -20011,8 +20209,8 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
@@ -20080,35 +20278,38 @@ declare module '@scout9/app/schemas' {
 			content: z.ZodOptional<z.ZodString>;
 			time: z.ZodOptional<z.ZodString>;
 			name: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-			scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-			context: z.ZodOptional<z.ZodOptional<z.ZodAny>>;
-			intent: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-			intentScore: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-			delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-			entities: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+			context: z.ZodOptional<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>>;
+			delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+			entities: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
+				text: z.ZodOptional<z.ZodString>;
 				start: z.ZodNumber;
 				end: z.ZodNumber;
-				type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+				option: z.ZodOptional<z.ZodString>;
+				subType: z.ZodOptional<z.ZodString>;
+				type: z.ZodString;
 			}, "strip", z.ZodTypeAny, {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
 			}, {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}>, "many">>>>;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}>, "many">>>;
+			contentGenerated: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+			contentTransformed: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 			ignoreTransform: z.ZodOptional<z.ZodOptional<z.ZodBoolean>>;
-			mediaUrls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>>;
-			contentGenerated: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-			contentTransformed: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-			tool_calls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+			intent: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+			intentScore: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+			mediaUrls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
+			scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+			tool_calls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
 				id: z.ZodString;
 				type: z.ZodString;
 				function: z.ZodObject<{
@@ -20135,20 +20336,20 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}>, "many">>>>;
-			tool_call_id: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
+			}>, "many">>>;
+			tool_call_id: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 		}, "time" | "id" | "role" | "entities">, "strip", z.ZodTypeAny, {
 			name?: string | undefined;
 			content?: string | undefined;
-			context?: any;
-			scheduled?: string | undefined;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -20156,20 +20357,20 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}, {
 			name?: string | undefined;
 			content?: string | undefined;
-			context?: any;
-			scheduled?: string | undefined;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -20177,8 +20378,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}>]>>;
 		forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 			to: z.ZodOptional<z.ZodString>;
@@ -20447,35 +20648,38 @@ declare module '@scout9/app/schemas' {
 					content: z.ZodOptional<z.ZodString>;
 					time: z.ZodOptional<z.ZodString>;
 					name: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-					scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-					context: z.ZodOptional<z.ZodOptional<z.ZodAny>>;
-					intent: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-					intentScore: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-					delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-					entities: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+					context: z.ZodOptional<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>>;
+					delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+					entities: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
+						text: z.ZodOptional<z.ZodString>;
 						start: z.ZodNumber;
 						end: z.ZodNumber;
-						type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-						option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-						text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+						option: z.ZodOptional<z.ZodString>;
+						subType: z.ZodOptional<z.ZodString>;
+						type: z.ZodString;
 					}, "strip", z.ZodTypeAny, {
+						type: string;
 						end: number;
 						start: number;
-						type?: string | null | undefined;
-						option?: string | null | undefined;
-						text?: string | null | undefined;
+						text?: string | undefined;
+						option?: string | undefined;
+						subType?: string | undefined;
 					}, {
+						type: string;
 						end: number;
 						start: number;
-						type?: string | null | undefined;
-						option?: string | null | undefined;
-						text?: string | null | undefined;
-					}>, "many">>>>;
+						text?: string | undefined;
+						option?: string | undefined;
+						subType?: string | undefined;
+					}>, "many">>>;
+					contentGenerated: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+					contentTransformed: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 					ignoreTransform: z.ZodOptional<z.ZodOptional<z.ZodBoolean>>;
-					mediaUrls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>>;
-					contentGenerated: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-					contentTransformed: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-					tool_calls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+					intent: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+					intentScore: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+					mediaUrls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
+					scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+					tool_calls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
 						id: z.ZodString;
 						type: z.ZodString;
 						function: z.ZodObject<{
@@ -20502,20 +20706,20 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}>, "many">>>>;
-					tool_call_id: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
+					}>, "many">>>;
+					tool_call_id: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 				}, "time" | "id" | "role" | "entities">, "strip", z.ZodTypeAny, {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -20523,20 +20727,20 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				}, {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -20544,8 +20748,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				}>]>>;
 				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 				resetIntent: z.ZodOptional<z.ZodBoolean>;
@@ -20598,15 +20802,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -20614,8 +20818,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -20668,15 +20872,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -20684,8 +20888,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -20826,35 +21030,38 @@ declare module '@scout9/app/schemas' {
 					content: z.ZodOptional<z.ZodString>;
 					time: z.ZodOptional<z.ZodString>;
 					name: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-					scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-					context: z.ZodOptional<z.ZodOptional<z.ZodAny>>;
-					intent: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-					intentScore: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-					delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-					entities: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+					context: z.ZodOptional<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>>;
+					delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+					entities: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
+						text: z.ZodOptional<z.ZodString>;
 						start: z.ZodNumber;
 						end: z.ZodNumber;
-						type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-						option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-						text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+						option: z.ZodOptional<z.ZodString>;
+						subType: z.ZodOptional<z.ZodString>;
+						type: z.ZodString;
 					}, "strip", z.ZodTypeAny, {
+						type: string;
 						end: number;
 						start: number;
-						type?: string | null | undefined;
-						option?: string | null | undefined;
-						text?: string | null | undefined;
+						text?: string | undefined;
+						option?: string | undefined;
+						subType?: string | undefined;
 					}, {
+						type: string;
 						end: number;
 						start: number;
-						type?: string | null | undefined;
-						option?: string | null | undefined;
-						text?: string | null | undefined;
-					}>, "many">>>>;
+						text?: string | undefined;
+						option?: string | undefined;
+						subType?: string | undefined;
+					}>, "many">>>;
+					contentGenerated: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+					contentTransformed: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 					ignoreTransform: z.ZodOptional<z.ZodOptional<z.ZodBoolean>>;
-					mediaUrls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>>;
-					contentGenerated: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-					contentTransformed: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-					tool_calls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+					intent: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+					intentScore: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+					mediaUrls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
+					scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+					tool_calls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
 						id: z.ZodString;
 						type: z.ZodString;
 						function: z.ZodObject<{
@@ -20881,20 +21088,20 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}>, "many">>>>;
-					tool_call_id: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
+					}>, "many">>>;
+					tool_call_id: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 				}, "time" | "id" | "role" | "entities">, "strip", z.ZodTypeAny, {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -20902,20 +21109,20 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				}, {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -20923,8 +21130,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				}>]>>;
 				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 				resetIntent: z.ZodOptional<z.ZodBoolean>;
@@ -20977,15 +21184,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -20993,8 +21200,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -21047,15 +21254,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -21063,8 +21270,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -21120,15 +21327,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -21136,8 +21343,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -21191,15 +21398,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -21207,8 +21414,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -21264,15 +21471,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -21280,8 +21487,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -21335,15 +21542,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -21351,8 +21558,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -21366,35 +21573,38 @@ declare module '@scout9/app/schemas' {
 				content: z.ZodOptional<z.ZodString>;
 				time: z.ZodOptional<z.ZodString>;
 				name: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-				scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-				context: z.ZodOptional<z.ZodOptional<z.ZodAny>>;
-				intent: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-				intentScore: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-				delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-				entities: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+				context: z.ZodOptional<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>>;
+				delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+				entities: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
+					text: z.ZodOptional<z.ZodString>;
 					start: z.ZodNumber;
 					end: z.ZodNumber;
-					type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-					option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-					text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+					option: z.ZodOptional<z.ZodString>;
+					subType: z.ZodOptional<z.ZodString>;
+					type: z.ZodString;
 				}, "strip", z.ZodTypeAny, {
+					type: string;
 					end: number;
 					start: number;
-					type?: string | null | undefined;
-					option?: string | null | undefined;
-					text?: string | null | undefined;
+					text?: string | undefined;
+					option?: string | undefined;
+					subType?: string | undefined;
 				}, {
+					type: string;
 					end: number;
 					start: number;
-					type?: string | null | undefined;
-					option?: string | null | undefined;
-					text?: string | null | undefined;
-				}>, "many">>>>;
+					text?: string | undefined;
+					option?: string | undefined;
+					subType?: string | undefined;
+				}>, "many">>>;
+				contentGenerated: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+				contentTransformed: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 				ignoreTransform: z.ZodOptional<z.ZodOptional<z.ZodBoolean>>;
-				mediaUrls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>>;
-				contentGenerated: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-				contentTransformed: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-				tool_calls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+				intent: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+				intentScore: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+				mediaUrls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
+				scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+				tool_calls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
 					id: z.ZodString;
 					type: z.ZodString;
 					function: z.ZodObject<{
@@ -21421,20 +21631,20 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}>, "many">>>>;
-				tool_call_id: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
+				}>, "many">>>;
+				tool_call_id: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 			}, "time" | "id" | "role" | "entities">, "strip", z.ZodTypeAny, {
 				name?: string | undefined;
 				content?: string | undefined;
-				context?: any;
-				scheduled?: string | undefined;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -21442,20 +21652,20 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			}, {
 				name?: string | undefined;
 				content?: string | undefined;
-				context?: any;
-				scheduled?: string | undefined;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -21463,8 +21673,8 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			}>]>>;
 			forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 				to: z.ZodOptional<z.ZodString>;
@@ -21603,15 +21813,15 @@ declare module '@scout9/app/schemas' {
 			message?: string | {
 				name?: string | undefined;
 				content?: string | undefined;
-				context?: any;
-				scheduled?: string | undefined;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -21619,8 +21829,8 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
@@ -21674,15 +21884,15 @@ declare module '@scout9/app/schemas' {
 			message?: string | {
 				name?: string | undefined;
 				content?: string | undefined;
-				context?: any;
-				scheduled?: string | undefined;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -21690,8 +21900,8 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
@@ -21774,15 +21984,15 @@ declare module '@scout9/app/schemas' {
 		message?: string | {
 			name?: string | undefined;
 			content?: string | undefined;
-			context?: any;
-			scheduled?: string | undefined;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -21790,8 +22000,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		} | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
@@ -21889,15 +22099,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -21905,8 +22115,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -21960,15 +22170,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -21976,8 +22186,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -21989,15 +22199,15 @@ declare module '@scout9/app/schemas' {
 			message?: string | {
 				name?: string | undefined;
 				content?: string | undefined;
-				context?: any;
-				scheduled?: string | undefined;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -22005,8 +22215,8 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
@@ -22071,15 +22281,15 @@ declare module '@scout9/app/schemas' {
 		message?: string | {
 			name?: string | undefined;
 			content?: string | undefined;
-			context?: any;
-			scheduled?: string | undefined;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -22087,8 +22297,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		} | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
@@ -22186,15 +22396,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -22202,8 +22412,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -22257,15 +22467,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -22273,8 +22483,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -22286,15 +22496,15 @@ declare module '@scout9/app/schemas' {
 			message?: string | {
 				name?: string | undefined;
 				content?: string | undefined;
-				context?: any;
-				scheduled?: string | undefined;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -22302,8 +22512,8 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
@@ -22371,35 +22581,38 @@ declare module '@scout9/app/schemas' {
 			content: z.ZodOptional<z.ZodString>;
 			time: z.ZodOptional<z.ZodString>;
 			name: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-			scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-			context: z.ZodOptional<z.ZodOptional<z.ZodAny>>;
-			intent: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-			intentScore: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-			delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-			entities: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+			context: z.ZodOptional<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>>;
+			delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+			entities: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
+				text: z.ZodOptional<z.ZodString>;
 				start: z.ZodNumber;
 				end: z.ZodNumber;
-				type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-				text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+				option: z.ZodOptional<z.ZodString>;
+				subType: z.ZodOptional<z.ZodString>;
+				type: z.ZodString;
 			}, "strip", z.ZodTypeAny, {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
 			}, {
+				type: string;
 				end: number;
 				start: number;
-				type?: string | null | undefined;
-				option?: string | null | undefined;
-				text?: string | null | undefined;
-			}>, "many">>>>;
+				text?: string | undefined;
+				option?: string | undefined;
+				subType?: string | undefined;
+			}>, "many">>>;
+			contentGenerated: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+			contentTransformed: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 			ignoreTransform: z.ZodOptional<z.ZodOptional<z.ZodBoolean>>;
-			mediaUrls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>>;
-			contentGenerated: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-			contentTransformed: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-			tool_calls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+			intent: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+			intentScore: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+			mediaUrls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
+			scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+			tool_calls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
 				id: z.ZodString;
 				type: z.ZodString;
 				function: z.ZodObject<{
@@ -22426,20 +22639,20 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}>, "many">>>>;
-			tool_call_id: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
+			}>, "many">>>;
+			tool_call_id: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 		}, "time" | "id" | "role" | "entities">, "strip", z.ZodTypeAny, {
 			name?: string | undefined;
 			content?: string | undefined;
-			context?: any;
-			scheduled?: string | undefined;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -22447,20 +22660,20 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}, {
 			name?: string | undefined;
 			content?: string | undefined;
-			context?: any;
-			scheduled?: string | undefined;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -22468,8 +22681,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		}>]>>;
 		forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 			to: z.ZodOptional<z.ZodString>;
@@ -22738,35 +22951,38 @@ declare module '@scout9/app/schemas' {
 					content: z.ZodOptional<z.ZodString>;
 					time: z.ZodOptional<z.ZodString>;
 					name: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-					scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-					context: z.ZodOptional<z.ZodOptional<z.ZodAny>>;
-					intent: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-					intentScore: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-					delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-					entities: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+					context: z.ZodOptional<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>>;
+					delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+					entities: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
+						text: z.ZodOptional<z.ZodString>;
 						start: z.ZodNumber;
 						end: z.ZodNumber;
-						type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-						option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-						text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+						option: z.ZodOptional<z.ZodString>;
+						subType: z.ZodOptional<z.ZodString>;
+						type: z.ZodString;
 					}, "strip", z.ZodTypeAny, {
+						type: string;
 						end: number;
 						start: number;
-						type?: string | null | undefined;
-						option?: string | null | undefined;
-						text?: string | null | undefined;
+						text?: string | undefined;
+						option?: string | undefined;
+						subType?: string | undefined;
 					}, {
+						type: string;
 						end: number;
 						start: number;
-						type?: string | null | undefined;
-						option?: string | null | undefined;
-						text?: string | null | undefined;
-					}>, "many">>>>;
+						text?: string | undefined;
+						option?: string | undefined;
+						subType?: string | undefined;
+					}>, "many">>>;
+					contentGenerated: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+					contentTransformed: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 					ignoreTransform: z.ZodOptional<z.ZodOptional<z.ZodBoolean>>;
-					mediaUrls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>>;
-					contentGenerated: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-					contentTransformed: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-					tool_calls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+					intent: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+					intentScore: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+					mediaUrls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
+					scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+					tool_calls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
 						id: z.ZodString;
 						type: z.ZodString;
 						function: z.ZodObject<{
@@ -22793,20 +23009,20 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}>, "many">>>>;
-					tool_call_id: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
+					}>, "many">>>;
+					tool_call_id: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 				}, "time" | "id" | "role" | "entities">, "strip", z.ZodTypeAny, {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -22814,20 +23030,20 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				}, {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -22835,8 +23051,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				}>]>>;
 				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 				resetIntent: z.ZodOptional<z.ZodBoolean>;
@@ -22889,15 +23105,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -22905,8 +23121,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -22959,15 +23175,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -22975,8 +23191,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -23117,35 +23333,38 @@ declare module '@scout9/app/schemas' {
 					content: z.ZodOptional<z.ZodString>;
 					time: z.ZodOptional<z.ZodString>;
 					name: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-					scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-					context: z.ZodOptional<z.ZodOptional<z.ZodAny>>;
-					intent: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-					intentScore: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-					delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-					entities: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+					context: z.ZodOptional<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>>;
+					delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+					entities: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
+						text: z.ZodOptional<z.ZodString>;
 						start: z.ZodNumber;
 						end: z.ZodNumber;
-						type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-						option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-						text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+						option: z.ZodOptional<z.ZodString>;
+						subType: z.ZodOptional<z.ZodString>;
+						type: z.ZodString;
 					}, "strip", z.ZodTypeAny, {
+						type: string;
 						end: number;
 						start: number;
-						type?: string | null | undefined;
-						option?: string | null | undefined;
-						text?: string | null | undefined;
+						text?: string | undefined;
+						option?: string | undefined;
+						subType?: string | undefined;
 					}, {
+						type: string;
 						end: number;
 						start: number;
-						type?: string | null | undefined;
-						option?: string | null | undefined;
-						text?: string | null | undefined;
-					}>, "many">>>>;
+						text?: string | undefined;
+						option?: string | undefined;
+						subType?: string | undefined;
+					}>, "many">>>;
+					contentGenerated: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+					contentTransformed: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 					ignoreTransform: z.ZodOptional<z.ZodOptional<z.ZodBoolean>>;
-					mediaUrls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>>;
-					contentGenerated: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-					contentTransformed: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-					tool_calls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+					intent: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+					intentScore: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+					mediaUrls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
+					scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+					tool_calls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
 						id: z.ZodString;
 						type: z.ZodString;
 						function: z.ZodObject<{
@@ -23172,20 +23391,20 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}>, "many">>>>;
-					tool_call_id: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
+					}>, "many">>>;
+					tool_call_id: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 				}, "time" | "id" | "role" | "entities">, "strip", z.ZodTypeAny, {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -23193,20 +23412,20 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				}, {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -23214,8 +23433,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				}>]>>;
 				removeInstructions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 				resetIntent: z.ZodOptional<z.ZodBoolean>;
@@ -23268,15 +23487,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -23284,8 +23503,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -23338,15 +23557,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -23354,8 +23573,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -23411,15 +23630,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -23427,8 +23646,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -23482,15 +23701,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -23498,8 +23717,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -23555,15 +23774,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -23571,8 +23790,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -23626,15 +23845,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -23642,8 +23861,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -23657,35 +23876,38 @@ declare module '@scout9/app/schemas' {
 				content: z.ZodOptional<z.ZodString>;
 				time: z.ZodOptional<z.ZodString>;
 				name: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-				scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
-				context: z.ZodOptional<z.ZodOptional<z.ZodAny>>;
-				intent: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-				intentScore: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-				delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-				entities: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+				context: z.ZodOptional<z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>>;
+				delayInSeconds: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+				entities: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
+					text: z.ZodOptional<z.ZodString>;
 					start: z.ZodNumber;
 					end: z.ZodNumber;
-					type: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-					option: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-					text: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+					option: z.ZodOptional<z.ZodString>;
+					subType: z.ZodOptional<z.ZodString>;
+					type: z.ZodString;
 				}, "strip", z.ZodTypeAny, {
+					type: string;
 					end: number;
 					start: number;
-					type?: string | null | undefined;
-					option?: string | null | undefined;
-					text?: string | null | undefined;
+					text?: string | undefined;
+					option?: string | undefined;
+					subType?: string | undefined;
 				}, {
+					type: string;
 					end: number;
 					start: number;
-					type?: string | null | undefined;
-					option?: string | null | undefined;
-					text?: string | null | undefined;
-				}>, "many">>>>;
+					text?: string | undefined;
+					option?: string | undefined;
+					subType?: string | undefined;
+				}>, "many">>>;
+				contentGenerated: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+				contentTransformed: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 				ignoreTransform: z.ZodOptional<z.ZodOptional<z.ZodBoolean>>;
-				mediaUrls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>>;
-				contentGenerated: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-				contentTransformed: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
-				tool_calls: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodArray<z.ZodObject<{
+				intent: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+				intentScore: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+				mediaUrls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodString, "many">>>;
+				scheduled: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+				tool_calls: z.ZodOptional<z.ZodOptional<z.ZodArray<z.ZodObject<{
 					id: z.ZodString;
 					type: z.ZodString;
 					function: z.ZodObject<{
@@ -23712,20 +23934,20 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}>, "many">>>>;
-				tool_call_id: z.ZodOptional<z.ZodNullable<z.ZodOptional<z.ZodString>>>;
+				}>, "many">>>;
+				tool_call_id: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 			}, "time" | "id" | "role" | "entities">, "strip", z.ZodTypeAny, {
 				name?: string | undefined;
 				content?: string | undefined;
-				context?: any;
-				scheduled?: string | undefined;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -23733,20 +23955,20 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			}, {
 				name?: string | undefined;
 				content?: string | undefined;
-				context?: any;
-				scheduled?: string | undefined;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -23754,8 +23976,8 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			}>]>>;
 			forward: z.ZodOptional<z.ZodUnion<[z.ZodBoolean, z.ZodString, z.ZodObject<{
 				to: z.ZodOptional<z.ZodString>;
@@ -23894,15 +24116,15 @@ declare module '@scout9/app/schemas' {
 			message?: string | {
 				name?: string | undefined;
 				content?: string | undefined;
-				context?: any;
-				scheduled?: string | undefined;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -23910,8 +24132,8 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
@@ -23965,15 +24187,15 @@ declare module '@scout9/app/schemas' {
 			message?: string | {
 				name?: string | undefined;
 				content?: string | undefined;
-				context?: any;
-				scheduled?: string | undefined;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -23981,8 +24203,8 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
@@ -24065,15 +24287,15 @@ declare module '@scout9/app/schemas' {
 		message?: string | {
 			name?: string | undefined;
 			content?: string | undefined;
-			context?: any;
-			scheduled?: string | undefined;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -24081,8 +24303,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		} | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
@@ -24180,15 +24402,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -24196,8 +24418,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -24251,15 +24473,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -24267,8 +24489,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -24280,15 +24502,15 @@ declare module '@scout9/app/schemas' {
 			message?: string | {
 				name?: string | undefined;
 				content?: string | undefined;
-				context?: any;
-				scheduled?: string | undefined;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -24296,8 +24518,8 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;
@@ -24362,15 +24584,15 @@ declare module '@scout9/app/schemas' {
 		message?: string | {
 			name?: string | undefined;
 			content?: string | undefined;
-			context?: any;
-			scheduled?: string | undefined;
-			intent?: string | null | undefined;
-			intentScore?: number | null | undefined;
-			delayInSeconds?: number | null | undefined;
+			context?: Record<string, any> | undefined;
+			delayInSeconds?: number | undefined;
+			contentGenerated?: string | undefined;
+			contentTransformed?: string | undefined;
 			ignoreTransform?: boolean | undefined;
-			mediaUrls?: string[] | null | undefined;
-			contentGenerated?: string | null | undefined;
-			contentTransformed?: string | null | undefined;
+			intent?: string | undefined;
+			intentScore?: number | undefined;
+			mediaUrls?: string[] | undefined;
+			scheduled?: string | undefined;
 			tool_calls?: {
 				function: {
 					name: string;
@@ -24378,8 +24600,8 @@ declare module '@scout9/app/schemas' {
 				};
 				type: string;
 				id: string;
-			}[] | null | undefined;
-			tool_call_id?: string | null | undefined;
+			}[] | undefined;
+			tool_call_id?: string | undefined;
 		} | undefined;
 		forward?: string | boolean | {
 			to?: string | undefined;
@@ -24477,15 +24699,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -24493,8 +24715,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -24548,15 +24770,15 @@ declare module '@scout9/app/schemas' {
 				message?: string | {
 					name?: string | undefined;
 					content?: string | undefined;
-					context?: any;
-					scheduled?: string | undefined;
-					intent?: string | null | undefined;
-					intentScore?: number | null | undefined;
-					delayInSeconds?: number | null | undefined;
+					context?: Record<string, any> | undefined;
+					delayInSeconds?: number | undefined;
+					contentGenerated?: string | undefined;
+					contentTransformed?: string | undefined;
 					ignoreTransform?: boolean | undefined;
-					mediaUrls?: string[] | null | undefined;
-					contentGenerated?: string | null | undefined;
-					contentTransformed?: string | null | undefined;
+					intent?: string | undefined;
+					intentScore?: number | undefined;
+					mediaUrls?: string[] | undefined;
+					scheduled?: string | undefined;
 					tool_calls?: {
 						function: {
 							name: string;
@@ -24564,8 +24786,8 @@ declare module '@scout9/app/schemas' {
 						};
 						type: string;
 						id: string;
-					}[] | null | undefined;
-					tool_call_id?: string | null | undefined;
+					}[] | undefined;
+					tool_call_id?: string | undefined;
 				} | undefined;
 				removeInstructions?: string[] | undefined;
 				resetIntent?: boolean | undefined;
@@ -24577,15 +24799,15 @@ declare module '@scout9/app/schemas' {
 			message?: string | {
 				name?: string | undefined;
 				content?: string | undefined;
-				context?: any;
-				scheduled?: string | undefined;
-				intent?: string | null | undefined;
-				intentScore?: number | null | undefined;
-				delayInSeconds?: number | null | undefined;
+				context?: Record<string, any> | undefined;
+				delayInSeconds?: number | undefined;
+				contentGenerated?: string | undefined;
+				contentTransformed?: string | undefined;
 				ignoreTransform?: boolean | undefined;
-				mediaUrls?: string[] | null | undefined;
-				contentGenerated?: string | null | undefined;
-				contentTransformed?: string | null | undefined;
+				intent?: string | undefined;
+				intentScore?: number | undefined;
+				mediaUrls?: string[] | undefined;
+				scheduled?: string | undefined;
 				tool_calls?: {
 					function: {
 						name: string;
@@ -24593,8 +24815,8 @@ declare module '@scout9/app/schemas' {
 					};
 					type: string;
 					id: string;
-				}[] | null | undefined;
-				tool_call_id?: string | null | undefined;
+				}[] | undefined;
+				tool_call_id?: string | undefined;
 			} | undefined;
 			forward?: string | boolean | {
 				to?: string | undefined;

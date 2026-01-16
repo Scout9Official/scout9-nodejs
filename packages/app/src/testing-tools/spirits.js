@@ -108,9 +108,9 @@
  * @param {any} message
  * @returns {string}
  */
-export function messageKey (message) {
+export function messageKey(message) {
   // @TODO consider `${msg.role}::${msg.content}` for stronger uniqueness
-  return String(message.content || (message.tool_calls ? JSON.stringify(message.tool_calls) : '')); 
+  return String(message.content || (message.tool_calls ? JSON.stringify(message.tool_calls) : ''));
 }
 
 class SpiritError extends Error {
@@ -302,7 +302,7 @@ export const Spirits = {
     };
 
     const onStatus = (statusType, completeOrError = true) => {
-      progress(`${statusType}: ${completeOrError}`, 'info', 'STATUS', {[statusType]: completeOrError});
+      progress(`${statusType}: ${completeOrError}`, 'info', 'STATUS', { [statusType]: completeOrError });
     }
 
     /**
@@ -472,7 +472,51 @@ export const Spirits = {
       }, []));
     const hasNoInstructions = slots.every(s => !s.instructions || (Array.isArray(s.instructions) && s.instructions.length === 0));
     const hasNoCustomMessage = slots.every(s => !s.message);
-    const messagesToTransform = slots.filter(s => !!s.message && typeof s.message === 'object' && !!s.message.transform);
+    const messagesToTransform = slots.reduce((acc, slot, index) => {
+      const m = slot?.message;
+    
+      // ignore empty
+      if (!m) return acc;
+
+      const adjusted = {
+        id: idGenerator('agent'), 
+        role: 'agent',
+        // ...m,
+        time: new Date().toISOString(), 
+        content: typeof m ==='string' ? m : m.content === 'string' ? m.content : '',
+      };
+    
+      if (!(typeof m === 'string')) {
+        Object.assign(adjusted, m);
+      } 
+    
+      // only include those explicitly requesting transform
+      if (!m.transform) {
+        adjusted.ignoreTransform = true;
+      }
+  
+      
+      if (slot.scheduled) {
+        adjusted.time = new Date(slot.scheduled * 1000).toISOString();
+        adjusted.scheduled = adjusted.time;
+      } else if (slot.secondsDelay) {
+        const now = new Date();
+        now.setSeconds(now.getSeconds() + slot.secondsDelay);
+        adjusted.time = now.toISOString();
+        adjusted.delayInSeconds = slot.secondsDelay;
+      }
+      if (!adjusted.content && !adjusted.tool_calls) {
+        progress(`Slot ${index} input error`, 'failed', 'SLOT_INPUT_ERROR', {
+          error: `Expected slots[${index}].message.content to exist (unless tool_calls provided)`,
+        });
+        return acc;
+      } else if (!adjusted.tool_calls && adjusted.role === 'agent') {
+        adjusted.contentGenerated = m.content;
+      }
+      acc.push(adjusted);
+      return acc;
+    }, []);
+    
     const previousLockAttempt = conversation.lockAttempts || 0; // Used to track
 
     if (hasNoInstructions && noNewContext) {
@@ -632,37 +676,40 @@ export const Spirits = {
         }
       }
 
-      if (manualMessage) {
+      // @TODO this logic is now handled at messagesToTransform's initialization, maybe move back down here
+      // if (manualMessage) {
 
-        /** @type {import('@scout9/admin').Message} */
-        let manualMessageObj = {
-          id: idGenerator('persona'),
-          role: 'agent', // @TODO switch role to persona
-          content: '',
-          time: new Date().toISOString()
-        };
-        if (typeof manualMessage === 'object') {
-          Object.assign(manualMessageObj, manualMessage);
-          manualMessageObj.role = 'agent';
-          manualMessageObj.time = new Date().toISOString();
-        } else if (typeof manualMessage === 'string') {
-          manualMessageObj.content = manualMessage;
-        } else {
-          throw new Error('Manual message must be of type "string" or "DirectMessage"');
-        }
+      //   /** @type {import('@scout9/admin').Message} */
+      //   let manualMessageObj = {
+      //     id: idGenerator('persona'),
+      //     role: 'agent', // @TODO switch role to persona
+      //     content: '',
+      //     time: new Date().toISOString()
+      //   };
+      //   if (typeof manualMessage === 'object') {
+      //     Object.assign(manualMessageObj, manualMessage);
+      //     manualMessageObj.role = 'agent';
+      //     manualMessageObj.time = new Date().toISOString();
+      //   } else if (typeof manualMessage === 'string') {
+      //     manualMessageObj.content = manualMessage;
+      //   } else {
+      //     throw new Error('Manual message must be of type "string" or "DirectMessage"');
+      //   }
 
-        if (scheduled) {
-          manualMessageObj.time = new Date(scheduled * 1000).toISOString();
-          manualMessageObj.scheduled = manualMessageObj.time;
-        } else if (secondsDelay) {
-          const now = new Date();
-          now.setSeconds(now.getSeconds() + secondsDelay);
-          manualMessageObj.time = now.toISOString();
-          manualMessageObj.delayInSeconds = secondsDelay;
-        }
-        messages.push(manualMessageObj);
-        progress('Added manual message', 'info', 'ADD_MESSAGE', messages[messages.length - 1]);
-      }
+      //   if (scheduled) {
+      //     manualMessageObj.time = new Date(scheduled * 1000).toISOString();
+      //     manualMessageObj.scheduled = manualMessageObj.time;
+      //   } else if (secondsDelay) {
+      //     const now = new Date();
+      //     now.setSeconds(now.getSeconds() + secondsDelay);
+      //     manualMessageObj.time = now.toISOString();
+      //     manualMessageObj.delayInSeconds = secondsDelay;
+      //   }
+      //   // @TODO should we mark this as ignored transform?
+      //   manualMessageObj.ignoreTransform = true;
+      //   messagesToTransform.push(manualMessageObj);
+      //   progress('Added manual message', 'info', 'ADD_MESSAGE', messagesToTransform[messagesToTransform.length - 1]);
+      // }
 
       if (contextUpsert) {
         context = updateContext(context, contextUpsert);
@@ -787,13 +834,14 @@ export const Spirits = {
               ).items;
 
 
-            if (lastAgentMessage && lastAgentMessage.content && addedMessages.some((message) => message.content  === lastAgentMessage.content)) {
+            if (lastAgentMessage && lastAgentMessage.content && addedMessages.some((message) => message.content === lastAgentMessage.content)) {
               // Error should not have happened
               conversation = lockConversation(conversation, 'Duplicate message');
             } else {
               for (const newMessage of addedMessages) {
-                messages.push(newMessage);
-                progress('Added agent message', 'info', 'ADD_MESSAGE', messages[messages.length - 1]);
+                // messages.push(newMessage); switched to push to messages after transform is complete
+                messagesToTransform.push({contentGenerated: newMessage.content, ...newMessage});
+                progress('Added agent message for transform', 'info', 'ADD_MESSAGE', messagesToTransform[messagesToTransform.length - 1]);
               }
             }
 
@@ -819,37 +867,55 @@ export const Spirits = {
         onStatus('generate', 'ignored');
       }
 
+      // For manual messages to transform
       if (messagesToTransform.length && transformer) {
         try {
-          // for (const messageToTransform of messagesToTransform) {
-            const transformResponse = await wrapStep(transformer({
-              message: messagesToTransform,
-              persona,
-              customer: customer.id,
-              messages,
-              context: context
-            }), 'transform');
+          const transformResponse = await wrapStep(transformer({
+            // message: messagesToTransform,
+            addedMessages: messagesToTransform,
+            persona,
+            customer: customer.id,
+            messages,
+            context
+          }), 'transform');
 
-            progress('Generated response', 'success', undefined, undefined);
-            // Check if already had message
-            const agentMessages = messages.filter(m => m.role === 'agent');
-            const lastAgentMessage = agentMessages[agentMessages.length - 1];
-            if (lastAgentMessage && lastAgentMessage.content && lastAgentMessage.content === transformResponse.message) {
-              // Error should not have happened
-              conversation = lockConversation(conversation, 'Duplicate message');
+          progress('Generated response', 'success', undefined, undefined);
+
+          // @TODO check for duplicates, or have already sent the message
+          const transformedMessages =
+          transformResponse.messages?.length
+            ? transformResponse.messages
+            : [{ role: 'agent', content: transformResponse.message }];
+        
+        for (const message of transformedMessages) {
+          const adjusted = {
+            id: idGenerator('agent'),
+            role: 'agent',
+            time: new Date().toISOString(),
+            ...message,
+          };
+        
+          if (adjusted.role === 'agent' && adjusted.content && !adjusted.ignoreTransform && !adjusted.tool_calls) {
+            const prior = messagesToTransform.find((m) => m.id === message.id);
+            if (prior) {
+              adjusted.contentGenerated = prior.content;        // BEFORE (original)
+              adjusted.contentTransformed = adjusted.content;   // AFTER (transformed)
             } else {
-              messages.push({
-                id: idGenerator('agent'),
-                role: 'agent',
-                content: transformResponse.message,
-                contentTransformed: transformResponse.message,
-                contentGenerated: messagesToTransform,
-                time: new Date().toISOString()
-              });
-              progress('Added agent message', 'info', 'ADD_MESSAGE', messages[messages.length - 1]);
+              // fallback if transformer changed ids
+              adjusted.contentGenerated = adjusted.contentGenerated ?? adjusted.content;
+              adjusted.contentTransformed = adjusted.contentTransformed ?? adjusted.content;
             }
-
-          // }
+          }
+        
+          if (adjusted.role === 'agent' && adjusted.content && !adjusted.ignoreTransform && !adjusted.tool_calls && !adjusted.contentTransformed) {
+            progress('missing contentTransformed on a generated message', 'warning', undefined, adjusted);
+            adjusted.contentTransformed = adjusted.content;
+          }
+        
+          messages.push(adjusted);
+          progress('Added agent message', 'info', 'ADD_MESSAGE', messages[messages.length - 1]);
+        }
+      
         } catch (e) {
           console.error(`Locking conversation, error transforming response: ${e.message}`);
           conversation = lockConversation(conversation, 'API: ' + e.message);
@@ -858,10 +924,12 @@ export const Spirits = {
       } else if (messagesToTransform.length) {
         console.warn(`No transformer provided`);
         onStatus('transform', 'ignored');
+      } else {
+        onStatus('transform', 'ignored');
       }
     } else {
-        onStatus('generate', 'ignored');
-        onStatus('transform', 'ignored');
+      onStatus('generate', 'ignored');
+      onStatus('transform', 'ignored');
     }
 
     progress('Parsing message', 'info', 'SET_PROCESSING', null);
