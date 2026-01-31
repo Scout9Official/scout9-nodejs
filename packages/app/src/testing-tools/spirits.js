@@ -108,9 +108,15 @@
  * @param {any} message
  * @returns {string}
  */
-export function messageKey(message) {
-  // @TODO consider `${msg.role}::${msg.content}` for stronger uniqueness
-  return String(message.content || (message.tool_calls ? JSON.stringify(message.tool_calls) : ''));
+export function messageKey(m) {
+  if (m.role === "tool") {
+    // Prefer tool_call_id; fall back to id; then content.
+    return `tool::${m.tool_call_id || m.id || ""}::${m.content || ""}`;
+  }
+  if (m.tool_calls) {
+    return `assistant::tool_calls::${JSON.stringify(m.tool_calls)}`;
+  }
+  return `${m.role || ""}::${m.content || ""}`;
 }
 
 class SpiritError extends Error {
@@ -187,11 +193,52 @@ export const Spirits = {
     } = input;
     let { conversation, messages, context, message } = input;
 
+    if (typeof message.content !== 'string') {
+      const err = new Error(
+        `Spirits: customer message.content is not string (id=${message.id}, type=${typeof message.content})`
+      );
+      progress('customer message.content is not string', 'error', 'INVALID_CUSTOMER_MESSAGE', {
+        id: message.id,
+        contentType: typeof message.content,
+      });
+      console.error(err);
+      onError(err);
+    }
+
     // Storing post process events here
     const followup = [];
     const entityContextUpsert = [];
 
     // 0. Setup Helpers
+    const logToolPairingIssues = (allMessages, stage) => {
+      const assistantToolCallIds = new Set();
+      const toolResponseIds = new Set();
+
+      for (const m of allMessages || []) {
+        if (m?.tool_calls?.length) {
+          for (const tc of m.tool_calls) {
+            if (tc?.id) assistantToolCallIds.add(tc.id);
+          }
+        }
+        if (m?.role === 'tool' && m.tool_call_id) {
+          toolResponseIds.add(m.tool_call_id);
+        }
+      }
+
+      const missingToolResponses = [...assistantToolCallIds].filter((id) => !toolResponseIds.has(id));
+      if (missingToolResponses.length) {
+        progress('Missing tool responses for tool_calls', 'warn', 'TOOL_PAIRING_MISSING_TOOL', {
+          stage,
+          missingToolResponses,
+        });
+        console.error(`Spirits: Missing tool responses (${stage}): ${missingToolResponses.join(', ')}`);
+      }
+    };
+
+    const isEmptySystemMessage = (m) =>
+      m?.role === 'system' &&
+      (typeof m.content !== 'string' || m.content.trim() === '');
+
     const updateConversation = (previousConversation, conversationUpdates) => {
       progress('Update conversation', 'info', 'UPDATE_CONVERSATION', conversationUpdates);
       return {
@@ -261,13 +308,20 @@ export const Spirits = {
 
       // If instruction does not equal previous system message, add it, otherwise lock attempt
       if (!lastSystemMessage || instruction !== lastSystemMessage.content) {
-        _messages.push({
-          id,
-          role: 'system',
-          content: instruction,
-          time: new Date().toISOString()
-        });
-        addedMessage = true;
+        if (typeof instruction !== 'string' || instruction.trim() === '') {
+          progress('Empty system instruction blocked', 'error', 'EMPTY_SYSTEM_MESSAGE', {
+            instruction,
+            instructionId: id,
+          });
+        } else {
+          _messages.push({
+            id,
+            role: 'system',
+            content: instruction,
+            time: new Date().toISOString()
+          });
+          addedMessage = true;
+        }
       } else {
         // Handle repeated instruction
         // Increment lock attempt if instructions are repeated and we haven't already incremented lock attempt (for example if a forward is provided)
@@ -361,7 +415,7 @@ export const Spirits = {
       const _message = {
         id: idGenerator('customer'),
         role: 'customer',
-        content: message,
+        content: message.content,
         context: parsePayload.context,
         entities: parsePayload.entities,
         time: new Date().toISOString()
@@ -417,7 +471,12 @@ export const Spirits = {
     if (parsePayload.contextMessages.length) {
       messages.push(
         ...parsePayload.contextMessages.reduce((accumulator, text) => {
-          if (!messages.find(mes => mes.content === text)) {
+          if (typeof text !== 'string' || text.trim() === '') {
+            progress('Empty parse system context blocked', 'warn', 'EMPTY_SYSTEM_MESSAGE', {
+              source: 'parser.contextMessages',
+              text,
+            });
+          } else if (!messages.find(mes => mes.content === text)) {
             accumulator.push({
               id: idGenerator('sys'),
               role: 'system',
@@ -425,7 +484,7 @@ export const Spirits = {
               time: new Date().toISOString()
             });
           } else {
-            progress(`Already have system context, skipping`, 'info');
+            progress(`Already have system context, skipping`, 'info', 'SKIP_SYSTEM_CONTEXT', { content: text });
           }
           return accumulator;
         }, []));
@@ -435,7 +494,12 @@ export const Spirits = {
     progress('Running contextualizer', 'info', 'SET_PROCESSING', 'system');
     const newContextMessages = await wrapStep(contextualizer({ conversation, messages }), 'contextualize');
     for (const contextMessage of newContextMessages) {
-      if (!messages.find(mes => messageKey(mes) === messageKey(contextMessage))) {
+      if (isEmptySystemMessage(contextMessage)) {
+        progress('Empty contextualizer system message blocked', 'warn', 'EMPTY_SYSTEM_MESSAGE', {
+          source: 'contextualizer',
+          message: contextMessage,
+        });
+      } else if (!messages.find(mes => messageKey(mes) === messageKey(contextMessage))) {
         messages.push(contextMessage);
         progress(`Added context`, 'info', 'ADD_MESSAGE', messages[messages.length - 1]);
       } else {
@@ -470,32 +534,42 @@ export const Spirits = {
         }
         return accumulator;
       }, []));
+
     const hasNoInstructions = slots.every(s => !s.instructions || (Array.isArray(s.instructions) && s.instructions.length === 0));
     const hasNoCustomMessage = slots.every(s => !s.message);
     const messagesToTransform = slots.reduce((acc, slot, index) => {
       const m = slot?.message;
-    
+
       // ignore empty
       if (!m) return acc;
 
       const adjusted = {
-        id: idGenerator('agent'), 
+        id: idGenerator('agent'),
         role: 'agent',
-        // ...m,
-        time: new Date().toISOString(), 
-        content: typeof m ==='string' ? m : m.content === 'string' ? m.content : '',
+        time: new Date().toISOString(),
+        content: typeof m === 'string' ? m : (typeof m?.content === 'string' ? m.content : ''),
       };
-    
-      if (!(typeof m === 'string')) {
+
+      if (typeof m !== 'string' && m && typeof m === 'object') {
+        // merge any additional fields (tool_calls, transform flag, etc.)
         Object.assign(adjusted, m);
-      } 
-    
+      } else if (typeof m !== 'string') {
+        progress(`Slot ${index} message is not string/object`, 'warn', 'SLOT_MESSAGE_TYPE', {
+          slotIndex: index,
+          typeofMessage: typeof m,
+        });
+      }
+
       // only include those explicitly requesting transform
-      if (!m.transform) {
+      if (!adjusted.transform) {
         adjusted.ignoreTransform = true;
       }
-  
-      
+
+      // set contentGenerated correctly for manual slot messages
+      if (!adjusted.tool_calls && adjusted.role === 'agent') {
+        adjusted.contentGenerated = adjusted.contentGenerated ?? adjusted.content;
+      }
+
       if (slot.scheduled) {
         adjusted.time = new Date(slot.scheduled * 1000).toISOString();
         adjusted.scheduled = adjusted.time;
@@ -505,18 +579,17 @@ export const Spirits = {
         adjusted.time = now.toISOString();
         adjusted.delayInSeconds = slot.secondsDelay;
       }
+
       if (!adjusted.content && !adjusted.tool_calls) {
         progress(`Slot ${index} input error`, 'failed', 'SLOT_INPUT_ERROR', {
           error: `Expected slots[${index}].message.content to exist (unless tool_calls provided)`,
         });
         return acc;
-      } else if (!adjusted.tool_calls && adjusted.role === 'agent') {
-        adjusted.contentGenerated = m.content;
       }
       acc.push(adjusted);
       return acc;
     }, []);
-    
+
     const previousLockAttempt = conversation.lockAttempts || 0; // Used to track
 
     if (hasNoInstructions && noNewContext) {
@@ -670,7 +743,7 @@ export const Spirits = {
             messages.splice(index, 1);
             progress('Remove instruction', 'info', 'REMOVE_MESSAGE', instructionId);
           } else {
-            console.log(`Instruction not found "${instructionId}", other ids: ${messages.map(m => `"${m.id}"`)
+            console.log(`Spirits: Instruction not found "${instructionId}", other ids: ${messages.map(m => `"${m.id}"`)
               .join(', ')}`);
           }
         }
@@ -765,7 +838,7 @@ export const Spirits = {
               { error: generatorPayload.errors?.join('\n\n') || 'Unknown Reason' }
             );
             console.error(
-              `Locking conversation, api returned send false: ${generatorPayload.messages}`,
+              `Spirits: Locking conversation, api returned send false: ${generatorPayload.messages}`,
               generatorPayload.errors?.join('\n\n') || generatorPayload.forwardNote || 'Unknown Reason'
             );
             conversation = lockConversation(
@@ -826,12 +899,20 @@ export const Spirits = {
                     acc.seen.add(key);
                     acc.items.push(msg);
                   } else {
-                    console.warn(`Duplicate message removed: ${JSON.stringify(msg)}`);
+                    console.error(`Spirits: Duplicate message removed: ${JSON.stringify(msg)}`);
+                    progress('Duplicate message removed', 'warn', 'DUPLICATE_MESSAGE_REMOVED', {
+                      key,
+                      role: msg.role,
+                      id: msg.id,
+                      tool_call_id: msg.tool_call_id,
+                    });
                   }
                   return acc;
                 },
                 { seen: new Set(), items: [] }
               ).items;
+
+            logToolPairingIssues([...messages, ...addedMessages], 'post-dedupe');
 
 
             if (lastAgentMessage && lastAgentMessage.content && addedMessages.some((message) => message.content === lastAgentMessage.content)) {
@@ -840,7 +921,10 @@ export const Spirits = {
             } else {
               for (const newMessage of addedMessages) {
                 // messages.push(newMessage); switched to push to messages after transform is complete
-                messagesToTransform.push({contentGenerated: newMessage.content, ...newMessage});
+                messagesToTransform.push({
+                  ...newMessage,
+                  contentGenerated: newMessage.contentGenerated ?? newMessage.content,
+                });
                 progress('Added agent message for transform', 'info', 'ADD_MESSAGE', messagesToTransform[messagesToTransform.length - 1]);
               }
             }
@@ -883,46 +967,46 @@ export const Spirits = {
 
           // @TODO check for duplicates, or have already sent the message
           const transformedMessages =
-          transformResponse.messages?.length
-            ? transformResponse.messages
-            : [{ role: 'agent', content: transformResponse.message }];
-        
-        for (const message of transformedMessages) {
-          const adjusted = {
-            id: idGenerator('agent'),
-            role: 'agent',
-            time: new Date().toISOString(),
-            ...message,
-          };
-        
-          if (adjusted.role === 'agent' && adjusted.content && !adjusted.ignoreTransform && !adjusted.tool_calls) {
-            const prior = messagesToTransform.find((m) => m.id === message.id);
-            if (prior) {
-              adjusted.contentGenerated = prior.content;        // BEFORE (original)
-              adjusted.contentTransformed = adjusted.content;   // AFTER (transformed)
-            } else {
-              // fallback if transformer changed ids
-              adjusted.contentGenerated = adjusted.contentGenerated ?? adjusted.content;
-              adjusted.contentTransformed = adjusted.contentTransformed ?? adjusted.content;
+            transformResponse.messages?.length
+              ? transformResponse.messages
+              : [{ role: 'agent', content: transformResponse.message }];
+
+          for (const message of transformedMessages) {
+            const adjusted = {
+              id: idGenerator('agent'),
+              role: 'agent',
+              time: new Date().toISOString(),
+              ...message,
+            };
+
+            if (adjusted.role === 'agent' && adjusted.content && !adjusted.ignoreTransform && !adjusted.tool_calls) {
+              const prior = messagesToTransform.find((m) => m.id === message.id);
+              if (prior) {
+                adjusted.contentGenerated = prior.content;        // BEFORE (original)
+                adjusted.contentTransformed = adjusted.content;   // AFTER (transformed)
+              } else {
+                // fallback if transformer changed ids
+                adjusted.contentGenerated = adjusted.contentGenerated ?? adjusted.content;
+                adjusted.contentTransformed = adjusted.contentTransformed ?? adjusted.content;
+              }
             }
+
+            if (adjusted.role === 'agent' && adjusted.content && !adjusted.ignoreTransform && !adjusted.tool_calls && !adjusted.contentTransformed) {
+              progress('missing contentTransformed on a generated message', 'warning', undefined, adjusted);
+              adjusted.contentTransformed = adjusted.content;
+            }
+
+            messages.push(adjusted);
+            progress('Added agent message', 'info', 'ADD_MESSAGE', messages[messages.length - 1]);
           }
-        
-          if (adjusted.role === 'agent' && adjusted.content && !adjusted.ignoreTransform && !adjusted.tool_calls && !adjusted.contentTransformed) {
-            progress('missing contentTransformed on a generated message', 'warning', undefined, adjusted);
-            adjusted.contentTransformed = adjusted.content;
-          }
-        
-          messages.push(adjusted);
-          progress('Added agent message', 'info', 'ADD_MESSAGE', messages[messages.length - 1]);
-        }
-      
+
         } catch (e) {
-          console.error(`Locking conversation, error transforming response: ${e.message}`);
+          console.error(`Spirits: Locking conversation, error transforming response: ${e.message}`);
           conversation = lockConversation(conversation, 'API: ' + e.message);
           onError(e);
         }
       } else if (messagesToTransform.length) {
-        console.warn(`No transformer provided`);
+        console.warn(`Spirits: No transformer provided`);
         onStatus('transform', 'ignored');
       } else {
         onStatus('transform', 'ignored');
@@ -933,6 +1017,17 @@ export const Spirits = {
     }
 
     progress('Parsing message', 'info', 'SET_PROCESSING', null);
+
+    const emptySystemMessages = messages.filter(isEmptySystemMessage);
+    if (emptySystemMessages.length) {
+      progress('Empty system messages detected post-run', 'error', 'EMPTY_SYSTEM_MESSAGE_FINAL', {
+        count: emptySystemMessages.length,
+        ids: emptySystemMessages.map((m) => m.id),
+      });
+      console.error('Spirits: Empty system messages detected', emptySystemMessages);
+    }
+
+    logToolPairingIssues(messages, 'final');
 
     return {
       conversation: {

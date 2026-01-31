@@ -929,7 +929,7 @@ declare module '@scout9/app/spirits' {
 	/**
 	 * Message key helper for doing comparisons to fund duplicates
 	 * */
-	export function messageKey(message: any): string;
+	export function messageKey(m: any): string;
 	export namespace Spirits {
 		function customer(input: ConversationData & CustomerSpiritCallbacks, onError?: (error: Error) => void): Promise<ConversationEvent>;
 	}
