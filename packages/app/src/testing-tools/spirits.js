@@ -1,3 +1,9 @@
+import {
+  pushMessage,
+  nextMonotonicIso,
+  enforceMonotonicInPlace,
+} from "./message-utils.js";
+
 /**
  * @typedef {Object} Document
  * @property {string} id
@@ -267,7 +273,7 @@ export const Spirits = {
     const lockConversation = (_conversation, reason) => {
       return updateConversation(
         _conversation,
-        { locked: true, lockedReason: conversation.lockedReason || reason || 'Unknown' }
+        { locked: true, lockedReason: _conversation.lockedReason || reason || 'Unknown' }
       );
     };
 
@@ -314,11 +320,11 @@ export const Spirits = {
             instructionId: id,
           });
         } else {
-          _messages.push({
+          pushMessage(_messages, {
             id,
-            role: 'system',
+            role: "system",
             content: instruction,
-            time: new Date().toISOString()
+            time: new Date().toISOString(),
           });
           addedMessage = true;
         }
@@ -393,9 +399,13 @@ export const Spirits = {
       throw new Error(`SpiritsError: Every message must have a role of "customer", "agent", or "system". Got invalid roles: ${invalidRoles.map(
         m => m.role).join(', ')}`);
     }
+
+    // Normalize existing message times ONCE at the start
+    enforceMonotonicInPlace(messages, 1);
+
     // if message is not in messages, then add it
     if (!messages.find(m => m.id === input.message.id)) {
-      messages.push(input.message);
+      pushMessage(messages, input.message);
     }
 
     // 2. Parse the message
@@ -427,7 +437,7 @@ export const Spirits = {
         _message.intentScore = parsePayload.intentScore;
       }
       message = _message;
-      messages.push(_message);
+      message = pushMessage(messages, _message);
       progress('Added message', 'info', 'ADD_MESSAGE', _message);
     } else {
       messages[index].context = parsePayload.context;
@@ -469,25 +479,26 @@ export const Spirits = {
 
     // upsert parse system messages
     if (parsePayload.contextMessages.length) {
-      messages.push(
-        ...parsePayload.contextMessages.reduce((accumulator, text) => {
-          if (typeof text !== 'string' || text.trim() === '') {
-            progress('Empty parse system context blocked', 'warn', 'EMPTY_SYSTEM_MESSAGE', {
-              source: 'parser.contextMessages',
-              text,
-            });
-          } else if (!messages.find(mes => mes.content === text)) {
-            accumulator.push({
-              id: idGenerator('sys'),
-              role: 'system',
-              content: text,
-              time: new Date().toISOString()
-            });
-          } else {
-            progress(`Already have system context, skipping`, 'info', 'SKIP_SYSTEM_CONTEXT', { content: text });
-          }
-          return accumulator;
-        }, []));
+      const toAdd = parsePayload.contextMessages.reduce((accumulator, text) => {
+        if (typeof text !== "string" || text.trim() === "") {
+          progress("Empty parse system context blocked", "warn", "EMPTY_SYSTEM_MESSAGE", {
+            source: "parser.contextMessages",
+            text,
+          });
+        } else if (!messages.find((mes) => mes.content === text)) {
+          accumulator.push({
+            id: idGenerator("sys"),
+            role: "system",
+            content: text,
+            time: new Date().toISOString(),
+          });
+        } else {
+          progress("Already have system context, skipping", "info", "SKIP_SYSTEM_CONTEXT", { content: text });
+        }
+        return accumulator;
+      }, []);
+    
+      for (const m of toAdd) pushMessage(messages, m);
     }
 
     // 3. Run the contextualizer
@@ -500,7 +511,7 @@ export const Spirits = {
           message: contextMessage,
         });
       } else if (!messages.find(mes => messageKey(mes) === messageKey(contextMessage))) {
-        messages.push(contextMessage);
+        pushMessage(messages, contextMessage);
         progress(`Added context`, 'info', 'ADD_MESSAGE', messages[messages.length - 1]);
       } else {
         progress(`Already have system context, skipping`, 'info');
@@ -589,6 +600,7 @@ export const Spirits = {
       acc.push(adjusted);
       return acc;
     }, []);
+    enforceMonotonicInPlace(messagesToTransform, 1);
 
     const previousLockAttempt = conversation.lockAttempts || 0; // Used to track
 
@@ -639,14 +651,14 @@ export const Spirits = {
               keywords
             });
           }
-          updateConversation(conversation, {
+          conversation = updateConversation(conversation, {
             type: 'literal',
             slots,
             map
           });
         } else if ('yes' in anticipate && 'no' in anticipate && 'did' in anticipate) {
           // "did" anticipation
-          updateConversation(conversation, {
+          conversation = updateConversation(conversation, {
             type: 'did',
             slots: {
               yes: anticipate.yes,
@@ -679,30 +691,31 @@ export const Spirits = {
         _forward = forward;
         _forwardNote = forwardNote;
         if (typeof forward === 'string') {
-          updateConversation(conversation, { forwarded: forward });
-          messages.push({
-            id: idGenerator('sys'),
-            role: 'system',
+          conversation = updateConversation(conversation, { forwarded: forward });
+          pushMessage(messages, {
+            id: idGenerator("sys"),
+            role: "system",
             content: `forwarded to "${forward}"`,
-            time: new Date().toISOString()
+            time: new Date().toISOString(),
           });
           progress(`Forwarded to "${forward}"`, 'info', 'ADD_MESSAGE', messages[messages.length - 1]);
         } else if (typeof forward === 'boolean') {
-          updateConversation(conversation, { forwarded: conversation.$agent });
-          messages.push({
-            id: idGenerator('sys'),
-            role: 'system',
+          conversation = updateConversation(conversation, { forwarded: conversation.$agent });
+          pushMessage(messages, {
+            id: idGenerator("sys"),
+            role: "system",
             content: `forwarded to "${forward}"`,
-            time: new Date().toISOString()
+            time: new Date().toISOString(),
           });
           progress(`Forwarded to agent`, 'info', 'ADD_MESSAGE', messages[messages.length - 1]);
 
         } else {
-          messages.push({
-            id: idGenerator('sys'),
-            role: 'system',
+          conversation = updateConversation(conversation, { forwarded: forward.to });
+          pushMessage(messages, {
+            id: idGenerator("sys"),
+            role: "system",
             content: `forwarded to "${forward.to}" ${forward.mode ? ' (' + forward.mode + ')' : ''}`,
-            time: new Date().toISOString()
+            time: new Date().toISOString(),
           });
           progress(
             `Forwarded to "${forward.to}" ${forward.mode ? ' (' + forward.mode + ')' : ''}`,
@@ -710,7 +723,6 @@ export const Spirits = {
             'ADD_MESSAGE',
             messages[messages.length - 1]
           );
-          updateConversation(conversation, { forwarded: forward.to });
         }
       }
 
@@ -794,6 +806,8 @@ export const Spirits = {
       }
 
     }
+
+    enforceMonotonicInPlace(messages, 1);
 
     if (resettedIntent && !_forward) {
       conversation.intent = null;
@@ -880,7 +894,7 @@ export const Spirits = {
                   content: message.content,
                   contentGenerated: message.content,
                   id: idGenerator(message.role),
-                  time: isoTime,
+                  time: nextMonotonicIso(messages, isoTime, 1),
                 };
 
                 // Copy any other non-nullish fields without overwriting base
@@ -912,6 +926,8 @@ export const Spirits = {
                 { seen: new Set(), items: [] }
               ).items;
 
+            enforceMonotonicInPlace(addedMessages, 1);
+
             logToolPairingIssues([...messages, ...addedMessages], 'post-dedupe');
 
 
@@ -919,9 +935,10 @@ export const Spirits = {
               // Error should not have happened
               conversation = lockConversation(conversation, 'Duplicate message');
             } else {
+              enforceMonotonicInPlace(messagesToTransform, 1);
               for (const newMessage of addedMessages) {
                 // messages.push(newMessage); switched to push to messages after transform is complete
-                messagesToTransform.push({
+                pushMessage(messagesToTransform, {
                   ...newMessage,
                   contentGenerated: newMessage.contentGenerated ?? newMessage.content,
                 });
@@ -996,8 +1013,8 @@ export const Spirits = {
               adjusted.contentTransformed = adjusted.content;
             }
 
-            messages.push(adjusted);
-            progress('Added agent message', 'info', 'ADD_MESSAGE', messages[messages.length - 1]);
+            const appended = pushMessage(messages, adjusted);
+            progress("Added agent message", "info", "ADD_MESSAGE", appended);
           }
 
         } catch (e) {
