@@ -99,6 +99,23 @@ import {
  */
 
 /**
+ * @typedef {Object} CustomerSpiritStateCallbacks
+ * @property {(context: any) => void} [onSetContext]
+ * @property {(contextPatch: any) => void} [onUpdateContext]
+ *
+ * @property {(conversation: import('@scout9/app').Conversation) => void} [onSetConversation]
+ * @property {(conversationPatch: Partial<import('@scout9/app').Conversation>) => void} [onUpdateConversation]
+ *
+ * // MUST match ConversationRunnerState.chunkMessage input shape
+ * @property {(args: { text: string; conversationId: string; source?: string; mode?: 'generation' | 'transformation' }) => void} [onChunkMessage]
+ *
+ * @property {(message: import('@scout9/admin').Message) => void} [onAddMessage]
+ * @property {(messagePatch: Partial<import('@scout9/admin').Message> & { id: string }) => void} [onUpdateMessage]
+ * @property {(messageId: string) => void} [onDeleteMessage]
+ */
+
+
+/**
  * @typedef {Object} CustomerSpiritCallbacks
  * @property {ParseFun} parser
  * @property {ContextualizerFun} contextualizer
@@ -107,7 +124,16 @@ import {
  * @property {TransformerFun} transformer
  * @property {IdGeneratorFun} idGenerator
  * @property {StatusCallback | undefined} [progress]
+ * @property {CustomerSpiritStateCallbacks['onSetContext']} [onSetContext]
+ * @property {CustomerSpiritStateCallbacks['onUpdateContext']} [onUpdateContext]
+ * @property {CustomerSpiritStateCallbacks['onSetConversation']} [onSetConversation]
+ * @property {CustomerSpiritStateCallbacks['onUpdateConversation']} [onUpdateConversation]
+ * @property {CustomerSpiritStateCallbacks['onChunkMessage']} [onChunkMessage]
+ * @property {CustomerSpiritStateCallbacks['onAddMessage']} [onAddMessage]
+ * @property {CustomerSpiritStateCallbacks['onUpdateMessage']} [onUpdateMessage]
+ * @property {CustomerSpiritStateCallbacks['onDeleteMessage']} [onDeleteMessage]
  */
+
 
 /**
  * Message key helper for doing comparisons to fund duplicates
@@ -184,6 +210,10 @@ export const Spirits = {
     const {
       customer,
       config,
+      message: messageBefore,
+      context: contextBefore,
+      messages: messagesBefore,
+      conversation: conversationBefore,
       parser,
       contextualizer,
       workflow,
@@ -192,12 +222,19 @@ export const Spirits = {
       idGenerator,
       progress = (message, level, type, payload) => {
       },
-      message: messageBefore,
-      context: contextBefore,
-      messages: messagesBefore,
-      conversation: conversationBefore
+      onSetContext = (_ctx) => { },
+      onUpdateContext = (_patch) => { },
+      onSetConversation = (_conv) => { },
+      onUpdateConversation = (_patch) => { },
+      onChunkMessage = (_args) => { },
+      onAddMessage = (_msg) => { },
+      onUpdateMessage = (_patch) => { },
+      onDeleteMessage = (_id) => { },
     } = input;
     let { conversation, messages, context, message } = input;
+    const elapsedSeconds = (start) => ((performance.now() - start) / 1000).toFixed(2);
+    const rootStart = performance.now();
+    progress(`Spirits.customer start`, 'info', undefined, undefined);
 
     if (typeof message.content !== 'string') {
       const err = new Error(
@@ -216,6 +253,53 @@ export const Spirits = {
     const entityContextUpsert = [];
 
     // 0. Setup Helpers
+    // ---- SYNC SAFE CALLS (NO PROMISES) ----
+    const safeCall = (fn, ...args) => {
+      try { fn(...args); } catch (e) { console.error('Spirits: callback error', e); }
+    };
+
+    const emitSetContext = (ctx) => safeCall(onSetContext, ctx);
+    const emitUpdateContext = (patch) => safeCall(onUpdateContext, patch);
+
+    const emitSetConversation = (conv) => safeCall(onSetConversation, conv);
+    const emitUpdateConversation = (patch) => safeCall(onUpdateConversation, patch);
+
+    const emitAddMessage = (m) => safeCall(onAddMessage, m);
+
+    const emitUpdateMessage = (patch) => {
+      if (!patch || typeof patch.id !== 'string' || !patch.id.trim()) {
+        console.error('Spirits: onUpdateMessage requires patch.id, got:', patch);
+        return;
+      }
+      safeCall(onUpdateMessage, patch);
+    };
+
+    const emitDeleteMessage = (id) => safeCall(onDeleteMessage, id);
+
+    const emitChunkMessage = ({ text, conversationId, messageId, mode, source }) => {
+      if (!messageId) return;
+      safeCall(onChunkMessage, { text, conversationId, messageId, mode, source });
+    };
+
+    const enforceMonotonicWithEmits = (arr, minStepSeconds = 1) => {
+      // capture old times by id (only for items that have ids)
+      const before = new Map();
+      for (const m of arr || []) {
+        if (m?.id) before.set(m.id, m.time);
+      }
+
+      enforceMonotonicInPlace(arr, minStepSeconds);
+
+      // emit patches for changed times
+      for (const m of arr || []) {
+        if (!m?.id) continue;
+        const prev = before.get(m.id);
+        if (prev !== m.time) {
+          emitUpdateMessage({ id: m.id, time: m.time });
+        }
+      }
+    };
+
     const logToolPairingIssues = (allMessages, stage) => {
       const assistantToolCallIds = new Set();
       const toolResponseIds = new Set();
@@ -245,16 +329,20 @@ export const Spirits = {
       m?.role === 'system' &&
       (typeof m.content !== 'string' || m.content.trim() === '');
 
-    const updateConversation = (previousConversation, conversationUpdates) => {
-      progress('Update conversation', 'info', 'UPDATE_CONVERSATION', conversationUpdates);
+    const updateConversation = (previousConversation, conversationUpdates, note) => {
+      const _note = [`Updated conversation fields`, note].filter(Boolean).join(', ')
+      progress(`${_note}: ${JSON.stringify(Object.keys(conversationUpdates))}`, 'info', 'UPDATE_CONVERSATION', conversationUpdates);
+      emitUpdateConversation(conversationUpdates);
       return {
         ...previousConversation,
         ...conversationUpdates
       };
     };
 
-    const updateContext = (previousContext, newContext) => {
-      progress('Update context', 'info', 'UPDATE_CONTEXT', newContext);
+    const updateContext = (previousContext, newContext, note) => {
+      const _note = [`Updated context fields`, note].filter(Boolean).join(', ')
+      progress(`${_note}: ${JSON.stringify(Object.keys(newContext))}`, 'info', 'UPDATE_CONTEXT', newContext);
+      emitUpdateContext(newContext);
       return {
         ...previousContext,
         ...newContext
@@ -273,30 +361,25 @@ export const Spirits = {
     const lockConversation = (_conversation, reason) => {
       return updateConversation(
         _conversation,
-        { locked: true, lockedReason: _conversation.lockedReason || reason || 'Unknown' }
+        { locked: true, lockedReason: _conversation.lockedReason || reason || 'Unknown' },
+        'lock conversation'
       );
     };
 
     const incrementLockAttempt = (_conversation, _config) => {
-      if (typeof _conversation.lockAttempts !== 'number') {
-        _conversation.lockAttempts = 0;
+      const max = _config?.maxLockAttempts || 3;
+      const prev = typeof _conversation.lockAttempts === "number" ? _conversation.lockAttempts : 0;
+      const next = prev + 1;
+
+      /** @type {any} */
+      const patch = { lockAttempts: next };
+
+      if (next > max) {
+        patch.locked = true;
+        patch.lockedReason = `Max lock attempts exceeded (${next} > ${max})`;
       }
-      _conversation.lockAttempts++;
-      if (_conversation.lockAttempts > (_config?.maxLockAttempts || 3)) {
-        _conversation.locked = true;
-        _conversation.lockedReason = `Max lock attempts exceeded (${_conversation.lockAttempts} > ${(_config?.maxLockAttempts || 3)})`;
-      }
-      progress(
-        'Incremented lock attempt',
-        'info',
-        'UPDATE_CONVERSATION',
-        {
-          lockAttempts: _conversation.lockAttempts,
-          locked: _conversation.locked,
-          lockedReason: _conversation.lockedReason || ''
-        }
-      );
-      return _conversation;
+      const updated = updateConversation(_conversation, patch, 'increment lock');
+      return {updated, patch}
     };
 
     const _addInstruction = (
@@ -310,7 +393,7 @@ export const Spirits = {
       const systemMessages = _messages.filter(m => m.role === 'system');
       const lastSystemMessage = systemMessages[systemMessages.length - 1];
       let addedMessage = false;
-      let changedConversation = false;
+      let changedConversation = [];
 
       // If instruction does not equal previous system message, add it, otherwise lock attempt
       if (!lastSystemMessage || instruction !== lastSystemMessage.content) {
@@ -320,20 +403,22 @@ export const Spirits = {
             instructionId: id,
           });
         } else {
-          pushMessage(_messages, {
+          const appended = pushMessage(_messages, {
             id,
             role: "system",
             content: instruction,
             time: new Date().toISOString(),
           });
+          emitAddMessage(appended);
           addedMessage = true;
         }
       } else {
         // Handle repeated instruction
         // Increment lock attempt if instructions are repeated and we haven't already incremented lock attempt (for example if a forward is provided)
-        if (previousLockAttempt === (conversation.lockAttempts || 0)) {
-          _conversation = incrementLockAttempt(_conversation, _config);
-          changedConversation = true;
+        if (previousLockAttempt === (_conversation.lockAttempts || 0)) {
+          const {updated, patch} = incrementLockAttempt(_conversation, _config);
+          _conversation = updated;
+          changedConversation = Object.keys(patch);
         }
       }
       return {
@@ -344,6 +429,7 @@ export const Spirits = {
       };
     };
 
+    let instructionsAdded = 0;
     const addInstruction = (instruction, previousLockAttempt, id = idGenerator('sys')) => {
       const {
         conversation: newConversation,
@@ -354,31 +440,47 @@ export const Spirits = {
       conversation = newConversation;
       messages = newMessages;
       if (addedMessage) {
-        progress('Added instruction', 'info', 'ADD_MESSAGE', newMessages[newMessages.length - 1]);
+        instructionsAdded++;
+        progress(`Added ${instructionsAdded} instruction${instructionsAdded === 1 ? '' : 's'}`, 'info', 'ADD_MESSAGE', newMessages[newMessages.length - 1]);
       }
-      if (changedConversation) {
-        progress('Updated conversation', 'info', 'UPDATE_CONVERSATION', newConversation);
+      if (changedConversation.length) {
+        progress(`Updated conversation fields: ${JSON.stringify(changedConversation)}`, 'info', 'UPDATE_CONVERSATION', newConversation);
       }
     };
 
     const onStatus = (statusType, completeOrError = true) => {
-      progress(`${statusType}: ${completeOrError}`, 'info', 'STATUS', { [statusType]: completeOrError });
-    }
+      const level = completeOrError === true ? 'success'
+                  : completeOrError === 'ignored' ? 'info'
+                  : 'error';
+      progress(`${statusType}: ${completeOrError}`, level, 'STATUS', { [statusType]: completeOrError });
+    };
+
 
     /**
-     * @param {Promise<any>} prom 
-     * @param {string} step
+     * Wraps a step, handling performance, 
+     * @param {Promise<any>} prom - the operation
+     * @param {string} step - the step name
+     * @param {string} stepAction - overrides step name in logs
      */
-    const wrapStep = async (prom, step) => {
+    const wrapStep = async (prom, step, stepAction = step) => {
+      const stepStart = performance.now();
+
       try {
+        progress(`${stepAction} start`, 'info', undefined, undefined);
         const result = await prom;
-        onStatus(step);
+        progress(`${stepAction} succeeded in ${elapsedSeconds(stepStart)}s`, 'success', undefined, undefined);
         return result;
       } catch (error) {
-        onStatus(step, error.message || 'UNHANDLED ERROR');
+        const msg = error?.message || 'UNHANDLED ERROR';
+        progress(
+          `${stepAction} failed in ${elapsedSeconds(stepStart)}s`,
+          'error',
+          undefined,
+          { error: msg }
+        );
         throw SpiritError.fromError(error, step);
       }
-    }
+    };
 
     // 1. Check inputs
     if (!conversation.$agent) {
@@ -401,16 +503,19 @@ export const Spirits = {
     }
 
     // Normalize existing message times ONCE at the start
-    enforceMonotonicInPlace(messages, 1);
+    enforceMonotonicWithEmits(messages, 1);
+
+    // init emits
+    emitSetConversation(conversation);
+    emitSetContext(context);
 
     // if message is not in messages, then add it
     if (!messages.find(m => m.id === input.message.id)) {
-      pushMessage(messages, input.message);
+      emitAddMessage(pushMessage(messages, input.message));
     }
 
     // 2. Parse the message
-    progress('Parsing message', 'info', 'SET_PROCESSING', 'user');
-    const parsePayload = await wrapStep(parser(message.content, 'en'), 'parse');
+    const parsePayload = await wrapStep(parser(message.content, 'en'), 'parse', 'parsing message');
 
     if (parsePayload.intent) {
       message.intent = parsePayload.intent;
@@ -422,6 +527,7 @@ export const Spirits = {
     message.entities = parsePayload.entities;
     const index = messages.findIndex(m => messageKey(m) === messageKey(message) || m.id === message.id);
     if (index === -1) {
+      // Message is not in messages array, add it with parsed info
       const _message = {
         id: idGenerator('customer'),
         role: 'customer',
@@ -438,7 +544,8 @@ export const Spirits = {
       }
       message = _message;
       message = pushMessage(messages, _message);
-      progress('Added message', 'info', 'ADD_MESSAGE', _message);
+      emitAddMessage(message);
+      progress(`Added "${_message.role}" message (wasn't originally in array)`, 'info', 'ADD_MESSAGE', _message);
     } else {
       messages[index].context = parsePayload.context;
       messages[index].entities = parsePayload.entities;
@@ -449,19 +556,24 @@ export const Spirits = {
         messages[index].intentScore = parsePayload.intentScore;
       }
       message = messages[index];
-      progress('Parsed message', 'success', 'UPDATE_MESSAGE', message);
+      const patch = {
+        id: messages[index].id,
+        context: parsePayload.context,
+        entities: parsePayload.entities,
+        ...(parsePayload.intent ? { intent: parsePayload.intent } : {}),
+        ...(typeof parsePayload.intentScore === 'number' ? { intentScore: parsePayload.intentScore } : {}),
+      };
+      emitUpdateMessage(patch);
+      const {id, ...updatedFields} = patch;
+      progress(`updated ${id} message fields ${JSON.stringify(Object.keys(updatedFields))}`, 'info', 'UPDATE_MESSAGE', message);
     }
     // If this is the first user message, then update conversations intent
     const previousUserMessages = messages.filter(m => m.role === 'customer' && m.content !== message.content);
-    if (!conversation.intent || previousUserMessages.length === 0 && parsePayload.intent) {
-      conversation.intent = parsePayload.intent;
-      conversation.intentScore = parsePayload?.intentScore || 0;
-      progress(
-        'Updated conversation intent',
-        'info',
-        'UPDATE_CONVERSATION',
-        { intent: parsePayload.intent, intentScore: parsePayload?.intentScore || 0 }
-      );
+    if (!conversation.intent || (previousUserMessages.length === 0 && parsePayload.intent)) {
+      conversation = updateConversation(conversation, {
+        intent: parsePayload.intent,
+        intentScore: parsePayload?.intentScore || 0,
+      }, 'intent mapping');
     }
     const oldKeyCount = Object.keys(context).length;
     context = updateContext(context, parsePayload.context);
@@ -469,10 +581,11 @@ export const Spirits = {
 
     if (!conversation.locked && (newKeyCount > oldKeyCount)) {
       // Reset lock attempts
-      conversation.locked = false;
-      conversation.lockAttempts = 0;
-      conversation.lockedReason = '';
-      progress('Reset lock', 'info', 'UPDATE_CONVERSATION', { locked: false, lockAttempts: 0, lockedReason: '' });
+      conversation = updateConversation(conversation, {
+        locked: false,
+        lockAttempts: 0,
+        lockedReason: '',
+      }, 'reset lock attempts');
     }
 
     const noNewContext = Object.keys(parsePayload.context).length === 0;
@@ -497,13 +610,15 @@ export const Spirits = {
         }
         return accumulator;
       }, []);
-    
-      for (const m of toAdd) pushMessage(messages, m);
+
+      for (const m of toAdd) {
+        emitAddMessage(pushMessage(messages, m));
+      }
     }
 
     // 3. Run the contextualizer
-    progress('Running contextualizer', 'info', 'SET_PROCESSING', 'system');
-    const newContextMessages = await wrapStep(contextualizer({ conversation, messages }), 'contextualize');
+    // progress('Running contextualizer', 'info', 'SET_PROCESSING', 'system');
+    const newContextMessages = await wrapStep(contextualizer({ conversation, messages }), 'contextualize', 'contextualizing');
     for (const contextMessage of newContextMessages) {
       if (isEmptySystemMessage(contextMessage)) {
         progress('Empty contextualizer system message blocked', 'warn', 'EMPTY_SYSTEM_MESSAGE', {
@@ -511,16 +626,15 @@ export const Spirits = {
           message: contextMessage,
         });
       } else if (!messages.find(mes => messageKey(mes) === messageKey(contextMessage))) {
-        pushMessage(messages, contextMessage);
-        progress(`Added context`, 'info', 'ADD_MESSAGE', messages[messages.length - 1]);
+        emitAddMessage(pushMessage(messages, contextMessage));
+        progress(`Added context ${message.role} message`, 'info', 'ADD_MESSAGE', messages[messages.length - 1]);
       } else {
         progress(`Already have system context, skipping`, 'info');
       }
     }
 
     // 4. Run the workflow
-    progress('Running workflow', 'info', 'SET_PROCESSING', 'system');
-
+    // progress('Running workflow', 'info', 'SET_PROCESSING', 'system');
     const slots = await wrapStep(workflow({
       messages,
       conversation,
@@ -592,7 +706,7 @@ export const Spirits = {
       }
 
       if (!adjusted.content && !adjusted.tool_calls) {
-        progress(`Slot ${index} input error`, 'failed', 'SLOT_INPUT_ERROR', {
+        progress(`Slot ${index} input error`, 'error', 'SLOT_INPUT_ERROR', {
           error: `Expected slots[${index}].message.content to exist (unless tool_calls provided)`,
         });
         return acc;
@@ -600,17 +714,18 @@ export const Spirits = {
       acc.push(adjusted);
       return acc;
     }, []);
-    enforceMonotonicInPlace(messagesToTransform, 1);
+    enforceMonotonicWithEmits(messagesToTransform, 1);
 
     const previousLockAttempt = conversation.lockAttempts || 0; // Used to track
 
     if (hasNoInstructions && noNewContext) {
-      conversation = incrementLockAttempt(conversation, config);
+      conversation = incrementLockAttempt(conversation, config).updated;
     } else {
-      conversation.lockAttempts = 0;
-      conversation.locked = false;
-      conversation.lockedReason = '';
-      progress('Reset lock', 'info', 'UPDATE_CONVERSATION', { lockAttempts: 0, locked: false, lockedReason: '' });
+      conversation = updateConversation(conversation, {
+        lockAttempts: 0,
+        locked: false,
+        lockedReason: '',
+      }, 'reset lock');
     }
 
     let resettedIntent = false;
@@ -655,7 +770,7 @@ export const Spirits = {
             type: 'literal',
             slots,
             map
-          });
+          }, 'anticipation slots');
         } else if ('yes' in anticipate && 'no' in anticipate && 'did' in anticipate) {
           // "did" anticipation
           conversation = updateConversation(conversation, {
@@ -665,7 +780,7 @@ export const Spirits = {
               no: anticipate.no
             },
             did: anticipate.did
-          });
+          }, 'anticipation slots');
         } else {
           throw new Error(`Invalid anticipate payload "${JSON.stringify(anticipate)}"`);
         }
@@ -691,32 +806,32 @@ export const Spirits = {
         _forward = forward;
         _forwardNote = forwardNote;
         if (typeof forward === 'string') {
-          conversation = updateConversation(conversation, { forwarded: forward });
-          pushMessage(messages, {
+          conversation = updateConversation(conversation, { forwarded: forward }, 'forward');
+          emitAddMessage(pushMessage(messages, {
             id: idGenerator("sys"),
             role: "system",
             content: `forwarded to "${forward}"`,
             time: new Date().toISOString(),
-          });
+          }));
           progress(`Forwarded to "${forward}"`, 'info', 'ADD_MESSAGE', messages[messages.length - 1]);
         } else if (typeof forward === 'boolean') {
-          conversation = updateConversation(conversation, { forwarded: conversation.$agent });
-          pushMessage(messages, {
+          conversation = updateConversation(conversation, { forwarded: conversation.$agent }, 'forward');
+          emitAddMessage(pushMessage(messages, {
             id: idGenerator("sys"),
             role: "system",
             content: `forwarded to "${forward}"`,
             time: new Date().toISOString(),
-          });
+          }));
           progress(`Forwarded to agent`, 'info', 'ADD_MESSAGE', messages[messages.length - 1]);
 
         } else {
-          conversation = updateConversation(conversation, { forwarded: forward.to });
-          pushMessage(messages, {
+          conversation = updateConversation(conversation, { forwarded: forward.to }, 'forward');
+          emitAddMessage(pushMessage(messages, {
             id: idGenerator("sys"),
             role: "system",
             content: `forwarded to "${forward.to}" ${forward.mode ? ' (' + forward.mode + ')' : ''}`,
             time: new Date().toISOString(),
-          });
+          }));
           progress(
             `Forwarded to "${forward.to}" ${forward.mode ? ' (' + forward.mode + ')' : ''}`,
             'info',
@@ -752,8 +867,9 @@ export const Spirits = {
         for (const instructionId of removeInstructions) {
           const index = messages.findIndex(m => m.id === instructionId);
           if (index > -1) {
-            messages.splice(index, 1);
+            const removed = messages.splice(index, 1)[0];
             progress('Remove instruction', 'info', 'REMOVE_MESSAGE', instructionId);
+            emitDeleteMessage(removed?.id || instructionId);
           } else {
             console.log(`Spirits: Instruction not found "${instructionId}", other ids: ${messages.map(m => `"${m.id}"`)
               .join(', ')}`);
@@ -798,7 +914,6 @@ export const Spirits = {
 
       if (contextUpsert) {
         context = updateContext(context, contextUpsert);
-        progress('Upserted context', 'info', 'UPDATE_CONTEXT', contextUpsert);
       }
 
       if (resetIntent) {
@@ -807,20 +922,16 @@ export const Spirits = {
 
     }
 
-    enforceMonotonicInPlace(messages, 1);
+    enforceMonotonicWithEmits(messages, 1);
 
     if (resettedIntent && !_forward) {
-      conversation.intent = null;
-      conversation.intentScore = null;
-      conversation.locked = false;
-      conversation.lockedReason = '';
-      conversation.lockAttempts = 0;
-      progress(
-        'Reset conversation intent',
-        'info',
-        'UPDATE_CONVERSATION',
-        { intent: null, intentScore: null, locked: false, lockAttempts: 0, lockedReason: '' }
-      );
+      conversation = updateConversation(conversation, {
+        intent: null,
+        intentScore: null,
+        locked: false,
+        lockedReason: '',
+        lockAttempts: 0,
+      }, 'reset conversation intent');
     }
 
     // 5. Generate response
@@ -829,7 +940,7 @@ export const Spirits = {
       // If conversation is newly locked, don't generate, unless instructions were provided and no custom messages were provided
       if ((!conversation.locked || !hasNoInstructions) && !!hasNoCustomMessage) {
         try {
-          progress('Generating message', 'info', 'SET_PROCESSING', 'system');
+          // progress('Generating message', 'info', 'SET_PROCESSING', 'system');
 
           /** @type {import('@scout9/admin').GenerateRequestOneOf1} */
           const generatorInput = {
@@ -846,8 +957,8 @@ export const Spirits = {
           const generatorPayload = await wrapStep(generator(generatorInput), 'generate');
           if (!generatorPayload.send) {
             progress(
-              'Generated response',
-              'failed',
+              'Generated response send rejected',
+              'error',
               undefined,
               { error: generatorPayload.errors?.join('\n\n') || 'Unknown Reason' }
             );
@@ -860,7 +971,6 @@ export const Spirits = {
               'API: ' + generatorPayload.errors?.join('\n\n') || generatorPayload.forwardNote || 'Unknown Reason'
             );
           } else {
-            progress('Generated response', 'success', undefined, undefined);
             // Check if already had message
             const agentMessages = messages.filter(m => m.role === 'agent');
             const lastAgentMessage = agentMessages[agentMessages.length - 1];
@@ -926,7 +1036,7 @@ export const Spirits = {
                 { seen: new Set(), items: [] }
               ).items;
 
-            enforceMonotonicInPlace(addedMessages, 1);
+            enforceMonotonicWithEmits(addedMessages, 1);
 
             logToolPairingIssues([...messages, ...addedMessages], 'post-dedupe');
 
@@ -935,7 +1045,7 @@ export const Spirits = {
               // Error should not have happened
               conversation = lockConversation(conversation, 'Duplicate message');
             } else {
-              enforceMonotonicInPlace(messagesToTransform, 1);
+              enforceMonotonicWithEmits(messagesToTransform, 1);
               for (const newMessage of addedMessages) {
                 // messages.push(newMessage); switched to push to messages after transform is complete
                 pushMessage(messagesToTransform, {
@@ -980,14 +1090,13 @@ export const Spirits = {
             context
           }), 'transform');
 
-          progress('Generated response', 'success', undefined, undefined);
-
           // @TODO check for duplicates, or have already sent the message
           const transformedMessages =
             transformResponse.messages?.length
               ? transformResponse.messages
               : [{ role: 'agent', content: transformResponse.message }];
 
+              const appendedList = [];
           for (const message of transformedMessages) {
             const adjusted = {
               id: idGenerator('agent'),
@@ -1009,13 +1118,16 @@ export const Spirits = {
             }
 
             if (adjusted.role === 'agent' && adjusted.content && !adjusted.ignoreTransform && !adjusted.tool_calls && !adjusted.contentTransformed) {
-              progress('missing contentTransformed on a generated message', 'warning', undefined, adjusted);
+              progress('missing contentTransformed on a generated message', 'warn', undefined, adjusted);
               adjusted.contentTransformed = adjusted.content;
             }
 
             const appended = pushMessage(messages, adjusted);
-            progress("Added agent message", "info", "ADD_MESSAGE", appended);
+            appendedList.push(appended);
+            emitAddMessage(appended);
           }
+
+          progress(`Added ${appendedList.length} persona message${appendedList.length === 1 ? '' : 's'}`, "info", "ADD_MESSAGES", appendedList);
 
         } catch (e) {
           console.error(`Spirits: Locking conversation, error transforming response: ${e.message}`);
@@ -1033,8 +1145,6 @@ export const Spirits = {
       onStatus('transform', 'ignored');
     }
 
-    progress('Parsing message', 'info', 'SET_PROCESSING', null);
-
     const emptySystemMessages = messages.filter(isEmptySystemMessage);
     if (emptySystemMessages.length) {
       progress('Empty system messages detected post-run', 'error', 'EMPTY_SYSTEM_MESSAGE_FINAL', {
@@ -1045,6 +1155,8 @@ export const Spirits = {
     }
 
     logToolPairingIssues(messages, 'final');
+
+    progress(`Spirits.customer executed in ${elapsedSeconds(rootStart)}s total`, 'success', undefined, undefined);
 
     return {
       conversation: {

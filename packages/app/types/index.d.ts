@@ -926,6 +926,7 @@ declare module '@scout9/app/spirits' {
 
 
 
+
 	/**
 	 * Message key helper for doing comparisons to fund duplicates
 	 * */
@@ -995,6 +996,26 @@ declare module '@scout9/app/spirits' {
 	export type TransformerFun = (data: import('@scout9/admin').PmtTransformRequest) => Promise<import('@scout9/admin').PmtTransformResponse>;
 	export type IdGeneratorFun = (prefix: import('@scout9/admin').Message['role']) => string;
 	export type StatusCallback = (message: string, level?: 'info' | 'warn' | 'error' | 'success' | undefined, type?: string | undefined, payload?: any | undefined) => void;
+	export type CustomerSpiritStateCallbacks = {
+		onSetContext?: ((context: any) => void) | undefined;
+		onUpdateContext?: ((contextPatch: any) => void) | undefined;
+		onSetConversation?: ((conversation: any) => void) | undefined;
+		/**
+		 * // MUST match ConversationRunnerState.chunkMessage input shape
+		 */
+		onUpdateConversation?: ((conversationPatch: any) => void) | undefined;
+		onChunkMessage?: ((args: {
+			text: string;
+			conversationId: string;
+			source?: string;
+			mode?: 'generation' | 'transformation';
+		}) => void) | undefined;
+		onAddMessage?: ((message: import('@scout9/admin').Message) => void) | undefined;
+		onUpdateMessage?: ((messagePatch: Partial<import('@scout9/admin').Message> & {
+			id: string;
+		}) => void) | undefined;
+		onDeleteMessage?: ((messageId: string) => void) | undefined;
+	};
 	export type CustomerSpiritCallbacks = {
 		parser: ParseFun;
 		contextualizer: ContextualizerFun;
@@ -1003,6 +1024,14 @@ declare module '@scout9/app/spirits' {
 		transformer: TransformerFun;
 		idGenerator: IdGeneratorFun;
 		progress?: StatusCallback | undefined;
+		onSetContext?: CustomerSpiritStateCallbacks['onSetContext'];
+		onUpdateContext?: CustomerSpiritStateCallbacks['onUpdateContext'];
+		onSetConversation?: CustomerSpiritStateCallbacks['onSetConversation'];
+		onUpdateConversation?: CustomerSpiritStateCallbacks['onUpdateConversation'];
+		onChunkMessage?: CustomerSpiritStateCallbacks['onChunkMessage'];
+		onAddMessage?: CustomerSpiritStateCallbacks['onAddMessage'];
+		onUpdateMessage?: CustomerSpiritStateCallbacks['onUpdateMessage'];
+		onDeleteMessage?: CustomerSpiritStateCallbacks['onDeleteMessage'];
 	};
 	export type ConversationEvent = {
 		conversation: (Change<any> & {
