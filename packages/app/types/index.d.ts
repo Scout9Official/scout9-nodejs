@@ -1012,7 +1012,7 @@ declare module '@scout9/app/spirits' {
 		context: any;
 	};
 	export type ParseFun = (message: string, language: string | undefined) => Promise<import('@scout9/admin').ParseResponse>;
-	export type ContextualizerFun = (args: Pick<any, 'messages' | 'conversation'>) => Promise<any['messages']>;
+	export type ContextualizerFun = (args: any) => Promise<import('@scout9/admin').ContextualizerResponse>;
 	export type WorkflowFun = (event: any) => Promise<any>;
 	export type GenerateFun = (data: import('@scout9/admin').GenerateRequestOneOf1) => Promise<import('@scout9/admin').GenerateResponse>;
 	export type TransformerFun = (data: import('@scout9/admin').PmtTransformRequest) => Promise<import('@scout9/admin').PmtTransformResponse>;
@@ -1065,6 +1065,7 @@ declare module '@scout9/app/spirits' {
 		message: Change<import('@scout9/admin').Message>;
 		followup: Array<any>;
 		entityContextUpsert: Array<any>;
+		usage?: import("@scout9/admin").TokenUsage | undefined;
 	};
 }
 
