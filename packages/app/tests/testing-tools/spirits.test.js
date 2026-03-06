@@ -832,4 +832,85 @@ describe("Spirits.customer (strict)", () => {
     guard.assertNoUnexpected();
     guard.restore();
   });
+
+  test("usage is optional and aggregates across contextualizer/workflow/generator/transform", async () => {
+    const guard = installConsoleGuards();
+
+    const base = baseInput({
+      contextualizer: jest.fn(async () => ({
+        messages: [],
+        usage: {
+          prompt_tokens: 1,
+          completion_tokens: 2,
+          total_tokens: 3,
+          completion_tokens_details: { reasoning_tokens: 4 },
+        },
+      })),
+      workflow: jest.fn(async () => [
+        {
+          instructions: "be helpful",
+          usage: {
+            prompt_tokens: 10,
+            completion_tokens: 20,
+            total_tokens: 30,
+            prompt_tokens_details: { cached_tokens: 1 },
+          },
+        },
+      ]),
+      generator: jest.fn(async () => ({
+        send: true,
+        usage: {
+          prompt_tokens: 100,
+          completion_tokens: 200,
+          total_tokens: 300,
+          completion_tokens_details: {
+            accepted_prediction_tokens: 5,
+            audio_tokens: 6,
+          },
+        },
+        messages: [{ role: "agent", content: "hello there sir", time: nowIso() }],
+      })),
+      transformer: jest.fn(async (req) => ({
+        usage: {
+          prompt_tokens: 1000,
+          completion_tokens: 2000,
+          total_tokens: 3000,
+          completion_tokens_details: { rejected_prediction_tokens: 7 },
+          prompt_tokens_details: { audio_tokens: 8 },
+        },
+        messages: req.addedMessages.map((m) =>
+          m.role === "agent"
+            ? { ...m, content: "hello there Gary", contentTransformed: "hello there Gary" }
+            : m
+        ),
+      })),
+    });
+
+    const { input, acc } = withStateCallbacks(base);
+    const event = await Spirits.customer(input);
+
+    expect(event.usage).toEqual({
+      prompt_tokens: 1111,
+      completion_tokens: 2222,
+      total_tokens: 3333,
+      completion_tokens_details: {
+        accepted_prediction_tokens: 5,
+        audio_tokens: 6,
+        reasoning_tokens: 4,
+        rejected_prediction_tokens: 7,
+      },
+      prompt_tokens_details: {
+        audio_tokens: 8,
+        cached_tokens: 1,
+      },
+    });
+
+    const noUsageEvent = await Spirits.customer(baseInput());
+    expect(noUsageEvent).not.toHaveProperty("usage");
+
+    expectCallbackStateMatchesEvent(acc, event);
+    guard.assertNoUnexpected();
+    guard.restore();
+  });
+
 });

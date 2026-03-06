@@ -146,6 +146,22 @@ export const WorkflowEventSchema = z.object({
 
 export const DirectMessageSchema = MessageSchema.partial().omit({id: true, entities: true, time: true, role: true});
 
+export const CompletionUsageSchema = z.object({
+  prompt_tokens: z.number(),
+  completion_tokens: z.number(),
+  total_tokens: z.number(),
+  completion_tokens_details: z.object({
+    accepted_prediction_tokens: z.number().optional(),
+    audio_tokens: z.number().optional(),
+    reasoning_tokens: z.number().optional(),
+    rejected_prediction_tokens: z.number().optional(),
+  }).optional(),
+  prompt_tokens_details: z.object({
+    audio_tokens: z.number().optional(),
+    cached_tokens: z.number().optional(),
+  }).optional(),
+});
+
 /**
  * The workflow response object slot
  */
@@ -160,7 +176,8 @@ export const WorkflowResponseSlotBaseSchema = z.object({
   removeInstructions: z.array(z.string()).optional(),
   resetIntent: z.boolean().optional(),
   secondsDelay: z.number().optional(),
-  scheduled: z.number().optional()
+  scheduled: z.number().optional(),
+  usage: CompletionUsageSchema.optional(),
 });
 
 

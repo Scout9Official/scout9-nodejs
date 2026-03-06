@@ -102,7 +102,7 @@ export class EventResponse<T = any> {
  *
  * @type {(message: string, options?: OptionsInstruct) => EventMacros}
  */
-export const instruct: ((instruction: string, options?: OptionsInstruct) => EventMacros) | ((instruction: Array<string | (OptionsInstruct & {content: string})>) => EventMacros);
+export const instruct: ((instruction: string, options?: OptionsInstruct) => EventMacros) | ((instruction: Array<string | (OptionsInstruct & { content: string })>) => EventMacros);
 
 /**
  * If conversation is not stagnant, return instructions to guide next auto reply response, otherwise it will forward the conversation
@@ -115,7 +115,7 @@ export const instruct: ((instruction: string, options?: OptionsInstruct) => Even
  *
  * @type {(message: string, options?: OptionsInstruct) => EventMacros}
  */
-export const instructSafe: (instruction: string, options?: (OptionsInstruct & OptionsForward & {stagnationLimit?: number})) => EventMacros;
+export const instructSafe: (instruction: string, options?: (OptionsInstruct & OptionsForward & { stagnationLimit?: number })) => EventMacros;
 
 /**
  * Forwards conversation back to you or owner of workflow.
@@ -225,7 +225,7 @@ export type EventMacros = {
     /**
      * Similar to `instruct` except that it requires a schedule time parameter that determines when to follow up (and is not an event output macro). This will fire another run job with a new insert system context message, if `options.literal` is set to true, it will be an appended agent message prior to running the workflow app.
      */
-    anticipate(instruction: Array<WorkflowResponseSlotBase & {keywords: string[]}>): EventMacros;
+    anticipate(instruction: Array<WorkflowResponseSlotBase & { keywords: string[] }>): EventMacros;
 
     /**
      * Resets conversation intent
@@ -241,7 +241,7 @@ export type EventMacros = {
      * If conversation is not stagnant, return instructions to guide next auto reply response, otherwise it will forward the conversation
      * stagnationLimit defaults to 2
      */
-    instructSafe(instruction: string, options?: (OptionsInstruct & OptionsForward & {stagnationLimit?: number})): EventMacros;
+    instructSafe(instruction: string, options?: (OptionsInstruct & OptionsForward & { stagnationLimit?: number })): EventMacros;
 
     /**
      * Return instructions to guide next auto reply response
@@ -251,7 +251,7 @@ export type EventMacros = {
     /**
      * Return instructions to guide next auto reply response
      */
-    instruct(instruction: Array<string | (OptionsInstruct & {content: string})>): EventMacros;
+    instruct(instruction: Array<string | (OptionsInstruct & { content: string })>): EventMacros;
 
     /**
      * If a manual message must be sent, you can use the `reply` macro
@@ -370,7 +370,7 @@ export type Agent = {
     }
 };
 
-export type AgentConfiguration = Agent & {id: string};
+export type AgentConfiguration = Agent & { id: string };
 
 export type AgentsConfiguration = AgentConfiguration[];
 
@@ -448,7 +448,7 @@ export type Customer = {
     state?: (string | null) | undefined;
     town?: (string | null) | undefined;
     joined?: (string | null) | undefined;
-} & {[key: string]: CustomerValue};
+} & { [key: string]: CustomerValue };
 
 export type EntityDefinition = {
     /** What entity utterance this represents, if not provided, it will default to the entity id */
@@ -742,7 +742,7 @@ export type WorkflowEvent = {
     note?: string | undefined;
 };
 
-export type AnticipateDid =  {
+export type AnticipateDid = {
     did: string;
     yes: WorkflowResponseSlotBase;
     no: WorkflowResponseSlotBase;
@@ -755,6 +755,26 @@ export type AnticipateKeywords = WorkflowResponseSlotBase & {
 export type Anticipate = AnticipateDid | AnticipateKeywords[];
 
 export type DirectMessage = Partial<Omit<Message, 'id' | 'entities' | 'time' | 'role'>>;
+
+export interface LLMUsage {
+    completion_tokens: number;
+    prompt_tokens: number;
+    total_tokens: number;
+    completion_tokens_details?: CompletionTokensDetails;
+    prompt_tokens_details?: PromptTokensDetails;
+}
+
+export interface CompletionTokensDetails {
+    accepted_prediction_tokens?: number;
+    audio_tokens?: number;
+    reasoning_tokens?: number;
+    rejected_prediction_tokens?: number;
+}
+
+export interface PromptTokensDetails {
+    audio_tokens?: number;
+    cached_tokens?: number;
+}
 
 /**
  * Workflow Response Slot, can use for both PMT workflow event and event macro runtimes
@@ -792,6 +812,8 @@ export type WorkflowResponseSlotBase = {
     /** unix time of when to send instructions or message */
     scheduled?: number | undefined;
 
+    /** internal usage, if llm tokens were used  */
+    usage?: LLMUsage | undefined;
 };
 
 /**
@@ -827,10 +849,10 @@ export type WorkflowResponse = EventMacros | WorkflowResponseSlot | (WorkflowRes
 export type WorkflowFunction = (event: WorkflowEvent) => WorkflowResponse | Promise<WorkflowResponse>;
 
 export type WorkflowResponseMessageApiRequest = {
-  uri: string;
-  data?: any | undefined;
-  headers?: Record<string, string> | undefined;
-  method?: ("GET" | "POST" | "PUT") | undefined;
+    uri: string;
+    data?: any | undefined;
+    headers?: Record<string, string> | undefined;
+    method?: ("GET" | "POST" | "PUT") | undefined;
 };
 
 export type WorkflowResponseMessage = string | WorkflowResponseMessageApiRequest;

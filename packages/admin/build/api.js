@@ -745,6 +745,36 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
             };
         },
         /**
+         * Runs contextualization on workflow event messages and returns contextualized messages.
+         * @summary Contextualize workflow event messages
+         * @param {ContextualizerRequest} contextualizerRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        contextualize: async (contextualizerRequest, options = {}) => {
+            // verify required parameter 'contextualizerRequest' is not null or undefined
+            (0, common_1.assertParamExists)('contextualize', 'contextualizerRequest', contextualizerRequest);
+            const localVarPath = `/v1-contextualize`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options };
+            const localVarHeaderParameter = {};
+            const localVarQueryParameter = {};
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            (0, common_1.setSearchParams)(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = { ...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers };
+            localVarRequestOptions.data = (0, common_1.serializeDataIfNeeded)(contextualizerRequest, localVarRequestOptions, configuration);
+            return {
+                url: (0, common_1.toPathString)(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          *
          * @summary Gets a conversation
          * @param {string} id id of entity to query
@@ -2386,6 +2416,17 @@ const Scout9ApiFp = function (configuration) {
             return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
         },
         /**
+         * Runs contextualization on workflow event messages and returns contextualized messages.
+         * @summary Contextualize workflow event messages
+         * @param {ContextualizerRequest} contextualizerRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async contextualize(contextualizerRequest, options) {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.contextualize(contextualizerRequest, options);
+            return (0, common_1.createRequestFunction)(localVarAxiosArgs, axios_1.default, base_1.BASE_PATH, configuration);
+        },
+        /**
          *
          * @summary Gets a conversation
          * @param {string} id id of entity to query
@@ -3048,6 +3089,16 @@ const Scout9ApiFactory = function (configuration, basePath, axios) {
             return localVarFp.config(options).then((request) => request(axios, basePath));
         },
         /**
+         * Runs contextualization on workflow event messages and returns contextualized messages.
+         * @summary Contextualize workflow event messages
+         * @param {ContextualizerRequest} contextualizerRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        contextualize(contextualizerRequest, options) {
+            return localVarFp.contextualize(contextualizerRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
          *
          * @summary Gets a conversation
          * @param {string} id id of entity to query
@@ -3672,6 +3723,17 @@ class Scout9ApiGenerated extends base_1.BaseAPI {
      */
     config(options) {
         return (0, exports.Scout9ApiFp)(this.configuration).config(options).then((request) => request(this.axios, this.basePath));
+    }
+    /**
+     * Runs contextualization on workflow event messages and returns contextualized messages.
+     * @summary Contextualize workflow event messages
+     * @param {ContextualizerRequest} contextualizerRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof Scout9Api
+     */
+    contextualize(contextualizerRequest, options) {
+        return (0, exports.Scout9ApiFp)(this.configuration).contextualize(contextualizerRequest, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      *

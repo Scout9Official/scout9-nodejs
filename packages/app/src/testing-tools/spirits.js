@@ -3,6 +3,11 @@ import {
   nextMonotonicIso,
   enforceMonotonicInPlace,
 } from "./message-utils.js";
+import {
+  createCompletionUsage,
+  addCompletionUsage,
+  addCompletionUsageFromPayload,
+} from "./utils.js";
 
 /**
  * @typedef {Object} Document
@@ -61,8 +66,8 @@ import {
 
 /**
  * @callback ContextualizerFun
- * @param {Pick<import('@scout9/app').WorkflowEvent, 'messages' | 'conversation'>} args - message to send
- * @returns {Promise<import('@scout9/app').WorkflowEvent['messages']>}
+ * @param {Pick<import('@scout9/admin').ContextualizerRequest>} args - message to send
+ * @returns {Promise<import('@scout9/admin').ContextualizerResponse>}
  */
 
 /**
@@ -196,6 +201,11 @@ class SpiritError extends Error {
  * @property {Change<import('@scout9/admin').Message>} message
  * @property {Array<import('@scout9/app').Followup>} followup
  * @property {Array<import('@scout9/app').EntityContextUpsert>} entityContextUpsert
+ * @property {import('@scout9/admin').TokenUsage} [usage]
+ */
+
+/**
+ * spirits api
  */
 export const Spirits = {
 
@@ -251,6 +261,8 @@ export const Spirits = {
     // Storing post process events here
     const followup = [];
     const entityContextUpsert = [];
+    const usage = createCompletionUsage();
+    let hasUsage = false;
 
     // 0. Setup Helpers
     // ---- SYNC SAFE CALLS (NO PROMISES) ----
@@ -618,7 +630,11 @@ export const Spirits = {
 
     // 3. Run the contextualizer
     // progress('Running contextualizer', 'info', 'SET_PROCESSING', 'system');
-    const newContextMessages = await wrapStep(contextualizer({ conversation, messages }), 'contextualize', 'contextualizing');
+    const contextualizerResponse = await wrapStep(contextualizer({ conversation, messages }), 'contextualize', 'contextualizing');
+    const newContextMessages = Array.isArray(contextualizerResponse)
+      ? contextualizerResponse
+      : (contextualizerResponse?.messages ?? []);
+    hasUsage = addCompletionUsageFromPayload(usage, contextualizerResponse) || hasUsage;
     for (const contextMessage of newContextMessages) {
       if (isEmptySystemMessage(contextMessage)) {
         progress('Empty contextualizer system message blocked', 'warn', 'EMPTY_SYSTEM_MESSAGE', {
@@ -659,6 +675,9 @@ export const Spirits = {
         }
         return accumulator;
       }, []));
+    for (const slot of slots) {
+      hasUsage = addCompletionUsage(usage, slot?.usage) || hasUsage;
+    }
 
     const hasNoInstructions = slots.every(s => !s.instructions || (Array.isArray(s.instructions) && s.instructions.length === 0));
     const hasNoCustomMessage = slots.every(s => !s.message);
@@ -955,6 +974,7 @@ export const Spirits = {
             generatorInput.tasks = _tasks;
           }
           const generatorPayload = await wrapStep(generator(generatorInput), 'generate');
+          hasUsage = addCompletionUsageFromPayload(usage, generatorPayload) || hasUsage;
           if (!generatorPayload.send) {
             progress(
               'Generated response send rejected',
@@ -1089,6 +1109,7 @@ export const Spirits = {
             messages,
             context
           }), 'transform');
+          hasUsage = addCompletionUsageFromPayload(usage, transformResponse) || hasUsage;
 
           // @TODO check for duplicates, or have already sent the message
           const transformedMessages =
@@ -1178,7 +1199,8 @@ export const Spirits = {
         after: context
       },
       followup,
-      entityContextUpsert
+      entityContextUpsert,
+      ...(hasUsage ? { usage } : {})
     };
   }
 };
