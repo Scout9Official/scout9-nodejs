@@ -1,5 +1,5 @@
 declare module '@scout9/app' {
-	import type { Message as MessageAdmin, EntityToken as EntityTokenAdmin } from '@scout9/admin';
+	import type { Conversation as ConversationAdmin, Message as MessageAdmin, EntityToken as EntityTokenAdmin } from '@scout9/admin';
 	/**
 	 * @param event - every workflow receives an event object
 	 * */
@@ -337,41 +337,7 @@ declare module '@scout9/app' {
 	};
 
 
-	export type Conversation = {
-		$id: string;
-		/** Default agent assigned to the conversation(s) */
-		$agent: string;
-		/** Customer this conversation is with */
-		$customer: string;
-		/** Initial contexts to load when starting the conversation */
-		initialContexts?: string[] | undefined;
-		environment: "phone" | "email" | "web";
-		environmentProps?: {
-			/** HTML Subject of the conversation */
-			subject?: string | undefined;
-			/** Used to sync email messages with the conversation */
-			platformEmailThreadId?: string | undefined;
-		} | undefined;
-		/** Whether the conversation is locked or not */
-		locked?: (boolean | undefined) | null;
-		/** Why this conversation was locked */
-		lockedReason?: (string | undefined) | null;
-		/** Number attempts made until conversation is locked */
-		lockAttempts?: (number | undefined) | null;
-		/** What personaId/phone/email was forwarded */
-		forwardedTo?: (string | undefined) | null;
-		/** Datetime ISO 8601 timestamp when persona was forwarded */
-		forwarded?: (string | undefined) | null;
-		forwardNote?: (string | undefined) | null;
-		/** Detected intent of conversation */
-		intent?: (string | undefined) | null;
-		/** Confidence score of the assigned intent */
-		intentScore?: (number | undefined) | null;
-		/** Used to handle anticipating outcome */
-		anticipate?: ConversationAnticipate | undefined;
-		/** If conversation is assigned to a command */
-		command?: CommandConfiguration | undefined;
-	};
+	export type Conversation = ConversationAdmin;
 
 	export type CustomerValue = boolean | number | string;
 
@@ -699,26 +665,6 @@ declare module '@scout9/app' {
 
 	export type DirectMessage = Partial<Omit<Message, 'id' | 'entities' | 'time' | 'role'>>;
 
-	export interface LLMUsage {
-		completion_tokens: number;
-		prompt_tokens: number;
-		total_tokens: number;
-		completion_tokens_details?: CompletionTokensDetails;
-		prompt_tokens_details?: PromptTokensDetails;
-	}
-
-	export interface CompletionTokensDetails {
-		accepted_prediction_tokens?: number;
-		audio_tokens?: number;
-		reasoning_tokens?: number;
-		rejected_prediction_tokens?: number;
-	}
-
-	export interface PromptTokensDetails {
-		audio_tokens?: number;
-		cached_tokens?: number;
-	}
-
 	/**
 	 * Workflow Response Slot, can use for both PMT workflow event and event macro runtimes
 	 */
@@ -756,7 +702,7 @@ declare module '@scout9/app' {
 		scheduled?: number | undefined;
 
 		/** internal usage, if llm tokens were used  */
-		usage?: LLMUsage | undefined;
+		usage?: import('@scout9/admin').TokenUsage | undefined;
 	};
 
 	/**
@@ -852,7 +798,7 @@ declare module '@scout9/app/testing-tools' {
 	export function createMockAgent(firstName?: string, lastName?: string): any;
 	export function createMockCustomer(firstName?: string, lastName?: string): any;
 	export function createMockMessage(content: any, role?: string, time?: string): any;
-	export function createMockConversation(environment?: any, $agent?: string | undefined, $customer?: string | undefined, $id?: string | undefined): any;
+	export function createMockConversation(channel?: any, $agent?: string | undefined, $customer?: string | undefined, $id?: string | undefined): any;
 	export function createMockWorkflowEvent(message: string, intent?: string | any['intent'] | null): any;
 	/**
 	 * Testing tool kit, used to handle Scout9 operations such as parsing, workflow, and generating responses
@@ -1153,30 +1099,56 @@ declare module '@scout9/app/schemas' {
 			keywords: string[];
 		}[] | undefined;
 	}>;
+	export const ConversationChannelPropsSchema: z.ZodObject<{
+		subject: z.ZodOptional<z.ZodString>;
+		platformEmailThreadId: z.ZodOptional<z.ZodString>;
+		smsMessageSid: z.ZodOptional<z.ZodString>;
+		channelResolutionPath: z.ZodOptional<z.ZodEnum<["twilio_production", "twilio_legacy_pmt", "twilio_free_bridge"]>>;
+	}, "strip", z.ZodAny, z.objectOutputType<{
+		subject: z.ZodOptional<z.ZodString>;
+		platformEmailThreadId: z.ZodOptional<z.ZodString>;
+		smsMessageSid: z.ZodOptional<z.ZodString>;
+		channelResolutionPath: z.ZodOptional<z.ZodEnum<["twilio_production", "twilio_legacy_pmt", "twilio_free_bridge"]>>;
+	}, z.ZodAny, "strip">, z.objectInputType<{
+		subject: z.ZodOptional<z.ZodString>;
+		platformEmailThreadId: z.ZodOptional<z.ZodString>;
+		smsMessageSid: z.ZodOptional<z.ZodString>;
+		channelResolutionPath: z.ZodOptional<z.ZodEnum<["twilio_production", "twilio_legacy_pmt", "twilio_free_bridge"]>>;
+	}, z.ZodAny, "strip">>;
 	export const ConversationSchema: z.ZodObject<{
-		$id: z.ZodString;
+		$id: z.ZodOptional<z.ZodString>;
 		$agent: z.ZodString;
 		$customer: z.ZodString;
 		initialContexts: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-		environment: z.ZodEnum<["phone", "email", "web"]>;
-		environmentProps: z.ZodOptional<z.ZodObject<{
+		channel: z.ZodEnum<["web", "demo_phone_test", "sms_phone", "outlook", "gmail", "iphone", "android", "teams", "discord", "whatsapp"]>;
+		channelProps: z.ZodOptional<z.ZodObject<{
 			subject: z.ZodOptional<z.ZodString>;
 			platformEmailThreadId: z.ZodOptional<z.ZodString>;
-		}, "strip", z.ZodTypeAny, {
-			subject?: string | undefined;
-			platformEmailThreadId?: string | undefined;
-		}, {
-			subject?: string | undefined;
-			platformEmailThreadId?: string | undefined;
-		}>>;
+			smsMessageSid: z.ZodOptional<z.ZodString>;
+			channelResolutionPath: z.ZodOptional<z.ZodEnum<["twilio_production", "twilio_legacy_pmt", "twilio_free_bridge"]>>;
+		}, "strip", z.ZodAny, z.objectOutputType<{
+			subject: z.ZodOptional<z.ZodString>;
+			platformEmailThreadId: z.ZodOptional<z.ZodString>;
+			smsMessageSid: z.ZodOptional<z.ZodString>;
+			channelResolutionPath: z.ZodOptional<z.ZodEnum<["twilio_production", "twilio_legacy_pmt", "twilio_free_bridge"]>>;
+		}, z.ZodAny, "strip">, z.objectInputType<{
+			subject: z.ZodOptional<z.ZodString>;
+			platformEmailThreadId: z.ZodOptional<z.ZodString>;
+			smsMessageSid: z.ZodOptional<z.ZodString>;
+			channelResolutionPath: z.ZodOptional<z.ZodEnum<["twilio_production", "twilio_legacy_pmt", "twilio_free_bridge"]>>;
+		}, z.ZodAny, "strip">>>;
 		locked: z.ZodNullable<z.ZodOptional<z.ZodBoolean>>;
+		lockCode: z.ZodOptional<z.ZodEnum<["workflow_stagnation", "max_lock_attempts", "runtime_error", "manual_mode", "policy_block"]>>;
 		lockedReason: z.ZodNullable<z.ZodOptional<z.ZodString>>;
 		lockAttempts: z.ZodNullable<z.ZodOptional<z.ZodNumber>>;
 		forwardedTo: z.ZodNullable<z.ZodOptional<z.ZodString>>;
 		forwarded: z.ZodNullable<z.ZodOptional<z.ZodString>>;
 		forwardNote: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+		initiated: z.ZodOptional<z.ZodString>;
 		intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
 		intentScore: z.ZodNullable<z.ZodOptional<z.ZodNumber>>;
+		read: z.ZodOptional<z.ZodString>;
+		metadata: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>;
 		anticipate: z.ZodOptional<z.ZodObject<{
 			type: z.ZodEnum<["did", "literal", "context"]>;
 			slots: z.ZodRecord<z.ZodString, z.ZodArray<z.ZodAny, "many">>;
@@ -1208,9 +1180,6 @@ declare module '@scout9/app/schemas' {
 				keywords: string[];
 			}[] | undefined;
 		}>>;
-		/**
-		 * Whether this conversation is part of a command flow
-		 */
 		command: z.ZodOptional<z.ZodObject<{
 			path: z.ZodString;
 			entity: z.ZodString;
@@ -1221,24 +1190,31 @@ declare module '@scout9/app/schemas' {
 			path: string;
 			entity: string;
 		}>>;
+		ingress: z.ZodOptional<z.ZodEnum<["auto", "manual", "app", "webhook"]>>;
 	}, "strip", z.ZodTypeAny, {
-		environment: "email" | "phone" | "web";
-		$id: string;
+		channel: "android" | "web" | "demo_phone_test" | "sms_phone" | "outlook" | "gmail" | "iphone" | "teams" | "discord" | "whatsapp";
 		$agent: string;
 		$customer: string;
+		$id?: string | undefined;
 		initialContexts?: string[] | undefined;
-		environmentProps?: {
-			subject?: string | undefined;
-			platformEmailThreadId?: string | undefined;
-		} | undefined;
+		channelProps?: z.objectOutputType<{
+			subject: z.ZodOptional<z.ZodString>;
+			platformEmailThreadId: z.ZodOptional<z.ZodString>;
+			smsMessageSid: z.ZodOptional<z.ZodString>;
+			channelResolutionPath: z.ZodOptional<z.ZodEnum<["twilio_production", "twilio_legacy_pmt", "twilio_free_bridge"]>>;
+		}, z.ZodAny, "strip"> | undefined;
 		locked?: boolean | null | undefined;
+		lockCode?: "workflow_stagnation" | "max_lock_attempts" | "runtime_error" | "manual_mode" | "policy_block" | undefined;
 		lockedReason?: string | null | undefined;
 		lockAttempts?: number | null | undefined;
 		forwardedTo?: string | null | undefined;
 		forwarded?: string | null | undefined;
 		forwardNote?: string | null | undefined;
+		initiated?: string | undefined;
 		intent?: string | null | undefined;
 		intentScore?: number | null | undefined;
+		read?: string | undefined;
+		metadata?: Record<string, any> | undefined;
 		anticipate?: {
 			type: "literal" | "context" | "did";
 			slots: Record<string, any[]>;
@@ -1252,24 +1228,31 @@ declare module '@scout9/app/schemas' {
 			path: string;
 			entity: string;
 		} | undefined;
+		ingress?: "auto" | "manual" | "app" | "webhook" | undefined;
 	}, {
-		environment: "email" | "phone" | "web";
-		$id: string;
+		channel: "android" | "web" | "demo_phone_test" | "sms_phone" | "outlook" | "gmail" | "iphone" | "teams" | "discord" | "whatsapp";
 		$agent: string;
 		$customer: string;
+		$id?: string | undefined;
 		initialContexts?: string[] | undefined;
-		environmentProps?: {
-			subject?: string | undefined;
-			platformEmailThreadId?: string | undefined;
-		} | undefined;
+		channelProps?: z.objectInputType<{
+			subject: z.ZodOptional<z.ZodString>;
+			platformEmailThreadId: z.ZodOptional<z.ZodString>;
+			smsMessageSid: z.ZodOptional<z.ZodString>;
+			channelResolutionPath: z.ZodOptional<z.ZodEnum<["twilio_production", "twilio_legacy_pmt", "twilio_free_bridge"]>>;
+		}, z.ZodAny, "strip"> | undefined;
 		locked?: boolean | null | undefined;
+		lockCode?: "workflow_stagnation" | "max_lock_attempts" | "runtime_error" | "manual_mode" | "policy_block" | undefined;
 		lockedReason?: string | null | undefined;
 		lockAttempts?: number | null | undefined;
 		forwardedTo?: string | null | undefined;
 		forwarded?: string | null | undefined;
 		forwardNote?: string | null | undefined;
+		initiated?: string | undefined;
 		intent?: string | null | undefined;
 		intentScore?: number | null | undefined;
+		read?: string | undefined;
+		metadata?: Record<string, any> | undefined;
 		anticipate?: {
 			type: "literal" | "context" | "did";
 			slots: Record<string, any[]>;
@@ -1283,6 +1266,7 @@ declare module '@scout9/app/schemas' {
 			path: string;
 			entity: string;
 		} | undefined;
+		ingress?: "auto" | "manual" | "app" | "webhook" | undefined;
 	}>;
 	/**
 	 * Represents the configuration provided in src/index.{js | ts} in a project
@@ -6452,31 +6436,39 @@ declare module '@scout9/app/schemas' {
 			tool_call_id?: string | undefined;
 		}>, "many">;
 		conversation: z.ZodObject<{
-			$id: z.ZodString;
+			$id: z.ZodOptional<z.ZodString>;
 			$agent: z.ZodString;
 			$customer: z.ZodString;
 			initialContexts: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-			environment: z.ZodEnum<["phone", "email", "web"]>; /**
-			 * An api call that should be called later, must return a string or {message: string}
-			 */
-			environmentProps: z.ZodOptional<z.ZodObject<{
+			channel: z.ZodEnum<["web", "demo_phone_test", "sms_phone", "outlook", "gmail", "iphone", "android", "teams", "discord", "whatsapp"]>;
+			channelProps: z.ZodOptional<z.ZodObject<{
 				subject: z.ZodOptional<z.ZodString>;
 				platformEmailThreadId: z.ZodOptional<z.ZodString>;
-			}, "strip", z.ZodTypeAny, {
-				subject?: string | undefined;
-				platformEmailThreadId?: string | undefined;
-			}, {
-				subject?: string | undefined;
-				platformEmailThreadId?: string | undefined;
-			}>>;
+				smsMessageSid: z.ZodOptional<z.ZodString>;
+				channelResolutionPath: z.ZodOptional<z.ZodEnum<["twilio_production", "twilio_legacy_pmt", "twilio_free_bridge"]>>;
+			}, "strip", z.ZodAny, z.objectOutputType<{
+				subject: z.ZodOptional<z.ZodString>;
+				platformEmailThreadId: z.ZodOptional<z.ZodString>;
+				smsMessageSid: z.ZodOptional<z.ZodString>;
+				channelResolutionPath: z.ZodOptional<z.ZodEnum<["twilio_production", "twilio_legacy_pmt", "twilio_free_bridge"]>>;
+			}, z.ZodAny, "strip">, z.objectInputType<{
+				subject: z.ZodOptional<z.ZodString>;
+				platformEmailThreadId: z.ZodOptional<z.ZodString>;
+				smsMessageSid: z.ZodOptional<z.ZodString>;
+				channelResolutionPath: z.ZodOptional<z.ZodEnum<["twilio_production", "twilio_legacy_pmt", "twilio_free_bridge"]>>;
+			}, z.ZodAny, "strip">>>;
 			locked: z.ZodNullable<z.ZodOptional<z.ZodBoolean>>;
+			lockCode: z.ZodOptional<z.ZodEnum<["workflow_stagnation", "max_lock_attempts", "runtime_error", "manual_mode", "policy_block"]>>;
 			lockedReason: z.ZodNullable<z.ZodOptional<z.ZodString>>;
 			lockAttempts: z.ZodNullable<z.ZodOptional<z.ZodNumber>>;
 			forwardedTo: z.ZodNullable<z.ZodOptional<z.ZodString>>;
 			forwarded: z.ZodNullable<z.ZodOptional<z.ZodString>>;
 			forwardNote: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			initiated: z.ZodOptional<z.ZodString>;
 			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
 			intentScore: z.ZodNullable<z.ZodOptional<z.ZodNumber>>;
+			read: z.ZodOptional<z.ZodString>;
+			metadata: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>;
 			anticipate: z.ZodOptional<z.ZodObject<{
 				type: z.ZodEnum<["did", "literal", "context"]>;
 				slots: z.ZodRecord<z.ZodString, z.ZodArray<z.ZodAny, "many">>;
@@ -6518,24 +6510,31 @@ declare module '@scout9/app/schemas' {
 				path: string;
 				entity: string;
 			}>>;
+			ingress: z.ZodOptional<z.ZodEnum<["auto", "manual", "app", "webhook"]>>;
 		}, "strip", z.ZodTypeAny, {
-			environment: "email" | "phone" | "web";
-			$id: string;
+			channel: "android" | "web" | "demo_phone_test" | "sms_phone" | "outlook" | "gmail" | "iphone" | "teams" | "discord" | "whatsapp";
 			$agent: string;
 			$customer: string;
+			$id?: string | undefined;
 			initialContexts?: string[] | undefined;
-			environmentProps?: {
-				subject?: string | undefined;
-				platformEmailThreadId?: string | undefined;
-			} | undefined;
+			channelProps?: z.objectOutputType<{
+				subject: z.ZodOptional<z.ZodString>;
+				platformEmailThreadId: z.ZodOptional<z.ZodString>;
+				smsMessageSid: z.ZodOptional<z.ZodString>;
+				channelResolutionPath: z.ZodOptional<z.ZodEnum<["twilio_production", "twilio_legacy_pmt", "twilio_free_bridge"]>>;
+			}, z.ZodAny, "strip"> | undefined;
 			locked?: boolean | null | undefined;
+			lockCode?: "workflow_stagnation" | "max_lock_attempts" | "runtime_error" | "manual_mode" | "policy_block" | undefined;
 			lockedReason?: string | null | undefined;
 			lockAttempts?: number | null | undefined;
 			forwardedTo?: string | null | undefined;
 			forwarded?: string | null | undefined;
 			forwardNote?: string | null | undefined;
+			initiated?: string | undefined;
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
+			read?: string | undefined;
+			metadata?: Record<string, any> | undefined;
 			anticipate?: {
 				type: "literal" | "context" | "did";
 				slots: Record<string, any[]>;
@@ -6549,24 +6548,31 @@ declare module '@scout9/app/schemas' {
 				path: string;
 				entity: string;
 			} | undefined;
+			ingress?: "auto" | "manual" | "app" | "webhook" | undefined;
 		}, {
-			environment: "email" | "phone" | "web";
-			$id: string;
+			channel: "android" | "web" | "demo_phone_test" | "sms_phone" | "outlook" | "gmail" | "iphone" | "teams" | "discord" | "whatsapp";
 			$agent: string;
 			$customer: string;
+			$id?: string | undefined;
 			initialContexts?: string[] | undefined;
-			environmentProps?: {
-				subject?: string | undefined;
-				platformEmailThreadId?: string | undefined;
-			} | undefined;
+			channelProps?: z.objectInputType<{
+				subject: z.ZodOptional<z.ZodString>;
+				platformEmailThreadId: z.ZodOptional<z.ZodString>;
+				smsMessageSid: z.ZodOptional<z.ZodString>;
+				channelResolutionPath: z.ZodOptional<z.ZodEnum<["twilio_production", "twilio_legacy_pmt", "twilio_free_bridge"]>>;
+			}, z.ZodAny, "strip"> | undefined;
 			locked?: boolean | null | undefined;
+			lockCode?: "workflow_stagnation" | "max_lock_attempts" | "runtime_error" | "manual_mode" | "policy_block" | undefined;
 			lockedReason?: string | null | undefined;
 			lockAttempts?: number | null | undefined;
 			forwardedTo?: string | null | undefined;
 			forwarded?: string | null | undefined;
 			forwardNote?: string | null | undefined;
+			initiated?: string | undefined;
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
+			read?: string | undefined;
+			metadata?: Record<string, any> | undefined;
 			anticipate?: {
 				type: "literal" | "context" | "did";
 				slots: Record<string, any[]>;
@@ -6580,6 +6586,7 @@ declare module '@scout9/app/schemas' {
 				path: string;
 				entity: string;
 			} | undefined;
+			ingress?: "auto" | "manual" | "app" | "webhook" | undefined;
 		}>;
 		context: z.ZodAny;
 		message: z.ZodObject<{
@@ -7117,23 +7124,29 @@ declare module '@scout9/app/schemas' {
 			tool_call_id?: string | undefined;
 		}[];
 		conversation: {
-			environment: "email" | "phone" | "web";
-			$id: string;
+			channel: "android" | "web" | "demo_phone_test" | "sms_phone" | "outlook" | "gmail" | "iphone" | "teams" | "discord" | "whatsapp";
 			$agent: string;
 			$customer: string;
+			$id?: string | undefined;
 			initialContexts?: string[] | undefined;
-			environmentProps?: {
-				subject?: string | undefined;
-				platformEmailThreadId?: string | undefined;
-			} | undefined;
+			channelProps?: z.objectOutputType<{
+				subject: z.ZodOptional<z.ZodString>;
+				platformEmailThreadId: z.ZodOptional<z.ZodString>;
+				smsMessageSid: z.ZodOptional<z.ZodString>;
+				channelResolutionPath: z.ZodOptional<z.ZodEnum<["twilio_production", "twilio_legacy_pmt", "twilio_free_bridge"]>>;
+			}, z.ZodAny, "strip"> | undefined;
 			locked?: boolean | null | undefined;
+			lockCode?: "workflow_stagnation" | "max_lock_attempts" | "runtime_error" | "manual_mode" | "policy_block" | undefined;
 			lockedReason?: string | null | undefined;
 			lockAttempts?: number | null | undefined;
 			forwardedTo?: string | null | undefined;
 			forwarded?: string | null | undefined;
 			forwardNote?: string | null | undefined;
+			initiated?: string | undefined;
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
+			read?: string | undefined;
+			metadata?: Record<string, any> | undefined;
 			anticipate?: {
 				type: "literal" | "context" | "did";
 				slots: Record<string, any[]>;
@@ -7147,6 +7160,7 @@ declare module '@scout9/app/schemas' {
 				path: string;
 				entity: string;
 			} | undefined;
+			ingress?: "auto" | "manual" | "app" | "webhook" | undefined;
 		};
 		stagnationCount: number;
 		context?: any;
@@ -7264,23 +7278,29 @@ declare module '@scout9/app/schemas' {
 			tool_call_id?: string | undefined;
 		}[];
 		conversation: {
-			environment: "email" | "phone" | "web";
-			$id: string;
+			channel: "android" | "web" | "demo_phone_test" | "sms_phone" | "outlook" | "gmail" | "iphone" | "teams" | "discord" | "whatsapp";
 			$agent: string;
 			$customer: string;
+			$id?: string | undefined;
 			initialContexts?: string[] | undefined;
-			environmentProps?: {
-				subject?: string | undefined;
-				platformEmailThreadId?: string | undefined;
-			} | undefined;
+			channelProps?: z.objectInputType<{
+				subject: z.ZodOptional<z.ZodString>;
+				platformEmailThreadId: z.ZodOptional<z.ZodString>;
+				smsMessageSid: z.ZodOptional<z.ZodString>;
+				channelResolutionPath: z.ZodOptional<z.ZodEnum<["twilio_production", "twilio_legacy_pmt", "twilio_free_bridge"]>>;
+			}, z.ZodAny, "strip"> | undefined;
 			locked?: boolean | null | undefined;
+			lockCode?: "workflow_stagnation" | "max_lock_attempts" | "runtime_error" | "manual_mode" | "policy_block" | undefined;
 			lockedReason?: string | null | undefined;
 			lockAttempts?: number | null | undefined;
 			forwardedTo?: string | null | undefined;
 			forwarded?: string | null | undefined;
 			forwardNote?: string | null | undefined;
+			initiated?: string | undefined;
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
+			read?: string | undefined;
+			metadata?: Record<string, any> | undefined;
 			anticipate?: {
 				type: "literal" | "context" | "did";
 				slots: Record<string, any[]>;
@@ -7294,6 +7314,7 @@ declare module '@scout9/app/schemas' {
 				path: string;
 				entity: string;
 			} | undefined;
+			ingress?: "auto" | "manual" | "app" | "webhook" | undefined;
 		};
 		stagnationCount: number;
 		context?: any;
@@ -16537,31 +16558,39 @@ declare module '@scout9/app/schemas' {
 			tool_call_id?: string | undefined;
 		}>, "many">;
 		conversation: z.ZodObject<{
-			$id: z.ZodString;
+			$id: z.ZodOptional<z.ZodString>;
 			$agent: z.ZodString;
 			$customer: z.ZodString;
 			initialContexts: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-			environment: z.ZodEnum<["phone", "email", "web"]>; /**
-			 * An api call that should be called later, must return a string or {message: string}
-			 */
-			environmentProps: z.ZodOptional<z.ZodObject<{
+			channel: z.ZodEnum<["web", "demo_phone_test", "sms_phone", "outlook", "gmail", "iphone", "android", "teams", "discord", "whatsapp"]>;
+			channelProps: z.ZodOptional<z.ZodObject<{
 				subject: z.ZodOptional<z.ZodString>;
 				platformEmailThreadId: z.ZodOptional<z.ZodString>;
-			}, "strip", z.ZodTypeAny, {
-				subject?: string | undefined;
-				platformEmailThreadId?: string | undefined;
-			}, {
-				subject?: string | undefined;
-				platformEmailThreadId?: string | undefined;
-			}>>;
+				smsMessageSid: z.ZodOptional<z.ZodString>;
+				channelResolutionPath: z.ZodOptional<z.ZodEnum<["twilio_production", "twilio_legacy_pmt", "twilio_free_bridge"]>>;
+			}, "strip", z.ZodAny, z.objectOutputType<{
+				subject: z.ZodOptional<z.ZodString>;
+				platformEmailThreadId: z.ZodOptional<z.ZodString>;
+				smsMessageSid: z.ZodOptional<z.ZodString>;
+				channelResolutionPath: z.ZodOptional<z.ZodEnum<["twilio_production", "twilio_legacy_pmt", "twilio_free_bridge"]>>;
+			}, z.ZodAny, "strip">, z.objectInputType<{
+				subject: z.ZodOptional<z.ZodString>;
+				platformEmailThreadId: z.ZodOptional<z.ZodString>;
+				smsMessageSid: z.ZodOptional<z.ZodString>;
+				channelResolutionPath: z.ZodOptional<z.ZodEnum<["twilio_production", "twilio_legacy_pmt", "twilio_free_bridge"]>>;
+			}, z.ZodAny, "strip">>>;
 			locked: z.ZodNullable<z.ZodOptional<z.ZodBoolean>>;
+			lockCode: z.ZodOptional<z.ZodEnum<["workflow_stagnation", "max_lock_attempts", "runtime_error", "manual_mode", "policy_block"]>>;
 			lockedReason: z.ZodNullable<z.ZodOptional<z.ZodString>>;
 			lockAttempts: z.ZodNullable<z.ZodOptional<z.ZodNumber>>;
 			forwardedTo: z.ZodNullable<z.ZodOptional<z.ZodString>>;
 			forwarded: z.ZodNullable<z.ZodOptional<z.ZodString>>;
 			forwardNote: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+			initiated: z.ZodOptional<z.ZodString>;
 			intent: z.ZodNullable<z.ZodOptional<z.ZodString>>;
 			intentScore: z.ZodNullable<z.ZodOptional<z.ZodNumber>>;
+			read: z.ZodOptional<z.ZodString>;
+			metadata: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>;
 			anticipate: z.ZodOptional<z.ZodObject<{
 				type: z.ZodEnum<["did", "literal", "context"]>;
 				slots: z.ZodRecord<z.ZodString, z.ZodArray<z.ZodAny, "many">>;
@@ -16603,24 +16632,31 @@ declare module '@scout9/app/schemas' {
 				path: string;
 				entity: string;
 			}>>;
+			ingress: z.ZodOptional<z.ZodEnum<["auto", "manual", "app", "webhook"]>>;
 		}, "strip", z.ZodTypeAny, {
-			environment: "email" | "phone" | "web";
-			$id: string;
+			channel: "android" | "web" | "demo_phone_test" | "sms_phone" | "outlook" | "gmail" | "iphone" | "teams" | "discord" | "whatsapp";
 			$agent: string;
 			$customer: string;
+			$id?: string | undefined;
 			initialContexts?: string[] | undefined;
-			environmentProps?: {
-				subject?: string | undefined;
-				platformEmailThreadId?: string | undefined;
-			} | undefined;
+			channelProps?: z.objectOutputType<{
+				subject: z.ZodOptional<z.ZodString>;
+				platformEmailThreadId: z.ZodOptional<z.ZodString>;
+				smsMessageSid: z.ZodOptional<z.ZodString>;
+				channelResolutionPath: z.ZodOptional<z.ZodEnum<["twilio_production", "twilio_legacy_pmt", "twilio_free_bridge"]>>;
+			}, z.ZodAny, "strip"> | undefined;
 			locked?: boolean | null | undefined;
+			lockCode?: "workflow_stagnation" | "max_lock_attempts" | "runtime_error" | "manual_mode" | "policy_block" | undefined;
 			lockedReason?: string | null | undefined;
 			lockAttempts?: number | null | undefined;
 			forwardedTo?: string | null | undefined;
 			forwarded?: string | null | undefined;
 			forwardNote?: string | null | undefined;
+			initiated?: string | undefined;
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
+			read?: string | undefined;
+			metadata?: Record<string, any> | undefined;
 			anticipate?: {
 				type: "literal" | "context" | "did";
 				slots: Record<string, any[]>;
@@ -16634,24 +16670,31 @@ declare module '@scout9/app/schemas' {
 				path: string;
 				entity: string;
 			} | undefined;
+			ingress?: "auto" | "manual" | "app" | "webhook" | undefined;
 		}, {
-			environment: "email" | "phone" | "web";
-			$id: string;
+			channel: "android" | "web" | "demo_phone_test" | "sms_phone" | "outlook" | "gmail" | "iphone" | "teams" | "discord" | "whatsapp";
 			$agent: string;
 			$customer: string;
+			$id?: string | undefined;
 			initialContexts?: string[] | undefined;
-			environmentProps?: {
-				subject?: string | undefined;
-				platformEmailThreadId?: string | undefined;
-			} | undefined;
+			channelProps?: z.objectInputType<{
+				subject: z.ZodOptional<z.ZodString>;
+				platformEmailThreadId: z.ZodOptional<z.ZodString>;
+				smsMessageSid: z.ZodOptional<z.ZodString>;
+				channelResolutionPath: z.ZodOptional<z.ZodEnum<["twilio_production", "twilio_legacy_pmt", "twilio_free_bridge"]>>;
+			}, z.ZodAny, "strip"> | undefined;
 			locked?: boolean | null | undefined;
+			lockCode?: "workflow_stagnation" | "max_lock_attempts" | "runtime_error" | "manual_mode" | "policy_block" | undefined;
 			lockedReason?: string | null | undefined;
 			lockAttempts?: number | null | undefined;
 			forwardedTo?: string | null | undefined;
 			forwarded?: string | null | undefined;
 			forwardNote?: string | null | undefined;
+			initiated?: string | undefined;
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
+			read?: string | undefined;
+			metadata?: Record<string, any> | undefined;
 			anticipate?: {
 				type: "literal" | "context" | "did";
 				slots: Record<string, any[]>;
@@ -16665,6 +16708,7 @@ declare module '@scout9/app/schemas' {
 				path: string;
 				entity: string;
 			} | undefined;
+			ingress?: "auto" | "manual" | "app" | "webhook" | undefined;
 		}>;
 		context: z.ZodAny;
 		message: z.ZodObject<{
@@ -17202,23 +17246,29 @@ declare module '@scout9/app/schemas' {
 			tool_call_id?: string | undefined;
 		}[];
 		conversation: {
-			environment: "email" | "phone" | "web";
-			$id: string;
+			channel: "android" | "web" | "demo_phone_test" | "sms_phone" | "outlook" | "gmail" | "iphone" | "teams" | "discord" | "whatsapp";
 			$agent: string;
 			$customer: string;
+			$id?: string | undefined;
 			initialContexts?: string[] | undefined;
-			environmentProps?: {
-				subject?: string | undefined;
-				platformEmailThreadId?: string | undefined;
-			} | undefined;
+			channelProps?: z.objectOutputType<{
+				subject: z.ZodOptional<z.ZodString>;
+				platformEmailThreadId: z.ZodOptional<z.ZodString>;
+				smsMessageSid: z.ZodOptional<z.ZodString>;
+				channelResolutionPath: z.ZodOptional<z.ZodEnum<["twilio_production", "twilio_legacy_pmt", "twilio_free_bridge"]>>;
+			}, z.ZodAny, "strip"> | undefined;
 			locked?: boolean | null | undefined;
+			lockCode?: "workflow_stagnation" | "max_lock_attempts" | "runtime_error" | "manual_mode" | "policy_block" | undefined;
 			lockedReason?: string | null | undefined;
 			lockAttempts?: number | null | undefined;
 			forwardedTo?: string | null | undefined;
 			forwarded?: string | null | undefined;
 			forwardNote?: string | null | undefined;
+			initiated?: string | undefined;
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
+			read?: string | undefined;
+			metadata?: Record<string, any> | undefined;
 			anticipate?: {
 				type: "literal" | "context" | "did";
 				slots: Record<string, any[]>;
@@ -17232,6 +17282,7 @@ declare module '@scout9/app/schemas' {
 				path: string;
 				entity: string;
 			} | undefined;
+			ingress?: "auto" | "manual" | "app" | "webhook" | undefined;
 		};
 		stagnationCount: number;
 		context?: any;
@@ -17349,23 +17400,29 @@ declare module '@scout9/app/schemas' {
 			tool_call_id?: string | undefined;
 		}[];
 		conversation: {
-			environment: "email" | "phone" | "web";
-			$id: string;
+			channel: "android" | "web" | "demo_phone_test" | "sms_phone" | "outlook" | "gmail" | "iphone" | "teams" | "discord" | "whatsapp";
 			$agent: string;
 			$customer: string;
+			$id?: string | undefined;
 			initialContexts?: string[] | undefined;
-			environmentProps?: {
-				subject?: string | undefined;
-				platformEmailThreadId?: string | undefined;
-			} | undefined;
+			channelProps?: z.objectInputType<{
+				subject: z.ZodOptional<z.ZodString>;
+				platformEmailThreadId: z.ZodOptional<z.ZodString>;
+				smsMessageSid: z.ZodOptional<z.ZodString>;
+				channelResolutionPath: z.ZodOptional<z.ZodEnum<["twilio_production", "twilio_legacy_pmt", "twilio_free_bridge"]>>;
+			}, z.ZodAny, "strip"> | undefined;
 			locked?: boolean | null | undefined;
+			lockCode?: "workflow_stagnation" | "max_lock_attempts" | "runtime_error" | "manual_mode" | "policy_block" | undefined;
 			lockedReason?: string | null | undefined;
 			lockAttempts?: number | null | undefined;
 			forwardedTo?: string | null | undefined;
 			forwarded?: string | null | undefined;
 			forwardNote?: string | null | undefined;
+			initiated?: string | undefined;
 			intent?: string | null | undefined;
 			intentScore?: number | null | undefined;
+			read?: string | undefined;
+			metadata?: Record<string, any> | undefined;
 			anticipate?: {
 				type: "literal" | "context" | "did";
 				slots: Record<string, any[]>;
@@ -17379,6 +17436,7 @@ declare module '@scout9/app/schemas' {
 				path: string;
 				entity: string;
 			} | undefined;
+			ingress?: "auto" | "manual" | "app" | "webhook" | undefined;
 		};
 		stagnationCount: number;
 		context?: any;

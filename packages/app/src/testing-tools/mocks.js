@@ -42,14 +42,14 @@ export const createMockMessage = (content, role = 'customer', time  = moment().t
 }
 
 /**
- * @param {import('@scout9/app').Conversation['environment']} [environment]
+ * @param {import('@scout9/app').Conversation['channel']} [channel]
  * @param {string} [$agent]
  * @param {string} [$customer]
  * @param {string} [$id]
  * @returns {import('@scout9/app').Conversation}
  */
 export const createMockConversation = (
-  environment = 'phone',
+  channel = 'sms_phone',
   $agent = 'default',
   $customer = 'default',
   $id = 'default'
@@ -58,7 +58,7 @@ export const createMockConversation = (
     $id,
     $agent,
     $customer,
-    environment
+    channel
   }
 }
 
@@ -86,4 +86,3 @@ export const createMockWorkflowEvent = (
     stagnationCount: 0,
   }
 }
-

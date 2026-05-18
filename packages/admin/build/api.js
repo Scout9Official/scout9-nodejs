@@ -16,8 +16,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PmtConfigModelEnum = exports.PmtConfigEngineEnum = exports.MessageGetResponseInnerRoleEnum = exports.MessageCreateRequestRoleEnum = exports.MessageBaseRoleEnum = exports.MessageRoleEnum = exports.MacroResultTypeEnum = exports.MacroDoesResultTypeEnum = exports.MacroDoesInputRoleEnum = exports.MacroDidResultTypeEnum = exports.MacroContextResultTypeEnum = exports.LlmConfigOneOfAllOfModelEnum = exports.LlmConfigOneOfAllOfEngineEnum = exports.LlmConfigOneOf7AllOfEngineEnum = exports.LlmConfigOneOf7EngineEnum = exports.LlmConfigOneOf6AllOfModelEnum = exports.LlmConfigOneOf6AllOfEngineEnum = exports.LlmConfigOneOf6ModelEnum = exports.LlmConfigOneOf6EngineEnum = exports.LlmConfigOneOf5AllOfModelEnum = exports.LlmConfigOneOf5AllOfEngineEnum = exports.LlmConfigOneOf5ModelEnum = exports.LlmConfigOneOf5EngineEnum = exports.LlmConfigOneOf4AllOfModelEnum = exports.LlmConfigOneOf4AllOfEngineEnum = exports.LlmConfigOneOf4ModelEnum = exports.LlmConfigOneOf4EngineEnum = exports.LlmConfigOneOf3AllOfModelEnum = exports.LlmConfigOneOf3AllOfEngineEnum = exports.LlmConfigOneOf3ModelEnum = exports.LlmConfigOneOf3EngineEnum = exports.LlmConfigOneOf2AllOfModelEnum = exports.LlmConfigOneOf2AllOfEngineEnum = exports.LlmConfigOneOf2ModelEnum = exports.LlmConfigOneOf2EngineEnum = exports.LlmConfigOneOf1AllOfModelEnum = exports.LlmConfigOneOf1AllOfEngineEnum = exports.LlmConfigOneOf1ModelEnum = exports.LlmConfigOneOf1EngineEnum = exports.LlmConfigOneOfModelEnum = exports.LlmConfigOneOfEngineEnum = exports.ListApiOperationsResponseInnerMethodEnum = exports.GetApiOperationResponseMethodEnum = exports.ForwardRequestLatestMessageRoleEnum = exports.ForwardRequestForwardOneOfModeEnum = exports.ExistenceOperator = exports.EqualityOperator = exports.ConversationEnvironment = exports.ConversationContextFieldConditionOperatorEnum = exports.ApiOperationMethodEnum = void 0;
-exports.Scout9Api = exports.Scout9ApiGenerated = exports.Scout9ApiFactory = exports.Scout9ApiFp = exports.Scout9ApiAxiosParamCreator = exports.NoopApi = exports.NoopApiFactory = exports.NoopApiFp = exports.NoopApiAxiosParamCreator = exports.WorkflowResponseSlotForwardOneOfModeEnum = exports.PurposeEnum = exports.PmtTransformResponseTypeEnum = void 0;
+exports.LlmConfigOneOf6AllOfEngineEnum = exports.LlmConfigOneOf6ModelEnum = exports.LlmConfigOneOf6EngineEnum = exports.LlmConfigOneOf5AllOfModelEnum = exports.LlmConfigOneOf5AllOfEngineEnum = exports.LlmConfigOneOf5ModelEnum = exports.LlmConfigOneOf5EngineEnum = exports.LlmConfigOneOf4AllOfModelEnum = exports.LlmConfigOneOf4AllOfEngineEnum = exports.LlmConfigOneOf4ModelEnum = exports.LlmConfigOneOf4EngineEnum = exports.LlmConfigOneOf3AllOfModelEnum = exports.LlmConfigOneOf3AllOfEngineEnum = exports.LlmConfigOneOf3ModelEnum = exports.LlmConfigOneOf3EngineEnum = exports.LlmConfigOneOf2AllOfModelEnum = exports.LlmConfigOneOf2AllOfEngineEnum = exports.LlmConfigOneOf2ModelEnum = exports.LlmConfigOneOf2EngineEnum = exports.LlmConfigOneOf1AllOfModelEnum = exports.LlmConfigOneOf1AllOfEngineEnum = exports.LlmConfigOneOf1ModelEnum = exports.LlmConfigOneOf1EngineEnum = exports.LlmConfigOneOfModelEnum = exports.LlmConfigOneOfEngineEnum = exports.ListConversationsResponseInnerIngressEnum = exports.ListConversationsResponseInnerLockCodeEnum = exports.ListApiOperationsResponseInnerMethodEnum = exports.GetApiOperationResponseMethodEnum = exports.ForwardRequestLatestMessageRoleEnum = exports.ForwardRequestForwardOneOfModeEnum = exports.ExistenceOperator = exports.EqualityOperator = exports.ConversationWithIdIngressEnum = exports.ConversationWithIdLockCodeEnum = exports.ConversationUpdateRequestIngressEnum = exports.ConversationUpdateRequestLockCodeEnum = exports.ConversationGetResponseIngressEnum = exports.ConversationGetResponseLockCodeEnum = exports.ConversationCreateRequestIngressEnum = exports.ConversationCreateRequestLockCodeEnum = exports.ConversationContextFieldConditionOperatorEnum = exports.ConversationChannelPropsChannelResolutionPathEnum = exports.ConversationChannel = exports.ConversationBaseIngressEnum = exports.ConversationBaseLockCodeEnum = exports.ConversationAnticipateTypeEnum = exports.ConversationIngressEnum = exports.ConversationLockCodeEnum = exports.ApiOperationMethodEnum = void 0;
+exports.Scout9Api = exports.Scout9ApiGenerated = exports.Scout9ApiFactory = exports.Scout9ApiFp = exports.Scout9ApiAxiosParamCreator = exports.NoopApi = exports.NoopApiFactory = exports.NoopApiFp = exports.NoopApiAxiosParamCreator = exports.WorkflowResponseSlotForwardOneOfModeEnum = exports.ScheduledConversationGroupIngressEnum = exports.ScheduledConversationGroupLockCodeEnum = exports.ScheduledConversationIngressEnum = exports.ScheduledConversationLockCodeEnum = exports.ScheduleUpdateRequestIngressEnum = exports.ScheduleUpdateRequestLockCodeEnum = exports.ScheduleGroupUpdateRequestIngressEnum = exports.ScheduleGroupUpdateRequestLockCodeEnum = exports.ScheduleGroupGetResponseIngressEnum = exports.ScheduleGroupGetResponseLockCodeEnum = exports.ScheduleGroupCreateRequestIngressEnum = exports.ScheduleGroupCreateRequestLockCodeEnum = exports.ScheduleGetResponseIngressEnum = exports.ScheduleGetResponseLockCodeEnum = exports.ScheduleCreateRequestIngressEnum = exports.ScheduleCreateRequestLockCodeEnum = exports.PurposeEnum = exports.PmtTransformResponseTypeEnum = exports.PmtConfigModelEnum = exports.PmtConfigEngineEnum = exports.MessageGetResponseInnerRoleEnum = exports.MessageCreateRequestRoleEnum = exports.MessageBaseRoleEnum = exports.MessageRoleEnum = exports.MacroResultTypeEnum = exports.MacroDoesResultTypeEnum = exports.MacroDoesInputRoleEnum = exports.MacroDidResultTypeEnum = exports.MacroContextResultTypeEnum = exports.LlmConfigOneOfAllOfModelEnum = exports.LlmConfigOneOfAllOfEngineEnum = exports.LlmConfigOneOf7AllOfEngineEnum = exports.LlmConfigOneOf7EngineEnum = exports.LlmConfigOneOf6AllOfModelEnum = void 0;
 const axios_1 = __importDefault(require("axios"));
 // Some imports not used depending on template conditions
 // @ts-ignore
@@ -30,6 +30,59 @@ exports.ApiOperationMethodEnum = {
     Put: 'put',
     Delete: 'delete',
     Patch: 'patch'
+};
+exports.ConversationLockCodeEnum = {
+    WorkflowStagnation: 'workflow_stagnation',
+    MaxLockAttempts: 'max_lock_attempts',
+    RuntimeError: 'runtime_error',
+    ManualMode: 'manual_mode',
+    PolicyBlock: 'policy_block'
+};
+exports.ConversationIngressEnum = {
+    Auto: 'auto',
+    Manual: 'manual',
+    App: 'app',
+    Webhook: 'webhook'
+};
+exports.ConversationAnticipateTypeEnum = {
+    Did: 'did',
+    Literal: 'literal',
+    Context: 'context'
+};
+exports.ConversationBaseLockCodeEnum = {
+    WorkflowStagnation: 'workflow_stagnation',
+    MaxLockAttempts: 'max_lock_attempts',
+    RuntimeError: 'runtime_error',
+    ManualMode: 'manual_mode',
+    PolicyBlock: 'policy_block'
+};
+exports.ConversationBaseIngressEnum = {
+    Auto: 'auto',
+    Manual: 'manual',
+    App: 'app',
+    Webhook: 'webhook'
+};
+/**
+ * Canonical channel that initiated and should continue the customer conversation.
+ * @export
+ * @enum {string}
+ */
+exports.ConversationChannel = {
+    Web: 'web',
+    DemoPhoneTest: 'demo_phone_test',
+    SmsPhone: 'sms_phone',
+    Outlook: 'outlook',
+    Gmail: 'gmail',
+    Iphone: 'iphone',
+    Android: 'android',
+    Teams: 'teams',
+    Discord: 'discord',
+    Whatsapp: 'whatsapp'
+};
+exports.ConversationChannelPropsChannelResolutionPathEnum = {
+    Production: 'twilio_production',
+    LegacyPmt: 'twilio_legacy_pmt',
+    FreeBridge: 'twilio_free_bridge'
 };
 exports.ConversationContextFieldConditionOperatorEnum = {
     Eq: 'eq',
@@ -55,15 +108,57 @@ exports.ConversationContextFieldConditionOperatorEnum = {
     StartsWith: 'startsWith',
     EndsWith: 'endsWith'
 };
-/**
- * Environment this conversation is in (phone, web, or email) - this determines which device to send messages to
- * @export
- * @enum {string}
- */
-exports.ConversationEnvironment = {
-    Phone: 'phone',
-    Web: 'web',
-    Email: 'email'
+exports.ConversationCreateRequestLockCodeEnum = {
+    WorkflowStagnation: 'workflow_stagnation',
+    MaxLockAttempts: 'max_lock_attempts',
+    RuntimeError: 'runtime_error',
+    ManualMode: 'manual_mode',
+    PolicyBlock: 'policy_block'
+};
+exports.ConversationCreateRequestIngressEnum = {
+    Auto: 'auto',
+    Manual: 'manual',
+    App: 'app',
+    Webhook: 'webhook'
+};
+exports.ConversationGetResponseLockCodeEnum = {
+    WorkflowStagnation: 'workflow_stagnation',
+    MaxLockAttempts: 'max_lock_attempts',
+    RuntimeError: 'runtime_error',
+    ManualMode: 'manual_mode',
+    PolicyBlock: 'policy_block'
+};
+exports.ConversationGetResponseIngressEnum = {
+    Auto: 'auto',
+    Manual: 'manual',
+    App: 'app',
+    Webhook: 'webhook'
+};
+exports.ConversationUpdateRequestLockCodeEnum = {
+    WorkflowStagnation: 'workflow_stagnation',
+    MaxLockAttempts: 'max_lock_attempts',
+    RuntimeError: 'runtime_error',
+    ManualMode: 'manual_mode',
+    PolicyBlock: 'policy_block'
+};
+exports.ConversationUpdateRequestIngressEnum = {
+    Auto: 'auto',
+    Manual: 'manual',
+    App: 'app',
+    Webhook: 'webhook'
+};
+exports.ConversationWithIdLockCodeEnum = {
+    WorkflowStagnation: 'workflow_stagnation',
+    MaxLockAttempts: 'max_lock_attempts',
+    RuntimeError: 'runtime_error',
+    ManualMode: 'manual_mode',
+    PolicyBlock: 'policy_block'
+};
+exports.ConversationWithIdIngressEnum = {
+    Auto: 'auto',
+    Manual: 'manual',
+    App: 'app',
+    Webhook: 'webhook'
 };
 /**
  *
@@ -118,6 +213,19 @@ exports.ListApiOperationsResponseInnerMethodEnum = {
     Put: 'put',
     Delete: 'delete',
     Patch: 'patch'
+};
+exports.ListConversationsResponseInnerLockCodeEnum = {
+    WorkflowStagnation: 'workflow_stagnation',
+    MaxLockAttempts: 'max_lock_attempts',
+    RuntimeError: 'runtime_error',
+    ManualMode: 'manual_mode',
+    PolicyBlock: 'policy_block'
+};
+exports.ListConversationsResponseInnerIngressEnum = {
+    Auto: 'auto',
+    Manual: 'manual',
+    App: 'app',
+    Webhook: 'webhook'
 };
 exports.LlmConfigOneOfEngineEnum = {
     Openai: 'openai'
@@ -297,6 +405,110 @@ exports.PurposeEnum = {
     AgentAudio: 'agent-audio',
     AgentTranscript: 'agent-transcript'
 };
+exports.ScheduleCreateRequestLockCodeEnum = {
+    WorkflowStagnation: 'workflow_stagnation',
+    MaxLockAttempts: 'max_lock_attempts',
+    RuntimeError: 'runtime_error',
+    ManualMode: 'manual_mode',
+    PolicyBlock: 'policy_block'
+};
+exports.ScheduleCreateRequestIngressEnum = {
+    Auto: 'auto',
+    Manual: 'manual',
+    App: 'app',
+    Webhook: 'webhook'
+};
+exports.ScheduleGetResponseLockCodeEnum = {
+    WorkflowStagnation: 'workflow_stagnation',
+    MaxLockAttempts: 'max_lock_attempts',
+    RuntimeError: 'runtime_error',
+    ManualMode: 'manual_mode',
+    PolicyBlock: 'policy_block'
+};
+exports.ScheduleGetResponseIngressEnum = {
+    Auto: 'auto',
+    Manual: 'manual',
+    App: 'app',
+    Webhook: 'webhook'
+};
+exports.ScheduleGroupCreateRequestLockCodeEnum = {
+    WorkflowStagnation: 'workflow_stagnation',
+    MaxLockAttempts: 'max_lock_attempts',
+    RuntimeError: 'runtime_error',
+    ManualMode: 'manual_mode',
+    PolicyBlock: 'policy_block'
+};
+exports.ScheduleGroupCreateRequestIngressEnum = {
+    Auto: 'auto',
+    Manual: 'manual',
+    App: 'app',
+    Webhook: 'webhook'
+};
+exports.ScheduleGroupGetResponseLockCodeEnum = {
+    WorkflowStagnation: 'workflow_stagnation',
+    MaxLockAttempts: 'max_lock_attempts',
+    RuntimeError: 'runtime_error',
+    ManualMode: 'manual_mode',
+    PolicyBlock: 'policy_block'
+};
+exports.ScheduleGroupGetResponseIngressEnum = {
+    Auto: 'auto',
+    Manual: 'manual',
+    App: 'app',
+    Webhook: 'webhook'
+};
+exports.ScheduleGroupUpdateRequestLockCodeEnum = {
+    WorkflowStagnation: 'workflow_stagnation',
+    MaxLockAttempts: 'max_lock_attempts',
+    RuntimeError: 'runtime_error',
+    ManualMode: 'manual_mode',
+    PolicyBlock: 'policy_block'
+};
+exports.ScheduleGroupUpdateRequestIngressEnum = {
+    Auto: 'auto',
+    Manual: 'manual',
+    App: 'app',
+    Webhook: 'webhook'
+};
+exports.ScheduleUpdateRequestLockCodeEnum = {
+    WorkflowStagnation: 'workflow_stagnation',
+    MaxLockAttempts: 'max_lock_attempts',
+    RuntimeError: 'runtime_error',
+    ManualMode: 'manual_mode',
+    PolicyBlock: 'policy_block'
+};
+exports.ScheduleUpdateRequestIngressEnum = {
+    Auto: 'auto',
+    Manual: 'manual',
+    App: 'app',
+    Webhook: 'webhook'
+};
+exports.ScheduledConversationLockCodeEnum = {
+    WorkflowStagnation: 'workflow_stagnation',
+    MaxLockAttempts: 'max_lock_attempts',
+    RuntimeError: 'runtime_error',
+    ManualMode: 'manual_mode',
+    PolicyBlock: 'policy_block'
+};
+exports.ScheduledConversationIngressEnum = {
+    Auto: 'auto',
+    Manual: 'manual',
+    App: 'app',
+    Webhook: 'webhook'
+};
+exports.ScheduledConversationGroupLockCodeEnum = {
+    WorkflowStagnation: 'workflow_stagnation',
+    MaxLockAttempts: 'max_lock_attempts',
+    RuntimeError: 'runtime_error',
+    ManualMode: 'manual_mode',
+    PolicyBlock: 'policy_block'
+};
+exports.ScheduledConversationGroupIngressEnum = {
+    Auto: 'auto',
+    Manual: 'manual',
+    App: 'app',
+    Webhook: 'webhook'
+};
 exports.WorkflowResponseSlotForwardOneOfModeEnum = {
     AfterReply: 'after-reply',
     Immediately: 'immediately'
@@ -317,7 +529,7 @@ const NoopApiAxiosParamCreator = function (configuration) {
         ping: async (pingRequest, options = {}) => {
             // verify required parameter 'pingRequest' is not null or undefined
             (0, common_1.assertParamExists)('ping', 'pingRequest', pingRequest);
-            const localVarPath = `/v1-utils-ping`;
+            const localVarPath = `/v1/utils-ping`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -423,7 +635,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
             (0, common_1.assertParamExists)('addEntity', 'id', id);
             // verify required parameter 'entityData' is not null or undefined
             (0, common_1.assertParamExists)('addEntity', 'entityData', entityData);
-            const localVarPath = `/v1-entity/{type}/{id}`
+            const localVarPath = `/v1/entity/{type}/{id}`
                 .replace(`{${"type"}}`, encodeURIComponent(String(type)))
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -455,7 +667,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         agent: async (id, options = {}) => {
             // verify required parameter 'id' is not null or undefined
             (0, common_1.assertParamExists)('agent', 'id', id);
-            const localVarPath = `/v1-agent`;
+            const localVarPath = `/v1/agent`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -486,7 +698,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         agentDelete: async (id, options = {}) => {
             // verify required parameter 'id' is not null or undefined
             (0, common_1.assertParamExists)('agentDelete', 'id', id);
-            const localVarPath = `/v1-agent`;
+            const localVarPath = `/v1/agent`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -517,7 +729,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         agentRegister: async (createAgentRequest, options = {}) => {
             // verify required parameter 'createAgentRequest' is not null or undefined
             (0, common_1.assertParamExists)('agentRegister', 'createAgentRequest', createAgentRequest);
-            const localVarPath = `/v1-agent`;
+            const localVarPath = `/v1/agent`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -547,7 +759,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         agentUpdate: async (updateAgentRequest, options = {}) => {
             // verify required parameter 'updateAgentRequest' is not null or undefined
             (0, common_1.assertParamExists)('agentUpdate', 'updateAgentRequest', updateAgentRequest);
-            const localVarPath = `/v1-agent`;
+            const localVarPath = `/v1/agent`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -576,7 +788,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
          * @throws {RequiredError}
          */
         agents: async (q, id, options = {}) => {
-            const localVarPath = `/v1-agents`;
+            const localVarPath = `/v1/agents`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -610,7 +822,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         agentsCreate: async (createAgentsRequest, options = {}) => {
             // verify required parameter 'createAgentsRequest' is not null or undefined
             (0, common_1.assertParamExists)('agentsCreate', 'createAgentsRequest', createAgentsRequest);
-            const localVarPath = `/v1-agents`;
+            const localVarPath = `/v1/agents`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -638,7 +850,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
          * @throws {RequiredError}
          */
         agentsDelete: async (id, options = {}) => {
-            const localVarPath = `/v1-agents`;
+            const localVarPath = `/v1/agents`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -669,7 +881,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         agentsUpdate: async (updateAgentsRequest, options = {}) => {
             // verify required parameter 'updateAgentsRequest' is not null or undefined
             (0, common_1.assertParamExists)('agentsUpdate', 'updateAgentsRequest', updateAgentsRequest);
-            const localVarPath = `/v1-agents`;
+            const localVarPath = `/v1/agents`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -699,7 +911,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         captureContext: async (macroContextInput, options = {}) => {
             // verify required parameter 'macroContextInput' is not null or undefined
             (0, common_1.assertParamExists)('captureContext', 'macroContextInput', macroContextInput);
-            const localVarPath = `/v1-utils-macros-context`;
+            const localVarPath = `/v1/utils-macros-context`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -726,7 +938,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
          * @throws {RequiredError}
          */
         config: async (options = {}) => {
-            const localVarPath = `/v1-config`;
+            const localVarPath = `/v1/config`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -754,7 +966,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         contextualize: async (contextualizerRequest, options = {}) => {
             // verify required parameter 'contextualizerRequest' is not null or undefined
             (0, common_1.assertParamExists)('contextualize', 'contextualizerRequest', contextualizerRequest);
-            const localVarPath = `/v1-contextualize`;
+            const localVarPath = `/v1/contextualize`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -784,7 +996,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         conversation: async (id, options = {}) => {
             // verify required parameter 'id' is not null or undefined
             (0, common_1.assertParamExists)('conversation', 'id', id);
-            const localVarPath = `/v1-conversation`;
+            const localVarPath = `/v1/conversation`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -815,7 +1027,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         conversationContext: async (id, options = {}) => {
             // verify required parameter 'id' is not null or undefined
             (0, common_1.assertParamExists)('conversationContext', 'id', id);
-            const localVarPath = `/v1-conversationContext`;
+            const localVarPath = `/v1/conversationContext`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -846,7 +1058,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         conversationContextUpdate: async (conversationContextUpdateRequest, options = {}) => {
             // verify required parameter 'conversationContextUpdateRequest' is not null or undefined
             (0, common_1.assertParamExists)('conversationContextUpdate', 'conversationContextUpdateRequest', conversationContextUpdateRequest);
-            const localVarPath = `/v1-conversationContext`;
+            const localVarPath = `/v1/conversationContext`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -876,7 +1088,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         conversationCreate: async (conversationCreateRequest, options = {}) => {
             // verify required parameter 'conversationCreateRequest' is not null or undefined
             (0, common_1.assertParamExists)('conversationCreate', 'conversationCreateRequest', conversationCreateRequest);
-            const localVarPath = `/v1-conversation`;
+            const localVarPath = `/v1/conversation`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -906,7 +1118,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         conversationDelete: async (id, options = {}) => {
             // verify required parameter 'id' is not null or undefined
             (0, common_1.assertParamExists)('conversationDelete', 'id', id);
-            const localVarPath = `/v1-conversation`;
+            const localVarPath = `/v1/conversation`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -937,7 +1149,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         conversationUpdate: async (conversationUpdateRequest, options = {}) => {
             // verify required parameter 'conversationUpdateRequest' is not null or undefined
             (0, common_1.assertParamExists)('conversationUpdate', 'conversationUpdateRequest', conversationUpdateRequest);
-            const localVarPath = `/v1-conversation`;
+            const localVarPath = `/v1/conversation`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -966,7 +1178,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
          * @throws {RequiredError}
          */
         conversations: async (q, id, options = {}) => {
-            const localVarPath = `/v1-conversations`;
+            const localVarPath = `/v1/conversations`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1001,7 +1213,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         customer: async (idOrEmailOrPhone, resolve, options = {}) => {
             // verify required parameter 'idOrEmailOrPhone' is not null or undefined
             (0, common_1.assertParamExists)('customer', 'idOrEmailOrPhone', idOrEmailOrPhone);
-            const localVarPath = `/v1-customer`;
+            const localVarPath = `/v1/customer`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1035,7 +1247,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         customerCreate: async (body, options = {}) => {
             // verify required parameter 'body' is not null or undefined
             (0, common_1.assertParamExists)('customerCreate', 'body', body);
-            const localVarPath = `/v1-customer`;
+            const localVarPath = `/v1/customer`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1065,7 +1277,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         customerDelete: async (id, options = {}) => {
             // verify required parameter 'id' is not null or undefined
             (0, common_1.assertParamExists)('customerDelete', 'id', id);
-            const localVarPath = `/v1-customer`;
+            const localVarPath = `/v1/customer`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1096,7 +1308,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         customerGroup: async (id, options = {}) => {
             // verify required parameter 'id' is not null or undefined
             (0, common_1.assertParamExists)('customerGroup', 'id', id);
-            const localVarPath = `/v1-customerGroup`;
+            const localVarPath = `/v1/customerGroup`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1127,7 +1339,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         customerGroupCreate: async (createCustomerGroupRequest, options = {}) => {
             // verify required parameter 'createCustomerGroupRequest' is not null or undefined
             (0, common_1.assertParamExists)('customerGroupCreate', 'createCustomerGroupRequest', createCustomerGroupRequest);
-            const localVarPath = `/v1-customerGroup`;
+            const localVarPath = `/v1/customerGroup`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1157,7 +1369,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         customerGroupDelete: async (id, options = {}) => {
             // verify required parameter 'id' is not null or undefined
             (0, common_1.assertParamExists)('customerGroupDelete', 'id', id);
-            const localVarPath = `/v1-customerGroup`;
+            const localVarPath = `/v1/customerGroup`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1188,7 +1400,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         customerGroupUpdate: async (updateCustomerGroupRequest, options = {}) => {
             // verify required parameter 'updateCustomerGroupRequest' is not null or undefined
             (0, common_1.assertParamExists)('customerGroupUpdate', 'updateCustomerGroupRequest', updateCustomerGroupRequest);
-            const localVarPath = `/v1-customerGroup`;
+            const localVarPath = `/v1/customerGroup`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1217,7 +1429,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
          * @throws {RequiredError}
          */
         customerGroups: async (q, id, options = {}) => {
-            const localVarPath = `/v1-customerGroups`;
+            const localVarPath = `/v1/customerGroups`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1251,7 +1463,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         customerGroupsCreate: async (createCustomerGroupsRequest, options = {}) => {
             // verify required parameter 'createCustomerGroupsRequest' is not null or undefined
             (0, common_1.assertParamExists)('customerGroupsCreate', 'createCustomerGroupsRequest', createCustomerGroupsRequest);
-            const localVarPath = `/v1-customerGroups`;
+            const localVarPath = `/v1/customerGroups`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1279,7 +1491,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
          * @throws {RequiredError}
          */
         customerGroupsDelete: async (id, options = {}) => {
-            const localVarPath = `/v1-customerGroups`;
+            const localVarPath = `/v1/customerGroups`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1310,7 +1522,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         customerGroupsUpdate: async (updateCustomerGroupsRequest, options = {}) => {
             // verify required parameter 'updateCustomerGroupsRequest' is not null or undefined
             (0, common_1.assertParamExists)('customerGroupsUpdate', 'updateCustomerGroupsRequest', updateCustomerGroupsRequest);
-            const localVarPath = `/v1-customerGroups`;
+            const localVarPath = `/v1/customerGroups`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1340,7 +1552,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         customerUpdate: async (updateCustomerRequest, options = {}) => {
             // verify required parameter 'updateCustomerRequest' is not null or undefined
             (0, common_1.assertParamExists)('customerUpdate', 'updateCustomerRequest', updateCustomerRequest);
-            const localVarPath = `/v1-customer`;
+            const localVarPath = `/v1/customer`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1369,7 +1581,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
          * @throws {RequiredError}
          */
         customers: async (q, id, options = {}) => {
-            const localVarPath = `/v1-customers`;
+            const localVarPath = `/v1/customers`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1403,7 +1615,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         customersCreate: async (createCustomersRequest, options = {}) => {
             // verify required parameter 'createCustomersRequest' is not null or undefined
             (0, common_1.assertParamExists)('customersCreate', 'createCustomersRequest', createCustomersRequest);
-            const localVarPath = `/v1-customers`;
+            const localVarPath = `/v1/customers`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1431,7 +1643,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
          * @throws {RequiredError}
          */
         customersDelete: async (id, options = {}) => {
-            const localVarPath = `/v1-customers`;
+            const localVarPath = `/v1/customers`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1462,7 +1674,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         customersUpdate: async (updateCustomersRequest, options = {}) => {
             // verify required parameter 'updateCustomersRequest' is not null or undefined
             (0, common_1.assertParamExists)('customersUpdate', 'updateCustomersRequest', updateCustomersRequest);
-            const localVarPath = `/v1-customers`;
+            const localVarPath = `/v1/customers`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1495,7 +1707,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
             (0, common_1.assertParamExists)('deleteEntity', 'type', type);
             // verify required parameter 'id' is not null or undefined
             (0, common_1.assertParamExists)('deleteEntity', 'id', id);
-            const localVarPath = `/v1-entity/{type}/{id}`
+            const localVarPath = `/v1/entity/{type}/{id}`
                 .replace(`{${"type"}}`, encodeURIComponent(String(type)))
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1525,7 +1737,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         did: async (macroDidInput, options = {}) => {
             // verify required parameter 'macroDidInput' is not null or undefined
             (0, common_1.assertParamExists)('did', 'macroDidInput', macroDidInput);
-            const localVarPath = `/v1-utils-macros-did`;
+            const localVarPath = `/v1/utils-macros-did`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1555,7 +1767,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         does: async (macroDoesInput, options = {}) => {
             // verify required parameter 'macroDoesInput' is not null or undefined
             (0, common_1.assertParamExists)('does', 'macroDoesInput', macroDoesInput);
-            const localVarPath = `/v1-utils-macros-does`;
+            const localVarPath = `/v1/utils-macros-does`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1588,7 +1800,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
             (0, common_1.assertParamExists)('entity', 'type', type);
             // verify required parameter 'id' is not null or undefined
             (0, common_1.assertParamExists)('entity', 'id', id);
-            const localVarPath = `/v1-entity/{type}/{id}`
+            const localVarPath = `/v1/entity/{type}/{id}`
                 .replace(`{${"type"}}`, encodeURIComponent(String(type)))
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1620,7 +1832,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         file: async (purpose, entity, agent, options = {}) => {
             // verify required parameter 'purpose' is not null or undefined
             (0, common_1.assertParamExists)('file', 'purpose', purpose);
-            const localVarPath = `/v1-utils-file`;
+            const localVarPath = `/v1/utils-file`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1661,7 +1873,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
             (0, common_1.assertParamExists)('fileRemove', 'purpose', purpose);
             // verify required parameter 'entity' is not null or undefined
             (0, common_1.assertParamExists)('fileRemove', 'entity', entity);
-            const localVarPath = `/v1-utils-file`;
+            const localVarPath = `/v1/utils-file`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1702,7 +1914,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         fileUpload: async (file, purpose, context, entity, $agent, options = {}) => {
             // verify required parameter 'file' is not null or undefined
             (0, common_1.assertParamExists)('fileUpload', 'file', file);
-            const localVarPath = `/v1-utils-file`;
+            const localVarPath = `/v1/utils-file`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1749,7 +1961,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         files: async (purpose, agent, options = {}) => {
             // verify required parameter 'purpose' is not null or undefined
             (0, common_1.assertParamExists)('files', 'purpose', purpose);
-            const localVarPath = `/v1-utils-files`;
+            const localVarPath = `/v1/utils-files`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1783,7 +1995,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         forward: async (forwardRequest, options = {}) => {
             // verify required parameter 'forwardRequest' is not null or undefined
             (0, common_1.assertParamExists)('forward', 'forwardRequest', forwardRequest);
-            const localVarPath = `/v1-forward`;
+            const localVarPath = `/v1/forward`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1814,7 +2026,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         generate: async (generateRequest, convo, options = {}) => {
             // verify required parameter 'generateRequest' is not null or undefined
             (0, common_1.assertParamExists)('generate', 'generateRequest', generateRequest);
-            const localVarPath = `/v1-generate`;
+            const localVarPath = `/v1/generate`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1846,7 +2058,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
          * @throws {RequiredError}
          */
         logs: async (start, end, options = {}) => {
-            const localVarPath = `/v1-utils-platform-logs`;
+            const localVarPath = `/v1/utils-platform-logs`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1880,7 +2092,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         message: async (messageCreateRequest, options = {}) => {
             // verify required parameter 'messageCreateRequest' is not null or undefined
             (0, common_1.assertParamExists)('message', 'messageCreateRequest', messageCreateRequest);
-            const localVarPath = `/v1-messages`;
+            const localVarPath = `/v1/messages`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1911,7 +2123,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         messages: async (id, q, options = {}) => {
             // verify required parameter 'id' is not null or undefined
             (0, common_1.assertParamExists)('messages', 'id', id);
-            const localVarPath = `/v1-messages`;
+            const localVarPath = `/v1/messages`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1945,7 +2157,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         operation: async (id, options = {}) => {
             // verify required parameter 'id' is not null or undefined
             (0, common_1.assertParamExists)('operation', 'id', id);
-            const localVarPath = `/v1-utils-operation`;
+            const localVarPath = `/v1/utils-operation`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -1975,7 +2187,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
          * @throws {RequiredError}
          */
         operations: async (q, id, options = {}) => {
-            const localVarPath = `/v1-utils-operations`;
+            const localVarPath = `/v1/utils-operations`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -2009,7 +2221,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         parse: async (parseRequest, options = {}) => {
             // verify required parameter 'parseRequest' is not null or undefined
             (0, common_1.assertParamExists)('parse', 'parseRequest', parseRequest);
-            const localVarPath = `/v1-parse`;
+            const localVarPath = `/v1/parse`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -2037,7 +2249,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
          * @throws {RequiredError}
          */
         purchasePhone: async (purchasePhoneRequest, options = {}) => {
-            const localVarPath = `/v1-purchases-phone`;
+            const localVarPath = `/v1/purchases-phone`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -2073,7 +2285,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
             (0, common_1.assertParamExists)('replaceEntity', 'id', id);
             // verify required parameter 'entityData' is not null or undefined
             (0, common_1.assertParamExists)('replaceEntity', 'entityData', entityData);
-            const localVarPath = `/v1-entity/{type}/{id}`
+            const localVarPath = `/v1/entity/{type}/{id}`
                 .replace(`{${"type"}}`, encodeURIComponent(String(type)))
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -2105,7 +2317,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         runPlatform: async (workflowEvent, options = {}) => {
             // verify required parameter 'workflowEvent' is not null or undefined
             (0, common_1.assertParamExists)('runPlatform', 'workflowEvent', workflowEvent);
-            const localVarPath = `/v1-utils-platform-run`;
+            const localVarPath = `/v1/utils-platform-run`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -2132,7 +2344,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
          * @throws {RequiredError}
          */
         runPlatformConfig: async (options = {}) => {
-            const localVarPath = `/v1-utils-platform-run`;
+            const localVarPath = `/v1/utils-platform-run`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -2161,7 +2373,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         temp: async (generateRequest, convo, options = {}) => {
             // verify required parameter 'generateRequest' is not null or undefined
             (0, common_1.assertParamExists)('temp', 'generateRequest', generateRequest);
-            const localVarPath = `/v1-temp`;
+            const localVarPath = `/v1/temp`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -2194,7 +2406,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         train: async (pmtTrainRequest, options = {}) => {
             // verify required parameter 'pmtTrainRequest' is not null or undefined
             (0, common_1.assertParamExists)('train', 'pmtTrainRequest', pmtTrainRequest);
-            const localVarPath = `/v1-pmt-train`;
+            const localVarPath = `/v1/pmt-train`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -2224,7 +2436,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
         transform: async (pmtTransformRequest, options = {}) => {
             // verify required parameter 'pmtTransformRequest' is not null or undefined
             (0, common_1.assertParamExists)('transform', 'pmtTransformRequest', pmtTransformRequest);
-            const localVarPath = `/v1-pmt-transform`;
+            const localVarPath = `/v1/pmt-transform`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, common_1.DUMMY_BASE_URL);
             let baseOptions;
@@ -2260,7 +2472,7 @@ const Scout9ApiAxiosParamCreator = function (configuration) {
             (0, common_1.assertParamExists)('updateEntity', 'id', id);
             // verify required parameter 'entityData' is not null or undefined
             (0, common_1.assertParamExists)('updateEntity', 'entityData', entityData);
-            const localVarPath = `/v1-entity/{type}/{id}`
+            const localVarPath = `/v1/entity/{type}/{id}`
                 .replace(`{${"type"}}`, encodeURIComponent(String(type)))
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -4300,7 +4512,7 @@ class Scout9Api extends Scout9ApiGenerated {
         }
         return this.axios.request({
             method: 'POST',
-            url: `${this.configuration?.basePath || base_1.BASE_PATH}/v1-organizationLogo`,
+            url: `${this.configuration?.basePath || base_1.BASE_PATH}/v1/organizationLogo`,
             data: formData,
             headers: {
                 'Content-Type': 'multipart/form-data',
@@ -4323,7 +4535,7 @@ class Scout9Api extends Scout9ApiGenerated {
         }
         return this.axios.request({
             method: 'POST',
-            url: `${this.configuration?.basePath || base_1.BASE_PATH}/v1-organizationIcon`,
+            url: `${this.configuration?.basePath || base_1.BASE_PATH}/v1/organizationIcon`,
             data: formData,
             headers: {
                 'Content-Type': 'multipart/form-data',
@@ -4350,7 +4562,7 @@ class Scout9Api extends Scout9ApiGenerated {
         }
         return this.axios.request({
             method: 'POST',
-            url: `${this.configuration?.basePath || base_1.BASE_PATH}/v1-agentImg`,
+            url: `${this.configuration?.basePath || base_1.BASE_PATH}/v1/agentImg`,
             data: formData,
             headers: {
                 'Content-Type': 'multipart/form-data',
@@ -4379,7 +4591,7 @@ class Scout9Api extends Scout9ApiGenerated {
         });
         return this.axios.request({
             method: 'POST',
-            url: `${this.configuration?.basePath || base_1.BASE_PATH}/v1-agentTranscripts`,
+            url: `${this.configuration?.basePath || base_1.BASE_PATH}/v1/agentTranscripts`,
             data: formData,
             headers: {
                 'Content-Type': 'multipart/form-data',
@@ -4408,7 +4620,7 @@ class Scout9Api extends Scout9ApiGenerated {
         });
         return this.axios.request({
             method: 'POST',
-            url: `${this.configuration?.basePath || base_1.BASE_PATH}/v1-agentAudios`,
+            url: `${this.configuration?.basePath || base_1.BASE_PATH}/v1/agentAudios`,
             data: formData,
             headers: {
                 'Content-Type': 'multipart/form-data',

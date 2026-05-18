@@ -794,7 +794,9 @@ describe("Spirits.customer (strict)", () => {
     const event = await Spirits.customer(input);
 
     expect(event.conversation.after.locked).toBe(true);
-    expect(event.conversation.after.forwarded).toBe("agent_2");
+    expect(event.conversation.after.forwardedTo).toBe("agent_2");
+    expect(event.conversation.after.forwardNote).toBe("handoff");
+    expect(Number.isNaN(Date.parse(event.conversation.after.forwarded))).toBe(false);
 
     const sys = event.messages.after.find((m) => m.role === "system" && String(m.content).includes("forwarded to"));
     expect(sys?.content).toContain("agent_2");

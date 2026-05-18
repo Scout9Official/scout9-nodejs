@@ -690,7 +690,7 @@ if (dev) {
         $id: 'dev_console_input',
         $agent: persona.id,
         $customer: 'temp',
-        environment: 'web'
+        channel: 'web'
       },
       context: {
         agent: persona,

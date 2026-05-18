@@ -5,7 +5,7 @@
  */
 
 import { z } from 'zod';
-import { Message as MessageAdmin, EntityToken as EntityTokenAdmin } from '@scout9/admin'
+import { Conversation as ConversationAdmin, Message as MessageAdmin, EntityToken as EntityTokenAdmin } from '@scout9/admin'
 
 /**
  * @param {WorkflowEvent} event - every workflow receives an event object
@@ -394,41 +394,7 @@ export type ConversationAnticipate = {
 };
 
 
-export type Conversation = {
-    $id: string;
-    /** Default agent assigned to the conversation(s) */
-    $agent: string;
-    /** Customer this conversation is with */
-    $customer: string;
-    /** Initial contexts to load when starting the conversation */
-    initialContexts?: string[] | undefined;
-    environment: "phone" | "email" | "web";
-    environmentProps?: {
-        /** HTML Subject of the conversation */
-        subject?: string | undefined;
-        /** Used to sync email messages with the conversation */
-        platformEmailThreadId?: string | undefined;
-    } | undefined;
-    /** Whether the conversation is locked or not */
-    locked?: (boolean | undefined) | null;
-    /** Why this conversation was locked */
-    lockedReason?: (string | undefined) | null;
-    /** Number attempts made until conversation is locked */
-    lockAttempts?: (number | undefined) | null;
-    /** What personaId/phone/email was forwarded */
-    forwardedTo?: (string | undefined) | null;
-    /** Datetime ISO 8601 timestamp when persona was forwarded */
-    forwarded?: (string | undefined) | null;
-    forwardNote?: (string | undefined) | null;
-    /** Detected intent of conversation */
-    intent?: (string | undefined) | null;
-    /** Confidence score of the assigned intent */
-    intentScore?: (number | undefined) | null;
-    /** Used to handle anticipating outcome */
-    anticipate?: ConversationAnticipate | undefined;
-    /** If conversation is assigned to a command */
-    command?: CommandConfiguration | undefined;
-};
+export type Conversation = ConversationAdmin;
 
 export type CustomerValue = boolean | number | string;
 
@@ -756,26 +722,6 @@ export type Anticipate = AnticipateDid | AnticipateKeywords[];
 
 export type DirectMessage = Partial<Omit<Message, 'id' | 'entities' | 'time' | 'role'>>;
 
-export interface LLMUsage {
-    completion_tokens: number;
-    prompt_tokens: number;
-    total_tokens: number;
-    completion_tokens_details?: CompletionTokensDetails;
-    prompt_tokens_details?: PromptTokensDetails;
-}
-
-export interface CompletionTokensDetails {
-    accepted_prediction_tokens?: number;
-    audio_tokens?: number;
-    reasoning_tokens?: number;
-    rejected_prediction_tokens?: number;
-}
-
-export interface PromptTokensDetails {
-    audio_tokens?: number;
-    cached_tokens?: number;
-}
-
 /**
  * Workflow Response Slot, can use for both PMT workflow event and event macro runtimes
  */
@@ -813,7 +759,7 @@ export type WorkflowResponseSlotBase = {
     scheduled?: number | undefined;
 
     /** internal usage, if llm tokens were used  */
-    usage?: LLMUsage | undefined;
+    usage?: import('@scout9/admin').TokenUsage | undefined;
 };
 
 /**

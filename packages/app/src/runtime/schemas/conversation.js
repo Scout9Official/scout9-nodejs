@@ -25,28 +25,51 @@ export const ConversationAnticipateSchema = z.object({
     }), {description: 'For literal keywords, this map helps point which slot the keyword matches to'}).optional()
 });
 
+export const ConversationChannelPropsSchema = z.object({
+    subject: z.string({description: 'Subject line for email-style channels such as Gmail and Outlook'}).optional(),
+    platformEmailThreadId: z.string({description: 'Provider thread id used to sync Gmail/Outlook channel messages with this conversation'}).optional(),
+    smsMessageSid: z.string({description: 'Twilio message sid that initiated this conversation'}).optional(),
+    channelResolutionPath: z.enum(['twilio_production', 'twilio_legacy_pmt', 'twilio_free_bridge'], {
+        description: 'Persisted channel-resolution path used for the current conversation'
+    }).optional()
+}).catchall(z.any());
+
 export const ConversationSchema = z.object({
-    $id: zId('Conversation ID', z.string({description: 'Conversation unique id'})),
-    $agent: zId('Conversation Agent ID', z.string({description: 'Default agent assigned to the conversation(s)'})),
-    $customer: zId('Conversation Customer ID', z.string({description: 'Customer this conversation is with'})),
+    $id: zId('Conversation ID', {description: 'Conversation unique id'}).optional(),
+    $agent: zId('Conversation Agent ID', {description: 'The user id assigned to this conversation'}),
+    $customer: zId('Conversation Customer ID', {description: 'Customer this conversation is with'}),
     initialContexts: z.array(z.string(), {description: 'Initial contexts to load when starting the conversation'})
         .optional(),
-    environment: z.enum(['phone', 'email', 'web']),
-    environmentProps: z.object({
-        subject: z.string({description: 'HTML Subject of the conversation'}).optional(),
-        platformEmailThreadId: z.string({description: 'Used to sync email messages with the conversation'}).optional()
+    channel: z.enum([
+        'web',
+        'demo_phone_test',
+        'sms_phone',
+        'outlook',
+        'gmail',
+        'iphone',
+        'android',
+        'teams',
+        'discord',
+        'whatsapp'
+    ]),
+    channelProps: ConversationChannelPropsSchema.optional(),
+    locked: z.boolean({description: 'Whether automated replies are locked and the conversation requires a policy outcome or manual intervention'}).optional().nullable(),
+    lockCode: z.enum(['workflow_stagnation', 'max_lock_attempts', 'runtime_error', 'manual_mode', 'policy_block'], {
+        description: 'Machine-readable lock reason'
     }).optional(),
-    locked: z.boolean({description: 'Whether the conversation is locked or not'}).optional().nullable(),
-    lockedReason: z.string({description: 'Why this conversation was locked'}).optional().nullable(),
-    lockAttempts: z.number({description: 'Number attempts made until conversation is locked'}).optional().nullable(),
-    forwardedTo: z.string({description: 'What personaId/phone/email was forwarded'}).optional().nullable(),
-    forwarded: z.string({description: 'Datetime ISO 8601 timestamp when persona was forwarded'}).optional().nullable(),
-    forwardNote: z.string().optional().nullable(),
-    intent: z.string({description: 'Detected intent of conversation'}).optional().nullable(),
-    intentScore: z.number({description: 'Confidence score of the assigned intent'}).optional().nullable(),
+    lockedReason: z.string({description: 'Human-readable locked reason'}).optional().nullable(),
+    lockAttempts: z.number({description: 'Number of consecutive workflow/context no-progress attempts'}).optional().nullable(),
+    forwardedTo: z.string({description: 'Contact that received a forward handoff'}).optional().nullable(),
+    forwarded: z.string({description: 'ISO 8601 datetime string for when the conversation was forwarded'}).optional().nullable(),
+    forwardNote: z.string({description: 'Operator or workflow note attached to the forward'}).optional().nullable(),
+    initiated: z.string({description: 'ISO 8601 datetime string for when this conversation was initiated'}).optional(),
+    intent: z.string({description: 'Detected intent attached at conversation start or first customer message'}).optional().nullable(),
+    intentScore: z.number({description: 'Confidence score for the detected intent'}).optional().nullable(),
+    read: z.string({description: 'ISO 8601 datetime string for when the account user read this conversation in the app'}).optional(),
+    metadata: z.record(z.any(), {description: 'Server-assigned conversation metadata'}).optional(),
     anticipate: ConversationAnticipateSchema.optional(),
-    /**
-     * Whether this conversation is part of a command flow
-     */
-    command: CommandSchema.optional()
+    command: CommandSchema.optional(),
+    ingress: z.enum(['auto', 'manual', 'app', 'webhook'], {
+        description: 'Overrides the Persona Model ingress mode for this conversation'
+    }).optional()
 });

@@ -214,7 +214,7 @@ export class ConversationState {
       $agent: process.env.TEST_PERSONA_UID,
       $customer: process.env.TEST_USER_UID,
       initialContexts: config.initialContexts,
-      environment: 'web',
+      channel: 'web',
     });
     this.context = {};
     this.agent = agents[0];
@@ -241,5 +241,4 @@ export class ConversationState {
 
 
 }
-
 

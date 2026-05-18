@@ -346,7 +346,7 @@ export class Scout9Test {
     return this.#api.generate({
       convo: {
         $customer: this.customer.id,
-        environment: this.conversation.environment,
+        channel: this.conversation.channel,
         initialContexts: this.conversation.initialContexts || [],
         ...conversation,
         $agent: persona

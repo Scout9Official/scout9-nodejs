@@ -309,6 +309,25 @@ export interface BlockInfo {
     'time'?: string;
 }
 /**
+ * Command-flow configuration attached to this conversation.
+ * @export
+ * @interface CommandConfiguration
+ */
+export interface CommandConfiguration {
+    /**
+     * Command entity id.
+     * @type {string}
+     * @memberof CommandConfiguration
+     */
+    'entity': string;
+    /**
+     * Command route/path.
+     * @type {string}
+     * @memberof CommandConfiguration
+     */
+    'path': string;
+}
+/**
  * @type Condition
  * @export
  */
@@ -622,11 +641,23 @@ export interface ContextualizerResponse {
  */
 export interface Conversation {
     /**
-     * Default agent persona id assigned to the conversation(s)
+     * Conversation document id. Public/admin clients may receive this field; middleware does not store it inside the Firestore document body.
+     * @type {string}
+     * @memberof Conversation
+     */
+    '$id'?: string;
+    /**
+     * The user id assigned to this conversation
      * @type {string}
      * @memberof Conversation
      */
     '$agent': string;
+    /**
+     * Customer this conversation is with
+     * @type {string}
+     * @memberof Conversation
+     */
+    '$customer': string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -635,72 +666,185 @@ export interface Conversation {
     'initialContexts'?: Array<string>;
     /**
      * 
-     * @type {ConversationBaseEnvironmentProps}
+     * @type {ConversationChannel}
      * @memberof Conversation
      */
-    'environmentProps'?: ConversationBaseEnvironmentProps;
-    /**
-     * User for this conversation
-     * @type {string}
-     * @memberof Conversation
-     */
-    '$user': string;
-    /**
-     * Customer this conversation is with (use $user instead)
-     * @type {string}
-     * @memberof Conversation
-     * @deprecated
-     */
-    '$customer'?: string;
+    'channel': ConversationChannel;
     /**
      * 
-     * @type {ConversationEnvironment}
+     * @type {ConversationChannelProps}
      * @memberof Conversation
      */
-    'environment': ConversationEnvironment;
+    'channelProps'?: ConversationChannelProps;
     /**
-     * Whether this conversation is a test or not
+     * Whether automated replies are locked and the conversation requires a policy outcome or manual intervention.
      * @type {boolean}
      * @memberof Conversation
      */
-    'test'?: boolean;
+    'locked'?: boolean | null;
+    /**
+     * Machine-readable lock reason.
+     * @type {string}
+     * @memberof Conversation
+     */
+    'lockCode'?: ConversationLockCodeEnum;
+    /**
+     * Human-readable locked reason.
+     * @type {string}
+     * @memberof Conversation
+     */
+    'lockedReason'?: string | null;
+    /**
+     * Number of consecutive workflow/context no-progress attempts.
+     * @type {number}
+     * @memberof Conversation
+     */
+    'lockAttempts'?: number | null;
+    /**
+     * Contact that received a forward handoff.
+     * @type {string}
+     * @memberof Conversation
+     */
+    'forwardedTo'?: string | null;
+    /**
+     * ISO 8601 datetime string for when the conversation was forwarded.
+     * @type {string}
+     * @memberof Conversation
+     */
+    'forwarded'?: string | null;
+    /**
+     * Operator or workflow note attached to the forward.
+     * @type {string}
+     * @memberof Conversation
+     */
+    'forwardNote'?: string | null;
+    /**
+     * ISO 8601 datetime string for when this conversation was initiated.
+     * @type {string}
+     * @memberof Conversation
+     */
+    'initiated'?: string;
+    /**
+     * Detected intent attached at conversation start or first customer message.
+     * @type {string}
+     * @memberof Conversation
+     */
+    'intent'?: string | null;
+    /**
+     * Confidence score for the detected intent.
+     * @type {number}
+     * @memberof Conversation
+     */
+    'intentScore'?: number | null;
+    /**
+     * ISO 8601 datetime string for when the account user read this conversation in the app.
+     * @type {string}
+     * @memberof Conversation
+     */
+    'read'?: string;
+    /**
+     * Server-assigned conversation metadata.
+     * @type {{ [key: string]: any; }}
+     * @memberof Conversation
+     */
+    'metadata'?: { [key: string]: any; };
+    /**
+     * 
+     * @type {ConversationAnticipate}
+     * @memberof Conversation
+     */
+    'anticipate'?: ConversationAnticipate;
+    /**
+     * 
+     * @type {CommandConfiguration}
+     * @memberof Conversation
+     */
+    'command'?: CommandConfiguration;
+    /**
+     * Overrides the Persona Model ingress mode for this conversation.
+     * @type {string}
+     * @memberof Conversation
+     */
+    'ingress'?: ConversationIngressEnum;
 }
 
+export const ConversationLockCodeEnum = {
+    WorkflowStagnation: 'workflow_stagnation',
+    MaxLockAttempts: 'max_lock_attempts',
+    RuntimeError: 'runtime_error',
+    ManualMode: 'manual_mode',
+    PolicyBlock: 'policy_block'
+} as const;
+
+export type ConversationLockCodeEnum = typeof ConversationLockCodeEnum[keyof typeof ConversationLockCodeEnum];
+export const ConversationIngressEnum = {
+    Auto: 'auto',
+    Manual: 'manual',
+    App: 'app',
+    Webhook: 'webhook'
+} as const;
+
+export type ConversationIngressEnum = typeof ConversationIngressEnum[keyof typeof ConversationIngressEnum];
+
+/**
+ * Metadata for anticipating a preflight response.
+ * @export
+ * @interface ConversationAnticipate
+ */
+export interface ConversationAnticipate {
+    /**
+     * Determines the runtime to address the next response.
+     * @type {string}
+     * @memberof ConversationAnticipate
+     */
+    'type': ConversationAnticipateTypeEnum;
+    /**
+     * Slot values collected or expected by anticipation logic.
+     * @type {{ [key: string]: Array<any>; }}
+     * @memberof ConversationAnticipate
+     */
+    'slots': { [key: string]: Array<any>; };
+    /**
+     * For type \'did\'.
+     * @type {string}
+     * @memberof ConversationAnticipate
+     */
+    'did'?: string;
+    /**
+     * For literal keywords, this map helps identify which slot the keyword matches.
+     * @type {Array<ConversationAnticipateMapInner>}
+     * @memberof ConversationAnticipate
+     */
+    'map'?: Array<ConversationAnticipateMapInner>;
+}
+
+export const ConversationAnticipateTypeEnum = {
+    Did: 'did',
+    Literal: 'literal',
+    Context: 'context'
+} as const;
+
+export type ConversationAnticipateTypeEnum = typeof ConversationAnticipateTypeEnum[keyof typeof ConversationAnticipateTypeEnum];
 
 /**
  * 
  * @export
- * @interface ConversationAllOf
+ * @interface ConversationAnticipateMapInner
  */
-export interface ConversationAllOf {
-    /**
-     * User for this conversation
-     * @type {string}
-     * @memberof ConversationAllOf
-     */
-    '$user': string;
-    /**
-     * Customer this conversation is with (use $user instead)
-     * @type {string}
-     * @memberof ConversationAllOf
-     * @deprecated
-     */
-    '$customer'?: string;
+export interface ConversationAnticipateMapInner {
     /**
      * 
-     * @type {ConversationEnvironment}
-     * @memberof ConversationAllOf
+     * @type {string}
+     * @memberof ConversationAnticipateMapInner
      */
-    'environment': ConversationEnvironment;
+    'slot': string;
     /**
-     * Whether this conversation is a test or not
-     * @type {boolean}
-     * @memberof ConversationAllOf
+     * 
+     * @type {Array<string>}
+     * @memberof ConversationAnticipateMapInner
      */
-    'test'?: boolean;
+    'keywords': Array<string>;
 }
-
-
 /**
  * Base props all conversation types will have
  * @export
@@ -708,11 +852,23 @@ export interface ConversationAllOf {
  */
 export interface ConversationBase {
     /**
-     * Default agent persona id assigned to the conversation(s)
+     * Conversation document id. Public/admin clients may receive this field; middleware does not store it inside the Firestore document body.
+     * @type {string}
+     * @memberof ConversationBase
+     */
+    '$id'?: string;
+    /**
+     * The user id assigned to this conversation
      * @type {string}
      * @memberof ConversationBase
      */
     '$agent'?: string;
+    /**
+     * Customer this conversation is with
+     * @type {string}
+     * @memberof ConversationBase
+     */
+    '$customer'?: string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -721,30 +877,190 @@ export interface ConversationBase {
     'initialContexts'?: Array<string>;
     /**
      * 
-     * @type {ConversationBaseEnvironmentProps}
+     * @type {ConversationChannel}
      * @memberof ConversationBase
      */
-    'environmentProps'?: ConversationBaseEnvironmentProps;
-}
-/**
- * Environment properties for the conversation
- * @export
- * @interface ConversationBaseEnvironmentProps
- */
-export interface ConversationBaseEnvironmentProps {
+    'channel'?: ConversationChannel;
     /**
-     * HTML subject line
+     * 
+     * @type {ConversationChannelProps}
+     * @memberof ConversationBase
+     */
+    'channelProps'?: ConversationChannelProps;
+    /**
+     * Whether automated replies are locked and the conversation requires a policy outcome or manual intervention.
+     * @type {boolean}
+     * @memberof ConversationBase
+     */
+    'locked'?: boolean | null;
+    /**
+     * Machine-readable lock reason.
      * @type {string}
-     * @memberof ConversationBaseEnvironmentProps
+     * @memberof ConversationBase
+     */
+    'lockCode'?: ConversationBaseLockCodeEnum;
+    /**
+     * Human-readable locked reason.
+     * @type {string}
+     * @memberof ConversationBase
+     */
+    'lockedReason'?: string | null;
+    /**
+     * Number of consecutive workflow/context no-progress attempts.
+     * @type {number}
+     * @memberof ConversationBase
+     */
+    'lockAttempts'?: number | null;
+    /**
+     * Contact that received a forward handoff.
+     * @type {string}
+     * @memberof ConversationBase
+     */
+    'forwardedTo'?: string | null;
+    /**
+     * ISO 8601 datetime string for when the conversation was forwarded.
+     * @type {string}
+     * @memberof ConversationBase
+     */
+    'forwarded'?: string | null;
+    /**
+     * Operator or workflow note attached to the forward.
+     * @type {string}
+     * @memberof ConversationBase
+     */
+    'forwardNote'?: string | null;
+    /**
+     * ISO 8601 datetime string for when this conversation was initiated.
+     * @type {string}
+     * @memberof ConversationBase
+     */
+    'initiated'?: string;
+    /**
+     * Detected intent attached at conversation start or first customer message.
+     * @type {string}
+     * @memberof ConversationBase
+     */
+    'intent'?: string | null;
+    /**
+     * Confidence score for the detected intent.
+     * @type {number}
+     * @memberof ConversationBase
+     */
+    'intentScore'?: number | null;
+    /**
+     * ISO 8601 datetime string for when the account user read this conversation in the app.
+     * @type {string}
+     * @memberof ConversationBase
+     */
+    'read'?: string;
+    /**
+     * Server-assigned conversation metadata.
+     * @type {{ [key: string]: any; }}
+     * @memberof ConversationBase
+     */
+    'metadata'?: { [key: string]: any; };
+    /**
+     * 
+     * @type {ConversationAnticipate}
+     * @memberof ConversationBase
+     */
+    'anticipate'?: ConversationAnticipate;
+    /**
+     * 
+     * @type {CommandConfiguration}
+     * @memberof ConversationBase
+     */
+    'command'?: CommandConfiguration;
+    /**
+     * Overrides the Persona Model ingress mode for this conversation.
+     * @type {string}
+     * @memberof ConversationBase
+     */
+    'ingress'?: ConversationBaseIngressEnum;
+}
+
+export const ConversationBaseLockCodeEnum = {
+    WorkflowStagnation: 'workflow_stagnation',
+    MaxLockAttempts: 'max_lock_attempts',
+    RuntimeError: 'runtime_error',
+    ManualMode: 'manual_mode',
+    PolicyBlock: 'policy_block'
+} as const;
+
+export type ConversationBaseLockCodeEnum = typeof ConversationBaseLockCodeEnum[keyof typeof ConversationBaseLockCodeEnum];
+export const ConversationBaseIngressEnum = {
+    Auto: 'auto',
+    Manual: 'manual',
+    App: 'app',
+    Webhook: 'webhook'
+} as const;
+
+export type ConversationBaseIngressEnum = typeof ConversationBaseIngressEnum[keyof typeof ConversationBaseIngressEnum];
+
+/**
+ * Canonical channel that initiated and should continue the customer conversation.
+ * @export
+ * @enum {string}
+ */
+
+export const ConversationChannel = {
+    Web: 'web',
+    DemoPhoneTest: 'demo_phone_test',
+    SmsPhone: 'sms_phone',
+    Outlook: 'outlook',
+    Gmail: 'gmail',
+    Iphone: 'iphone',
+    Android: 'android',
+    Teams: 'teams',
+    Discord: 'discord',
+    Whatsapp: 'whatsapp'
+} as const;
+
+export type ConversationChannel = typeof ConversationChannel[keyof typeof ConversationChannel];
+
+
+/**
+ * Channel-specific properties needed to continue a conversation on its canonical channel.
+ * @export
+ * @interface ConversationChannelProps
+ */
+export interface ConversationChannelProps {
+    [key: string]: any;
+
+    /**
+     * Subject line for email-style channels such as Gmail and Outlook.
+     * @type {string}
+     * @memberof ConversationChannelProps
      */
     'subject'?: string;
     /**
-     * Used to sync email messages with the conversation
+     * Provider thread id used to sync Gmail/Outlook channel messages with this conversation.
      * @type {string}
-     * @memberof ConversationBaseEnvironmentProps
+     * @memberof ConversationChannelProps
      */
     'platformEmailThreadId'?: string;
+    /**
+     * Twilio message sid that initiated this conversation.
+     * @type {string}
+     * @memberof ConversationChannelProps
+     */
+    'smsMessageSid'?: string;
+    /**
+     * Persisted channel-resolution path used for the current conversation.
+     * @type {string}
+     * @memberof ConversationChannelProps
+     */
+    'channelResolutionPath'?: ConversationChannelPropsChannelResolutionPathEnum;
 }
+
+export const ConversationChannelPropsChannelResolutionPathEnum = {
+    Production: 'twilio_production',
+    LegacyPmt: 'twilio_legacy_pmt',
+    FreeBridge: 'twilio_free_bridge'
+} as const;
+
+export type ConversationChannelPropsChannelResolutionPathEnum = typeof ConversationChannelPropsChannelResolutionPathEnum[keyof typeof ConversationChannelPropsChannelResolutionPathEnum];
+
 /**
  * 
  * @export
@@ -787,13 +1103,6 @@ export interface ConversationContextField {
      * @memberof ConversationContextField
      */
     'logic'?: Logic;
-    /**
-     * The conditions of the conversation
-     * @type {Array<ConversationContextGroup>}
-     * @memberof ConversationContextField
-     * @deprecated
-     */
-    'conditions'?: Array<ConversationContextGroup>;
     /**
      * The triggers of the conversation
      * @type {Array<string>}
@@ -911,11 +1220,23 @@ export type ConversationContextValueOneOfInner = boolean | number | string;
  */
 export interface ConversationCreateRequest {
     /**
-     * Default agent persona id assigned to the conversation(s)
+     * Conversation document id. Public/admin clients may receive this field; middleware does not store it inside the Firestore document body.
+     * @type {string}
+     * @memberof ConversationCreateRequest
+     */
+    '$id'?: string;
+    /**
+     * The user id assigned to this conversation
      * @type {string}
      * @memberof ConversationCreateRequest
      */
     '$agent': string;
+    /**
+     * Customer this conversation is with
+     * @type {string}
+     * @memberof ConversationCreateRequest
+     */
+    '$customer': string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -924,35 +1245,106 @@ export interface ConversationCreateRequest {
     'initialContexts'?: Array<string>;
     /**
      * 
-     * @type {ConversationBaseEnvironmentProps}
+     * @type {ConversationChannel}
      * @memberof ConversationCreateRequest
      */
-    'environmentProps'?: ConversationBaseEnvironmentProps;
-    /**
-     * User for this conversation
-     * @type {string}
-     * @memberof ConversationCreateRequest
-     */
-    '$user': string;
-    /**
-     * Customer this conversation is with (use $user instead)
-     * @type {string}
-     * @memberof ConversationCreateRequest
-     * @deprecated
-     */
-    '$customer'?: string;
+    'channel': ConversationChannel;
     /**
      * 
-     * @type {ConversationEnvironment}
+     * @type {ConversationChannelProps}
      * @memberof ConversationCreateRequest
      */
-    'environment': ConversationEnvironment;
+    'channelProps'?: ConversationChannelProps;
     /**
-     * Whether this conversation is a test or not
+     * Whether automated replies are locked and the conversation requires a policy outcome or manual intervention.
      * @type {boolean}
      * @memberof ConversationCreateRequest
      */
-    'test'?: boolean;
+    'locked'?: boolean | null;
+    /**
+     * Machine-readable lock reason.
+     * @type {string}
+     * @memberof ConversationCreateRequest
+     */
+    'lockCode'?: ConversationCreateRequestLockCodeEnum;
+    /**
+     * Human-readable locked reason.
+     * @type {string}
+     * @memberof ConversationCreateRequest
+     */
+    'lockedReason'?: string | null;
+    /**
+     * Number of consecutive workflow/context no-progress attempts.
+     * @type {number}
+     * @memberof ConversationCreateRequest
+     */
+    'lockAttempts'?: number | null;
+    /**
+     * Contact that received a forward handoff.
+     * @type {string}
+     * @memberof ConversationCreateRequest
+     */
+    'forwardedTo'?: string | null;
+    /**
+     * ISO 8601 datetime string for when the conversation was forwarded.
+     * @type {string}
+     * @memberof ConversationCreateRequest
+     */
+    'forwarded'?: string | null;
+    /**
+     * Operator or workflow note attached to the forward.
+     * @type {string}
+     * @memberof ConversationCreateRequest
+     */
+    'forwardNote'?: string | null;
+    /**
+     * ISO 8601 datetime string for when this conversation was initiated.
+     * @type {string}
+     * @memberof ConversationCreateRequest
+     */
+    'initiated'?: string;
+    /**
+     * Detected intent attached at conversation start or first customer message.
+     * @type {string}
+     * @memberof ConversationCreateRequest
+     */
+    'intent'?: string | null;
+    /**
+     * Confidence score for the detected intent.
+     * @type {number}
+     * @memberof ConversationCreateRequest
+     */
+    'intentScore'?: number | null;
+    /**
+     * ISO 8601 datetime string for when the account user read this conversation in the app.
+     * @type {string}
+     * @memberof ConversationCreateRequest
+     */
+    'read'?: string;
+    /**
+     * Server-assigned conversation metadata.
+     * @type {{ [key: string]: any; }}
+     * @memberof ConversationCreateRequest
+     */
+    'metadata'?: { [key: string]: any; };
+    /**
+     * 
+     * @type {ConversationAnticipate}
+     * @memberof ConversationCreateRequest
+     */
+    'anticipate'?: ConversationAnticipate;
+    /**
+     * 
+     * @type {CommandConfiguration}
+     * @memberof ConversationCreateRequest
+     */
+    'command'?: CommandConfiguration;
+    /**
+     * Overrides the Persona Model ingress mode for this conversation.
+     * @type {string}
+     * @memberof ConversationCreateRequest
+     */
+    'ingress'?: ConversationCreateRequestIngressEnum;
     /**
      * Appends a prefix to the conversation id, if a conversation id is prefixed with test, or dev, it will mute text messages
      * @type {string}
@@ -961,6 +1353,23 @@ export interface ConversationCreateRequest {
     'idPrefix'?: string;
 }
 
+export const ConversationCreateRequestLockCodeEnum = {
+    WorkflowStagnation: 'workflow_stagnation',
+    MaxLockAttempts: 'max_lock_attempts',
+    RuntimeError: 'runtime_error',
+    ManualMode: 'manual_mode',
+    PolicyBlock: 'policy_block'
+} as const;
+
+export type ConversationCreateRequestLockCodeEnum = typeof ConversationCreateRequestLockCodeEnum[keyof typeof ConversationCreateRequestLockCodeEnum];
+export const ConversationCreateRequestIngressEnum = {
+    Auto: 'auto',
+    Manual: 'manual',
+    App: 'app',
+    Webhook: 'webhook'
+} as const;
+
+export type ConversationCreateRequestIngressEnum = typeof ConversationCreateRequestIngressEnum[keyof typeof ConversationCreateRequestIngressEnum];
 
 /**
  * 
@@ -1038,32 +1447,29 @@ export interface ConversationCreateResponseAllOf {
     'initiated': string;
 }
 /**
- * Environment this conversation is in (phone, web, or email) - this determines which device to send messages to
- * @export
- * @enum {string}
- */
-
-export const ConversationEnvironment = {
-    Phone: 'phone',
-    Web: 'web',
-    Email: 'email'
-} as const;
-
-export type ConversationEnvironment = typeof ConversationEnvironment[keyof typeof ConversationEnvironment];
-
-
-/**
  * 
  * @export
  * @interface ConversationGetResponse
  */
 export interface ConversationGetResponse {
     /**
-     * Default agent persona id assigned to the conversation(s)
+     * The ID of the conversation
+     * @type {string}
+     * @memberof ConversationGetResponse
+     */
+    '$id': string;
+    /**
+     * The user id assigned to this conversation
      * @type {string}
      * @memberof ConversationGetResponse
      */
     '$agent': string;
+    /**
+     * Customer this conversation is with
+     * @type {string}
+     * @memberof ConversationGetResponse
+     */
+    '$customer': string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -1072,35 +1478,106 @@ export interface ConversationGetResponse {
     'initialContexts'?: Array<string>;
     /**
      * 
-     * @type {ConversationBaseEnvironmentProps}
+     * @type {ConversationChannel}
      * @memberof ConversationGetResponse
      */
-    'environmentProps'?: ConversationBaseEnvironmentProps;
-    /**
-     * User for this conversation
-     * @type {string}
-     * @memberof ConversationGetResponse
-     */
-    '$user': string;
-    /**
-     * Customer this conversation is with (use $user instead)
-     * @type {string}
-     * @memberof ConversationGetResponse
-     * @deprecated
-     */
-    '$customer'?: string;
+    'channel': ConversationChannel;
     /**
      * 
-     * @type {ConversationEnvironment}
+     * @type {ConversationChannelProps}
      * @memberof ConversationGetResponse
      */
-    'environment': ConversationEnvironment;
+    'channelProps'?: ConversationChannelProps;
     /**
-     * Whether this conversation is a test or not
+     * Whether automated replies are locked and the conversation requires a policy outcome or manual intervention.
      * @type {boolean}
      * @memberof ConversationGetResponse
      */
-    'test'?: boolean;
+    'locked'?: boolean | null;
+    /**
+     * Machine-readable lock reason.
+     * @type {string}
+     * @memberof ConversationGetResponse
+     */
+    'lockCode'?: ConversationGetResponseLockCodeEnum;
+    /**
+     * Human-readable locked reason.
+     * @type {string}
+     * @memberof ConversationGetResponse
+     */
+    'lockedReason'?: string | null;
+    /**
+     * Number of consecutive workflow/context no-progress attempts.
+     * @type {number}
+     * @memberof ConversationGetResponse
+     */
+    'lockAttempts'?: number | null;
+    /**
+     * Contact that received a forward handoff.
+     * @type {string}
+     * @memberof ConversationGetResponse
+     */
+    'forwardedTo'?: string | null;
+    /**
+     * ISO 8601 datetime string for when the conversation was forwarded.
+     * @type {string}
+     * @memberof ConversationGetResponse
+     */
+    'forwarded'?: string | null;
+    /**
+     * Operator or workflow note attached to the forward.
+     * @type {string}
+     * @memberof ConversationGetResponse
+     */
+    'forwardNote'?: string | null;
+    /**
+     * ISO 8601 date string of when the conversation was initiated
+     * @type {string}
+     * @memberof ConversationGetResponse
+     */
+    'initiated': string;
+    /**
+     * Detected intent attached at conversation start or first customer message.
+     * @type {string}
+     * @memberof ConversationGetResponse
+     */
+    'intent'?: string | null;
+    /**
+     * Confidence score for the detected intent.
+     * @type {number}
+     * @memberof ConversationGetResponse
+     */
+    'intentScore'?: number | null;
+    /**
+     * ISO 8601 datetime string for when the account user read this conversation in the app.
+     * @type {string}
+     * @memberof ConversationGetResponse
+     */
+    'read'?: string;
+    /**
+     * Server-assigned conversation metadata.
+     * @type {{ [key: string]: any; }}
+     * @memberof ConversationGetResponse
+     */
+    'metadata'?: { [key: string]: any; };
+    /**
+     * 
+     * @type {ConversationAnticipate}
+     * @memberof ConversationGetResponse
+     */
+    'anticipate'?: ConversationAnticipate;
+    /**
+     * 
+     * @type {CommandConfiguration}
+     * @memberof ConversationGetResponse
+     */
+    'command'?: CommandConfiguration;
+    /**
+     * Overrides the Persona Model ingress mode for this conversation.
+     * @type {string}
+     * @memberof ConversationGetResponse
+     */
+    'ingress'?: ConversationGetResponseIngressEnum;
     /**
      * The client web url of the conversation
      * @type {string}
@@ -1119,20 +1596,25 @@ export interface ConversationGetResponse {
      * @memberof ConversationGetResponse
      */
     'agentTestWebUrl'?: string;
-    /**
-     * ISO 8601 date string of when the conversation was initiated
-     * @type {string}
-     * @memberof ConversationGetResponse
-     */
-    'initiated': string;
-    /**
-     * The ID of the conversation
-     * @type {string}
-     * @memberof ConversationGetResponse
-     */
-    '$id': string;
 }
 
+export const ConversationGetResponseLockCodeEnum = {
+    WorkflowStagnation: 'workflow_stagnation',
+    MaxLockAttempts: 'max_lock_attempts',
+    RuntimeError: 'runtime_error',
+    ManualMode: 'manual_mode',
+    PolicyBlock: 'policy_block'
+} as const;
+
+export type ConversationGetResponseLockCodeEnum = typeof ConversationGetResponseLockCodeEnum[keyof typeof ConversationGetResponseLockCodeEnum];
+export const ConversationGetResponseIngressEnum = {
+    Auto: 'auto',
+    Manual: 'manual',
+    App: 'app',
+    Webhook: 'webhook'
+} as const;
+
+export type ConversationGetResponseIngressEnum = typeof ConversationGetResponseIngressEnum[keyof typeof ConversationGetResponseIngressEnum];
 
 /**
  * 
@@ -1210,11 +1692,23 @@ export interface ConversationScheduleParams {
  */
 export interface ConversationUpdateRequest {
     /**
-     * Default agent persona id assigned to the conversation(s)
+     * The ID of the conversation to update
+     * @type {string}
+     * @memberof ConversationUpdateRequest
+     */
+    '$id': string;
+    /**
+     * The user id assigned to this conversation
      * @type {string}
      * @memberof ConversationUpdateRequest
      */
     '$agent'?: string;
+    /**
+     * Customer this conversation is with
+     * @type {string}
+     * @memberof ConversationUpdateRequest
+     */
+    '$customer'?: string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -1223,17 +1717,126 @@ export interface ConversationUpdateRequest {
     'initialContexts'?: Array<string>;
     /**
      * 
-     * @type {ConversationBaseEnvironmentProps}
+     * @type {ConversationChannel}
      * @memberof ConversationUpdateRequest
      */
-    'environmentProps'?: ConversationBaseEnvironmentProps;
+    'channel'?: ConversationChannel;
     /**
-     * The ID of the conversation to update
+     * 
+     * @type {ConversationChannelProps}
+     * @memberof ConversationUpdateRequest
+     */
+    'channelProps'?: ConversationChannelProps;
+    /**
+     * Whether automated replies are locked and the conversation requires a policy outcome or manual intervention.
+     * @type {boolean}
+     * @memberof ConversationUpdateRequest
+     */
+    'locked'?: boolean | null;
+    /**
+     * Machine-readable lock reason.
      * @type {string}
      * @memberof ConversationUpdateRequest
      */
-    '$id': string;
+    'lockCode'?: ConversationUpdateRequestLockCodeEnum;
+    /**
+     * Human-readable locked reason.
+     * @type {string}
+     * @memberof ConversationUpdateRequest
+     */
+    'lockedReason'?: string | null;
+    /**
+     * Number of consecutive workflow/context no-progress attempts.
+     * @type {number}
+     * @memberof ConversationUpdateRequest
+     */
+    'lockAttempts'?: number | null;
+    /**
+     * Contact that received a forward handoff.
+     * @type {string}
+     * @memberof ConversationUpdateRequest
+     */
+    'forwardedTo'?: string | null;
+    /**
+     * ISO 8601 datetime string for when the conversation was forwarded.
+     * @type {string}
+     * @memberof ConversationUpdateRequest
+     */
+    'forwarded'?: string | null;
+    /**
+     * Operator or workflow note attached to the forward.
+     * @type {string}
+     * @memberof ConversationUpdateRequest
+     */
+    'forwardNote'?: string | null;
+    /**
+     * ISO 8601 datetime string for when this conversation was initiated.
+     * @type {string}
+     * @memberof ConversationUpdateRequest
+     */
+    'initiated'?: string;
+    /**
+     * Detected intent attached at conversation start or first customer message.
+     * @type {string}
+     * @memberof ConversationUpdateRequest
+     */
+    'intent'?: string | null;
+    /**
+     * Confidence score for the detected intent.
+     * @type {number}
+     * @memberof ConversationUpdateRequest
+     */
+    'intentScore'?: number | null;
+    /**
+     * ISO 8601 datetime string for when the account user read this conversation in the app.
+     * @type {string}
+     * @memberof ConversationUpdateRequest
+     */
+    'read'?: string;
+    /**
+     * Server-assigned conversation metadata.
+     * @type {{ [key: string]: any; }}
+     * @memberof ConversationUpdateRequest
+     */
+    'metadata'?: { [key: string]: any; };
+    /**
+     * 
+     * @type {ConversationAnticipate}
+     * @memberof ConversationUpdateRequest
+     */
+    'anticipate'?: ConversationAnticipate;
+    /**
+     * 
+     * @type {CommandConfiguration}
+     * @memberof ConversationUpdateRequest
+     */
+    'command'?: CommandConfiguration;
+    /**
+     * Overrides the Persona Model ingress mode for this conversation.
+     * @type {string}
+     * @memberof ConversationUpdateRequest
+     */
+    'ingress'?: ConversationUpdateRequestIngressEnum;
 }
+
+export const ConversationUpdateRequestLockCodeEnum = {
+    WorkflowStagnation: 'workflow_stagnation',
+    MaxLockAttempts: 'max_lock_attempts',
+    RuntimeError: 'runtime_error',
+    ManualMode: 'manual_mode',
+    PolicyBlock: 'policy_block'
+} as const;
+
+export type ConversationUpdateRequestLockCodeEnum = typeof ConversationUpdateRequestLockCodeEnum[keyof typeof ConversationUpdateRequestLockCodeEnum];
+export const ConversationUpdateRequestIngressEnum = {
+    Auto: 'auto',
+    Manual: 'manual',
+    App: 'app',
+    Webhook: 'webhook'
+} as const;
+
+export type ConversationUpdateRequestIngressEnum = typeof ConversationUpdateRequestIngressEnum[keyof typeof ConversationUpdateRequestIngressEnum];
+
 /**
  * 
  * @export
@@ -1304,11 +1907,23 @@ export interface ConversationUrls {
  */
 export interface ConversationWithId {
     /**
-     * Default agent persona id assigned to the conversation(s)
+     * The ID of the conversation
+     * @type {string}
+     * @memberof ConversationWithId
+     */
+    '$id': string;
+    /**
+     * The user id assigned to this conversation
      * @type {string}
      * @memberof ConversationWithId
      */
     '$agent': string;
+    /**
+     * Customer this conversation is with
+     * @type {string}
+     * @memberof ConversationWithId
+     */
+    '$customer': string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -1317,43 +1932,125 @@ export interface ConversationWithId {
     'initialContexts'?: Array<string>;
     /**
      * 
-     * @type {ConversationBaseEnvironmentProps}
+     * @type {ConversationChannel}
      * @memberof ConversationWithId
      */
-    'environmentProps'?: ConversationBaseEnvironmentProps;
-    /**
-     * User for this conversation
-     * @type {string}
-     * @memberof ConversationWithId
-     */
-    '$user': string;
-    /**
-     * Customer this conversation is with (use $user instead)
-     * @type {string}
-     * @memberof ConversationWithId
-     * @deprecated
-     */
-    '$customer'?: string;
+    'channel': ConversationChannel;
     /**
      * 
-     * @type {ConversationEnvironment}
+     * @type {ConversationChannelProps}
      * @memberof ConversationWithId
      */
-    'environment': ConversationEnvironment;
+    'channelProps'?: ConversationChannelProps;
     /**
-     * Whether this conversation is a test or not
+     * Whether automated replies are locked and the conversation requires a policy outcome or manual intervention.
      * @type {boolean}
      * @memberof ConversationWithId
      */
-    'test'?: boolean;
+    'locked'?: boolean | null;
     /**
-     * The ID of the conversation
+     * Machine-readable lock reason.
      * @type {string}
      * @memberof ConversationWithId
      */
-    '$id': string;
+    'lockCode'?: ConversationWithIdLockCodeEnum;
+    /**
+     * Human-readable locked reason.
+     * @type {string}
+     * @memberof ConversationWithId
+     */
+    'lockedReason'?: string | null;
+    /**
+     * Number of consecutive workflow/context no-progress attempts.
+     * @type {number}
+     * @memberof ConversationWithId
+     */
+    'lockAttempts'?: number | null;
+    /**
+     * Contact that received a forward handoff.
+     * @type {string}
+     * @memberof ConversationWithId
+     */
+    'forwardedTo'?: string | null;
+    /**
+     * ISO 8601 datetime string for when the conversation was forwarded.
+     * @type {string}
+     * @memberof ConversationWithId
+     */
+    'forwarded'?: string | null;
+    /**
+     * Operator or workflow note attached to the forward.
+     * @type {string}
+     * @memberof ConversationWithId
+     */
+    'forwardNote'?: string | null;
+    /**
+     * ISO 8601 datetime string for when this conversation was initiated.
+     * @type {string}
+     * @memberof ConversationWithId
+     */
+    'initiated'?: string;
+    /**
+     * Detected intent attached at conversation start or first customer message.
+     * @type {string}
+     * @memberof ConversationWithId
+     */
+    'intent'?: string | null;
+    /**
+     * Confidence score for the detected intent.
+     * @type {number}
+     * @memberof ConversationWithId
+     */
+    'intentScore'?: number | null;
+    /**
+     * ISO 8601 datetime string for when the account user read this conversation in the app.
+     * @type {string}
+     * @memberof ConversationWithId
+     */
+    'read'?: string;
+    /**
+     * Server-assigned conversation metadata.
+     * @type {{ [key: string]: any; }}
+     * @memberof ConversationWithId
+     */
+    'metadata'?: { [key: string]: any; };
+    /**
+     * 
+     * @type {ConversationAnticipate}
+     * @memberof ConversationWithId
+     */
+    'anticipate'?: ConversationAnticipate;
+    /**
+     * 
+     * @type {CommandConfiguration}
+     * @memberof ConversationWithId
+     */
+    'command'?: CommandConfiguration;
+    /**
+     * Overrides the Persona Model ingress mode for this conversation.
+     * @type {string}
+     * @memberof ConversationWithId
+     */
+    'ingress'?: ConversationWithIdIngressEnum;
 }
 
+export const ConversationWithIdLockCodeEnum = {
+    WorkflowStagnation: 'workflow_stagnation',
+    MaxLockAttempts: 'max_lock_attempts',
+    RuntimeError: 'runtime_error',
+    ManualMode: 'manual_mode',
+    PolicyBlock: 'policy_block'
+} as const;
+
+export type ConversationWithIdLockCodeEnum = typeof ConversationWithIdLockCodeEnum[keyof typeof ConversationWithIdLockCodeEnum];
+export const ConversationWithIdIngressEnum = {
+    Auto: 'auto',
+    Manual: 'manual',
+    App: 'app',
+    Webhook: 'webhook'
+} as const;
+
+export type ConversationWithIdIngressEnum = typeof ConversationWithIdIngressEnum[keyof typeof ConversationWithIdIngressEnum];
 
 /**
  * 
@@ -1928,10 +2625,10 @@ export interface CustomerGroupRecord {
     'id': string;
     /**
      * 
-     * @type {ConversationEnvironment}
+     * @type {ConversationChannel}
      * @memberof CustomerGroupRecord
      */
-    'environment': ConversationEnvironment;
+    'channel': ConversationChannel;
     /**
      * Overrides the default $agent for this customer
      * @type {string}
@@ -2689,11 +3386,11 @@ export interface GenerateRequestOneOf {
      */
     'customerIdOrPhoneOrEmail'?: string;
     /**
-     * Custom workflow task ids to execute for support custom business logic
+     * Custom Workflow Action ids to execute for supported custom business logic
      * @type {Array<string>}
      * @memberof GenerateRequestOneOf
      */
-    'tasks'?: Array<string>;
+    'actions'?: Array<string>;
 }
 /**
  * 
@@ -2732,11 +3429,11 @@ export interface GenerateRequestOneOf1 {
      */
     'pmt'?: PmtConfig;
     /**
-     * Custom workflow task ids to execute for support custom business logic
+     * Custom Workflow Action ids to execute for supported custom business logic
      * @type {Array<string>}
      * @memberof GenerateRequestOneOf1
      */
-    'tasks'?: Array<string>;
+    'actions'?: Array<string>;
 }
 /**
  * @type GenerateRequestOneOf1Persona
@@ -3332,11 +4029,23 @@ export interface ListApiOperationsResponseInnerAllOf {
  */
 export interface ListConversationsResponseInner {
     /**
-     * Default agent persona id assigned to the conversation(s)
+     * The ID of the conversation
+     * @type {string}
+     * @memberof ListConversationsResponseInner
+     */
+    '$id': string;
+    /**
+     * The user id assigned to this conversation
      * @type {string}
      * @memberof ListConversationsResponseInner
      */
     '$agent': string;
+    /**
+     * Customer this conversation is with
+     * @type {string}
+     * @memberof ListConversationsResponseInner
+     */
+    '$customer': string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -3345,35 +4054,106 @@ export interface ListConversationsResponseInner {
     'initialContexts'?: Array<string>;
     /**
      * 
-     * @type {ConversationBaseEnvironmentProps}
+     * @type {ConversationChannel}
      * @memberof ListConversationsResponseInner
      */
-    'environmentProps'?: ConversationBaseEnvironmentProps;
-    /**
-     * User for this conversation
-     * @type {string}
-     * @memberof ListConversationsResponseInner
-     */
-    '$user': string;
-    /**
-     * Customer this conversation is with (use $user instead)
-     * @type {string}
-     * @memberof ListConversationsResponseInner
-     * @deprecated
-     */
-    '$customer'?: string;
+    'channel': ConversationChannel;
     /**
      * 
-     * @type {ConversationEnvironment}
+     * @type {ConversationChannelProps}
      * @memberof ListConversationsResponseInner
      */
-    'environment': ConversationEnvironment;
+    'channelProps'?: ConversationChannelProps;
     /**
-     * Whether this conversation is a test or not
+     * Whether automated replies are locked and the conversation requires a policy outcome or manual intervention.
      * @type {boolean}
      * @memberof ListConversationsResponseInner
      */
-    'test'?: boolean;
+    'locked'?: boolean | null;
+    /**
+     * Machine-readable lock reason.
+     * @type {string}
+     * @memberof ListConversationsResponseInner
+     */
+    'lockCode'?: ListConversationsResponseInnerLockCodeEnum;
+    /**
+     * Human-readable locked reason.
+     * @type {string}
+     * @memberof ListConversationsResponseInner
+     */
+    'lockedReason'?: string | null;
+    /**
+     * Number of consecutive workflow/context no-progress attempts.
+     * @type {number}
+     * @memberof ListConversationsResponseInner
+     */
+    'lockAttempts'?: number | null;
+    /**
+     * Contact that received a forward handoff.
+     * @type {string}
+     * @memberof ListConversationsResponseInner
+     */
+    'forwardedTo'?: string | null;
+    /**
+     * ISO 8601 datetime string for when the conversation was forwarded.
+     * @type {string}
+     * @memberof ListConversationsResponseInner
+     */
+    'forwarded'?: string | null;
+    /**
+     * Operator or workflow note attached to the forward.
+     * @type {string}
+     * @memberof ListConversationsResponseInner
+     */
+    'forwardNote'?: string | null;
+    /**
+     * ISO 8601 date string of when the conversation was initiated
+     * @type {string}
+     * @memberof ListConversationsResponseInner
+     */
+    'initiated': string;
+    /**
+     * Detected intent attached at conversation start or first customer message.
+     * @type {string}
+     * @memberof ListConversationsResponseInner
+     */
+    'intent'?: string | null;
+    /**
+     * Confidence score for the detected intent.
+     * @type {number}
+     * @memberof ListConversationsResponseInner
+     */
+    'intentScore'?: number | null;
+    /**
+     * ISO 8601 datetime string for when the account user read this conversation in the app.
+     * @type {string}
+     * @memberof ListConversationsResponseInner
+     */
+    'read'?: string;
+    /**
+     * Server-assigned conversation metadata.
+     * @type {{ [key: string]: any; }}
+     * @memberof ListConversationsResponseInner
+     */
+    'metadata'?: { [key: string]: any; };
+    /**
+     * 
+     * @type {ConversationAnticipate}
+     * @memberof ListConversationsResponseInner
+     */
+    'anticipate'?: ConversationAnticipate;
+    /**
+     * 
+     * @type {CommandConfiguration}
+     * @memberof ListConversationsResponseInner
+     */
+    'command'?: CommandConfiguration;
+    /**
+     * Overrides the Persona Model ingress mode for this conversation.
+     * @type {string}
+     * @memberof ListConversationsResponseInner
+     */
+    'ingress'?: ListConversationsResponseInnerIngressEnum;
     /**
      * The client web url of the conversation
      * @type {string}
@@ -3392,20 +4172,25 @@ export interface ListConversationsResponseInner {
      * @memberof ListConversationsResponseInner
      */
     'agentTestWebUrl'?: string;
-    /**
-     * ISO 8601 date string of when the conversation was initiated
-     * @type {string}
-     * @memberof ListConversationsResponseInner
-     */
-    'initiated': string;
-    /**
-     * The ID of the conversation
-     * @type {string}
-     * @memberof ListConversationsResponseInner
-     */
-    '$id': string;
 }
 
+export const ListConversationsResponseInnerLockCodeEnum = {
+    WorkflowStagnation: 'workflow_stagnation',
+    MaxLockAttempts: 'max_lock_attempts',
+    RuntimeError: 'runtime_error',
+    ManualMode: 'manual_mode',
+    PolicyBlock: 'policy_block'
+} as const;
+
+export type ListConversationsResponseInnerLockCodeEnum = typeof ListConversationsResponseInnerLockCodeEnum[keyof typeof ListConversationsResponseInnerLockCodeEnum];
+export const ListConversationsResponseInnerIngressEnum = {
+    Auto: 'auto',
+    Manual: 'manual',
+    App: 'app',
+    Webhook: 'webhook'
+} as const;
+
+export type ListConversationsResponseInnerIngressEnum = typeof ListConversationsResponseInnerIngressEnum[keyof typeof ListConversationsResponseInnerIngressEnum];
 
 /**
  * 
@@ -5341,11 +6126,11 @@ export interface MessageCreateRequest {
      */
     'messageHtml'?: string;
     /**
-     * Custom workflow task ids to execute for support custom business logic
+     * Custom Workflow Action ids to execute for supported custom business logic
      * @type {Array<string>}
      * @memberof MessageCreateRequest
      */
-    'tasks'?: Array<string>;
+    'actions'?: Array<string>;
     /**
      * 
      * @type {LlmConfig}
@@ -5412,10 +6197,10 @@ export interface MessageCreateRequestConvoOneOf {
     'agentIdOrPhoneOrEmail'?: string;
     /**
      * 
-     * @type {ConversationEnvironment}
+     * @type {ConversationChannel}
      * @memberof MessageCreateRequestConvoOneOf
      */
-    'environment'?: ConversationEnvironment;
+    'channel'?: ConversationChannel;
 }
 
 
@@ -5962,7 +6747,13 @@ export interface PmtTransformResponse {
      * @type {string}
      * @memberof PmtTransformResponse
      */
-    'message': string;
+    'message'?: string;
+    /**
+     * Formatted persona responses
+     * @type {Array<Message>}
+     * @memberof PmtTransformResponse
+     */
+    'messages'?: Array<Message>;
     /**
      * How confident this message meets the persona\'s own words
      * @type {number}
@@ -6108,11 +6899,23 @@ export interface RegexCondition {
  */
 export interface ScheduleCreateRequest {
     /**
-     * Default agent persona id assigned to the conversation(s)
+     * Conversation document id. Public/admin clients may receive this field; middleware does not store it inside the Firestore document body.
+     * @type {string}
+     * @memberof ScheduleCreateRequest
+     */
+    '$id'?: string;
+    /**
+     * The user id assigned to this conversation
      * @type {string}
      * @memberof ScheduleCreateRequest
      */
     '$agent': string;
+    /**
+     * Customer this conversation is with
+     * @type {string}
+     * @memberof ScheduleCreateRequest
+     */
+    '$customer': string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -6121,35 +6924,106 @@ export interface ScheduleCreateRequest {
     'initialContexts'?: Array<string>;
     /**
      * 
-     * @type {ConversationBaseEnvironmentProps}
+     * @type {ConversationChannel}
      * @memberof ScheduleCreateRequest
      */
-    'environmentProps'?: ConversationBaseEnvironmentProps;
-    /**
-     * User for this conversation
-     * @type {string}
-     * @memberof ScheduleCreateRequest
-     */
-    '$user': string;
-    /**
-     * Customer this conversation is with (use $user instead)
-     * @type {string}
-     * @memberof ScheduleCreateRequest
-     * @deprecated
-     */
-    '$customer'?: string;
+    'channel': ConversationChannel;
     /**
      * 
-     * @type {ConversationEnvironment}
+     * @type {ConversationChannelProps}
      * @memberof ScheduleCreateRequest
      */
-    'environment': ConversationEnvironment;
+    'channelProps'?: ConversationChannelProps;
     /**
-     * Whether this conversation is a test or not
+     * Whether automated replies are locked and the conversation requires a policy outcome or manual intervention.
      * @type {boolean}
      * @memberof ScheduleCreateRequest
      */
-    'test'?: boolean;
+    'locked'?: boolean | null;
+    /**
+     * Machine-readable lock reason.
+     * @type {string}
+     * @memberof ScheduleCreateRequest
+     */
+    'lockCode'?: ScheduleCreateRequestLockCodeEnum;
+    /**
+     * Human-readable locked reason.
+     * @type {string}
+     * @memberof ScheduleCreateRequest
+     */
+    'lockedReason'?: string | null;
+    /**
+     * Number of consecutive workflow/context no-progress attempts.
+     * @type {number}
+     * @memberof ScheduleCreateRequest
+     */
+    'lockAttempts'?: number | null;
+    /**
+     * Contact that received a forward handoff.
+     * @type {string}
+     * @memberof ScheduleCreateRequest
+     */
+    'forwardedTo'?: string | null;
+    /**
+     * ISO 8601 datetime string for when the conversation was forwarded.
+     * @type {string}
+     * @memberof ScheduleCreateRequest
+     */
+    'forwarded'?: string | null;
+    /**
+     * Operator or workflow note attached to the forward.
+     * @type {string}
+     * @memberof ScheduleCreateRequest
+     */
+    'forwardNote'?: string | null;
+    /**
+     * ISO 8601 datetime string for when this conversation was initiated.
+     * @type {string}
+     * @memberof ScheduleCreateRequest
+     */
+    'initiated'?: string;
+    /**
+     * Detected intent attached at conversation start or first customer message.
+     * @type {string}
+     * @memberof ScheduleCreateRequest
+     */
+    'intent'?: string | null;
+    /**
+     * Confidence score for the detected intent.
+     * @type {number}
+     * @memberof ScheduleCreateRequest
+     */
+    'intentScore'?: number | null;
+    /**
+     * ISO 8601 datetime string for when the account user read this conversation in the app.
+     * @type {string}
+     * @memberof ScheduleCreateRequest
+     */
+    'read'?: string;
+    /**
+     * Server-assigned conversation metadata.
+     * @type {{ [key: string]: any; }}
+     * @memberof ScheduleCreateRequest
+     */
+    'metadata'?: { [key: string]: any; };
+    /**
+     * 
+     * @type {ConversationAnticipate}
+     * @memberof ScheduleCreateRequest
+     */
+    'anticipate'?: ConversationAnticipate;
+    /**
+     * 
+     * @type {CommandConfiguration}
+     * @memberof ScheduleCreateRequest
+     */
+    'command'?: CommandConfiguration;
+    /**
+     * Overrides the Persona Model ingress mode for this conversation.
+     * @type {string}
+     * @memberof ScheduleCreateRequest
+     */
+    'ingress'?: ScheduleCreateRequestIngressEnum;
     /**
      * ISO 8601 datetime string
      * @type {string}
@@ -6176,6 +7050,23 @@ export interface ScheduleCreateRequest {
     '$group'?: string;
 }
 
+export const ScheduleCreateRequestLockCodeEnum = {
+    WorkflowStagnation: 'workflow_stagnation',
+    MaxLockAttempts: 'max_lock_attempts',
+    RuntimeError: 'runtime_error',
+    ManualMode: 'manual_mode',
+    PolicyBlock: 'policy_block'
+} as const;
+
+export type ScheduleCreateRequestLockCodeEnum = typeof ScheduleCreateRequestLockCodeEnum[keyof typeof ScheduleCreateRequestLockCodeEnum];
+export const ScheduleCreateRequestIngressEnum = {
+    Auto: 'auto',
+    Manual: 'manual',
+    App: 'app',
+    Webhook: 'webhook'
+} as const;
+
+export type ScheduleCreateRequestIngressEnum = typeof ScheduleCreateRequestIngressEnum[keyof typeof ScheduleCreateRequestIngressEnum];
 
 /**
  * 
@@ -6228,11 +7119,23 @@ export interface ScheduleCreateResponseAllOf {
  */
 export interface ScheduleGetResponse {
     /**
-     * Default agent persona id assigned to the conversation(s)
+     * Conversation document id. Public/admin clients may receive this field; middleware does not store it inside the Firestore document body.
+     * @type {string}
+     * @memberof ScheduleGetResponse
+     */
+    '$id'?: string;
+    /**
+     * The user id assigned to this conversation
      * @type {string}
      * @memberof ScheduleGetResponse
      */
     '$agent': string;
+    /**
+     * Customer this conversation is with
+     * @type {string}
+     * @memberof ScheduleGetResponse
+     */
+    '$customer': string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -6241,35 +7144,106 @@ export interface ScheduleGetResponse {
     'initialContexts'?: Array<string>;
     /**
      * 
-     * @type {ConversationBaseEnvironmentProps}
+     * @type {ConversationChannel}
      * @memberof ScheduleGetResponse
      */
-    'environmentProps'?: ConversationBaseEnvironmentProps;
-    /**
-     * User for this conversation
-     * @type {string}
-     * @memberof ScheduleGetResponse
-     */
-    '$user': string;
-    /**
-     * Customer this conversation is with (use $user instead)
-     * @type {string}
-     * @memberof ScheduleGetResponse
-     * @deprecated
-     */
-    '$customer'?: string;
+    'channel': ConversationChannel;
     /**
      * 
-     * @type {ConversationEnvironment}
+     * @type {ConversationChannelProps}
      * @memberof ScheduleGetResponse
      */
-    'environment': ConversationEnvironment;
+    'channelProps'?: ConversationChannelProps;
     /**
-     * Whether this conversation is a test or not
+     * Whether automated replies are locked and the conversation requires a policy outcome or manual intervention.
      * @type {boolean}
      * @memberof ScheduleGetResponse
      */
-    'test'?: boolean;
+    'locked'?: boolean | null;
+    /**
+     * Machine-readable lock reason.
+     * @type {string}
+     * @memberof ScheduleGetResponse
+     */
+    'lockCode'?: ScheduleGetResponseLockCodeEnum;
+    /**
+     * Human-readable locked reason.
+     * @type {string}
+     * @memberof ScheduleGetResponse
+     */
+    'lockedReason'?: string | null;
+    /**
+     * Number of consecutive workflow/context no-progress attempts.
+     * @type {number}
+     * @memberof ScheduleGetResponse
+     */
+    'lockAttempts'?: number | null;
+    /**
+     * Contact that received a forward handoff.
+     * @type {string}
+     * @memberof ScheduleGetResponse
+     */
+    'forwardedTo'?: string | null;
+    /**
+     * ISO 8601 datetime string for when the conversation was forwarded.
+     * @type {string}
+     * @memberof ScheduleGetResponse
+     */
+    'forwarded'?: string | null;
+    /**
+     * Operator or workflow note attached to the forward.
+     * @type {string}
+     * @memberof ScheduleGetResponse
+     */
+    'forwardNote'?: string | null;
+    /**
+     * ISO 8601 datetime string for when this conversation was initiated.
+     * @type {string}
+     * @memberof ScheduleGetResponse
+     */
+    'initiated'?: string;
+    /**
+     * Detected intent attached at conversation start or first customer message.
+     * @type {string}
+     * @memberof ScheduleGetResponse
+     */
+    'intent'?: string | null;
+    /**
+     * Confidence score for the detected intent.
+     * @type {number}
+     * @memberof ScheduleGetResponse
+     */
+    'intentScore'?: number | null;
+    /**
+     * ISO 8601 datetime string for when the account user read this conversation in the app.
+     * @type {string}
+     * @memberof ScheduleGetResponse
+     */
+    'read'?: string;
+    /**
+     * Server-assigned conversation metadata.
+     * @type {{ [key: string]: any; }}
+     * @memberof ScheduleGetResponse
+     */
+    'metadata'?: { [key: string]: any; };
+    /**
+     * 
+     * @type {ConversationAnticipate}
+     * @memberof ScheduleGetResponse
+     */
+    'anticipate'?: ConversationAnticipate;
+    /**
+     * 
+     * @type {CommandConfiguration}
+     * @memberof ScheduleGetResponse
+     */
+    'command'?: CommandConfiguration;
+    /**
+     * Overrides the Persona Model ingress mode for this conversation.
+     * @type {string}
+     * @memberof ScheduleGetResponse
+     */
+    'ingress'?: ScheduleGetResponseIngressEnum;
     /**
      * ISO 8601 datetime string
      * @type {string}
@@ -6314,6 +7288,23 @@ export interface ScheduleGetResponse {
     'agentTestWebUrl'?: string;
 }
 
+export const ScheduleGetResponseLockCodeEnum = {
+    WorkflowStagnation: 'workflow_stagnation',
+    MaxLockAttempts: 'max_lock_attempts',
+    RuntimeError: 'runtime_error',
+    ManualMode: 'manual_mode',
+    PolicyBlock: 'policy_block'
+} as const;
+
+export type ScheduleGetResponseLockCodeEnum = typeof ScheduleGetResponseLockCodeEnum[keyof typeof ScheduleGetResponseLockCodeEnum];
+export const ScheduleGetResponseIngressEnum = {
+    Auto: 'auto',
+    Manual: 'manual',
+    App: 'app',
+    Webhook: 'webhook'
+} as const;
+
+export type ScheduleGetResponseIngressEnum = typeof ScheduleGetResponseIngressEnum[keyof typeof ScheduleGetResponseIngressEnum];
 
 /**
  * 
@@ -6322,11 +7313,23 @@ export interface ScheduleGetResponse {
  */
 export interface ScheduleGroupCreateRequest {
     /**
-     * Default agent persona id assigned to the conversation(s)
+     * Conversation document id. Public/admin clients may receive this field; middleware does not store it inside the Firestore document body.
+     * @type {string}
+     * @memberof ScheduleGroupCreateRequest
+     */
+    '$id'?: string;
+    /**
+     * The user id assigned to this conversation
      * @type {string}
      * @memberof ScheduleGroupCreateRequest
      */
     '$agent'?: string;
+    /**
+     * Customer this conversation is with
+     * @type {string}
+     * @memberof ScheduleGroupCreateRequest
+     */
+    '$customer'?: string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -6335,10 +7338,106 @@ export interface ScheduleGroupCreateRequest {
     'initialContexts'?: Array<string>;
     /**
      * 
-     * @type {ConversationBaseEnvironmentProps}
+     * @type {ConversationChannel}
      * @memberof ScheduleGroupCreateRequest
      */
-    'environmentProps'?: ConversationBaseEnvironmentProps;
+    'channel'?: ConversationChannel;
+    /**
+     * 
+     * @type {ConversationChannelProps}
+     * @memberof ScheduleGroupCreateRequest
+     */
+    'channelProps'?: ConversationChannelProps;
+    /**
+     * Whether automated replies are locked and the conversation requires a policy outcome or manual intervention.
+     * @type {boolean}
+     * @memberof ScheduleGroupCreateRequest
+     */
+    'locked'?: boolean | null;
+    /**
+     * Machine-readable lock reason.
+     * @type {string}
+     * @memberof ScheduleGroupCreateRequest
+     */
+    'lockCode'?: ScheduleGroupCreateRequestLockCodeEnum;
+    /**
+     * Human-readable locked reason.
+     * @type {string}
+     * @memberof ScheduleGroupCreateRequest
+     */
+    'lockedReason'?: string | null;
+    /**
+     * Number of consecutive workflow/context no-progress attempts.
+     * @type {number}
+     * @memberof ScheduleGroupCreateRequest
+     */
+    'lockAttempts'?: number | null;
+    /**
+     * Contact that received a forward handoff.
+     * @type {string}
+     * @memberof ScheduleGroupCreateRequest
+     */
+    'forwardedTo'?: string | null;
+    /**
+     * ISO 8601 datetime string for when the conversation was forwarded.
+     * @type {string}
+     * @memberof ScheduleGroupCreateRequest
+     */
+    'forwarded'?: string | null;
+    /**
+     * Operator or workflow note attached to the forward.
+     * @type {string}
+     * @memberof ScheduleGroupCreateRequest
+     */
+    'forwardNote'?: string | null;
+    /**
+     * ISO 8601 datetime string for when this conversation was initiated.
+     * @type {string}
+     * @memberof ScheduleGroupCreateRequest
+     */
+    'initiated'?: string;
+    /**
+     * Detected intent attached at conversation start or first customer message.
+     * @type {string}
+     * @memberof ScheduleGroupCreateRequest
+     */
+    'intent'?: string | null;
+    /**
+     * Confidence score for the detected intent.
+     * @type {number}
+     * @memberof ScheduleGroupCreateRequest
+     */
+    'intentScore'?: number | null;
+    /**
+     * ISO 8601 datetime string for when the account user read this conversation in the app.
+     * @type {string}
+     * @memberof ScheduleGroupCreateRequest
+     */
+    'read'?: string;
+    /**
+     * Server-assigned conversation metadata.
+     * @type {{ [key: string]: any; }}
+     * @memberof ScheduleGroupCreateRequest
+     */
+    'metadata'?: { [key: string]: any; };
+    /**
+     * 
+     * @type {ConversationAnticipate}
+     * @memberof ScheduleGroupCreateRequest
+     */
+    'anticipate'?: ConversationAnticipate;
+    /**
+     * 
+     * @type {CommandConfiguration}
+     * @memberof ScheduleGroupCreateRequest
+     */
+    'command'?: CommandConfiguration;
+    /**
+     * Overrides the Persona Model ingress mode for this conversation.
+     * @type {string}
+     * @memberof ScheduleGroupCreateRequest
+     */
+    'ingress'?: ScheduleGroupCreateRequestIngressEnum;
     /**
      * ISO 8601 datetime string
      * @type {string}
@@ -6370,6 +7469,25 @@ export interface ScheduleGroupCreateRequest {
      */
     '$cGroup': ScheduleGroupCreateRequestAllOfCGroup;
 }
+
+export const ScheduleGroupCreateRequestLockCodeEnum = {
+    WorkflowStagnation: 'workflow_stagnation',
+    MaxLockAttempts: 'max_lock_attempts',
+    RuntimeError: 'runtime_error',
+    ManualMode: 'manual_mode',
+    PolicyBlock: 'policy_block'
+} as const;
+
+export type ScheduleGroupCreateRequestLockCodeEnum = typeof ScheduleGroupCreateRequestLockCodeEnum[keyof typeof ScheduleGroupCreateRequestLockCodeEnum];
+export const ScheduleGroupCreateRequestIngressEnum = {
+    Auto: 'auto',
+    Manual: 'manual',
+    App: 'app',
+    Webhook: 'webhook'
+} as const;
+
+export type ScheduleGroupCreateRequestIngressEnum = typeof ScheduleGroupCreateRequestIngressEnum[keyof typeof ScheduleGroupCreateRequestIngressEnum];
+
 /**
  * 
  * @export
@@ -6421,11 +7539,23 @@ export interface ScheduleGroupCreateResponse {
  */
 export interface ScheduleGroupGetResponse {
     /**
-     * Default agent persona id assigned to the conversation(s)
+     * The ID of the scheduled conversation group
+     * @type {string}
+     * @memberof ScheduleGroupGetResponse
+     */
+    '$id': string;
+    /**
+     * The user id assigned to this conversation
      * @type {string}
      * @memberof ScheduleGroupGetResponse
      */
     '$agent'?: string;
+    /**
+     * Customer this conversation is with
+     * @type {string}
+     * @memberof ScheduleGroupGetResponse
+     */
+    '$customer'?: string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -6434,10 +7564,106 @@ export interface ScheduleGroupGetResponse {
     'initialContexts'?: Array<string>;
     /**
      * 
-     * @type {ConversationBaseEnvironmentProps}
+     * @type {ConversationChannel}
      * @memberof ScheduleGroupGetResponse
      */
-    'environmentProps'?: ConversationBaseEnvironmentProps;
+    'channel'?: ConversationChannel;
+    /**
+     * 
+     * @type {ConversationChannelProps}
+     * @memberof ScheduleGroupGetResponse
+     */
+    'channelProps'?: ConversationChannelProps;
+    /**
+     * Whether automated replies are locked and the conversation requires a policy outcome or manual intervention.
+     * @type {boolean}
+     * @memberof ScheduleGroupGetResponse
+     */
+    'locked'?: boolean | null;
+    /**
+     * Machine-readable lock reason.
+     * @type {string}
+     * @memberof ScheduleGroupGetResponse
+     */
+    'lockCode'?: ScheduleGroupGetResponseLockCodeEnum;
+    /**
+     * Human-readable locked reason.
+     * @type {string}
+     * @memberof ScheduleGroupGetResponse
+     */
+    'lockedReason'?: string | null;
+    /**
+     * Number of consecutive workflow/context no-progress attempts.
+     * @type {number}
+     * @memberof ScheduleGroupGetResponse
+     */
+    'lockAttempts'?: number | null;
+    /**
+     * Contact that received a forward handoff.
+     * @type {string}
+     * @memberof ScheduleGroupGetResponse
+     */
+    'forwardedTo'?: string | null;
+    /**
+     * ISO 8601 datetime string for when the conversation was forwarded.
+     * @type {string}
+     * @memberof ScheduleGroupGetResponse
+     */
+    'forwarded'?: string | null;
+    /**
+     * Operator or workflow note attached to the forward.
+     * @type {string}
+     * @memberof ScheduleGroupGetResponse
+     */
+    'forwardNote'?: string | null;
+    /**
+     * ISO 8601 datetime string for when this conversation was initiated.
+     * @type {string}
+     * @memberof ScheduleGroupGetResponse
+     */
+    'initiated'?: string;
+    /**
+     * Detected intent attached at conversation start or first customer message.
+     * @type {string}
+     * @memberof ScheduleGroupGetResponse
+     */
+    'intent'?: string | null;
+    /**
+     * Confidence score for the detected intent.
+     * @type {number}
+     * @memberof ScheduleGroupGetResponse
+     */
+    'intentScore'?: number | null;
+    /**
+     * ISO 8601 datetime string for when the account user read this conversation in the app.
+     * @type {string}
+     * @memberof ScheduleGroupGetResponse
+     */
+    'read'?: string;
+    /**
+     * Server-assigned conversation metadata.
+     * @type {{ [key: string]: any; }}
+     * @memberof ScheduleGroupGetResponse
+     */
+    'metadata'?: { [key: string]: any; };
+    /**
+     * 
+     * @type {ConversationAnticipate}
+     * @memberof ScheduleGroupGetResponse
+     */
+    'anticipate'?: ConversationAnticipate;
+    /**
+     * 
+     * @type {CommandConfiguration}
+     * @memberof ScheduleGroupGetResponse
+     */
+    'command'?: CommandConfiguration;
+    /**
+     * Overrides the Persona Model ingress mode for this conversation.
+     * @type {string}
+     * @memberof ScheduleGroupGetResponse
+     */
+    'ingress'?: ScheduleGroupGetResponseIngressEnum;
     /**
      * ISO 8601 datetime string
      * @type {string}
@@ -6463,12 +7689,6 @@ export interface ScheduleGroupGetResponse {
      */
     'delay'?: number;
     /**
-     * The ID of the scheduled conversation group
-     * @type {string}
-     * @memberof ScheduleGroupGetResponse
-     */
-    '$id': string;
-    /**
      * ISO Time the initial message has been sent
      * @type {boolean}
      * @memberof ScheduleGroupGetResponse
@@ -6481,6 +7701,25 @@ export interface ScheduleGroupGetResponse {
      */
     '$cGroup'?: string;
 }
+
+export const ScheduleGroupGetResponseLockCodeEnum = {
+    WorkflowStagnation: 'workflow_stagnation',
+    MaxLockAttempts: 'max_lock_attempts',
+    RuntimeError: 'runtime_error',
+    ManualMode: 'manual_mode',
+    PolicyBlock: 'policy_block'
+} as const;
+
+export type ScheduleGroupGetResponseLockCodeEnum = typeof ScheduleGroupGetResponseLockCodeEnum[keyof typeof ScheduleGroupGetResponseLockCodeEnum];
+export const ScheduleGroupGetResponseIngressEnum = {
+    Auto: 'auto',
+    Manual: 'manual',
+    App: 'app',
+    Webhook: 'webhook'
+} as const;
+
+export type ScheduleGroupGetResponseIngressEnum = typeof ScheduleGroupGetResponseIngressEnum[keyof typeof ScheduleGroupGetResponseIngressEnum];
+
 /**
  * 
  * @export
@@ -6538,11 +7777,23 @@ export interface ScheduleGroupRemoveResponse {
  */
 export interface ScheduleGroupUpdateRequest {
     /**
-     * Default agent persona id assigned to the conversation(s)
+     * The ID of the scheduled conversation group to update
+     * @type {string}
+     * @memberof ScheduleGroupUpdateRequest
+     */
+    '$id': string;
+    /**
+     * The user id assigned to this conversation
      * @type {string}
      * @memberof ScheduleGroupUpdateRequest
      */
     '$agent'?: string;
+    /**
+     * Customer this conversation is with
+     * @type {string}
+     * @memberof ScheduleGroupUpdateRequest
+     */
+    '$customer'?: string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -6551,10 +7802,106 @@ export interface ScheduleGroupUpdateRequest {
     'initialContexts'?: Array<string>;
     /**
      * 
-     * @type {ConversationBaseEnvironmentProps}
+     * @type {ConversationChannel}
      * @memberof ScheduleGroupUpdateRequest
      */
-    'environmentProps'?: ConversationBaseEnvironmentProps;
+    'channel'?: ConversationChannel;
+    /**
+     * 
+     * @type {ConversationChannelProps}
+     * @memberof ScheduleGroupUpdateRequest
+     */
+    'channelProps'?: ConversationChannelProps;
+    /**
+     * Whether automated replies are locked and the conversation requires a policy outcome or manual intervention.
+     * @type {boolean}
+     * @memberof ScheduleGroupUpdateRequest
+     */
+    'locked'?: boolean | null;
+    /**
+     * Machine-readable lock reason.
+     * @type {string}
+     * @memberof ScheduleGroupUpdateRequest
+     */
+    'lockCode'?: ScheduleGroupUpdateRequestLockCodeEnum;
+    /**
+     * Human-readable locked reason.
+     * @type {string}
+     * @memberof ScheduleGroupUpdateRequest
+     */
+    'lockedReason'?: string | null;
+    /**
+     * Number of consecutive workflow/context no-progress attempts.
+     * @type {number}
+     * @memberof ScheduleGroupUpdateRequest
+     */
+    'lockAttempts'?: number | null;
+    /**
+     * Contact that received a forward handoff.
+     * @type {string}
+     * @memberof ScheduleGroupUpdateRequest
+     */
+    'forwardedTo'?: string | null;
+    /**
+     * ISO 8601 datetime string for when the conversation was forwarded.
+     * @type {string}
+     * @memberof ScheduleGroupUpdateRequest
+     */
+    'forwarded'?: string | null;
+    /**
+     * Operator or workflow note attached to the forward.
+     * @type {string}
+     * @memberof ScheduleGroupUpdateRequest
+     */
+    'forwardNote'?: string | null;
+    /**
+     * ISO 8601 datetime string for when this conversation was initiated.
+     * @type {string}
+     * @memberof ScheduleGroupUpdateRequest
+     */
+    'initiated'?: string;
+    /**
+     * Detected intent attached at conversation start or first customer message.
+     * @type {string}
+     * @memberof ScheduleGroupUpdateRequest
+     */
+    'intent'?: string | null;
+    /**
+     * Confidence score for the detected intent.
+     * @type {number}
+     * @memberof ScheduleGroupUpdateRequest
+     */
+    'intentScore'?: number | null;
+    /**
+     * ISO 8601 datetime string for when the account user read this conversation in the app.
+     * @type {string}
+     * @memberof ScheduleGroupUpdateRequest
+     */
+    'read'?: string;
+    /**
+     * Server-assigned conversation metadata.
+     * @type {{ [key: string]: any; }}
+     * @memberof ScheduleGroupUpdateRequest
+     */
+    'metadata'?: { [key: string]: any; };
+    /**
+     * 
+     * @type {ConversationAnticipate}
+     * @memberof ScheduleGroupUpdateRequest
+     */
+    'anticipate'?: ConversationAnticipate;
+    /**
+     * 
+     * @type {CommandConfiguration}
+     * @memberof ScheduleGroupUpdateRequest
+     */
+    'command'?: CommandConfiguration;
+    /**
+     * Overrides the Persona Model ingress mode for this conversation.
+     * @type {string}
+     * @memberof ScheduleGroupUpdateRequest
+     */
+    'ingress'?: ScheduleGroupUpdateRequestIngressEnum;
     /**
      * ISO 8601 datetime string
      * @type {string}
@@ -6585,13 +7932,26 @@ export interface ScheduleGroupUpdateRequest {
      * @memberof ScheduleGroupUpdateRequest
      */
     '$cGroup'?: ScheduleGroupCreateRequestAllOfCGroup;
-    /**
-     * The ID of the scheduled conversation group to update
-     * @type {string}
-     * @memberof ScheduleGroupUpdateRequest
-     */
-    '$id': string;
 }
+
+export const ScheduleGroupUpdateRequestLockCodeEnum = {
+    WorkflowStagnation: 'workflow_stagnation',
+    MaxLockAttempts: 'max_lock_attempts',
+    RuntimeError: 'runtime_error',
+    ManualMode: 'manual_mode',
+    PolicyBlock: 'policy_block'
+} as const;
+
+export type ScheduleGroupUpdateRequestLockCodeEnum = typeof ScheduleGroupUpdateRequestLockCodeEnum[keyof typeof ScheduleGroupUpdateRequestLockCodeEnum];
+export const ScheduleGroupUpdateRequestIngressEnum = {
+    Auto: 'auto',
+    Manual: 'manual',
+    App: 'app',
+    Webhook: 'webhook'
+} as const;
+
+export type ScheduleGroupUpdateRequestIngressEnum = typeof ScheduleGroupUpdateRequestIngressEnum[keyof typeof ScheduleGroupUpdateRequestIngressEnum];
+
 /**
  * 
  * @export
@@ -6668,11 +8028,23 @@ export interface ScheduleRemoveResponse {
  */
 export interface ScheduleUpdateRequest {
     /**
-     * Default agent persona id assigned to the conversation(s)
+     * The ID of the scheduled conversation to update
+     * @type {string}
+     * @memberof ScheduleUpdateRequest
+     */
+    '$id'?: string;
+    /**
+     * The user id assigned to this conversation
      * @type {string}
      * @memberof ScheduleUpdateRequest
      */
     '$agent': string;
+    /**
+     * Customer this conversation is with
+     * @type {string}
+     * @memberof ScheduleUpdateRequest
+     */
+    '$customer': string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -6681,35 +8053,106 @@ export interface ScheduleUpdateRequest {
     'initialContexts'?: Array<string>;
     /**
      * 
-     * @type {ConversationBaseEnvironmentProps}
+     * @type {ConversationChannel}
      * @memberof ScheduleUpdateRequest
      */
-    'environmentProps'?: ConversationBaseEnvironmentProps;
-    /**
-     * User for this conversation
-     * @type {string}
-     * @memberof ScheduleUpdateRequest
-     */
-    '$user': string;
-    /**
-     * Customer this conversation is with (use $user instead)
-     * @type {string}
-     * @memberof ScheduleUpdateRequest
-     * @deprecated
-     */
-    '$customer'?: string;
+    'channel': ConversationChannel;
     /**
      * 
-     * @type {ConversationEnvironment}
+     * @type {ConversationChannelProps}
      * @memberof ScheduleUpdateRequest
      */
-    'environment': ConversationEnvironment;
+    'channelProps'?: ConversationChannelProps;
     /**
-     * Whether this conversation is a test or not
+     * Whether automated replies are locked and the conversation requires a policy outcome or manual intervention.
      * @type {boolean}
      * @memberof ScheduleUpdateRequest
      */
-    'test'?: boolean;
+    'locked'?: boolean | null;
+    /**
+     * Machine-readable lock reason.
+     * @type {string}
+     * @memberof ScheduleUpdateRequest
+     */
+    'lockCode'?: ScheduleUpdateRequestLockCodeEnum;
+    /**
+     * Human-readable locked reason.
+     * @type {string}
+     * @memberof ScheduleUpdateRequest
+     */
+    'lockedReason'?: string | null;
+    /**
+     * Number of consecutive workflow/context no-progress attempts.
+     * @type {number}
+     * @memberof ScheduleUpdateRequest
+     */
+    'lockAttempts'?: number | null;
+    /**
+     * Contact that received a forward handoff.
+     * @type {string}
+     * @memberof ScheduleUpdateRequest
+     */
+    'forwardedTo'?: string | null;
+    /**
+     * ISO 8601 datetime string for when the conversation was forwarded.
+     * @type {string}
+     * @memberof ScheduleUpdateRequest
+     */
+    'forwarded'?: string | null;
+    /**
+     * Operator or workflow note attached to the forward.
+     * @type {string}
+     * @memberof ScheduleUpdateRequest
+     */
+    'forwardNote'?: string | null;
+    /**
+     * ISO 8601 datetime string for when this conversation was initiated.
+     * @type {string}
+     * @memberof ScheduleUpdateRequest
+     */
+    'initiated'?: string;
+    /**
+     * Detected intent attached at conversation start or first customer message.
+     * @type {string}
+     * @memberof ScheduleUpdateRequest
+     */
+    'intent'?: string | null;
+    /**
+     * Confidence score for the detected intent.
+     * @type {number}
+     * @memberof ScheduleUpdateRequest
+     */
+    'intentScore'?: number | null;
+    /**
+     * ISO 8601 datetime string for when the account user read this conversation in the app.
+     * @type {string}
+     * @memberof ScheduleUpdateRequest
+     */
+    'read'?: string;
+    /**
+     * Server-assigned conversation metadata.
+     * @type {{ [key: string]: any; }}
+     * @memberof ScheduleUpdateRequest
+     */
+    'metadata'?: { [key: string]: any; };
+    /**
+     * 
+     * @type {ConversationAnticipate}
+     * @memberof ScheduleUpdateRequest
+     */
+    'anticipate'?: ConversationAnticipate;
+    /**
+     * 
+     * @type {CommandConfiguration}
+     * @memberof ScheduleUpdateRequest
+     */
+    'command'?: CommandConfiguration;
+    /**
+     * Overrides the Persona Model ingress mode for this conversation.
+     * @type {string}
+     * @memberof ScheduleUpdateRequest
+     */
+    'ingress'?: ScheduleUpdateRequestIngressEnum;
     /**
      * ISO 8601 datetime string
      * @type {string}
@@ -6734,14 +8177,25 @@ export interface ScheduleUpdateRequest {
      * @memberof ScheduleUpdateRequest
      */
     '$group'?: string;
-    /**
-     * The ID of the scheduled conversation to update
-     * @type {string}
-     * @memberof ScheduleUpdateRequest
-     */
-    '$id'?: string;
 }
 
+export const ScheduleUpdateRequestLockCodeEnum = {
+    WorkflowStagnation: 'workflow_stagnation',
+    MaxLockAttempts: 'max_lock_attempts',
+    RuntimeError: 'runtime_error',
+    ManualMode: 'manual_mode',
+    PolicyBlock: 'policy_block'
+} as const;
+
+export type ScheduleUpdateRequestLockCodeEnum = typeof ScheduleUpdateRequestLockCodeEnum[keyof typeof ScheduleUpdateRequestLockCodeEnum];
+export const ScheduleUpdateRequestIngressEnum = {
+    Auto: 'auto',
+    Manual: 'manual',
+    App: 'app',
+    Webhook: 'webhook'
+} as const;
+
+export type ScheduleUpdateRequestIngressEnum = typeof ScheduleUpdateRequestIngressEnum[keyof typeof ScheduleUpdateRequestIngressEnum];
 
 /**
  * 
@@ -6788,11 +8242,23 @@ export interface ScheduleUpdateResponse {
  */
 export interface ScheduledConversation {
     /**
-     * Default agent persona id assigned to the conversation(s)
+     * Conversation document id. Public/admin clients may receive this field; middleware does not store it inside the Firestore document body.
+     * @type {string}
+     * @memberof ScheduledConversation
+     */
+    '$id'?: string;
+    /**
+     * The user id assigned to this conversation
      * @type {string}
      * @memberof ScheduledConversation
      */
     '$agent': string;
+    /**
+     * Customer this conversation is with
+     * @type {string}
+     * @memberof ScheduledConversation
+     */
+    '$customer': string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -6801,35 +8267,106 @@ export interface ScheduledConversation {
     'initialContexts'?: Array<string>;
     /**
      * 
-     * @type {ConversationBaseEnvironmentProps}
+     * @type {ConversationChannel}
      * @memberof ScheduledConversation
      */
-    'environmentProps'?: ConversationBaseEnvironmentProps;
-    /**
-     * User for this conversation
-     * @type {string}
-     * @memberof ScheduledConversation
-     */
-    '$user': string;
-    /**
-     * Customer this conversation is with (use $user instead)
-     * @type {string}
-     * @memberof ScheduledConversation
-     * @deprecated
-     */
-    '$customer'?: string;
+    'channel': ConversationChannel;
     /**
      * 
-     * @type {ConversationEnvironment}
+     * @type {ConversationChannelProps}
      * @memberof ScheduledConversation
      */
-    'environment': ConversationEnvironment;
+    'channelProps'?: ConversationChannelProps;
     /**
-     * Whether this conversation is a test or not
+     * Whether automated replies are locked and the conversation requires a policy outcome or manual intervention.
      * @type {boolean}
      * @memberof ScheduledConversation
      */
-    'test'?: boolean;
+    'locked'?: boolean | null;
+    /**
+     * Machine-readable lock reason.
+     * @type {string}
+     * @memberof ScheduledConversation
+     */
+    'lockCode'?: ScheduledConversationLockCodeEnum;
+    /**
+     * Human-readable locked reason.
+     * @type {string}
+     * @memberof ScheduledConversation
+     */
+    'lockedReason'?: string | null;
+    /**
+     * Number of consecutive workflow/context no-progress attempts.
+     * @type {number}
+     * @memberof ScheduledConversation
+     */
+    'lockAttempts'?: number | null;
+    /**
+     * Contact that received a forward handoff.
+     * @type {string}
+     * @memberof ScheduledConversation
+     */
+    'forwardedTo'?: string | null;
+    /**
+     * ISO 8601 datetime string for when the conversation was forwarded.
+     * @type {string}
+     * @memberof ScheduledConversation
+     */
+    'forwarded'?: string | null;
+    /**
+     * Operator or workflow note attached to the forward.
+     * @type {string}
+     * @memberof ScheduledConversation
+     */
+    'forwardNote'?: string | null;
+    /**
+     * ISO 8601 datetime string for when this conversation was initiated.
+     * @type {string}
+     * @memberof ScheduledConversation
+     */
+    'initiated'?: string;
+    /**
+     * Detected intent attached at conversation start or first customer message.
+     * @type {string}
+     * @memberof ScheduledConversation
+     */
+    'intent'?: string | null;
+    /**
+     * Confidence score for the detected intent.
+     * @type {number}
+     * @memberof ScheduledConversation
+     */
+    'intentScore'?: number | null;
+    /**
+     * ISO 8601 datetime string for when the account user read this conversation in the app.
+     * @type {string}
+     * @memberof ScheduledConversation
+     */
+    'read'?: string;
+    /**
+     * Server-assigned conversation metadata.
+     * @type {{ [key: string]: any; }}
+     * @memberof ScheduledConversation
+     */
+    'metadata'?: { [key: string]: any; };
+    /**
+     * 
+     * @type {ConversationAnticipate}
+     * @memberof ScheduledConversation
+     */
+    'anticipate'?: ConversationAnticipate;
+    /**
+     * 
+     * @type {CommandConfiguration}
+     * @memberof ScheduledConversation
+     */
+    'command'?: CommandConfiguration;
+    /**
+     * Overrides the Persona Model ingress mode for this conversation.
+     * @type {string}
+     * @memberof ScheduledConversation
+     */
+    'ingress'?: ScheduledConversationIngressEnum;
     /**
      * ISO 8601 datetime string
      * @type {string}
@@ -6856,6 +8393,23 @@ export interface ScheduledConversation {
     '$group'?: string;
 }
 
+export const ScheduledConversationLockCodeEnum = {
+    WorkflowStagnation: 'workflow_stagnation',
+    MaxLockAttempts: 'max_lock_attempts',
+    RuntimeError: 'runtime_error',
+    ManualMode: 'manual_mode',
+    PolicyBlock: 'policy_block'
+} as const;
+
+export type ScheduledConversationLockCodeEnum = typeof ScheduledConversationLockCodeEnum[keyof typeof ScheduledConversationLockCodeEnum];
+export const ScheduledConversationIngressEnum = {
+    Auto: 'auto',
+    Manual: 'manual',
+    App: 'app',
+    Webhook: 'webhook'
+} as const;
+
+export type ScheduledConversationIngressEnum = typeof ScheduledConversationIngressEnum[keyof typeof ScheduledConversationIngressEnum];
 
 /**
  * 
@@ -6877,11 +8431,23 @@ export interface ScheduledConversationAllOf {
  */
 export interface ScheduledConversationGroup {
     /**
-     * Default agent persona id assigned to the conversation(s)
+     * Conversation document id. Public/admin clients may receive this field; middleware does not store it inside the Firestore document body.
+     * @type {string}
+     * @memberof ScheduledConversationGroup
+     */
+    '$id'?: string;
+    /**
+     * The user id assigned to this conversation
      * @type {string}
      * @memberof ScheduledConversationGroup
      */
     '$agent'?: string;
+    /**
+     * Customer this conversation is with
+     * @type {string}
+     * @memberof ScheduledConversationGroup
+     */
+    '$customer'?: string;
     /**
      * Initial contexts to load when starting the conversation
      * @type {Array<string>}
@@ -6890,10 +8456,106 @@ export interface ScheduledConversationGroup {
     'initialContexts'?: Array<string>;
     /**
      * 
-     * @type {ConversationBaseEnvironmentProps}
+     * @type {ConversationChannel}
      * @memberof ScheduledConversationGroup
      */
-    'environmentProps'?: ConversationBaseEnvironmentProps;
+    'channel'?: ConversationChannel;
+    /**
+     * 
+     * @type {ConversationChannelProps}
+     * @memberof ScheduledConversationGroup
+     */
+    'channelProps'?: ConversationChannelProps;
+    /**
+     * Whether automated replies are locked and the conversation requires a policy outcome or manual intervention.
+     * @type {boolean}
+     * @memberof ScheduledConversationGroup
+     */
+    'locked'?: boolean | null;
+    /**
+     * Machine-readable lock reason.
+     * @type {string}
+     * @memberof ScheduledConversationGroup
+     */
+    'lockCode'?: ScheduledConversationGroupLockCodeEnum;
+    /**
+     * Human-readable locked reason.
+     * @type {string}
+     * @memberof ScheduledConversationGroup
+     */
+    'lockedReason'?: string | null;
+    /**
+     * Number of consecutive workflow/context no-progress attempts.
+     * @type {number}
+     * @memberof ScheduledConversationGroup
+     */
+    'lockAttempts'?: number | null;
+    /**
+     * Contact that received a forward handoff.
+     * @type {string}
+     * @memberof ScheduledConversationGroup
+     */
+    'forwardedTo'?: string | null;
+    /**
+     * ISO 8601 datetime string for when the conversation was forwarded.
+     * @type {string}
+     * @memberof ScheduledConversationGroup
+     */
+    'forwarded'?: string | null;
+    /**
+     * Operator or workflow note attached to the forward.
+     * @type {string}
+     * @memberof ScheduledConversationGroup
+     */
+    'forwardNote'?: string | null;
+    /**
+     * ISO 8601 datetime string for when this conversation was initiated.
+     * @type {string}
+     * @memberof ScheduledConversationGroup
+     */
+    'initiated'?: string;
+    /**
+     * Detected intent attached at conversation start or first customer message.
+     * @type {string}
+     * @memberof ScheduledConversationGroup
+     */
+    'intent'?: string | null;
+    /**
+     * Confidence score for the detected intent.
+     * @type {number}
+     * @memberof ScheduledConversationGroup
+     */
+    'intentScore'?: number | null;
+    /**
+     * ISO 8601 datetime string for when the account user read this conversation in the app.
+     * @type {string}
+     * @memberof ScheduledConversationGroup
+     */
+    'read'?: string;
+    /**
+     * Server-assigned conversation metadata.
+     * @type {{ [key: string]: any; }}
+     * @memberof ScheduledConversationGroup
+     */
+    'metadata'?: { [key: string]: any; };
+    /**
+     * 
+     * @type {ConversationAnticipate}
+     * @memberof ScheduledConversationGroup
+     */
+    'anticipate'?: ConversationAnticipate;
+    /**
+     * 
+     * @type {CommandConfiguration}
+     * @memberof ScheduledConversationGroup
+     */
+    'command'?: CommandConfiguration;
+    /**
+     * Overrides the Persona Model ingress mode for this conversation.
+     * @type {string}
+     * @memberof ScheduledConversationGroup
+     */
+    'ingress'?: ScheduledConversationGroupIngressEnum;
     /**
      * ISO 8601 datetime string
      * @type {string}
@@ -6919,6 +8581,25 @@ export interface ScheduledConversationGroup {
      */
     'delay'?: number;
 }
+
+export const ScheduledConversationGroupLockCodeEnum = {
+    WorkflowStagnation: 'workflow_stagnation',
+    MaxLockAttempts: 'max_lock_attempts',
+    RuntimeError: 'runtime_error',
+    ManualMode: 'manual_mode',
+    PolicyBlock: 'policy_block'
+} as const;
+
+export type ScheduledConversationGroupLockCodeEnum = typeof ScheduledConversationGroupLockCodeEnum[keyof typeof ScheduledConversationGroupLockCodeEnum];
+export const ScheduledConversationGroupIngressEnum = {
+    Auto: 'auto',
+    Manual: 'manual',
+    App: 'app',
+    Webhook: 'webhook'
+} as const;
+
+export type ScheduledConversationGroupIngressEnum = typeof ScheduledConversationGroupIngressEnum[keyof typeof ScheduledConversationGroupIngressEnum];
+
 /**
  * 
  * @export
@@ -7816,7 +9497,7 @@ export const NoopApiAxiosParamCreator = function (configuration?: Configuration)
         ping: async (pingRequest: PingRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'pingRequest' is not null or undefined
             assertParamExists('ping', 'pingRequest', pingRequest)
-            const localVarPath = `/v1-utils-ping`;
+            const localVarPath = `/v1/utils-ping`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -7929,7 +9610,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
             assertParamExists('addEntity', 'id', id)
             // verify required parameter 'entityData' is not null or undefined
             assertParamExists('addEntity', 'entityData', entityData)
-            const localVarPath = `/v1-entity/{type}/{id}`
+            const localVarPath = `/v1/entity/{type}/{id}`
                 .replace(`{${"type"}}`, encodeURIComponent(String(type)))
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -7967,7 +9648,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         agent: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('agent', 'id', id)
-            const localVarPath = `/v1-agent`;
+            const localVarPath = `/v1/agent`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -8004,7 +9685,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         agentDelete: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('agentDelete', 'id', id)
-            const localVarPath = `/v1-agent`;
+            const localVarPath = `/v1/agent`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -8041,7 +9722,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         agentRegister: async (createAgentRequest: CreateAgentRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'createAgentRequest' is not null or undefined
             assertParamExists('agentRegister', 'createAgentRequest', createAgentRequest)
-            const localVarPath = `/v1-agent`;
+            const localVarPath = `/v1/agent`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -8077,7 +9758,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         agentUpdate: async (updateAgentRequest: UpdateAgentRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'updateAgentRequest' is not null or undefined
             assertParamExists('agentUpdate', 'updateAgentRequest', updateAgentRequest)
-            const localVarPath = `/v1-agent`;
+            const localVarPath = `/v1/agent`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -8112,7 +9793,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
          * @throws {RequiredError}
          */
         agents: async (q?: string, id?: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1-agents`;
+            const localVarPath = `/v1/agents`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -8153,7 +9834,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         agentsCreate: async (createAgentsRequest: CreateAgentsRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'createAgentsRequest' is not null or undefined
             assertParamExists('agentsCreate', 'createAgentsRequest', createAgentsRequest)
-            const localVarPath = `/v1-agents`;
+            const localVarPath = `/v1/agents`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -8187,7 +9868,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
          * @throws {RequiredError}
          */
         agentsDelete: async (id?: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1-agents`;
+            const localVarPath = `/v1/agents`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -8224,7 +9905,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         agentsUpdate: async (updateAgentsRequest: UpdateAgentsRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'updateAgentsRequest' is not null or undefined
             assertParamExists('agentsUpdate', 'updateAgentsRequest', updateAgentsRequest)
-            const localVarPath = `/v1-agents`;
+            const localVarPath = `/v1/agents`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -8260,7 +9941,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         captureContext: async (macroContextInput: MacroContextInput, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'macroContextInput' is not null or undefined
             assertParamExists('captureContext', 'macroContextInput', macroContextInput)
-            const localVarPath = `/v1-utils-macros-context`;
+            const localVarPath = `/v1/utils-macros-context`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -8293,7 +9974,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
          * @throws {RequiredError}
          */
         config: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1-config`;
+            const localVarPath = `/v1/config`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -8326,7 +10007,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         contextualize: async (contextualizerRequest: ContextualizerRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'contextualizerRequest' is not null or undefined
             assertParamExists('contextualize', 'contextualizerRequest', contextualizerRequest)
-            const localVarPath = `/v1-contextualize`;
+            const localVarPath = `/v1/contextualize`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -8362,7 +10043,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         conversation: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('conversation', 'id', id)
-            const localVarPath = `/v1-conversation`;
+            const localVarPath = `/v1/conversation`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -8399,7 +10080,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         conversationContext: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('conversationContext', 'id', id)
-            const localVarPath = `/v1-conversationContext`;
+            const localVarPath = `/v1/conversationContext`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -8436,7 +10117,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         conversationContextUpdate: async (conversationContextUpdateRequest: ConversationContextUpdateRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'conversationContextUpdateRequest' is not null or undefined
             assertParamExists('conversationContextUpdate', 'conversationContextUpdateRequest', conversationContextUpdateRequest)
-            const localVarPath = `/v1-conversationContext`;
+            const localVarPath = `/v1/conversationContext`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -8472,7 +10153,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         conversationCreate: async (conversationCreateRequest: ConversationCreateRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'conversationCreateRequest' is not null or undefined
             assertParamExists('conversationCreate', 'conversationCreateRequest', conversationCreateRequest)
-            const localVarPath = `/v1-conversation`;
+            const localVarPath = `/v1/conversation`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -8508,7 +10189,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         conversationDelete: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('conversationDelete', 'id', id)
-            const localVarPath = `/v1-conversation`;
+            const localVarPath = `/v1/conversation`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -8545,7 +10226,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         conversationUpdate: async (conversationUpdateRequest: ConversationUpdateRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'conversationUpdateRequest' is not null or undefined
             assertParamExists('conversationUpdate', 'conversationUpdateRequest', conversationUpdateRequest)
-            const localVarPath = `/v1-conversation`;
+            const localVarPath = `/v1/conversation`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -8580,7 +10261,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
          * @throws {RequiredError}
          */
         conversations: async (q?: string, id?: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1-conversations`;
+            const localVarPath = `/v1/conversations`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -8622,7 +10303,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         customer: async (idOrEmailOrPhone: string, resolve?: boolean, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'idOrEmailOrPhone' is not null or undefined
             assertParamExists('customer', 'idOrEmailOrPhone', idOrEmailOrPhone)
-            const localVarPath = `/v1-customer`;
+            const localVarPath = `/v1/customer`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -8663,7 +10344,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         customerCreate: async (body: Customer, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'body' is not null or undefined
             assertParamExists('customerCreate', 'body', body)
-            const localVarPath = `/v1-customer`;
+            const localVarPath = `/v1/customer`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -8699,7 +10380,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         customerDelete: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('customerDelete', 'id', id)
-            const localVarPath = `/v1-customer`;
+            const localVarPath = `/v1/customer`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -8736,7 +10417,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         customerGroup: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('customerGroup', 'id', id)
-            const localVarPath = `/v1-customerGroup`;
+            const localVarPath = `/v1/customerGroup`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -8773,7 +10454,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         customerGroupCreate: async (createCustomerGroupRequest: CreateCustomerGroupRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'createCustomerGroupRequest' is not null or undefined
             assertParamExists('customerGroupCreate', 'createCustomerGroupRequest', createCustomerGroupRequest)
-            const localVarPath = `/v1-customerGroup`;
+            const localVarPath = `/v1/customerGroup`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -8809,7 +10490,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         customerGroupDelete: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('customerGroupDelete', 'id', id)
-            const localVarPath = `/v1-customerGroup`;
+            const localVarPath = `/v1/customerGroup`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -8846,7 +10527,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         customerGroupUpdate: async (updateCustomerGroupRequest: UpdateCustomerGroupRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'updateCustomerGroupRequest' is not null or undefined
             assertParamExists('customerGroupUpdate', 'updateCustomerGroupRequest', updateCustomerGroupRequest)
-            const localVarPath = `/v1-customerGroup`;
+            const localVarPath = `/v1/customerGroup`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -8881,7 +10562,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
          * @throws {RequiredError}
          */
         customerGroups: async (q?: string, id?: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1-customerGroups`;
+            const localVarPath = `/v1/customerGroups`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -8922,7 +10603,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         customerGroupsCreate: async (createCustomerGroupsRequest: CreateCustomerGroupsRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'createCustomerGroupsRequest' is not null or undefined
             assertParamExists('customerGroupsCreate', 'createCustomerGroupsRequest', createCustomerGroupsRequest)
-            const localVarPath = `/v1-customerGroups`;
+            const localVarPath = `/v1/customerGroups`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -8956,7 +10637,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
          * @throws {RequiredError}
          */
         customerGroupsDelete: async (id?: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1-customerGroups`;
+            const localVarPath = `/v1/customerGroups`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -8993,7 +10674,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         customerGroupsUpdate: async (updateCustomerGroupsRequest: UpdateCustomerGroupsRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'updateCustomerGroupsRequest' is not null or undefined
             assertParamExists('customerGroupsUpdate', 'updateCustomerGroupsRequest', updateCustomerGroupsRequest)
-            const localVarPath = `/v1-customerGroups`;
+            const localVarPath = `/v1/customerGroups`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -9029,7 +10710,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         customerUpdate: async (updateCustomerRequest: UpdateCustomerRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'updateCustomerRequest' is not null or undefined
             assertParamExists('customerUpdate', 'updateCustomerRequest', updateCustomerRequest)
-            const localVarPath = `/v1-customer`;
+            const localVarPath = `/v1/customer`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -9064,7 +10745,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
          * @throws {RequiredError}
          */
         customers: async (q?: string, id?: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1-customers`;
+            const localVarPath = `/v1/customers`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -9105,7 +10786,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         customersCreate: async (createCustomersRequest: CreateCustomersRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'createCustomersRequest' is not null or undefined
             assertParamExists('customersCreate', 'createCustomersRequest', createCustomersRequest)
-            const localVarPath = `/v1-customers`;
+            const localVarPath = `/v1/customers`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -9139,7 +10820,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
          * @throws {RequiredError}
          */
         customersDelete: async (id?: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1-customers`;
+            const localVarPath = `/v1/customers`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -9176,7 +10857,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         customersUpdate: async (updateCustomersRequest: UpdateCustomersRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'updateCustomersRequest' is not null or undefined
             assertParamExists('customersUpdate', 'updateCustomersRequest', updateCustomersRequest)
-            const localVarPath = `/v1-customers`;
+            const localVarPath = `/v1/customers`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -9215,7 +10896,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
             assertParamExists('deleteEntity', 'type', type)
             // verify required parameter 'id' is not null or undefined
             assertParamExists('deleteEntity', 'id', id)
-            const localVarPath = `/v1-entity/{type}/{id}`
+            const localVarPath = `/v1/entity/{type}/{id}`
                 .replace(`{${"type"}}`, encodeURIComponent(String(type)))
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -9250,7 +10931,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         did: async (macroDidInput: MacroDidInput, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'macroDidInput' is not null or undefined
             assertParamExists('did', 'macroDidInput', macroDidInput)
-            const localVarPath = `/v1-utils-macros-did`;
+            const localVarPath = `/v1/utils-macros-did`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -9286,7 +10967,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         does: async (macroDoesInput: MacroDoesInput, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'macroDoesInput' is not null or undefined
             assertParamExists('does', 'macroDoesInput', macroDoesInput)
-            const localVarPath = `/v1-utils-macros-does`;
+            const localVarPath = `/v1/utils-macros-does`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -9325,7 +11006,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
             assertParamExists('entity', 'type', type)
             // verify required parameter 'id' is not null or undefined
             assertParamExists('entity', 'id', id)
-            const localVarPath = `/v1-entity/{type}/{id}`
+            const localVarPath = `/v1/entity/{type}/{id}`
                 .replace(`{${"type"}}`, encodeURIComponent(String(type)))
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -9362,7 +11043,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         file: async (purpose: string, entity?: string, agent?: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'purpose' is not null or undefined
             assertParamExists('file', 'purpose', purpose)
-            const localVarPath = `/v1-utils-file`;
+            const localVarPath = `/v1/utils-file`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -9411,7 +11092,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
             assertParamExists('fileRemove', 'purpose', purpose)
             // verify required parameter 'entity' is not null or undefined
             assertParamExists('fileRemove', 'entity', entity)
-            const localVarPath = `/v1-utils-file`;
+            const localVarPath = `/v1/utils-file`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -9460,7 +11141,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         fileUpload: async (file: File, purpose?: PurposeEnum, context?: string, entity?: string, $agent?: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'file' is not null or undefined
             assertParamExists('fileUpload', 'file', file)
-            const localVarPath = `/v1-utils-file`;
+            const localVarPath = `/v1/utils-file`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -9518,7 +11199,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         files: async (purpose: string, agent?: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'purpose' is not null or undefined
             assertParamExists('files', 'purpose', purpose)
-            const localVarPath = `/v1-utils-files`;
+            const localVarPath = `/v1/utils-files`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -9559,7 +11240,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         forward: async (forwardRequest: ForwardRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'forwardRequest' is not null or undefined
             assertParamExists('forward', 'forwardRequest', forwardRequest)
-            const localVarPath = `/v1-forward`;
+            const localVarPath = `/v1/forward`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -9596,7 +11277,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         generate: async (generateRequest: GenerateRequest, convo?: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'generateRequest' is not null or undefined
             assertParamExists('generate', 'generateRequest', generateRequest)
-            const localVarPath = `/v1-generate`;
+            const localVarPath = `/v1/generate`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -9635,7 +11316,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
          * @throws {RequiredError}
          */
         logs: async (start?: number, end?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1-utils-platform-logs`;
+            const localVarPath = `/v1/utils-platform-logs`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -9676,7 +11357,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         message: async (messageCreateRequest: MessageCreateRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'messageCreateRequest' is not null or undefined
             assertParamExists('message', 'messageCreateRequest', messageCreateRequest)
-            const localVarPath = `/v1-messages`;
+            const localVarPath = `/v1/messages`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -9713,7 +11394,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         messages: async (id: string, q?: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('messages', 'id', id)
-            const localVarPath = `/v1-messages`;
+            const localVarPath = `/v1/messages`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -9754,7 +11435,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         operation: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('operation', 'id', id)
-            const localVarPath = `/v1-utils-operation`;
+            const localVarPath = `/v1/utils-operation`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -9790,7 +11471,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
          * @throws {RequiredError}
          */
         operations: async (q?: string, id?: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1-utils-operations`;
+            const localVarPath = `/v1/utils-operations`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -9831,7 +11512,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         parse: async (parseRequest: ParseRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'parseRequest' is not null or undefined
             assertParamExists('parse', 'parseRequest', parseRequest)
-            const localVarPath = `/v1-parse`;
+            const localVarPath = `/v1/parse`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -9865,7 +11546,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
          * @throws {RequiredError}
          */
         purchasePhone: async (purchasePhoneRequest?: PurchasePhoneRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1-purchases-phone`;
+            const localVarPath = `/v1/purchases-phone`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -9907,7 +11588,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
             assertParamExists('replaceEntity', 'id', id)
             // verify required parameter 'entityData' is not null or undefined
             assertParamExists('replaceEntity', 'entityData', entityData)
-            const localVarPath = `/v1-entity/{type}/{id}`
+            const localVarPath = `/v1/entity/{type}/{id}`
                 .replace(`{${"type"}}`, encodeURIComponent(String(type)))
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -9945,7 +11626,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         runPlatform: async (workflowEvent: WorkflowEvent, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'workflowEvent' is not null or undefined
             assertParamExists('runPlatform', 'workflowEvent', workflowEvent)
-            const localVarPath = `/v1-utils-platform-run`;
+            const localVarPath = `/v1/utils-platform-run`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -9978,7 +11659,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
          * @throws {RequiredError}
          */
         runPlatformConfig: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/v1-utils-platform-run`;
+            const localVarPath = `/v1/utils-platform-run`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -10012,7 +11693,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         temp: async (generateRequest: GenerateRequest, convo?: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'generateRequest' is not null or undefined
             assertParamExists('temp', 'generateRequest', generateRequest)
-            const localVarPath = `/v1-temp`;
+            const localVarPath = `/v1/temp`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -10052,7 +11733,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         train: async (pmtTrainRequest: PmtTrainRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'pmtTrainRequest' is not null or undefined
             assertParamExists('train', 'pmtTrainRequest', pmtTrainRequest)
-            const localVarPath = `/v1-pmt-train`;
+            const localVarPath = `/v1/pmt-train`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -10088,7 +11769,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
         transform: async (pmtTransformRequest: PmtTransformRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'pmtTransformRequest' is not null or undefined
             assertParamExists('transform', 'pmtTransformRequest', pmtTransformRequest)
-            const localVarPath = `/v1-pmt-transform`;
+            const localVarPath = `/v1/pmt-transform`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -10130,7 +11811,7 @@ export const Scout9ApiAxiosParamCreator = function (configuration?: Configuratio
             assertParamExists('updateEntity', 'id', id)
             // verify required parameter 'entityData' is not null or undefined
             assertParamExists('updateEntity', 'entityData', entityData)
-            const localVarPath = `/v1-entity/{type}/{id}`
+            const localVarPath = `/v1/entity/{type}/{id}`
                 .replace(`{${"type"}}`, encodeURIComponent(String(type)))
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -12243,7 +13924,7 @@ export class Scout9Api extends Scout9ApiGenerated {
 
     return this.axios.request<{ url?: string; success: boolean; error?: string }>({
       method: 'POST',
-      url: `${this.configuration?.basePath || BASE_PATH}/v1-organizationLogo`,
+      url: `${this.configuration?.basePath || BASE_PATH}/v1/organizationLogo`,
       data: formData,
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -12269,7 +13950,7 @@ export class Scout9Api extends Scout9ApiGenerated {
     }
     return this.axios.request<{ url?: string; success: boolean; error?: string }>({
       method: 'POST',
-      url: `${this.configuration?.basePath || BASE_PATH}/v1-organizationIcon`,
+      url: `${this.configuration?.basePath || BASE_PATH}/v1/organizationIcon`,
       data: formData,
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -12300,7 +13981,7 @@ export class Scout9Api extends Scout9ApiGenerated {
 
     return this.axios.request<{ url?: string; success: boolean; error?: string }>({
       method: 'POST',
-      url: `${this.configuration?.basePath || BASE_PATH}/v1-agentImg`,
+      url: `${this.configuration?.basePath || BASE_PATH}/v1/agentImg`,
       data: formData,
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -12333,7 +14014,7 @@ export class Scout9Api extends Scout9ApiGenerated {
 
     return this.axios.request<{ urls?: string[]; success: boolean; error?: string }>({
       method: 'POST',
-      url: `${this.configuration?.basePath || BASE_PATH}/v1-agentTranscripts`,
+      url: `${this.configuration?.basePath || BASE_PATH}/v1/agentTranscripts`,
       data: formData,
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -12367,7 +14048,7 @@ export class Scout9Api extends Scout9ApiGenerated {
 
     return this.axios.request<{ urls?: string[]; success: boolean; error?: string }>({
       method: 'POST',
-      url: `${this.configuration?.basePath || BASE_PATH}/v1-agentAudios`,
+      url: `${this.configuration?.basePath || BASE_PATH}/v1/agentAudios`,
       data: formData,
       headers: {
         'Content-Type': 'multipart/form-data',

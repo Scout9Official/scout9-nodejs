@@ -515,7 +515,7 @@ export const Spirits = {
     }
 
     // Normalize existing message times ONCE at the start
-    enforceMonotonicWithEmits(messages, 1);
+    enforceMonotonicWithEmits(messages, 0.005);
 
     // init emits
     emitSetConversation(conversation);
@@ -824,8 +824,13 @@ export const Spirits = {
         conversation = lockConversation(conversation, 'App instructed forward');
         _forward = forward;
         _forwardNote = forwardNote;
+        const forwardedAt = new Date().toISOString();
         if (typeof forward === 'string') {
-          conversation = updateConversation(conversation, { forwarded: forward }, 'forward');
+          conversation = updateConversation(conversation, {
+            forwardedTo: forward,
+            forwarded: forwardedAt,
+            forwardNote: forwardNote ?? null,
+          }, 'forward');
           emitAddMessage(pushMessage(messages, {
             id: idGenerator("sys"),
             role: "system",
@@ -834,17 +839,27 @@ export const Spirits = {
           }));
           progress(`Forwarded to "${forward}"`, 'info', 'ADD_MESSAGE', messages[messages.length - 1]);
         } else if (typeof forward === 'boolean') {
-          conversation = updateConversation(conversation, { forwarded: conversation.$agent }, 'forward');
+          conversation = updateConversation(conversation, {
+            forwardedTo: conversation.$agent,
+            forwarded: forwardedAt,
+            forwardNote: forwardNote ?? null,
+          }, 'forward');
           emitAddMessage(pushMessage(messages, {
             id: idGenerator("sys"),
             role: "system",
-            content: `forwarded to "${forward}"`,
+            content: conversation.$agent
+              ? `forwarded to "${conversation.$agent}"`
+              : 'forwarded to agent',
             time: new Date().toISOString(),
           }));
           progress(`Forwarded to agent`, 'info', 'ADD_MESSAGE', messages[messages.length - 1]);
 
         } else {
-          conversation = updateConversation(conversation, { forwarded: forward.to }, 'forward');
+          conversation = updateConversation(conversation, {
+            forwardedTo: forward.to,
+            forwarded: forwardedAt,
+            forwardNote: forwardNote ?? null,
+          }, 'forward');
           emitAddMessage(pushMessage(messages, {
             id: idGenerator("sys"),
             role: "system",
@@ -1056,7 +1071,7 @@ export const Spirits = {
                 { seen: new Set(), items: [] }
               ).items;
 
-            enforceMonotonicWithEmits(addedMessages, 1);
+            enforceMonotonicWithEmits(addedMessages, 0.005);
 
             logToolPairingIssues([...messages, ...addedMessages], 'post-dedupe');
 
@@ -1065,7 +1080,7 @@ export const Spirits = {
               // Error should not have happened
               conversation = lockConversation(conversation, 'Duplicate message');
             } else {
-              enforceMonotonicWithEmits(messagesToTransform, 1);
+              enforceMonotonicWithEmits(messagesToTransform, 0.005);
               for (const newMessage of addedMessages) {
                 // messages.push(newMessage); switched to push to messages after transform is complete
                 pushMessage(messagesToTransform, {
@@ -1184,7 +1199,7 @@ export const Spirits = {
         before: conversationBefore,
         after: conversation,
         forward: _forward || null,
-        forwardNote: _forwardNote || ''
+        forwardNote: _forwardNote ?? null
       },
       messages: {
         before: messagesBefore,
